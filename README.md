@@ -13,3 +13,19 @@ Template with licences / github templates and contributing processes
 - [ ] Protect your branch if you're a pro user: https://github.com/EPFL-ENAC/{YOUR-REPO-NAME}/settings/branches
 
 
+
+## Input professionals	standards (column names must be exact) :
+
+Encoding format: UTF-8, Separator: ',' (comma)
+
+
+| Variable name         | Description                                             | Symbol    | Unit    | Data type | Mandatory       |
+| --------------------- | ------------------------------------------------------- | --------- | ------- | --------- | --------------- |
+| nameP                 |                              |        |    |    |               |
+| adressP                 |                              |        |    |    |               |
+| expertiseP                 |                              |        |    |    |               |
+| webP                 |                              |        |    |    |               |
+| telP                 |                              |        |    |    |               |
+| emailP                 |                              |        |    |    |               |
+| workswS_P                 |                              |        |    |    |               |
+
