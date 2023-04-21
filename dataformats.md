@@ -85,7 +85,7 @@ cladding exterior
 |date_0_pro| date first edition| |  `[-]` |date | y | |
 |date_f_pro| date last revision| |  `[-]` |date | y | |
 
-### Buldings
+### Buildings
 | Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|
 | ----------------- | ------------------------------- | --------- | ------- | --------- | --------- |---|
 | name_bui    |                     |          | `[-]`   | string  | y         |
