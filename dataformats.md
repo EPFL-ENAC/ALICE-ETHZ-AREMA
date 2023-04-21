@@ -9,8 +9,12 @@
 | mu_nr | vapourdiffusion | mu | `[-]`   | number    |     n      ||1-inf
 | lambda_nr | thermal conductivity |lambda  | `[W/m/K]`   |  number   |         n  | | 0-10
 |sigma_nr| compressive strength|sigma |  `[MPa]` |number | n | |
+|editor_0_nr| first editor| |  `[-]` |string | y | |
+|editor_f_nr| last editor| |  `[-]` |string | y | |
+|date_0_nr| date first edition| |  `[-]` |date | y | |
+|date_f_nr| date last revision| |  `[-]` |date | y | |
 
-### List of elements of a building
+### List of elements of a building: buildelem
 foundation;
 floor load-bearing;
 floor non-load-bearing;
@@ -32,11 +36,35 @@ cladding exterior
 | ----------------- | ------------------------------- | --------- | ------- | --------- | --------- |---|---|
 | name_bm    |                     |          | `[-]`   | string  | y         ||
 | constituant_bm | principal constituants   |          | `[-]`   | string     | y         |<>name_nr| 0-3
-| usage_bm  | which are the common uses  |  | `[-]`  |string | y         | <>builelem|0-3
+| usage_bm  | which are the common uses  |  | `[-]`  |string | y         | <>buildelem|0-3
 | mu_bm | vapourdiffusion | mu | `[-]`   | number    |     n      ||1-inf
 | lambda_bm | thermal conductivity |lambda  | `[W/m/K]`   |  number   |         n  | | 0-10
 |sigma_bm| compressive strength|sigma |  `[MPa]` |number | n | |
 |lca_bm| carbon footprint| |  `[kgCO2eq]` |number | n | |
+|editor_0_bm| first editor| |  `[-]` |string | y | |
+|editor_f_bm| last editor| |  `[-]` |string | y | |
+|date_0_bm| date first edition| |  `[-]` |date | y | |
+|date_f_bm| date last revision| |  `[-]` |date | y | |
+
+### Suppliers
+| Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|
+| ----------------- | ------------------------------- | --------- | ------- | --------- | --------- |---|
+| name_sup    |                     |          | `[-]`   | string  | y         |
+| adress_sup | adress of company    |          | `[-]`   | long lat     | y         |
+| products_sup  | sells which mat  |  | `[-]`   |string | y         | <>name_bm and/or <>name_nr
+| web_sup | url |  | `[-]`   | string    |     n      |
+| tel_sup |  |  | `[-]`   |  string   |         n  | |
+|area_del_sup| area of delivery| |  `[-]` |polygon | n | |
+|area_nr_sup| provenience of used nr| |  `[-]` |polygon | y | |
+|email_sup| | |  `[-]` |string | n | |
+|image1_sup| url| |`[-]`|image|n|
+|image2_sup| url ||`[-]`|image|n|
+|logo_sup| url ||`[-]`|image|n|
+|descr_sup| formated text||`[-]`| varchar |n|
+|editor_0_sup| first editor| |  `[-]` |string | y | |
+|editor_f_sup| last editor| |  `[-]` |string | y | |
+|date_0_sup| date first edition| |  `[-]` |date | y | |
+|date_f_sup| date last revision| |  `[-]` |date | y | |
 
 ### Professionals
 | Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|
@@ -52,6 +80,25 @@ cladding exterior
 |image2_pro| url ||`[-]`|image|n|
 |logo_pro| url ||`[-]`|image|n|
 |descr_pro| formated text||`[-]`| varchar |n|
+|editor_0_pro| first editor| |  `[-]` |string | y | |
+|editor_f_pro| last editor| |  `[-]` |string | y | |
+|date_0_pro| date first edition| |  `[-]` |date | y | |
+|date_f_pro| date last revision| |  `[-]` |date | y | |
+
+### Buldings
+| Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|
+| ----------------- | ------------------------------- | --------- | ------- | --------- | --------- |---|
+| name_bui    |                     |          | `[-]`   | string  | y         |
+| adress_bui | adress of building   |          | `[-]`   | long lat     | y         |
+| pros_bui  | involved professionals  |  | `[-]`   |string | y         | <>name_pro
+|sup_bui|suppliers of bm for building | |`[-]` | string| n | <> name_sup
+|image1_bui| url| |`[-]`|image|n|
+|image2_bui| url ||`[-]`|image|n|
+|descr_bui| formated text||`[-]`| varchar |n|
+|editor_0_bui| first editor| |  `[-]` |string | y | |
+|editor_f_bui| last editor| |  `[-]` |string | y | |
+|date_0_bui| date first edition| |  `[-]` |date | y | |
+|date_f_bui| date last revision| |  `[-]` |date | y | |
 
 Length of descriptive varchar <400 char for every table
 
