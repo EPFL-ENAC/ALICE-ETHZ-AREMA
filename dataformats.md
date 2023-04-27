@@ -1,6 +1,6 @@
 # Data format inputs
 
-### Natural Ressource
+### Natural Resource
 | Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|Range
 | ----------------- | ------------------------------- | --------- | ------- | --------- | --------- |---|---|
 | name_nr    |                     |          | `[-]`   | string  | y         ||
@@ -89,8 +89,8 @@ building physics;
 | name_bui    |                     |          | `[-]`   | string  | y         |
 | adress_bui | adress of building   |          | `[-]`   | long lat     | y         |
 | pros_bui  | involved professionals  |  | `[-]`   |string | y         | <>name_pro
-|usedBM_BE1_bui|material used for building element BE1 | |`[-]` | string| n | <> name_bm
-|usedBM_BE15_bui|material used for building element BE15 | |`[-]` | string| n | <> name_bm
+|usedbm_be1_bui|material used for building element BE1 | |`[-]` | string| n | <> name_bm
+|usedbm_be15_bui|material used for building element BE15 | |`[-]` | string| n | <> name_bm
 |sup_bui|suppliers of bm for building | |`[-]` | string| n | <> name_sup
 |image1_bui| url| |`[-]`|image|n|
 |image2_bui| url ||`[-]`|image|n|
