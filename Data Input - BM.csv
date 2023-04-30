@@ -3,4 +3,4 @@ Data Input Buidling Material,,,,,,,,,,,,,
 name_bm,constituant_bm,usage_bm,mu_bm,lambda_bm,sigma_bm,lca_bm,image1_bm,image2_bm,descr_bm,editor_0_bm,editor_f_bm,date_0_bm,date_f_bm
 ,list of nr,list of be,-,W/m/K,MPa,kgCO2 eq,,,,,,,
 hemp-lime,lime hemp,wall non-LB insuation,,0.045,.25-3,,,,https://materialarchiv.ch/de/ma:material_f1a02ba8-443a-4f13-9f87-703118ec54f3/?q=hanfkalk,sh,sh,30.4.2023,30.4.2023
-
+light earth,earth wood,wall LB wall non-LB insuation,,0.1-.47,,,,,https://materialarchiv.ch/de/ma:material_1641/?q=leichtlehm,sh,sh,30.4.2023,30.4.2023
