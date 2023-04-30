@@ -1,0 +1,4 @@
+Data Input Buidling Material,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+name_bm,constituant_bm,usage_bm,mu_bm,lambda_bm,sigma_bm,lca_bm,image1_bm,image2_bm,descr_bm,editor_0_bm,editor_f_bm,date_0_bm,date_f_bm
+,list of nr,list of be,-,W/m/K,MPa,kgCO2 eq,,,,,,,
