@@ -1,0 +1,6 @@
+Data Input Professional,,,,,,,,,,,,,,,,,														
+,,,,,,,,,,,,,,,,,																
+name_pro,adress_pro,type_pro,expertise_pro,area_del_pro,area_nr_pro,web_pro,tel_pro,email_pro,coop_sup_pro,logo_pro,image1_bm,image2_bm,descr_bm,editor_0_bm,editor_f_bm,date_0_bm,date_f_bm
+,,choicedropdown,list of bm or nr,if supplier,if supplier,,,,if not sup,,,,,,,,	
+Werner Schmidt,Via Fabrica 17 7166 Trun,architect,straw,,,www.atelierschmidt.ch,,,,,,,,sh,sh,30.4.2023,30.4.2023
+Lehmwerk ch,Hauptstrasse 47 CH-4143 Dornach,supplier,earth plaster/boards/bricks,,BL,www.lehmwerk.ch,,,,,,,,sh,sh,30.4.2023,30.4.2023
