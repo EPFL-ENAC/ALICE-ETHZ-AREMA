@@ -1,0 +1,6 @@
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: {{ env "SSL_CERT_CRT" }}
+        keyFile: {{ env "SSL_CERT_KEY" }}

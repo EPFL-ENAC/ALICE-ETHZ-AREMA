@@ -1,0 +1,57 @@
+version: "3.9"
+services:
+  reverse-proxy:
+    image: traefik:v2.9
+    command:
+      - "--providers.docker"
+      - "--providers.file.directory=/configuration/"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+      - "--entrypoints.websecure.address=:443"
+    environment:
+      - SSL_CERT_CRT=${SSL_CERT_CRT}
+      - SSL_CERT_KEY=${SSL_CERT_KEY}
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yaml:/configuration/traefik.yml
+      - /etc/ssl:/etc/ssl
+  frontend:
+    build: ./frontend
+    labels:
+      - "traefik.http.routers.frontend.priority=100"
+      - "traefik.http.routers.frontend.tls=true"
+      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
+    restart: unless-stopped
+
+  api:
+    extends:
+      file: nestjs-rest-api/docker-compose.yaml
+      service: api
+    env_file: ./nestjs-rest-api/.env
+    ports:
+      - '3000:3000'
+    labels:
+      - "traefik.http.routers.uploadFASTAPI.priority=1001"
+      - "traefik.http.routers.uploadFASTAPI.tls=true"
+      - "traefik.http.routers.uploadFASTAPI.rule=PathPrefix(`/api`)"
+      - "traefik.http.services.uploadFASTAPI.loadbalancer.server.port=3000"
+      - "traefik.http.routers.uploadFASTAPI.middlewares=uploadFASTAPI-middleware"
+      - "traefik.http.middlewares.uploadFASTAPI-middleware.stripprefix.prefixes=/api"
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+  postgres:
+    extends:
+      file: nestjs-rest-api/docker-compose.yaml
+      service: postgres
+    env_file: ./nestjs-rest-api/.env
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.postgresql.entrypoints=http'
