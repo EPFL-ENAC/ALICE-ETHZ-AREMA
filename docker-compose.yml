@@ -33,16 +33,17 @@ services:
     extends:
       file: nestjs-rest-api/docker-compose.yaml
       service: api
-    env_file: ./nestjs-rest-api/.env
     ports:
       - '3000:3000'
     labels:
-      - "traefik.http.routers.uploadFASTAPI.priority=1001"
-      - "traefik.http.routers.uploadFASTAPI.tls=true"
-      - "traefik.http.routers.uploadFASTAPI.rule=PathPrefix(`/api`)"
-      - "traefik.http.services.uploadFASTAPI.loadbalancer.server.port=3000"
-      - "traefik.http.routers.uploadFASTAPI.middlewares=uploadFASTAPI-middleware"
-      - "traefik.http.middlewares.uploadFASTAPI-middleware.stripprefix.prefixes=/api"
+      - "traefik.http.routers.api.priority=1001"
+      - "traefik.http.routers.api.tls=true"
+      - "traefik.http.routers.api.rule=PathPrefix(`/api`)"
+      - "traefik.http.services.api.loadbalancer.server.port=3000"
+      - "traefik.http.routers.api.middlewares=api-middleware,api-compress"
+      - "traefik.http.middlewares.api-middleware.stripprefix.prefixes=/api"
+      - "traefik.http.middlewares.api-compress.compress=true"
+
     restart: unless-stopped
     depends_on:
       - postgres
@@ -51,7 +52,6 @@ services:
     extends:
       file: nestjs-rest-api/docker-compose.yaml
       service: postgres
-    env_file: ./nestjs-rest-api/.env
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.postgresql.entrypoints=http'
