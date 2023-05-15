@@ -12,6 +12,7 @@ Template with licences / github templates and contributing processes
 - [ ] Create your first milestone: https://github.com/EPFL-ENAC/{YOUR-REPO-NAME}/milestones
 - [ ] Protect your branch if you're a pro user: https://github.com/EPFL-ENAC/{YOUR-REPO-NAME}/settings/branches
 
+# Backend based on https://github.com/mnzsss/nest-auth-explained.git
 
 
 ## Input professionals	standards (column names must be exact) :
