@@ -60,6 +60,8 @@ civil engineer;
 supplier;
 craftsmen;
 building physics;
+supplier;
+association
 
 ### Professionals
 | Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|
@@ -103,26 +105,6 @@ building physics;
 Length of descriptive varchar <400 char for every table
 
 ------------------------
-
-### Suppliers
-| Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|
-| ----------------- | ------------------------------- | --------- | ------- | --------- | --------- |---|
-| name_sup    |                     |          | `[-]`   | string  | y         |
-| adress_sup | adress of company    |          | `[-]`   | long lat     | y         |
-| products_sup  | sells which mat  |  | `[-]`   |string | y         | <>name_bm and/or <>name_nr
-| web_sup | url |  | `[-]`   | string    |     n      |
-| tel_sup |  |  | `[-]`   |  string   |         n  | |
-|area_del_sup| area of delivery| |  `[-]` |polygon | n | |
-|area_nr_sup| provenience of used nr| |  `[-]` |polygon | y | |
-|email_sup| | |  `[-]` |string | n | |
-|image1_sup| url| |`[-]`|image|n|
-|image2_sup| url ||`[-]`|image|n|
-|logo_sup| url ||`[-]`|image|n|
-|descr_sup| formated text||`[-]`| varchar |n|
-|editor_0_sup| first editor| |  `[-]` |string | y | |
-|editor_f_sup| last editor| |  `[-]` |string | y | |
-|date_0_sup| date first edition| |  `[-]` |date | y | |
-|date_f_sup| date last revision| |  `[-]` |date | y | |
 
 Composed of 2 files :
 - one json file containing parameters reserved for the software
