@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model file {
+  id   String @id(map: "PK_36b46d232307066b3a2c9ea3a1d") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  path String @db.VarChar
+  user user[]
+}
+
+model forgot {
+  id        Int       @id(map: "PK_087959f5bb89da4ce3d763eab75") @default(autoincrement())
+  hash      String    @db.VarChar
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
+  userId    Int?
+  user      user?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_31f3c80de0525250f31e23a9b83")
+
+  @@index([hash], map: "IDX_df507d27b0fb20cd5f7bef9b9a")
+}
+
+model migrations {
+  id        Int    @id(map: "PK_8c82d7f526340ab734260ea46be") @default(autoincrement())
+  timestamp BigInt
+  name      String @db.VarChar
+}
+
+model role {
+  id   Int    @id(map: "PK_b36bcfe02fc8de3c57a8b2391c2")
+  name String @db.VarChar
+  user user[]
+}
+
+model status {
+  id   Int    @id(map: "PK_e12743a7086ec826733f54e1d95")
+  name String @db.VarChar
+  user user[]
+}
+
+model user {
+  id        Int       @id(map: "PK_cace4a159ff9f2512dd42373760") @default(autoincrement())
+  email     String?   @unique(map: "UQ_e12875dfb3b1d92d7d7c5377e22") @db.VarChar
+  password  String?   @db.VarChar
+  provider  String    @default("email") @db.VarChar
+  socialId  String?   @db.VarChar
+  firstName String?   @db.VarChar
+  lastName  String?   @db.VarChar
+  hash      String?   @db.VarChar
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
+  photoId   String?   @db.Uuid
+  roleId    Int?
+  statusId  Int?
+  forgot    forgot[]
+  file      file?     @relation(fields: [photoId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_75e2be4ce11d447ef43be0e374f")
+  role      role?     @relation(fields: [roleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c28e52f758e7bbc53828db92194")
+  status    status?   @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_dc18daa696860586ba4667a9d31")
+
+  @@index([firstName], map: "IDX_58e4dbff0e1a32a9bdc861bb29")
+  @@index([socialId], map: "IDX_9bd2fe7a8e694dedc4ec2f666f")
+  @@index([hash], map: "IDX_e282acb94d2e3aec10f480e4f6")
+  @@index([lastName], map: "IDX_f0e1b4ecdca13b177e2e3a0613")
+}

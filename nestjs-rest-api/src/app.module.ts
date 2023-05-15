@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
+// import * as redisStore from 'cache-manager-redis-store';
+
 import { UsersModule } from './users/users.module';
 import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
@@ -14,20 +17,21 @@ import appleConfig from './config/apple.config';
 import * as path from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+// import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthAppleModule } from './auth-apple/auth-apple.module';
 import { AuthFacebookModule } from './auth-facebook/auth-facebook.module';
 import { AuthGoogleModule } from './auth-google/auth-google.module';
 import { AuthTwitterModule } from './auth-twitter/auth-twitter.module';
 import { I18nModule } from 'nestjs-i18n/dist/i18n.module';
 import { HeaderResolver } from 'nestjs-i18n';
-import { TypeOrmConfigService } from './database/typeorm-config.service';
+// import { TypeOrmConfigService } from './database/typeorm-config.service';
 import { MailConfigService } from './mail/mail-config.service';
 import { ForgotModule } from './forgot/forgot.module';
 import { MailModule } from './mail/mail.module';
 import { HomeModule } from './home/home.module';
-import { DataSource, DataSourceOptions } from 'typeorm';
+// import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -46,12 +50,14 @@ import { AllConfigType } from './config/config.type';
       ],
       envFilePath: ['.env'],
     }),
-    TypeOrmModule.forRootAsync({
-      useClass: TypeOrmConfigService,
-      dataSourceFactory: async (options: DataSourceOptions) => {
-        return new DataSource(options).initialize();
-      },
-    }),
+    CacheModule.register(),
+    PrismaModule,
+    // TypeOrmModule.forRootAsync({
+    //   useClass: TypeOrmConfigService,
+    //   dataSourceFactory: async (options: DataSourceOptions) => {
+    //     return new DataSource(options).initialize();
+    //   },
+    // }),
     MailerModule.forRootAsync({
       useClass: MailConfigService,
     }),

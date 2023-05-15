@@ -29,3 +29,18 @@ Encoding format: UTF-8, Separator: ',' (comma)
 | emailP                 |                              |        |    |    |               |
 | workswS_P                 |                              |        |    |    |               |
 
+
+
+3 levels
+- participant (n'importe qui) --> draft
+- communauté d'expert (étudiant - alumni) -> pre-pub 
+- admin peut modifier tous --> pub
+
+
+Une fiche --> un element d'un des 5 types de données.
+
+--> Revu par une communauté d'expert, si les experts trouve que c'est okay.
+--> Alors on valide les fiches par les admins.
+
+
+Upload CSV

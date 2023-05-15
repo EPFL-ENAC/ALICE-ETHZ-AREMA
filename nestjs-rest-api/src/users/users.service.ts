@@ -6,6 +6,7 @@ import { DeepPartial, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { NullableType } from '../utils/types/nullable.type';
+import { prisma } from '../prisma/prisma';
 
 @Injectable()
 export class UsersService {
@@ -15,36 +16,44 @@ export class UsersService {
   ) {}
 
   create(createProfileDto: CreateUserDto): Promise<User> {
-    return this.usersRepository.save(
-      this.usersRepository.create(createProfileDto),
-    );
+    // return this.usersRepository.save(
+    //   this.usersRepository.create(createProfileDto),
+    // );
+    const { name, email } = req.body
+
+    const newUser = await prisma.user.create({
+      data: {
+        id,
+        email,
+      },
+    })
+
+    res.send(newUser);
   }
 
-  findManyWithPagination(
-    paginationOptions: IPaginationOptions,
-  ): Promise<User[]> {
-    return this.usersRepository.find({
+  findManyWithPagination(paginationOptions: IPaginationOptions) {
+    return prisma.user.findMany({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
     });
   }
 
-  findOne(fields: EntityCondition<User>): Promise<NullableType<User>> {
-    return this.usersRepository.findOne({
-      where: fields,
-    });
-  }
+  // findOne(fields: EntityCondition<User>) {
+  //   return prisma.user.findUniqueOrThrow({
+  //     where: fields,
+  //   });
+  // }
 
-  update(id: number, payload: DeepPartial<User>): Promise<User> {
-    return this.usersRepository.save(
-      this.usersRepository.create({
-        id,
-        ...payload,
-      }),
-    );
-  }
+  // update(id: number, payload: DeepPartial<User>): Promise<User> {
+  //   return prisma.user.update(
+  //     this.usersRepository.create({
+  //       id,
+  //       ...payload,
+  //     }),
+  //   );
+  // }
 
   async softDelete(id: number): Promise<void> {
-    await this.usersRepository.softDelete(id);
+    // await this.usersRepository.softDelete(id);
   }
 }

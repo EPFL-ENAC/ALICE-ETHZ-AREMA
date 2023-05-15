@@ -27,11 +27,12 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "env-cmd jest --config ./test/jest-e2e.json",
-    "prepare": "is-ci || husky install"
+    "prepare": "is-ci"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.321.1",
     "@nestjs-modules/mailer": "1.8.1",
+    "@nestjs/cache-manager": "^1.0.0",
     "@nestjs/common": "9.4.0",
     "@nestjs/config": "2.3.1",
     "@nestjs/core": "9.4.0",
@@ -40,9 +41,11 @@
     "@nestjs/platform-express": "9.4.0",
     "@nestjs/swagger": "6.3.0",
     "@nestjs/typeorm": "9.0.1",
+    "@prisma/client": "4.14.0",
     "@types/multer-s3": "^3.0.0",
     "apple-signin-auth": "1.7.5",
     "bcryptjs": "2.4.3",
+    "cache-manager-redis-store": "^3.0.1",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.0",
     "fb": "2.0.0",
@@ -90,6 +93,7 @@
     "is-ci": "3.0.1",
     "jest": "29.5.0",
     "prettier": "2.8.8",
+    "prisma": "^4.14.0",
     "supertest": "6.3.3",
     "ts-jest": "29.1.0",
     "ts-loader": "9.4.2",
