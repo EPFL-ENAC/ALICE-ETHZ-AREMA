@@ -28,30 +28,45 @@ services:
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
     restart: unless-stopped
-
-  api:
-    extends:
-      file: nestjs-rest-api/docker-compose.yaml
-      service: api
+  upload-fast-api:
+    build: ./uploadFASTAPI
+    environment:
+      - S3_ENDPOINT_HOSTNAME=${S3_ENDPOINT_HOSTNAME}
+      - S3_ENDPOINT_PROTOCOL=${S3_ENDPOINT_PROTOCOL}
+      - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
+      - S3_REGION=${S3_REGION} 
+      - S3_Bucket=${S3_Bucket} 
+      - S3_Key=${S3_Key} 
+      - CORS_ENABLED=${CORS_ENABLED} 
+      - ROOT_PATH=
+      - AUTH_SERVER="http://couchdb:5984"
     ports:
-      - '3000:3000'
+      - '5050:5050'
     labels:
-      - "traefik.http.routers.api.priority=1001"
-      - "traefik.http.routers.api.tls=true"
-      - "traefik.http.routers.api.rule=PathPrefix(`/api`)"
-      - "traefik.http.services.api.loadbalancer.server.port=3000"
-      - "traefik.http.routers.api.middlewares=api-middleware,api-compress"
-      - "traefik.http.middlewares.api-middleware.stripprefix.prefixes=/api"
-      - "traefik.http.middlewares.api-compress.compress=true"
-
+      - "traefik.http.routers.uploadFASTAPI.priority=1001"
+      - "traefik.http.routers.uploadFASTAPI.tls=true"
+      - "traefik.http.routers.uploadFASTAPI.rule=PathPrefix(`/api`)"
+      - "traefik.http.services.uploadFASTAPI.loadbalancer.server.port=5050"
+      - "traefik.http.routers.uploadFASTAPI.middlewares=uploadFASTAPI-middleware"
+      - "traefik.http.middlewares.uploadFASTAPI-middleware.stripprefix.prefixes=/api"
     restart: unless-stopped
-    depends_on:
-      - postgres
-
-  postgres:
-    extends:
-      file: nestjs-rest-api/docker-compose.yaml
-      service: postgres
+    #depends_on:
+    #  - couchdb
+  s3_server:
+    build: ./s3_server
+    restart: unless-stopped
+    environment:
+      - DNS=${DNS}
+      - S3_ENDPOINT_HOSTNAME=${S3_ENDPOINT_HOSTNAME}
+      - S3_ENDPOINT_PROTOCOL=${S3_ENDPOINT_PROTOCOL}
+      - S3_BUCKET_NAME=${S3_Bucket}
     labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.postgresql.entrypoints=http'
+      - "traefik.http.routers.s3Server.priority=1002"
+      - "traefik.http.routers.s3Server.tls=true"
+      - "traefik.http.routers.s3Server.rule=PathPrefix(`/s3`)"
+      - "traefik.http.routers.s3Server.middlewares=s3Server-stripprefix"
+      - "traefik.http.middlewares.s3Server-stripprefix.stripprefix.prefixes=/s3"
+      - "traefik.http.services.s3Server.loadbalancer.server.port=5660"
+    ports:
+      - '5660:5660'
