@@ -4,7 +4,7 @@
 | Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|Range
 | ----------------- | ------------------------------- | --------- | ------- | --------- | --------- |---|---|
 | name_nr    |                     |          | `[-]`   | string  | y         ||
-| zone_nr | geographic or geologic provenience    |          | `[-]`   | polygon     | y         |
+| zone_nr | geographic or geologic provenience    |          | `[-]`   | polygon     | y         | list de zones (polygones obligatoires)
 | amount_nr  | approx extend of availability  |  | `[kg]`or `[m2]` or `[m3]`  |number | n         | 
 | mu_nr | vapourdiffusion | mu | `[-]`   | number    |     n      ||1-inf
 | lambda_nr | thermal conductivity |lambda  | `[W/m/K]`   |  number   |         n  | | 0-10
@@ -19,6 +19,10 @@
 |date_f_nr| date last revision| |  `[-]` |date | y | |
 
 ### List of elements of a building: BE
+Use a unique id in case we want to change the name of the building element
+be1,be2,...
+
+
 foundation;
 floor load-bearing;
 floor non-load-bearing;
@@ -61,21 +65,24 @@ supplier;
 craftsmen;
 building physics;
 supplier;
-association
+association;
+construction firms;
 
 ### Professionals
 | Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|
 | ----------------- | ------------------------------- | --------- | ------- | --------- | --------- |---|
 | name_pro    |                     |          | `[-]`   | string  | y         |
-| adress_pro | adress of company    |          | `[-]`   | long lat     | y         |
+| adress_pro | adress of company    |          | `[-]`   | string     | y         |
 | type_pro| drop down from list_pro| |  `[-]`  |string|y|
 | expertise_pro  | expertise with which building mat  |  | `[-]`   |string | y         | <>name_bm and/or <>name_nr
-|area_del_pro| area of delivery if pro=sup| |  `[-]` |polygon | n | |
-|area_nr_pro| provenience of used nr if pro=sup| |  `[-]` |polygon | y | |
+   --> { zone seulement (polygones) pour natural resource}
+| area_del_pro| area of delivery if pro=sup| |  `[-]` |polygon | n | | radius + coordinate (make two fields)
+
+// |area_nr_pro| provenience of used nr if pro=sup| |  `[-]` |polygon | y | | 
+
 | web_pro | url |  | `[-]`   | string    |     n      |
 | tel_pro |  |  | `[-]`   |  string   |         n  | |
 |email_pro| | |  `[-]` |string | n | |
-|coop_sup_pro|suppliers of pro if pro=/sup | |`[-]` | string| n | <> name_pro
 |image1_pro| url| |`[-]`|image|n|
 |image2_pro| url ||`[-]`|image|n|
 |logo_pro| url ||`[-]`|image|n|
