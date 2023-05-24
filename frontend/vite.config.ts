@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 
-import path from 'node:path'
+import path, { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
 import Pages from 'vite-plugin-pages'
@@ -9,6 +10,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import UnoCSS from 'unocss/vite'
 import VueMacros from 'unplugin-vue-macros/vite'
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 
 // https://github.com/pouchdb/pouchdb/issues/8607
 export default defineConfig({
@@ -30,6 +32,13 @@ export default defineConfig({
     },
   },
   plugins: [
+    // https://vue-i18n.intlify.dev/guide/advanced/sfc.html#configure-plugin-for-vite
+    VueI18nPlugin({
+      include: resolve(
+        dirname(fileURLToPath(import.meta.url)),
+        './src/locales/**',
+      ),
+    }),
     VueMacros({
       plugins: {
         vue: Vue({

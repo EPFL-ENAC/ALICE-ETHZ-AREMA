@@ -1,0 +1,10 @@
+{
+    "area": "aire",
+    "areaTotal": "aire total",
+    "close": "fermer",
+    "draw": {
+      "polygon": "Dessiner un polygone",
+      "trash": "Supprimer"
+    },
+    "tool": "outils"
+}
