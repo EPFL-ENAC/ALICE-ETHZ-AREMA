@@ -9,12 +9,16 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    LayerSelector: typeof import('./src/components/LayerSelector.vue')['default']
+    MapLibreMap: typeof import('./src/components/MapLibreMap.vue')['default']
     NaturalResourcesCard: typeof import('./src/components/NaturalResources/NaturalResourcesCard.vue')['default']
     RootNavigationDrawer: typeof import('./src/components/RootNavigationDrawer.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SelectedArea: typeof import('./src/components/SelectedArea.vue')['default']
     TheCounter: typeof import('./src/components/TheCounter.vue')['default']
     TheFooter: typeof import('./src/components/TheFooter.vue')['default']
     TheInput: typeof import('./src/components/TheInput.vue')['default']
+    WebMap: typeof import('./src/components/WebMap.vue')['default']
   }
 }
