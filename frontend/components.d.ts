@@ -9,7 +9,6 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    LayerSelector: typeof import('./src/components/LayerSelector.vue')['default']
     MapLibreMap: typeof import('./src/components/MapLibreMap.vue')['default']
     NaturalResourcesCard: typeof import('./src/components/NaturalResources/NaturalResourcesCard.vue')['default']
     RootNavigationDrawer: typeof import('./src/components/RootNavigationDrawer.vue')['default']
