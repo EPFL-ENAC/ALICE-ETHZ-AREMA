@@ -1,4 +1,9 @@
 import PouchDB from 'pouchdb-browser'
+import find from 'pouchdb-find'
+import rel from 'relational-pouch'
+
+PouchDB.plugin(find)
+PouchDB.plugin(rel)
 // import qs from 'qs'
 
 export type ExistingDocument<T extends {}> = PouchDB.Core.ExistingDocument<T>
@@ -31,7 +36,6 @@ export function getUrl(path: string): string {
 }
 
 export class SyncDatabase<T extends {}> {
-
   public localDB: PouchDB.Database<T>
   public remoteDB: PouchDB.Database<T>
   private sync: PouchDB.Replication.Sync<T>
@@ -51,6 +55,52 @@ export class SyncDatabase<T extends {}> {
           }
         : undefined,
     })
+
+    remoteDB.setSchema([
+      {
+        singular: 'natural_resource',
+        plural: 'natural_resources',
+        relations: {
+          building_material: { belongsTo: 'building_material' },
+        },
+      },
+      {
+        singular: 'building_material',
+        plural: 'building_materials',
+        relations: {
+          natural_resources: {
+            hasMany: { type: 'natural_resource', options: { async: false } },
+          },
+        },
+      },
+      {
+        singular: 'professional',
+        plural: 'professionals',
+        relations: {
+          natural_resources: {
+            hasMany: { type: 'natural_resource', options: { async: false } },
+          },
+          building_materials: {
+            hasMany: { type: 'building_material', options: { async: false } },
+          },
+        },
+      },
+      {
+        singular: 'professional_type',
+        plural: 'professional_types',
+        relations: {
+          professionals: {
+            hasMany: { type: 'professional', options: { async: false } },
+          },
+        },
+      },
+    ])
+    // remoteDB.rel.save('natural_resource', {
+    //   name: 'Rails is Omakase',
+    //   text: 'There are a lot of a-la-carte software...',
+    // })
+    // console.log('save natural_resource')
+
     this.sync = localDB.sync(
       remoteDB,
       {
@@ -78,9 +128,9 @@ export class SyncDatabase<T extends {}> {
     this.localDB = localDB
     this.remoteDB = remoteDB
   }
-//   /**
-//    * @deprecated use localDB
-//    */
+  //   /**
+  //    * @deprecated use localDB
+  //    */
   // get db(): PouchDB.Database<T> {
   //   return this.localDB
   // }

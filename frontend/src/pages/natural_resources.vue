@@ -84,7 +84,6 @@ async function deleteItem(value: NaturalResource) {
 
 
 onMounted(async () => {
-  console.log("MOUNTED RIGHT")
   await store.getNaturalResources()
 });
 // name_nr, zone_nr	amount_nr	mu_nr	lambda_nr	sigma_nr	lca_nr	image1_nr	image2_nr	descr_nr 	editor_0_nr	editor_f_nr	date_0_nr	date_f_nr	date_f_bm	adress_pro	adress_pro_text	ressource_type
