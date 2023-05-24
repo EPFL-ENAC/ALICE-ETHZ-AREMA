@@ -29,3 +29,11 @@ Encoding format: UTF-8, Separator: ',' (comma)
 | emailP                 |                              |        |    |    |               |
 | workswS_P                 |                              |        |    |    |               |
 
+
+
+
+--> Vision
+
+# Points d'entrées
+- Soit on arrive par les humains (professionals)
+- Soit les buildings

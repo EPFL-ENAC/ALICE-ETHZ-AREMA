@@ -1,20 +1,17 @@
 install:
-	pnpm install
+	npm install
 
-run:
-	npx dev
-
-serve:
-	npx dev
+run: dev
+serve: dev
 
 dev:
-	npx dev
+	npm run dev
 
 test:
 	npm run test:unit
 
 lint:
-	npx lint
+	npm run lint
 
 lint-staged:
 	npm run lint-staged

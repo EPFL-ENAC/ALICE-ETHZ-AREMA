@@ -1,0 +1,118 @@
+[
+  {
+    "_id": "org.couchdb.user:andre.ullal@epfl.ch",
+    "name": "andre.ullal@epfl.ch",
+    "roles": [
+      "user",
+      "specialist",
+      "admin"
+    ],
+    "type": "user",
+    "password_scheme": "pbkdf2",
+    "iterations": 10,
+    "derived_key": "86a62da1d771b245a876725b343f835425cb9b5f",
+    "salt": "da8b6f7c04b027890b5d614e2c2ca050"
+  },
+  {
+    "_id": "org.couchdb.user:cara.tobin@epfl.ch",
+    "name": "cara.tobin@epfl.ch",
+    "roles": [
+      "user",
+      "specialist",
+      "admin"
+    ],
+    "type": "user",
+    "password_scheme": "pbkdf2",
+    "iterations": 10,
+    "derived_key": "e08f838c2e26e9a6bd1e950a98f08f2706916290",
+    "salt": "2dd0e234197e315211d857b9aeeef5c7"
+  },
+  {
+    "_id": "org.couchdb.user:charlotte.weil@epfl.ch",
+    "name": "charlotte.weil@epfl.ch",
+    "roles": [
+      "user",
+      "admin"
+    ],
+    "type": "user",
+    "password_scheme": "pbkdf2",
+    "iterations": 10,
+    "derived_key": "720ac4dfe0d84b1e187f14beff798398dd103e38",
+    "salt": "01173fa92259e4fc3acaf317425ab175"
+  },
+  {
+    "_id": "org.couchdb.user:david.tang@epfl.ch",
+    "name": "david.tang@epfl.ch",
+    "roles": [
+      "user",
+      "admin"
+    ],
+    "type": "user",
+    "password_scheme": "pbkdf2",
+    "iterations": 10,
+    "derived_key": "458388fc029077983ca6e7b97bd3f736d3dc308e",
+    "salt": "7b4ab942b268e2f8b6bb210d45b6074a"
+  },
+  {
+    "_id": "org.couchdb.user:gregoire.castella@epfl.ch",
+    "name": "gregoire.castella@epfl.ch",
+    "roles": [
+      "user",
+      "admin"
+    ],
+    "type": "user",
+    "password_scheme": "pbkdf2",
+    "iterations": 10,
+    "derived_key": "5ca0cdaf6b5fec109c045af84046d2595e8c5121",
+    "salt": "9cebb133974e79b88ab3f416423f3010"
+  },
+  {
+    "_id": "org.couchdb.user:pierre.guilbert@epfl.ch",
+    "name": "pierre.guilbert@epfl.ch",
+    "roles": [
+      "user",
+      "admin"
+    ],
+    "type": "user",
+    "password_scheme": "pbkdf2",
+    "iterations": 10,
+    "derived_key": "862e8b13ea7edabed9e9301b5bd2b899c8051189",
+    "salt": "cd079a0bd25cad646d30a6e4bcd4f29b"
+  },
+  {
+    "_id": "org.couchdb.user:samuel.bancal@epfl.ch",
+    "name": "samuel.bancal@epfl.ch",
+    "roles": [
+      "user",
+      "admin"
+    ],
+    "type": "user",
+    "password_scheme": "pbkdf2",
+    "iterations": 10,
+    "derived_key": "f2631019653665a54edf1dd2253037078370cf89",
+    "salt": "bb38ad00cc58a6f875de698224587342"
+  },
+  {
+    "_id": "org.couchdb.user:natalia.montoyaarevalo@epfl.ch",
+    "name": "natalia.montoyaarevalo@epfl.ch",
+    "roles": [
+      "user",
+      "admin"
+    ],
+    "type": "user",
+    "password_scheme": "pbkdf2",
+    "iterations": 10,
+    "derived_key": "012eae1bec47682d7cffe3781f0a3bbe2b5acaf1",
+    "salt": "7cde8da866014f0860cfed0d17113fac"
+  },
+  {
+    "_id": "org.couchdb.user:lakwong@berkeley.edu",
+    "name": "lakwong@berkeley.edu",
+    "roles": [],
+    "type": "user",
+    "password_scheme": "pbkdf2",
+    "iterations": 10,
+    "derived_key": "d73f9b1999aa3cab91e5384f0f14407f9f8a15e5",
+    "salt": "0ea3a566c06b8e697dbfd0656a0d39fa"
+  }
+]

@@ -9,6 +9,8 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    NaturalResourcesCard: typeof import('./src/components/NaturalResources/NaturalResourcesCard.vue')['default']
+    RootNavigationDrawer: typeof import('./src/components/RootNavigationDrawer.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TheCounter: typeof import('./src/components/TheCounter.vue')['default']
