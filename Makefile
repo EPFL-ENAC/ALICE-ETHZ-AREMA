@@ -18,6 +18,12 @@ lint-staged:
 	$(MAKE) -C frontend lint-staged
 
 
+run-database:
+	docker-compose up --build -d couchdb
+
+setup-database:
+	docker-compose up --build --force-recreate couchdb-setup
+
 # setup and run when deploying on server
 setup:
 	echo "nothing to see here"

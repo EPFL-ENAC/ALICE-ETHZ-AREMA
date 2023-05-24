@@ -1,6 +1,10 @@
 <template>
-  <main font-sans p="x-4 y-10" text="center gray-700 dark:gray-200">
+  <v-app id="inspire">
+    <RootNavigationDrawer />
+
+    <v-main font-sans class="m-10 ml-10" text="center gray-700 dark:gray-200">
     <RouterView />
     <TheFooter />
-  </main>
+    </v-main>
+  </v-app>
 </template>

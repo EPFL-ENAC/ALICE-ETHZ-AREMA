@@ -8,11 +8,13 @@
 | amount_nr  | approx extend of availability  |  | `[kg]`or `[m2]` or `[m3]`  |number | n         | 
 | mu_nr | vapourdiffusion | mu | `[-]`   | number    |     n      ||1-inf
 | lambda_nr | thermal conductivity |lambda  | `[W/m/K]`   |  number   |         n  | | 0-10
-|sigma_nr| compressive strength|sigma |  `[MPa]` |number | n | |
-|lca_nr| carbon footprint| |  `[kgCO2eq]` |number | n | |
+|sigma_nr| compressive strength|sigma |  `[MPa]` |number | n | | |R+
+|lca_nr| carbon footprint| |  `[kgCO2eq]` |number | n | | [-inf, +inf]
+
 |image1_nr| url| |`[-]`|image|n|
 |image2_nr| url ||`[-]`|image|n|
 |descr_nr| formated text||`[-]`| varchar |n|
+
 |editor_0_nr| first editor| |  `[-]` |string | y | |
 |editor_f_nr| last editor| |  `[-]` |string | y | |
 |date_0_nr| date first edition| |  `[-]` |date | y | |
@@ -43,8 +45,8 @@ cladding exterior
 | Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|Range
 | ----------------- | ------------------------------- | --------- | ------- | --------- | --------- |---|---|
 | name_bm    |                     |          | `[-]`   | string  | y         ||
-| constituant_bm | principal constituants   |          | `[-]`   | string     | y         |<>name_nr| 0-3
-| usage_bm  | which are the common uses  |  | `[-]`  |string | y         | <>BE|0-3
+| constituant_bm | principal constituants   |          | `[-]`   | string     | y         | <>name_nr  | [1,3]
+| usage_bm  | which are the common uses  |  | `[-]`              |string      | y         | <>BE       | no limit 
 | mu_bm | vapourdiffusion | mu | `[-]`   | number    |     n      ||1-inf
 | lambda_bm | thermal conductivity |lambda  | `[W/m/K]`   |  number   |         n  | | 0-10
 |sigma_bm| compressive strength|sigma |  `[MPa]` |number | n | |
@@ -57,7 +59,19 @@ cladding exterior
 |date_0_bm| date first edition| |  `[-]` |date | y | |
 |date_f_bm| date last revision| |  `[-]` |date | y | |
 
-### List of professionals
+### List of Technical constructions
+- Combination of BE and BM
+| Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|Range
+| ----------------- | ------------------------------- | --------- | ------- | --------- | --------- |---|---|
+| bm | building material   |          | `[-]`   | string     | y         |name_bm| 1
+| be | building element   |          | `[-]`   | string     | y         |name_be| 1
+| image          | url| |`[-]`|images|n| (max 10MB)
+
+E.g
+
+foundation_stone
+
+### Types of professionals
 
 architect;
 civil engineer;
@@ -67,6 +81,7 @@ building physics;
 supplier;
 association;
 construction firms;
+dealer;
 
 ### Professionals
 | Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|
@@ -74,12 +89,8 @@ construction firms;
 | name_pro    |                     |          | `[-]`   | string  | y         |
 | adress_pro | adress of company    |          | `[-]`   | string     | y         |
 | type_pro| drop down from list_pro| |  `[-]`  |string|y|
-| expertise_pro  | expertise with which building mat  |  | `[-]`   |string | y         | <>name_bm and/or <>name_nr
-   --> { zone seulement (polygones) pour natural resource}
+| expertise_pro  | expertise with which building mat  |  | `[-]`   |string | y         | <>name_bm and/or <>name_nr   --> { zone seulement (polygones) pour natural resource}
 | area_del_pro| area of delivery if pro=sup| |  `[-]` |polygon | n | | radius + coordinate (make two fields)
-
-// |area_nr_pro| provenience of used nr if pro=sup| |  `[-]` |polygon | y | | 
-
 | web_pro | url |  | `[-]`   | string    |     n      |
 | tel_pro |  |  | `[-]`   |  string   |         n  | |
 |email_pro| | |  `[-]` |string | n | |
@@ -97,39 +108,24 @@ construction firms;
 | ----------------- | ------------------------------- | --------- | ------- | --------- | --------- |---|
 | name_bui    |                     |          | `[-]`   | string  | y         |
 | adress_bui | adress of building   |          | `[-]`   | long lat     | y         |
-| pros_bui  | involved professionals  |  | `[-]`   |string | y         | <>name_pro
-|usedbm_be1_bui|material used for building element BE1 | |`[-]` | string| n | <> name_bm
-|usedbm_be15_bui|material used for building element BE15 | |`[-]` | string| n | <> name_bm
-|sup_bui|suppliers of bm for building | |`[-]` | string| n | <> name_sup
+| pros_bui  | involved professionals  |  | `[-]`   |string | y         | <> name_pro[]
+
+	technical_constructions = ["be1_grey", "be1_wood", "be1_stone",...........]
+|usedbm_be1_bui  | material used for building element BE1 | |`[-]` | string| n | <> name_bm
+|usedbm_be15_bui | material used for building element BE15 | |`[-]` | string| n | <> name_bm
+
+
+|sup_bui|suppliers of bm for building | |`[-]` | string| n | <> name_sup [1,]
+
 |image1_bui| url| |`[-]`|image|n|
 |image2_bui| url ||`[-]`|image|n|
+
 |descr_bui| formated text||`[-]`| varchar |n|
+
 |editor_0_bui| first editor| |  `[-]` |string | y | |
 |editor_f_bui| last editor| |  `[-]` |string | y | |
 |date_0_bui| date first edition| |  `[-]` |date | y | |
 |date_f_bui| date last revision| |  `[-]` |date | y | |
 
 Length of descriptive varchar <400 char for every table
-
 ------------------------
-
-Composed of 2 files :
-- one json file containing parameters reserved for the software
-- one csv file with data
- ## JSON files standards :
-Encoding format: UTF-8
-```javascript
-[
-	{
-		"stress_ratio": double, // Stress ratio (R) [-]
-		"confidence_interval": double, // confidence bounds, usually 5, 95% (rsql) [-]
-		"a": double, // S-N Curve parameter [-]
-		"b": double, // S-N Curve parameter [1/MPa]
-		"lrsq": double, // [?], optional
-		"fp": double, // Fp Linearity criterion [?], optional
-	},
-	...
-]
-```
-## CSV files standards (column names must be exact) :
-Encoding format: UTF-8, Separator: ',' (comma)

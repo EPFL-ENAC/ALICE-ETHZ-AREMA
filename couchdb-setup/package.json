@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "couchdb": "couchdb-bootstrap http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@${COUCHDB_HOST}:5984 bootstrap"
+  },
+  "devDependencies": {
+    "couchdb-bootstrap": "^15.1.0",
+    "couchdb-configure": "^2.1.0",
+    "couchdb-push": "^3.1.0"
+  },
+  "name": "couchdb-setup",
+  "version": "0.2.0",
+  "repository": "https://github.com/EPFL-ENAC/alice-ethz-arema",
+  "author": "Guilbert Pierre",
+  "license": "GPL-3",
+  "private": true
+}

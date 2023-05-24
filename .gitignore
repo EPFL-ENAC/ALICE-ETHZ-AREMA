@@ -1,2 +1,9 @@
 node_modules
+.DS_Store
+
+
+.vscode/configurationCache.log
+.vscode/dryrun.log
+.vscode/targets.log
+
 .env
