@@ -1,10 +1,8 @@
 {
-    "area": "aire",
-    "areaTotal": "aire total",
     "close": "fermer",
     "draw": {
       "polygon": "Dessiner un polygone",
+      "circle": "Dessiner un cercle",
       "trash": "Supprimer"
-    },
-    "tool": "outils"
+    }
 }

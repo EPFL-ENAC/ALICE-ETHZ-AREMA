@@ -1,10 +1,8 @@
 {
-    "area": "area",
-    "areaTotal": "total area",
     "close": "close",
     "draw": {
       "polygon": "Draw a polygon",
+      "circle": "Draw a circle",
       "trash": "Delete"
-    },
-    "tool": "tool"
+    }
 }

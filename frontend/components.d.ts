@@ -14,7 +14,6 @@ declare module '@vue/runtime-core' {
     RootNavigationDrawer: typeof import('./src/components/RootNavigationDrawer.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    SelectedArea: typeof import('./src/components/SelectedArea.vue')['default']
     TheCounter: typeof import('./src/components/TheCounter.vue')['default']
     TheFooter: typeof import('./src/components/TheFooter.vue')['default']
     TheInput: typeof import('./src/components/TheInput.vue')['default']

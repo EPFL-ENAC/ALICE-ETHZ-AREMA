@@ -5,6 +5,8 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 
 import { geocoderApi } from '~/utils/geocoder'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
+import * as MapboxDrawGeodesic from 'mapbox-gl-draw-geodesic'
+import * as MapboxDrawWaypoint from 'mapbox-gl-draw-waypoint';
 import MaplibreGeocoder from '@maplibre/maplibre-gl-geocoder'
 import {
   type Feature,
@@ -23,7 +25,7 @@ import {
 } from 'maplibre-gl'
 import { onMounted, ref } from 'vue'
 
-defineExpose({ drawPolygon, drawTrash })
+defineExpose({ drawPolygon, drawCircle, drawTrash })
 const props = withDefaults(
   defineProps<{
     styleSpec: string | StyleSpecification
@@ -61,8 +63,13 @@ onMounted(() => {
   map.addControl(new GeolocateControl({}))
   map.addControl(new ScaleControl({}))
   map.addControl(new FullscreenControl({}))
-  draw = new MapboxDraw({
+
+  let modes = MapboxDraw.modes
+  modes = MapboxDrawGeodesic.enable(modes)
+  modes = MapboxDrawWaypoint.enable(modes)
+  draw = new MapboxDraw({ 
     displayControlsDefault: false,
+    modes
   })
   map.addControl(draw as unknown as IControl)
   map.addControl(
@@ -72,26 +79,32 @@ onMounted(() => {
     }),
     'top-left'
   )
-
+  
   map.on('draw.create', updateArea)
   map.on('draw.delete', updateArea)
   map.on('draw.update', updateArea)
-
-  function updateArea() {
-    const selectedFeatures = draw?.getAll().features as Feature<
-      Polygon | MultiPolygon
-    >[]
-    emit('update:selectedFeatures', selectedFeatures)
-  }
-
 })
+
+function updateArea() {
+  let selectedFeatures = draw?.getAll().features as Feature<Polygon | MultiPolygon>[]
+  // filter out circle features that have a radius smaller than 100m 
+  selectedFeatures = selectedFeatures.filter(feat => !feat.properties.circleRadius || feat.properties.circleRadius > 0.1)
+  emit('update:selectedFeatures', selectedFeatures)
+  // note: circle center and radius can be extracted using mapbox-gl-draw-geodesic API
+  // https://github.com/zakjan/mapbox-gl-draw-geodesic#circle-geojson
+}
 
 function drawPolygon() {
   draw?.changeMode('draw_polygon')
 }
 
+function drawCircle() {
+  draw?.changeMode('draw_circle')
+}
+
 function drawTrash() {
-  draw?.trash()
+  draw?.trash().deleteAll()
+  updateArea()
 }
 </script>
 
@@ -106,6 +119,7 @@ function drawTrash() {
 
 <style scoped>
 #maplibre-map {
-  height: 800px
+  width: 100%;
+  height: 800px;
 }
 </style>
