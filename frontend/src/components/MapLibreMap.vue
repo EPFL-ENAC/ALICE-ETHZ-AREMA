@@ -21,14 +21,12 @@ import {
   NavigationControl,
   ScaleControl,
   type IControl,
-  type StyleSpecification,
 } from 'maplibre-gl'
 import { onMounted, ref } from 'vue'
 
-defineExpose({ drawPolygon, drawCircle, drawTrash })
+defineExpose({ drawPolygon, drawCircle, drawFeature, drawFeatures, drawTrash, deleteAll })
 const props = withDefaults(
   defineProps<{
-    styleSpec: string | StyleSpecification
     center?: [number, number]
     zoom?: number
     aspectRatio?: number
@@ -36,8 +34,8 @@ const props = withDefaults(
     maxZoom?: number
   }>(),
   {
-    center: () => [0, 0],
-    zoom: 10,
+    center: () => [8, 46.8],
+    zoom: 7.5,
     aspectRatio: undefined,
     minZoom: undefined,
     maxZoom: undefined,
@@ -55,7 +53,7 @@ onMounted(() => {
   map = new Map({
     container: 'maplibre-map',
     center: [props.center[0], props.center[1]],
-    style: props.styleSpec,
+    style: 'https://api.maptiler.com/maps/basic/style.json?key=kramlD0izE1YxWEKKCus',
     trackResize: true,
     zoom: props.zoom,
   })
@@ -94,6 +92,24 @@ function updateArea() {
   // https://github.com/zakjan/mapbox-gl-draw-geodesic#circle-geojson
 }
 
+function drawFeature(feature: Feature<Polygon | MultiPolygon>) {
+  if (MapboxDrawGeodesic.isCircle(feature)) {
+    // a circle is not a geojson type, then prevent changes in representation using the geodesic API 
+    const center = MapboxDrawGeodesic.getCircleCenter(feature)
+    const radius = MapboxDrawGeodesic.getCircleRadius(feature)
+    const circle = MapboxDrawGeodesic.createCircle(center, radius)
+    draw?.add(circle)
+  } else {
+    draw?.add(feature)
+  }
+}
+
+function drawFeatures(features: Feature<Polygon | MultiPolygon>[]) {
+  if (features) {
+    features.forEach(feature => drawFeature(feature))
+  }
+}
+
 function drawPolygon() {
   draw?.changeMode('draw_polygon')
 }
@@ -102,8 +118,13 @@ function drawCircle() {
   draw?.changeMode('draw_circle')
 }
 
-function drawTrash() {
+function deleteAll() {
   draw?.trash().deleteAll()
+  updateArea()
+}
+
+function drawTrash() {
+  draw?.trash()
   updateArea()
 }
 </script>
