@@ -31,7 +31,6 @@ function url(value = ''): string {
 }
 
 export function getUrl(path: string): string {
-  console.log(import.meta.env)
   return `${databaseUrl}/${path}`
 }
 
@@ -56,51 +55,6 @@ export class SyncDatabase<T extends {}> {
         : undefined,
     })
 
-    remoteDB.setSchema([
-      {
-        singular: 'natural_resource',
-        plural: 'natural_resources',
-        relations: {
-          building_material: { belongsTo: 'building_material' },
-        },
-      },
-      {
-        singular: 'building_material',
-        plural: 'building_materials',
-        relations: {
-          natural_resources: {
-            hasMany: { type: 'natural_resource', options: { async: false } },
-          },
-        },
-      },
-      {
-        singular: 'professional',
-        plural: 'professionals',
-        relations: {
-          natural_resources: {
-            hasMany: { type: 'natural_resource', options: { async: false } },
-          },
-          building_materials: {
-            hasMany: { type: 'building_material', options: { async: false } },
-          },
-        },
-      },
-      {
-        singular: 'professional_type',
-        plural: 'professional_types',
-        relations: {
-          professionals: {
-            hasMany: { type: 'professional', options: { async: false } },
-          },
-        },
-      },
-    ])
-    // remoteDB.rel.save('natural_resource', {
-    //   name: 'Rails is Omakase',
-    //   text: 'There are a lot of a-la-carte software...',
-    // })
-    // console.log('save natural_resource')
-
     this.sync = localDB.sync(
       remoteDB,
       {
@@ -111,29 +65,20 @@ export class SyncDatabase<T extends {}> {
         live: true,
         retry: true,
         back_off_function(delay: number) {
-          if (delay === 27000 || delay === 0) {
-            return 1000
-          }
+          if (delay === 27000 || delay === 0) return 1000
           return delay * 3
         },
       },
       (error: any, result: any) => {
-        if (error) {
+        if (error)
           console.error(error)
-        } else {
-          console.debug('sync', result)
-        }
+        else
+          console.log('sync', result)
       },
     )
     this.localDB = localDB
     this.remoteDB = remoteDB
   }
-  //   /**
-  //    * @deprecated use localDB
-  //    */
-  // get db(): PouchDB.Database<T> {
-  //   return this.localDB
-  // }
 
   onChange(
     listener: (value: PouchDB.Core.ChangesResponseChange<T>) => unknown,
@@ -148,19 +93,6 @@ export class SyncDatabase<T extends {}> {
     this.onChangeListener.on('change', listener)
     return this.onChangeListener
   }
-
-  // async getAllDocuments(): Promise<ExistingDocument<T>[]> {
-  //   const result = await this.localDB.allDocs({
-  //     include_docs: true,
-  //   })
-  //   return result.rows.map((row) => row.doc as ExistingDocument<T>)
-  // }
-
-  // async getDocuments(): Promise<ExistingDocument<T>[]> {
-  //   return (await this.getAllDocuments()).filter(
-  //     (doc) => !doc._id.startsWith(designDocumentPrefix),
-  //   )
-  // }
 
   cancel(): void {
     this.sync.cancel()

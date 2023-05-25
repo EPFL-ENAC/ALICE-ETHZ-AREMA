@@ -13,13 +13,14 @@
             Add new Natural resource
           </v-btn>
         </template>
-        <NaturalResourcesCard @update:dialog="updateDialog" :naturalResourceHeader="naturalResourceHeaders"/>
+        <ResourcesCard @update:dialog="updateDialog" :headers="naturalResourceHeaders" title="Natural resource"
+          :modelValue="item" @update:modelValue="store.save"/>
       </v-dialog>
     </v-row>
-    <v-row justify="center" v-if="store.naturalResources">
-      <v-data-table :loading="store.loading"
+    <v-row justify="center" v-if="list">
+      <v-data-table :loading="loading"
         v-model:items-per-page="itemsPerPage"
-        :headers="naturalResourceHeaders" :items="store.naturalResources"
+        :headers="naturalResourceHeaders" :items="list"
         class="elevation-1">
         <template v-slot:item.actions="{ item }">
           <v-icon
@@ -51,12 +52,12 @@ import { storeToRefs } from "pinia";
 
 import { VTextField, VSelect, VTextarea, VFileInput } from 'vuetify/components'
 import { VDataTable,} from 'vuetify/labs/components'
-import type { NaturalResource, NaturalResourceHeader } from "~/definitions/naturalResources";
+import type { NaturalResource, RegenerativeMaterialHeader } from "~/definitions/regenerativeMaterials";
 import { useNaturalResourceStore } from '~/stores/naturalResource';
 
 // access the `store` variable anywhere in the component ✨
 const store = useNaturalResourceStore()
-const { naturalResource } = storeToRefs(store)
+const { item, list, loading } = storeToRefs(store)
 
 
 const dialog = ref(false);
@@ -64,30 +65,28 @@ const itemsPerPage = 20;
 
 
 async function updateDialog(e: boolean){
+  loading.value = true;
   dialog.value = e;
-  naturalResource.value = store.getNewNaturalResource();
-  await store.getNaturalResources();
+  item.value = store.getNew();
+  loading.value = false;
+  // await store.getAll();
 
 }
 async function openDialog(value: NaturalResource, name: string) {
   dialog.value = true;
-  naturalResource.value = value;
+  item.value = value;
 }
 
 async function deleteItem(value: NaturalResource) {
-  // dialog.value = true;
   await store.remove(value);
-  console.log('delete some stuffs');
-  await store.getNaturalResources();
+  // await store.getAll();
 }
 
-
-
 onMounted(async () => {
-  await store.getNaturalResources()
+  await store.getAll()
 });
 // name_nr, zone_nr	amount_nr	mu_nr	lambda_nr	sigma_nr	lca_nr	image1_nr	image2_nr	descr_nr 	editor_0_nr	editor_f_nr	date_0_nr	date_f_nr	date_f_bm	adress_pro	adress_pro_text	ressource_type
-const naturalResourceHeaders: ComputedRef<NaturalResourceHeader[]> = computed(() => [{
+const naturalResourceHeaders: ComputedRef<RegenerativeMaterialHeader[]> = computed(() => [{
   name: 'name', // name_nr
   component: VTextField,
   label: "Unique name of natural resource*", // should also have a unique ID,
