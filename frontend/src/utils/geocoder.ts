@@ -1,7 +1,7 @@
 import { LngLatBounds } from 'maplibre-gl'
 
-const nouakchottBounds = new LngLatBounds([5.846119, 45.805573], [10.603200, 48.011730])
-const [[x1, y1], [x2, y2]] = nouakchottBounds.toArray()
+const swissBounds = new LngLatBounds([5.846119, 45.805573], [10.603200, 48.011730])
+const [[x1, y1], [x2, y2]] = swissBounds.toArray()
 
 /**
  * https://maplibre.org/maplibre-gl-js-docs/example/geocoder/
