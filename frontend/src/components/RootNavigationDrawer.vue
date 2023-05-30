@@ -26,6 +26,9 @@ const routes = [{
   path: 'natural_resources',
   name: 'Natural resources',
 },{
+  path: 'building_materials',
+  name: 'Building materials',
+},{
   path: 'professionals',
   name: 'Professionals',
 },{
