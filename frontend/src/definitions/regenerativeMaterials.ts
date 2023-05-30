@@ -6,15 +6,15 @@ export type RegenerativeMaterialType = 'natural_resource' | 'building_material' 
 
 export interface RegenerativeMaterial {
   id?: string
+  _id?: string
   rev?: string
-
+  _rev?: string
   updated_at: string
   updated_by: string
   created_at: string
   created_by: string
   type: RegenerativeMaterialType
 }
-
 
 export interface NaturalResource extends RegenerativeMaterial {
   name: string

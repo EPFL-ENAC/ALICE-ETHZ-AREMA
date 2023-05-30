@@ -4,10 +4,10 @@ import type { RegenerativeMaterial } from '~/definitions/regenerativeMaterials'
 
 const DB_NAME = 'regenerative_materials'
 
-export const naturalResource = 'natural_resource'
-export const buildingMaterial = 'building_material'
+export const naturalResource = 'naturalResource'
+export const buildingMaterial = 'buildingMaterial'
 export const professional = 'professional'
-export const professionalType = 'professional_type'
+export const professionalType = 'professionalType'
 
 export const useRegenerativeMaterialsStore = defineStore(
   'regenerative_materials',

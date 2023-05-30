@@ -2,7 +2,7 @@
   <v-sheet>
     <v-row>
       <h2>
-        Natural resources
+        {{title}}s
       </h2>
     </v-row>
 
@@ -10,10 +10,10 @@
       <v-dialog v-model="dialog" persistent width="1024">
         <template v-slot:activator="{ props }">
           <v-btn color="primary" v-bind="props">
-            Add new Natural resource
+            Add new {{ title }}
           </v-btn>
         </template>
-        <ResourcesCard @update:dialog="updateDialog" :headers="naturalResourceHeaders" title="Natural resource"
+        <ResourcesCard @update:dialog="updateDialog" :headers="naturalResourceHeaders" :title="title"
           :modelValue="item" @update:modelValue="store.save"/>
       </v-dialog>
     </v-row>
@@ -58,7 +58,7 @@ import { useNaturalResourceStore } from '~/stores/naturalResource';
 // access the `store` variable anywhere in the component ✨
 const store = useNaturalResourceStore()
 const { item, list, loading } = storeToRefs(store)
-
+const title = "Natural resource"
 
 const dialog = ref(false);
 const itemsPerPage = 20;
@@ -82,9 +82,19 @@ async function deleteItem(value: NaturalResource) {
   // await store.getAll();
 }
 
+
 onMounted(async () => {
+  await store.init()
   await store.getAll()
 });
+
+
+
+
+
+onBeforeUnmount(async () => {
+  await store.close()
+})
 // name_nr, zone_nr	amount_nr	mu_nr	lambda_nr	sigma_nr	lca_nr	image1_nr	image2_nr	descr_nr 	editor_0_nr	editor_f_nr	date_0_nr	date_f_nr	date_f_bm	adress_pro	adress_pro_text	ressource_type
 const naturalResourceHeaders: ComputedRef<RegenerativeMaterialHeader[]> = computed(() => [{
   name: 'name', // name_nr
