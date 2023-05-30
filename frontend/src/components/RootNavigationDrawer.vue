@@ -29,8 +29,8 @@ const routes = [{
   path: 'professionals',
   name: 'Professionals',
 },{
-  path: 'map',
-  name: 'Map',
+  path: 'test',
+  name: 'Test',
 }
 // ,{
 //   path: 'building_material',
