@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import MapLibreMap from '~/components/MapLibreMap.vue'
+import MapInput from '~/components/MapInput.vue'
 import {
   type Feature,
   type MultiPolygon,
@@ -10,18 +10,21 @@ import { ref, watch, onMounted, unref } from 'vue'
 const props = defineProps(['modelValue', 'center', 'zoom'])
 const emit = defineEmits(['update:modelValue'])
 
-const mapLibreMap = ref<InstanceType<typeof MapLibreMap>>()
+const mapInput = ref<InstanceType<typeof MapInput>>()
 
 const selectedFeatures = ref<Feature<Polygon | MultiPolygon>[]>([])
 
 onMounted(() => {
-  mapLibreMap.value?.drawFeatures(unref(props.modelValue))
+  mapInput.value?.drawFeatures(unref(props.modelValue).features)
 })
 
 watch(selectedFeatures, async () => {
   if (selectedFeatures.value && selectedFeatures.value.length > 0) {
     const value = selectedFeatures.value
-    emit('update:modelValue', value)
+    emit('update:modelValue', {
+      type: 'FeatureCollection',
+      features: value
+    })
   }
   else {
     emit('update:modelValue', null)
@@ -29,7 +32,7 @@ watch(selectedFeatures, async () => {
 })
 
 function edit() {
-  mapLibreMap.value?.drawPolygon()
+  mapInput.value?.drawPolygon()
 }
 </script>
 
@@ -47,7 +50,7 @@ function edit() {
         class="ma-3"
         color="primary"
         v-if='modelValue'
-        @click='mapLibreMap?.drawTrash()'
+        @click='mapInput?.drawTrash()'
       >
         {{ $t('draw.trash') }}
       </v-btn>
@@ -55,12 +58,12 @@ function edit() {
         class="ma-3"
         color="primary"
         v-if='modelValue'
-        @click='mapLibreMap?.deleteAll()'
+        @click='mapInput?.deleteAll()'
       >
         {{ $t('draw.deleteAll') }}
       </v-btn>
-      <MapLibreMap
-        ref='mapLibreMap'
+      <MapInput
+        ref='mapInput'
         class='maplibre-component'
         :center='center'
         :zoom='zoom'

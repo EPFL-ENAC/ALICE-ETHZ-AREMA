@@ -1,21 +1,28 @@
 <script setup lang='ts'>
-import { onMounted, ref, unref } from 'vue'
-import MapLibreMap from '~/components/MapLibreMap.vue'
+import { computed, ref } from 'vue'
+import MapView from '~/components/MapView.vue'
 
 const props = defineProps(['modelValue', 'center', 'zoom'])
+const emit = defineEmits(['update:modelValue'])
 
-const mapLibreMap = ref<InstanceType<typeof MapLibreMap>>()
+const mapView = ref<InstanceType<typeof MapView>>()
 
-onMounted(() => {
-  mapLibreMap.value?.drawFeatures(unref(props.modelValue))
+const localModelValue = computed({
+  get() {
+    return props.modelValue
+  },
+  set(value) {
+    emit('update:modelValue', value)
+  },
 })
 </script>
 
 <template>
   <v-row>
     <v-col cols='12'>
-      <MapLibreMap
-        ref='mapLibreMap'
+      <MapView
+        ref='mapView'
+        v-model="localModelValue"
         :center="center"
         :zoom="zoom"
       />
