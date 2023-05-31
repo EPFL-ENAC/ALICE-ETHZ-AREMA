@@ -107,15 +107,15 @@ const areas = ref([{
   <v-sheet>
     <v-row class='text-h4'>WebMap</v-row>
     <v-row>
-      <v-col cols='9'>
+      <v-col cols='12'>
         <WebMap v-model='areas' />
       </v-col>
-      <v-col cols='3'>
+      <!-- <v-col cols='3'>
         <div class='text-h4'>Model</div>
         <pre>
           {{ areas }}
         </pre>
-      </v-col>
+      </v-col> -->
     </v-row>
   </v-sheet>
 </template>

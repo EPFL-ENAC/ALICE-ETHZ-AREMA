@@ -98,7 +98,7 @@ function displayCircle(feature: Feature<Polygon>) {
   const popup = new Popup({
     closeButton: false,
     offset: 25
-  }).setText(`Radius: ${radius}`)
+  }).setHTML(`<b>Radius</b>: ${radius}km`)
   new Marker({color: '#FF0000'})
     .setLngLat(center)
     .setPopup(popup)
@@ -123,7 +123,7 @@ function displayCircle(feature: Feature<Polygon>) {
     },
     paint: {
       'fill-color': color,
-      'fill-opacity': 0.5,
+      'fill-opacity': 0.2,
     }
   })
   // Add a line layer to draw the circle outline
@@ -146,7 +146,7 @@ function displayPolygons(featureCollection: Feature<FeatureCollection>) {
   const popup = new Popup({
     closeButton: false,
     offset: 25
-  }).setText(`Zones: ${featureCollection.features.length}`)
+  }).setHTML(`<b>Zones</b>: ${featureCollection.features.length}`)
   new Marker({color: '#FF0000'})
     .setLngLat(ct.geometry.coordinates)
     .setPopup(popup)
@@ -164,7 +164,7 @@ function displayPolygons(featureCollection: Feature<FeatureCollection>) {
       },
       paint: {
         'fill-color': color,
-        'fill-opacity': 0.5,
+        'fill-opacity': 0.2,
       }
     })
     // Add a line layer to draw the circle outline
