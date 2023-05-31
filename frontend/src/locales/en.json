@@ -5,5 +5,6 @@
       "circle": "Draw a circle",
       "trash": "Delete",
       "deleteAll": "Delete all"
-    }
+    },
+    "radius": "Radius"
 }

@@ -1,4 +1,5 @@
-<script setup lang='ts'>
+<script setup lang="ts">
+import { round } from 'lodash'
 import MapInput from '~/components/MapInput.vue'
 import {
   type Feature,
@@ -7,24 +8,46 @@ import {
 } from '@turf/turf'
 import { ref, watch, onMounted, unref } from 'vue'
 
-const props = defineProps(['modelValue', 'center', 'zoom'])
+const props = defineProps(['modelValue', 'center', 'zoom', 'height'])
 const emit = defineEmits(['update:modelValue'])
 
 const mapInput = ref<InstanceType<typeof MapInput>>()
-
+const radius = ref<number>(0)
+const minRadius = 1
+const maxRadius = 1000
+const rules = [ 
+    v => ( v && v >= minRadius ) || `Radius should not be below ${minRadius}km`,
+    v => ( v && v <= maxRadius ) || `Radius should not be above ${maxRadius}km`,
+]
 const selectedFeatures = ref<Feature<Polygon | MultiPolygon>[]>([])
 
 onMounted(() => {
+  const feature = unref(props.modelValue)
+  radius.value = feature.properties.circleRadius
   mapInput.value?.drawFeature(unref(props.modelValue))
 })
 
 watch(selectedFeatures, async () => {
   if (selectedFeatures.value && selectedFeatures.value.length > 0) {
     const value = selectedFeatures.value.pop()
+    value.properties.circleRadius = round(value.properties.circleRadius, 0)
+    radius.value = value.properties.circleRadius
     emit('update:modelValue', value)
   }
   else {
+    radius.value = 0
     emit('update:modelValue', null)
+  }
+})
+
+watch(radius, async () => {
+  const feature = unref(props.modelValue)
+  if (feature && feature.properties.circleRadius !== radius.value) {
+    const rd = parseInt(radius.value)
+    if (rd >= minRadius && maxRadius <= maxRadius) {
+      feature.properties.circleRadius = rd
+      mapInput.value?.drawFeature(feature)
+    }
   }
 })
 
@@ -32,6 +55,7 @@ function edit() {
   mapInput.value?.deleteAll()
   mapInput.value?.drawCircle()
 }
+
 </script>
 
 <template>
@@ -52,11 +76,18 @@ function edit() {
       >
         {{ $t('draw.trash') }}
       </v-btn>
+      <v-text-field 
+        :label="$t('radius')"
+        type="number"
+        :rules = rules
+        v-model="radius">
+      </v-text-field>
       <MapInput
-        ref='mapInput'
-        :center='center'
-        :zoom='zoom'
-        @update:selected-features='selectedFeatures = $event'
+        ref="mapInput"
+        :center="center"
+        :zoom="zoom"
+        :height="height"
+        @update:selected-features="selectedFeatures = $event"
       />
     </v-col>
   </v-row>

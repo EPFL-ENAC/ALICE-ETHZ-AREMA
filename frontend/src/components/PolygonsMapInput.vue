@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 import MapInput from '~/components/MapInput.vue'
 import {
   type Feature,
@@ -7,7 +7,7 @@ import {
 } from '@turf/turf'
 import { ref, watch, onMounted, unref } from 'vue'
 
-const props = defineProps(['modelValue', 'center', 'zoom'])
+const props = defineProps(['modelValue', 'center', 'zoom', 'height'])
 const emit = defineEmits(['update:modelValue'])
 
 const mapInput = ref<InstanceType<typeof MapInput>>()
@@ -63,11 +63,11 @@ function edit() {
         {{ $t('draw.deleteAll') }}
       </v-btn>
       <MapInput
-        ref='mapInput'
-        class='maplibre-component'
-        :center='center'
-        :zoom='zoom'
-        @update:selected-features='selectedFeatures = $event'
+        ref="mapInput"
+        :center="center"
+        :zoom="zoom"
+        :height="height"
+        @update:selected-features="selectedFeatures = $event"
       />
     </v-col>
   </v-row>

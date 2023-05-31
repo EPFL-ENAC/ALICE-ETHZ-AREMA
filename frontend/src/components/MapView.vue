@@ -33,6 +33,7 @@ const props = withDefaults(
     aspectRatio?: number
     minZoom?: number
     maxZoom?: number
+    height?: string
   }>(),
   {
     center: () => [8, 46.8],
@@ -40,6 +41,7 @@ const props = withDefaults(
     aspectRatio: undefined,
     minZoom: undefined,
     maxZoom: undefined,
+    height: '800px'
   }
 )
 defineEmits(['update:modelValue'])
@@ -192,7 +194,7 @@ function randomColor() {
   <div>
     <v-progress-linear v-if="loading" :active="loading" indeterminate />
     <v-responsive :aspect-ratio="aspectRatio" height="100%">
-      <div id="map-view" />
+      <div id="map-view" :style="'height:' + height"/>
     </v-responsive>
   </div>
 </template>
@@ -200,6 +202,5 @@ function randomColor() {
 <style scoped>
 #map-view {
   width: 100%;
-  height: 800px;
 }
 </style>

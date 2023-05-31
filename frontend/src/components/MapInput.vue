@@ -32,6 +32,7 @@ const props = withDefaults(
     aspectRatio?: number
     minZoom?: number
     maxZoom?: number
+    height?: string
   }>(),
   {
     center: () => [8, 46.8],
@@ -39,6 +40,7 @@ const props = withDefaults(
     aspectRatio: undefined,
     minZoom: undefined,
     maxZoom: undefined,
+    height: '800px'
   }
 )
 const emit = defineEmits<{
@@ -98,6 +100,7 @@ function drawFeature(feature: Feature<Polygon | MultiPolygon>) {
     const center = MapboxDrawGeodesic.getCircleCenter(feature)
     const radius = MapboxDrawGeodesic.getCircleRadius(feature)
     const circle = MapboxDrawGeodesic.createCircle(center, radius)
+    draw?.deleteAll() // single circle
     draw?.add(circle)
   } else {
     draw?.add(feature)
@@ -133,7 +136,7 @@ function drawTrash() {
   <div>
     <v-progress-linear v-if='loading' :active='loading' indeterminate />
     <v-responsive :aspect-ratio='aspectRatio' height='100%'>
-      <div id='map-input' />
+      <div id='map-input' :style="'height:' + height"/>
     </v-responsive>
   </div>
 </template>
@@ -141,6 +144,5 @@ function drawTrash() {
 <style scoped>
 #map-input {
   width: 100%;
-  height: 800px;
 }
 </style>

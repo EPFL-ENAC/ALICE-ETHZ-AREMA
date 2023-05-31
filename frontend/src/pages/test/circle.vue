@@ -39,7 +39,7 @@ const circle = ref({
     <v-row class="text-h4">CircleMapInput</v-row>
     <v-row>
       <v-col cols='9'>
-        <CircleMapInput v-model="circle"/>
+        <CircleMapInput v-model="circle" height="800px"/>
       </v-col>
       <v-col cols='3'>
         <div class="text-h4">Model</div>
