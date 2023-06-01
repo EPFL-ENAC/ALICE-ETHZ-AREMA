@@ -6,5 +6,7 @@
       "trash": "Delete",
       "deleteAll": "Delete all"
     },
-    "radius": "Radius"
+    "radius": "Radius",
+    "minRadiusValid": "Radius should not be below {n}km",
+    "maxRadiusValid": "Radius should not be above {n}km"
 }

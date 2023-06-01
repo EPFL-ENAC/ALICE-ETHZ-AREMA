@@ -72,10 +72,6 @@ onMounted(() => {
   })
 })
 
-onUnmounted(() => {
-  // map.value?.remove();
-})
-
 watch(props.modelValue, () => {
   displayFeatures()
 })

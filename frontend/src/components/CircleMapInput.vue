@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { round } from 'lodash'
 import MapInput from '~/components/MapInput.vue'
 import {
@@ -16,10 +17,12 @@ const radius = ref<number>(0)
 const minRadius = 1
 const maxRadius = 1000
 const rules = [ 
-    v => ( v && v >= minRadius ) || `Radius should not be below ${minRadius}km`,
-    v => ( v && v <= maxRadius ) || `Radius should not be above ${maxRadius}km`,
+    v => ( v && v >= minRadius ) || t('minRadiusValid', { n: minRadius }),
+    v => ( v && v <= maxRadius ) || t('maxRadiusValid', { n: maxRadius }),
 ]
 const selectedFeatures = ref<Feature<Polygon | MultiPolygon>[]>([])
+
+const { t } = useI18n()
 
 onMounted(() => {
   const feature = unref(props.modelValue)
@@ -42,12 +45,10 @@ watch(selectedFeatures, async () => {
 
 watch(radius, async () => {
   const feature = unref(props.modelValue)
-  if (feature && feature.properties.circleRadius !== radius.value) {
-    const rd = parseInt(radius.value)
-    if (rd >= minRadius && maxRadius <= maxRadius) {
-      feature.properties.circleRadius = rd
-      mapInput.value?.drawFeature(feature)
-    }
+  const rd = radius.value
+  if (feature && feature.properties.circleRadius !== rd && rd >= minRadius && maxRadius <= maxRadius) {
+    feature.properties.circleRadius = rd
+    mapInput.value?.drawFeature(feature)
   }
 })
 
@@ -80,7 +81,7 @@ function edit() {
         :label="$t('radius')"
         type="number"
         :rules = rules
-        v-model="radius">
+        v-model.number="radius">
       </v-text-field>
       <MapInput
         ref="mapInput"
