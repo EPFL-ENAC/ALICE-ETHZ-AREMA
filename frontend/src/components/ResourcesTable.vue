@@ -14,7 +14,7 @@
           </v-btn>
         </template>
         <ResourcesCard @update:dialog="updateDialog" :headers="tableHeaders" :title="title" :modelValue="item"
-          @update:modelValue="store.save" />
+          @update:modelValue="props.store.save" />
       </v-dialog>
     </v-row>
     <v-row justify="center" v-if="list">
@@ -74,7 +74,7 @@ const props = defineProps<{
 const { item, list, loading } = storeToRefs(props.store)
 const headers = toRef(props, 'headers')
 const dialog = ref(false);
-const itemsPerPage = 20;
+let itemsPerPage = 20;
 
 const tableHeaders: RegenerativeMaterialHeader[] = computed(() => {
 
@@ -84,14 +84,14 @@ const tableHeaders: RegenerativeMaterialHeader[] = computed(() => {
 
 });
 
-async function updateDialog(e: boolean) {
+function updateDialog(e: boolean) {
   loading.value = true;
   dialog.value = e;
   item.value = props.store.getNew();
   loading.value = false;
 
 }
-async function openDialog(value: NaturalResource, name: string) {
+function openDialog(value: NaturalResource, name: string) {
   dialog.value = true;
   item.value = value;
 }
@@ -99,12 +99,29 @@ async function openDialog(value: NaturalResource, name: string) {
 async function deleteItem(value: NaturalResource) {
   await props.store.remove(value);
 }
-onMounted(async () => {
+async function fetchData() {
   await props.store.init()
   await props.store.getAll()
-});
+}
+// // const router = useRouter()
+const route = useRoute()
+    // watch the params of the route to fetch the data again
+    watch(
+      () => route.params,
+      fetchData,
+      // fetch the data when the view is created and the data is
+      // already being observed
+      { immediate: true }
+    )
+
+// onBeforeMount(async () => {
+//   debugger;
+//   await props.store.init()
+//   await props.store.getAll()
+// });
 
 onBeforeUnmount(async () => {
+  // debugger;
   await props.store.close()
 })
 

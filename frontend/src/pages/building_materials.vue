@@ -6,27 +6,44 @@ import { useNaturalResourceStore } from '~/stores/naturalResource'
 import { useBuildingElementStore } from '~/stores/buildingElement'
 import { buildingElement, naturalResource } from '~/stores/regenerativeMaterials'
 
-const store = useBuildingMaterialStore()
+const buildingMaterialStore = useBuildingMaterialStore()
 // todo improve with dynamic search!
 const naturalResourceStore = useNaturalResourceStore()
 const buildingElementStore = useBuildingElementStore()
 // // move to init.
 // naturalResourceStore.getAll()
-// const title = 'Building materials'
+const title = 'Building material'
 // console.log(naturalResourceStore.list)
 
 // buildingElementStore.getAll()
 // console.log(buildingElementStore.list)
 
-onMounted(async () => {
-  await naturalResourceStore.getAll()
-  await buildingElementStore.getAll()
-});
+// const loading = ref(false)
+// onMounted(() => {
+//   loading.value = true
+//   // await buildingMaterialStore.init()
+//    buildingMaterialStore.getAll()
+//   // await naturalResourceStore.init()
+//    naturalResourceStore.getAll()
+//   // await buildingElementStore.init()
+//    buildingElementStore.getAll()
+//   loading.value = false
+// })
 
-onBeforeUnmount(async () => {
-  await naturalResourceStore.close()
-  await buildingElementStore.close()
-})
+// onBeforeUnmount(async () => {
+//   await buildingMaterialStore.close()
+//   await naturalResourceStore.close()
+//   await buildingElementStore.close()
+// })
+
+// onMounted(async () => {
+//   await props.store.init()
+//   await props.store.getAll()
+// });
+
+// onBeforeUnmount(async () => {
+//   await props.store.close()
+// })
 
 // name_nr, zone_nr	amount_nr	mu_nr	lambda_nr	sigma_nr	lca_nr	image1_nr	image2_nr	descr_nr 	editor_0_nr	editor_f_nr	date_0_nr	date_f_nr	date_f_bm	adress_pro	adress_pro_text	ressource_type
 const buildingMaterialHeaders: ComputedRef<
@@ -77,7 +94,7 @@ const buildingMaterialHeaders: ComputedRef<
     <ResourcesTable
       :title="title"
       :headers="buildingMaterialHeaders"
-      :store="store"
+      :store="buildingMaterialStore"
     />
   </v-sheet>
 </template>

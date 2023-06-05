@@ -17,15 +17,15 @@ export default defineConfig({
   define: {
     global: 'window',
   },
-  build: {
-    commonjsOptions: {
-      transformMixedEsModules: true,
-      include: [],
-    },
-  },
-  optimizeDeps: {
-    disabled: false,
-  },
+  // build: {
+  //   commonjsOptions: {
+  //     transformMixedEsModules: true,
+  //     include: [],
+  //   },
+  // },
+  // optimizeDeps: {
+  //   disabled: false,
+  // },
   resolve: {
     alias: {
       '~/': `${path.resolve(__dirname, 'src')}/`,

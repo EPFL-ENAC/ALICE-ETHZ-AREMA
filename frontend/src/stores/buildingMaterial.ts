@@ -18,7 +18,7 @@ export const useBuildingMaterialStore = defineStore(buildingMaterial, () => {
   function init() {
     regenerative_materials.couchdb.onLocalChange(
       (_: any) => {
-        commons.getAll()
+        return commons.getAll()
       },
       {
         // filter: '_selector', /// here an example of how to make it custom

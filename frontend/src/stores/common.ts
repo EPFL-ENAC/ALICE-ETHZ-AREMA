@@ -3,6 +3,7 @@ import type {
   RegenerativeMaterial,
   RegenerativeMaterialType,
 } from './regenerativeMaterials'
+import { cloneDeep } from "lodash"
 
 export const MSG_DB_DOES_NOT_EXIST = 'Please, init your database'
 
@@ -99,6 +100,7 @@ export function useCommon<T extends RegenerativeMaterial>(
   }
 
   async function getAll({ limit = 100, skip = 0 } = {}) {
+    // debugger;
     if (!_db.value) throw new Error(MSG_DB_DOES_NOT_EXIST)
     const response = await _db.value.rel.find(typeStringLiteral, {
       limit,
@@ -127,6 +129,7 @@ export function useCommon<T extends RegenerativeMaterial>(
     keySet.delete(`${typeStringLiteral}s`)
     const otherKeys = Array.from(keySet)
     // step 3
+    // const transformedMain = []
     const transformedMain = response[`${typeStringLiteral}s`].map((item) => {
       otherKeys.forEach((key) => {
         item[`${key}_ids`] = item[key]
@@ -135,8 +138,8 @@ export function useCommon<T extends RegenerativeMaterial>(
       return item
     })
     // step 4
-    list.value = transformedMain
-    return list.value
+    list.value = cloneDeep(transformedMain)
+    return response
   }
 
   return {

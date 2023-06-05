@@ -60,7 +60,7 @@ const { naturalResource } = storeToRefs(store)
 
 
 const dialog = ref(false);
-const itemsPerPage = 20;
+const itemsPerPage = ref(20);
 
 
 async function updateDialog(e: boolean){
