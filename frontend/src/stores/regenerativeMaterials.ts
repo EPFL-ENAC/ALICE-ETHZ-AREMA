@@ -8,6 +8,7 @@ export const naturalResource = 'naturalResource'
 export const buildingMaterial = 'buildingMaterial'
 export const professional = 'professional'
 export const professionalType = 'professionalType'
+export const buildingElement = 'buildingElement'
 
 export const useRegenerativeMaterialsStore = defineStore(
   'regenerative_materials',
@@ -19,15 +20,22 @@ export const useRegenerativeMaterialsStore = defineStore(
         singular: naturalResource,
         plural: `${naturalResource}s`,
         relations: {
-          building_material: { belongsTo: buildingMaterial },
+          [buildingMaterial]: { belongsTo: buildingMaterial },
         },
+      },
+      {
+        singular: buildingElement,
+        plural: `${buildingElement}s`,
       },
       {
         singular: buildingMaterial,
         plural: `${buildingMaterial}s`,
         relations: {
-          natural_resources: {
+          [`${naturalResource}s`]: {
             hasMany: { type: naturalResource, options: { async: false } },
+          },
+          [`${buildingElement}s`]: {
+            hasMany: { type: buildingElement, options: { async: false } },
           },
         },
       },
@@ -35,10 +43,10 @@ export const useRegenerativeMaterialsStore = defineStore(
         singular: professional,
         plural: `${professional}s`,
         relations: {
-          natural_resources: {
+          [`${naturalResource}s`]: {
             hasMany: { type: naturalResource, options: { async: false } },
           },
-          building_materials: {
+          [`${buildingMaterial}s`]: {
             hasMany: { type: buildingMaterial, options: { async: false } },
           },
         },
@@ -47,12 +55,33 @@ export const useRegenerativeMaterialsStore = defineStore(
         singular: professionalType,
         plural: `${professionalType}s`,
         relations: {
-          professionals: {
+          [`${professional}s`]: {
             hasMany: { type: professional, options: { async: false } },
           },
         },
       },
     ])
+    const building_elements = [
+      'foundation',
+      'floor load-bearing',
+      'floor non-load-bearing',
+      'wall exterior load-bearing',
+      'wall exterior non-load-bearing',
+      'wall interior load-bearing',
+      'wall interior non-load-bearing',
+      'windows',
+      'doors',
+      'structural',
+      'roof',
+      'insulation exterior',
+      'insulation interior',
+      'cladding interior',
+      'cladding exterior',
+    ]
+    building_elements.forEach((value, index) => {
+      // get and create if it does not exist.
+      // couchdb.value.localDB.rel.save(buildingElement, {name: value, id: `BE${index + 1}`})
+    })
     return {
       couchdb,
     }

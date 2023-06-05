@@ -13,6 +13,8 @@ Table natural_resources {
   _id string [primary key]
   name string [unique, not null]
   zone_ids string[] [note: "several zones"]
+  // allow to list professional
+  // allow building materials
 }
 
 enum BuildingElements {
@@ -50,7 +52,7 @@ Table technical_constructions {
   building_material string [not null, ref: - building_materials._id]
   building_element string [not null, ref: - building_elements._id]
   images string[] [note: "url of images, 10Mb maximum of data"]
-  building_ids string[] [note: "", ref: > buildings._id]
+  // view: not stored -> building_ids string[] [note: "", ref: > buildings._id]
 }
 
 // Ref: technical_constructions.images > images._id

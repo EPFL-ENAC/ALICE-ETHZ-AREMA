@@ -14,6 +14,7 @@ export function useCommon<T extends RegenerativeMaterial>(
   const loading = ref(false)
   const list = ref([])
   const item = ref(getNew())
+  const hashObjects = ref({})
 
   function getNew(): RegenerativeMaterial {
     const date = new Date().toISOString()
@@ -69,8 +70,7 @@ export function useCommon<T extends RegenerativeMaterial>(
           //   console.log("error")
           //  could not resolve conflicts
           // }
-        }
-        else {
+        } else {
           // else it means the frontend was not uptodate.. just change the _rev and retry
           // resolveFun(payload, mydoc)
           payload.rev = mydoc._rev
@@ -99,13 +99,44 @@ export function useCommon<T extends RegenerativeMaterial>(
   }
 
   async function getAll({ limit = 100, skip = 0 } = {}) {
-    if (!_db.value)
-      throw new Error(MSG_DB_DOES_NOT_EXIST)
+    if (!_db.value) throw new Error(MSG_DB_DOES_NOT_EXIST)
     const response = await _db.value.rel.find(typeStringLiteral, {
       limit,
       skip,
     })
-    return (list.value = response[`${typeStringLiteral}s`])
+
+    /*
+      - 1) transform every object in hash version.
+      - 2) create other keys by removing from the set the typeStringLiteral
+      - 3) for the main object transform other keys in object list and rename other key in otherKey_ids
+      - 4) that'll be good enough.
+    */
+
+    const keys = Object.keys(response)
+    // keys.reduce((acc1,key) => {acc1[key] = a[key].reduce((acc, el) => {acc[el.id] = el; return acc}, {}); return acc1}, {})
+    hashObjects.value = keys.reduce((acc1, key) => {
+      acc1[key] = response[key].reduce((acc2, el) => {
+        acc2[el.id] = el
+        return acc2
+      }, {})
+      return acc1
+    }, {})
+
+    // step 2
+    const keySet = new Set(keys)
+    keySet.delete(`${typeStringLiteral}s`)
+    const otherKeys = Array.from(keySet)
+    // step 3
+    const transformedMain = response[`${typeStringLiteral}s`].map((item) => {
+      otherKeys.forEach((key) => {
+        item[`${key}_ids`] = item[key]
+        item[key] = item[key].map((otherKey) => hashObjects.value[key][otherKey])
+      })
+      return item
+    })
+    // step 4
+    list.value = transformedMain
+    return list.value
   }
 
   return {

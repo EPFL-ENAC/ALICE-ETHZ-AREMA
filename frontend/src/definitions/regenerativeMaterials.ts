@@ -31,6 +31,10 @@ export interface BuildingMaterial extends RegenerativeMaterial {
   natural_resources: string[]
 }
 
+export interface BuildingElement extends RegenerativeMaterial {
+  name: string
+}
+
 // headers regarding NaturalREsources
 
 type Headers = InstanceType<typeof VDataTable>['headers']
