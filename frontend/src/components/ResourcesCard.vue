@@ -7,9 +7,13 @@
       <v-container>
         <v-row>
           <v-col v-for="(header) in headers" v-bind="header">
+            <template  v-if="!header.hideInput">
             <component :is="header.component" v-bind="header" v-if="header.type === 'number'"
-              v-model.number="item[header.name]" />
-            <component :is="header.component" v-bind="header" v-else v-model="item[header.name]" />
+              v-model.number="item[header.key]"
+                    
+              />
+            <component :is="header.component" v-bind="header" v-else v-model="item[header.key]"/>
+              </template>
           </v-col>
         </v-row>
       </v-container>
@@ -54,5 +58,27 @@ const save = async (item: unknown) => {
   $emit('update:modelValue', item)
   closeDialog()
 }
+
+// TODO: implement disabled if 
+// :disabled="
+//                       header.disabled ||
+//                       item?.[header.disabledWithConditions]
+//                     "
+// TODO: implement customFormInput if time allowed
+//               @input="(v) => customFormInput(v, header, item)"
+
+// conts customFormInput = (
+//     v: SurveyInputValue,
+//     surveyItem: SurveyTableHeader,
+//     localInput: SurveyInput
+// ): void => {
+//     const newLocalInput = (surveyItem?.customEventInput?.(
+//       v,
+//       localInput,
+//     ) ?? cloneDeep(localInput)) as SurveyInput;
+//     newLocalInput[surveyItem.key] = v;
+//     this.localInput = newLocalInput;
+//     this.refreshKey = this.refreshKey + 1;
+//   }
 
 </script>

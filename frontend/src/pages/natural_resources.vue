@@ -14,93 +14,76 @@ const naturalResourceHeaders: ComputedRef<
 > = computed(() =>
   [
     {
-      name: 'name', // name_nr
+      path: 'input.name', // name_nr
       component: VTextField,
-      label: 'Unique name of natural resource*', // should also have a unique ID,
+      text: 'Unique name of natural resource*', // should also have a unique ID,
       required: true,
       cols: '12',
       sm: '6',
       md: '6',
     },
     {
-      name: 'zone', // zone_nr
+      path: 'input.zone', // zone_nr
       component: VTextField,
-      label: 'geographic or geologic provenience', // polygon or coordinate + radius
+      text: 'geographic or geologic provenience', // polygon or coordinate + radius
       required: true,
       cols: '12',
       sm: '6',
       md: '6',
     },
     {
-      name: 'amount', // amount_nr
+      path: 'input.amount', // amount_nr
       component: VTextField,
       type: 'number',
-      label: 'approx extend of availability',
+      text: 'approx extend of availability',
       // suffix: naturalResource.value.dimension, // TODO: make it dynamic
     },
     {
-      name: 'dimension', // new field for amount_nr
+      path: 'input.dimension', // new field for amount_nr
       component: VSelect,
       items: ['kg', 'm2', 'm3'],
-      label: 'Amount dimensions',
+      text: 'Amount dimensions',
     },
     {
-      name: 'mu',
+      path: 'input.mu',
       component: VTextField,
       type: 'number',
-      label: 'vapourdiffusion',
+      text: 'vapourdiffusion',
       suffix: '',
       symbol: 'μ',
       min: 1,
       max: Number.POSITIVE_INFINITY,
     },
     {
-      name: 'lambda',
+      path: 'input.lambda',
       component: VTextField,
       type: 'number',
-      label: 'thermal conductivity',
+      text: 'thermal conductivity',
       suffix: 'W/m/K',
       symbol: 'λ',
       min: 0,
       max: 10,
     },
     {
-      name: 'sigma',
+      path: 'input.sigma',
       component: VTextField,
       type: 'number',
-      label: 'compressive strength',
+      text: 'compressive strength',
       suffix: 'MPa',
       symbol: 'σ',
     },
     {
-      name: 'lca',
+      path: 'input.lca',
       component: VTextField,
       type: 'number',
-      label: 'carbon footprint',
+      text: 'carbon footprint',
       suffix: 'kgCO2eq',
       symbol: '',
     },
-    { name: 'description', component: VTextarea, label: 'description', md: 12 },
-    { name: 'images', component: VFileInput, label: 'images' },
-    {
-      label: 'Actions',
-      name: 'actions',
-      hidden: true,
-      cellClass: 'inline-actions',
-      hideFooterContent: false,
-      width: '190px',
-    },
-  ].map((x) => ({
-    ...x,
-    title: x.label,
-    align: 'start',
-    sortable: false,
-    key: x.name,
-    placeholder: x.symbol ?? '',
-    cols: x?.cols ?? '12',
-    sm: x?.sm ?? '6',
-    md: x?.md ?? '4',
-  })),
+    { path: 'input.description', component: VTextarea, text: 'description', md: 12 },
+    { path: 'input.images', component: VFileInput, text: 'images' },
+    tableActions,
+  ].map(ensureHeaders),
 )
 </script>
 

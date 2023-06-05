@@ -1,8 +1,8 @@
 <template>
-   <v-sheet>
-<v-row>
+  <v-sheet>
+    <v-row>
       <h2>
-        {{title}}s
+        {{ title }}s
       </h2>
     </v-row>
 
@@ -13,34 +13,42 @@
             Add new {{ title }}
           </v-btn>
         </template>
-        <ResourcesCard @update:dialog="updateDialog" :headers="headers" :title="title"
-          :modelValue="item" @update:modelValue="props.store.save"/>
+        <ResourcesCard @update:dialog="updateDialog" :headers="headers" :title="title" :modelValue="item"
+          @update:modelValue="props.store.save" />
       </v-dialog>
     </v-row>
     <v-row justify="center" v-if="list">
-      <v-data-table :loading="loading"
-        v-model:items-per-page="itemsPerPage"
-        :headers="headers" :items="list"
+      <v-data-table :loading="loading" v-model:items-per-page="itemsPerPage" :headers="headers" :items="list"
         class="elevation-1">
+        <template v-for="(tableHeader, $tableHeaderIndex) in headers" #[`item.${tableHeader.value}`]="{ item }">
+          <div :key="$tableHeaderIndex" :class="tableHeader?.classFormatter(
+            _get(item, tableHeader.value),
+            tableHeader,
+            item
+          )
+            ">
+            <span v-html="tableHeader.formatter(
+              _get(item, tableHeader.value),
+              tableHeader,
+              item,
+              items
+            )
+              ">
+            </span>
+          </div>
+        </template>
         <template v-slot:item.actions="{ item }">
-          <v-icon
-            size="small"
-            class="me-2"
-            @click.stop="() => openDialog(item.raw, 'item-dialog')"
-          >
+          <v-icon size="small" class="me-2" @click.stop="() => openDialog(item.raw, 'item-dialog')">
             mdi-pencil
           </v-icon>
-          <v-icon
-            size="small"
-            @click="deleteItem(item.raw, 'delete-item')"
-          >
+          <v-icon size="small" @click="deleteItem(item.raw, 'delete-item')">
             mdi-delete
           </v-icon>
         </template>
         <template v-slot:no-data>
           no data...
         </template>
-       
+
       </v-data-table>
     </v-row>
   </v-sheet>
@@ -51,7 +59,8 @@ import { NaturalResource, RegenerativeMaterialHeader } from "~/definitions/regen
 
 import { storeToRefs, Store } from "pinia";
 
-import { VDataTable,} from 'vuetify/labs/components'
+import { VDataTable, } from 'vuetify/labs/components'
+import { get as _get } from "lodash";
 
 const props = defineProps<{
   headers: RegenerativeMaterialHeader[],
@@ -60,13 +69,13 @@ const props = defineProps<{
 }>()
 
 // access the `store` variable anywhere in the component ✨
-const { item, list, loading} = storeToRefs(props.store)
+const { item, list, loading } = storeToRefs(props.store)
 
 const dialog = ref(false);
 const itemsPerPage = 20;
 
 
-async function updateDialog(e: boolean){
+async function updateDialog(e: boolean) {
   loading.value = true;
   dialog.value = e;
   item.value = props.store.getNew();

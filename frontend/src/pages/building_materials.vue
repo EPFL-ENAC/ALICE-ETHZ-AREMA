@@ -5,6 +5,7 @@ import { useBuildingMaterialStore } from '~/stores/buildingMaterial'
 import { useNaturalResourceStore } from '~/stores/naturalResource'
 import { useBuildingElementStore } from '~/stores/buildingElement'
 import { buildingElement, naturalResource } from '~/stores/regenerativeMaterials'
+import { table } from 'console'
 
 const store = useBuildingMaterialStore()
 const naturalResourceStore = useNaturalResourceStore()
@@ -23,21 +24,21 @@ const buildingMaterialHeaders: ComputedRef<
 > = computed(() =>
   [
     {
-      name: 'name', // name_nr
+      path: 'input.name', // name_nr
       component: VTextField,
-      label: 'Unique name of building material*', // should also have a unique ID,
+      text: 'Unique name of building material*', // should also have a unique ID,
       required: true,
       cols: '12',
       sm: '6',
       md: '6',
     },
     {
-      name: `${naturalResource}s`, // natural resource name / unique id
+      path: `input.${naturalResource}s`,
       component: VSelect,
       items: naturalResourceStore.list,
       itemTitle: 'name',
       itemValue: 'id',
-      label: 'principal constituants', //
+      text: 'principal constituants', // natural resource name / unique id
       multiple: true,
       // formatter: (_id: string, _: unknown, localItem: EnergyCookingItem) => {
       //   // todo: implement formatter in table
@@ -45,36 +46,18 @@ const buildingMaterialHeaders: ComputedRef<
       // },
     },
     {
-      name: `${buildingElement}s`,
+      path: `input.${buildingElement}s`,
+      text: 'Usage',
       component: VSelect,
       items: buildingElementStore.list,
       itemTitle: 'name',
       itemValue: 'id',
       multiple: true,
-      label: 'Usage',
     },
-    { name: 'description', component: VTextarea, label: 'description', md: 12 },
-    { name: 'images', component: VFileInput, label: 'images' },
-    {
-      label: 'Actions',
-      name: 'actions',
-      hidden: true,
-      cellClass: 'inline-actions',
-      hideFooterContent: false,
-      width: '190px',
-    },
-  ].map((x) => ({
-    ...x,
-    title: x.label,
-    align: 'start',
-    sortable: false,
-    key: x.name,
-    placeholder: x.symbol ?? '',
-    cols: x?.cols ?? '12',
-    sm: x?.sm ?? '6',
-    md: x?.md ?? '4',
-  })),
-)
+    { path: 'input.description', text: 'description', component: VTextarea, md: 12 },
+    { path: 'input.images', text: 'images', component: VFileInput },
+    tableActions,
+  ].map(ensureHeaders))
 </script>
 
 <template>
