@@ -1,8 +1,17 @@
 export const tableActions = {
-  text: '',
+  text: 'Actions',
   path: 'actions',
-  hidden: true,
-  cellClass: 'inline-actions',
+  // hidden: true,
+  // cellClass: 'inline-actions',
   hideFooterContent: false,
-  width: '190px',
+  // width: '190px',
 }
+
+// {
+//   text: 'Actions',
+//   path: 'actions',
+//   hidden: true,
+//   cellClass: 'inline-actions',
+//   hideFooterContent: false,
+//   width: '190px',
+// },

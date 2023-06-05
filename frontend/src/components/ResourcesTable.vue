@@ -13,35 +13,37 @@
             Add new {{ title }}
           </v-btn>
         </template>
-        <ResourcesCard @update:dialog="updateDialog" :headers="headers" :title="title" :modelValue="item"
-          @update:modelValue="props.store.save" />
+        <ResourcesCard @update:dialog="updateDialog" :headers="tableHeaders" :title="title" :modelValue="item"
+          @update:modelValue="store.save" />
       </v-dialog>
     </v-row>
     <v-row justify="center" v-if="list">
       <v-data-table :loading="loading" v-model:items-per-page="itemsPerPage" :headers="headers" :items="list"
         class="elevation-1">
-        <template v-for="(tableHeader, $tableHeaderIndex) in headers" #[`item.${tableHeader.value}`]="{ item }">
+        <template v-for="(tableHeader, $tableHeaderIndex) in tableHeaders" #[`item.${tableHeader.key}`]="localCell"
+          :key="$tableHeaderIndex">
           <div :key="$tableHeaderIndex" :class="tableHeader?.classFormatter(
-            _get(item, tableHeader.value),
+            _get(localCell.item.raw, tableHeader.key),
             tableHeader,
             item
           )
             ">
-            <span v-html="tableHeader.formatter(
-              _get(item, tableHeader.value),
+            <span v-html="tableHeader?.formatter(
+              _get(localCell.item.raw, tableHeader.key),
               tableHeader,
-              item,
-              items
+              localCell.item.raw,
+              list
             )
               ">
             </span>
           </div>
         </template>
-        <template v-slot:item.actions="{ item }">
-          <v-icon size="small" class="me-2" @click.stop="() => openDialog(item.raw, 'item-dialog')">
+        <template  #[`item.actions`]="localCell">
+          slot actions{{   }}
+          <v-icon size="small" class="me-2" @click.stop="() => openDialog(localCell.item.raw, 'item-dialog')">
             mdi-pencil
           </v-icon>
-          <v-icon size="small" @click="deleteItem(item.raw, 'delete-item')">
+          <v-icon size="small" @click="deleteItem(localCell.item.raw, 'delete-item')">
             mdi-delete
           </v-icon>
         </template>
@@ -70,10 +72,17 @@ const props = defineProps<{
 
 // access the `store` variable anywhere in the component ✨
 const { item, list, loading } = storeToRefs(props.store)
-
+const headers = toRef(props, 'headers')
 const dialog = ref(false);
 const itemsPerPage = 20;
 
+const tableHeaders: RegenerativeMaterialHeader[] = computed(() => {
+
+  return headers.value.filter(
+      (header: RegenerativeMaterialHeader) => header.hideFooterContent
+    );
+
+});
 
 async function updateDialog(e: boolean) {
   loading.value = true;

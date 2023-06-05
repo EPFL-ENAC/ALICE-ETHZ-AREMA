@@ -41,7 +41,7 @@ export type RegenerativeValue = string | number
 
 export interface RegenerativeMaterialHeader extends Headers {
   text: string | ((v: RegenerativeMaterial) => string) // .e.g "Intervention" description or text to display for input or table header
-  value: string // name of the field to use for table
+  path: string // name of the field to use for table
 
   name: string // keyof NaturalResource
   // component: VTextField| VSelect, //

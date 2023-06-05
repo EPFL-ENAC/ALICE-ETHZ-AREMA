@@ -7,13 +7,10 @@
       <v-container>
         <v-row>
           <v-col v-for="(header) in headers" v-bind="header">
-            <template  v-if="!header.hideInput">
-            <component :is="header.component" v-bind="header" v-if="header.type === 'number'"
-              v-model.number="item[header.key]"
-                    
-              />
-            <component :is="header.component" v-bind="header" v-else v-model="item[header.key]"/>
-              </template>
+            <template v-if="!header.hideInput">
+              <component :is="header.component" v-bind="header" v-if="header.type === 'number'" v-model.number="item[header.key]" />
+              <component :is="header.component" v-bind="header" v-else v-model="item[header.key]"/>
+            </template>
           </v-col>
         </v-row>
       </v-container>
@@ -34,14 +31,14 @@
 <script setup lang="ts">
 import { PropType } from 'vue';
 import { RegenerativeMaterialHeader } from "~/definitions/regenerativeMaterials";
-
+import { cloneDeep } from 'lodash';
 const props = defineProps<{
   headers: RegenerativeMaterialHeader[],
   title: string,
   modelValue: PropType<unknown>,
 }>()
 
-const item = toRef(JSON.parse(JSON.stringify(props.modelValue)))
+const item = toRef(cloneDeep(props.modelValue))
 
 // type-based
 const $emit = defineEmits<{

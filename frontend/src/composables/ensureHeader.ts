@@ -12,6 +12,7 @@ export function ensureHeaders(item: any): RegenerativeMaterialHeader {
   const isInput = item?.isInput ?? category === 'input'
   return {
     align: 'start',
+    name: item.text,
     sortable: false,
     hideFooterContent: item.hideFooterContent ?? true,
     hideInput: item.hideInput ?? false,
@@ -19,7 +20,7 @@ export function ensureHeaders(item: any): RegenerativeMaterialHeader {
     key, // for form-item-component
     isInput,
     category, // input or computed,
-    title: item.label,
+    title: item.text,
     placeholder: item.symbol ?? '',
     cols: item?.cols ?? '12',
     sm: item?.sm ?? '6',

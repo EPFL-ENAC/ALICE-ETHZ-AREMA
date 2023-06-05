@@ -1,22 +1,32 @@
 <script setup lang="ts" generic="T extends any, O extends any">
 import { VFileInput, VSelect, VTextField, VTextarea } from 'vuetify/components'
-import type { RegenerativeMaterialHeader } from '~/definitions/regenerativeMaterials'
+import type { BuildingElement, NaturalResource, RegenerativeMaterialHeader } from '~/definitions/regenerativeMaterials'
 import { useBuildingMaterialStore } from '~/stores/buildingMaterial'
 import { useNaturalResourceStore } from '~/stores/naturalResource'
 import { useBuildingElementStore } from '~/stores/buildingElement'
 import { buildingElement, naturalResource } from '~/stores/regenerativeMaterials'
-import { table } from 'console'
 
 const store = useBuildingMaterialStore()
+// todo improve with dynamic search!
 const naturalResourceStore = useNaturalResourceStore()
-// move to init.
-naturalResourceStore.getAll()
-const title = 'Building materials'
-console.log(naturalResourceStore.list)
-
 const buildingElementStore = useBuildingElementStore()
-buildingElementStore.getAll()
-console.log(buildingElementStore.list)
+// // move to init.
+// naturalResourceStore.getAll()
+// const title = 'Building materials'
+// console.log(naturalResourceStore.list)
+
+// buildingElementStore.getAll()
+// console.log(buildingElementStore.list)
+
+onMounted(async () => {
+  await naturalResourceStore.getAll()
+  await buildingElementStore.getAll()
+});
+
+onBeforeUnmount(async () => {
+  await naturalResourceStore.close()
+  await buildingElementStore.close()
+})
 
 // name_nr, zone_nr	amount_nr	mu_nr	lambda_nr	sigma_nr	lca_nr	image1_nr	image2_nr	descr_nr 	editor_0_nr	editor_f_nr	date_0_nr	date_f_nr	date_f_bm	adress_pro	adress_pro_text	ressource_type
 const buildingMaterialHeaders: ComputedRef<
@@ -40,10 +50,9 @@ const buildingMaterialHeaders: ComputedRef<
       itemValue: 'id',
       text: 'principal constituants', // natural resource name / unique id
       multiple: true,
-      // formatter: (_id: string, _: unknown, localItem: EnergyCookingItem) => {
-      //   // todo: implement formatter in table
-      //   return 'string'
-      // },
+      formatter: (value: NaturalResource[]) => {
+        return value.map(nr => nr.name).join(' ')
+      },
     },
     {
       path: `input.${buildingElement}s`,
@@ -53,6 +62,9 @@ const buildingMaterialHeaders: ComputedRef<
       itemTitle: 'name',
       itemValue: 'id',
       multiple: true,
+      formatter: (value: BuildingElement[]) => {
+        return value.map(nr => nr.name).join(' ')
+      },
     },
     { path: 'input.description', text: 'description', component: VTextarea, md: 12 },
     { path: 'input.images', text: 'images', component: VFileInput },
