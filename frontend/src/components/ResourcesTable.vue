@@ -22,7 +22,6 @@
         class="elevation-1">
         <template v-for="(tableHeader, $tableHeaderIndex) in tableHeadersFiltered" #[`item.${tableHeader.key}`]="localCell"
           :key="$tableHeaderIndex">
-          {{ tableHeader.key }}
           <div :key="$tableHeaderIndex" :class="tableHeader?.classFormatter(
             _get(localCell.item.raw, tableHeader.key),
             tableHeader,

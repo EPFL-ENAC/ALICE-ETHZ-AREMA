@@ -61,6 +61,7 @@ function edit() {
       </v-btn>
       <MapLibreMap
         ref='mapLibreMap'
+        class='maplibre-component'
         :center='center'
         :zoom='zoom'
         @update:selected-features='selectedFeatures = $event'
@@ -68,3 +69,9 @@ function edit() {
     </v-col>
   </v-row>
 </template>
+
+<style>
+.maplibre-component {
+  height: 250px;
+}
+</style>

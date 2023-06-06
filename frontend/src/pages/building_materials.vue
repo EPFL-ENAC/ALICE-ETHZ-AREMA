@@ -10,40 +10,20 @@ const buildingMaterialStore = useBuildingMaterialStore()
 // todo improve with dynamic search!
 const naturalResourceStore = useNaturalResourceStore()
 const buildingElementStore = useBuildingElementStore()
-// // move to init.
-// naturalResourceStore.getAll()
+
 const title = 'Building material'
-// console.log(naturalResourceStore.list)
-
-// buildingElementStore.getAll()
-// console.log(buildingElementStore.list)
-
 const loading = ref(false)
 onMounted(async () => {
   loading.value = true
-  await buildingMaterialStore.init()
-  await buildingMaterialStore.getAll()
-  // await naturalResourceStore.init()
   await naturalResourceStore.getAll()
-  // await buildingElementStore.init()
   await buildingElementStore.getAll()
   loading.value = false
 })
 
 onBeforeUnmount(async () => {
-  await buildingMaterialStore.close()
   await naturalResourceStore.close()
   await buildingElementStore.close()
 })
-
-// onMounted(async () => {
-//   await props.store.init()
-//   await props.store.getAll()
-// });
-
-// onBeforeUnmount(async () => {
-//   await props.store.close()
-// })
 
 // name_nr, zone_nr	amount_nr	mu_nr	lambda_nr	sigma_nr	lca_nr	image1_nr	image2_nr	descr_nr 	editor_0_nr	editor_f_nr	date_0_nr	date_f_nr	date_f_bm	adress_pro	adress_pro_text	ressource_type
 const buildingMaterialHeaders: ComputedRef<

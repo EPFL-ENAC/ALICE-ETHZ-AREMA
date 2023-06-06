@@ -2,6 +2,7 @@
 import { VFileInput, VSelect, VTextField, VTextarea } from 'vuetify/components'
 import type { RegenerativeMaterialHeader } from '~/definitions/regenerativeMaterials'
 import { useNaturalResourceStore } from '~/stores/naturalResource'
+import PolygonsMapInput from '~/components/PolygonsMapInput.vue'
 
 // access the `store` variable anywhere in the component ✨
 const store = useNaturalResourceStore()
@@ -19,17 +20,18 @@ const naturalResourceHeaders: ComputedRef<
       text: 'Unique name of natural resource*', // should also have a unique ID,
       required: true,
       cols: '12',
-      sm: '6',
-      md: '6',
+      sm: '12',
+      md: '12',
     },
     {
       path: 'input.zone', // zone_nr
-      component: VTextField,
+      height: '100px',
+      component: PolygonsMapInput,
       text: 'geographic or geologic provenience', // polygon or coordinate + radius
       required: true,
       cols: '12',
-      sm: '6',
-      md: '6',
+      sm: '12',
+      md: '12',
     },
     {
       path: 'input.amount', // amount_nr
@@ -81,7 +83,16 @@ const naturalResourceHeaders: ComputedRef<
       symbol: '',
     },
     { path: 'input.description', component: VTextarea, text: 'description', md: 12 },
-    { path: 'input.images', component: VFileInput, text: 'images' },
+    {
+      'path': 'input.images',
+      'component': VFileInput,
+      'text': 'images',
+      'multiple': true,
+      'prepend-icon': 'mdi-camera',
+      // 'formatter': (_: File[], header: RegenerativeMaterialHeader, item: NaturalResource[]) => {
+      //   return item.images_uploaded.map(nr => nr.url).join(' ')
+      // },
+    },
     tableActions,
   ].map(ensureHeaders),
 )

@@ -8,7 +8,6 @@ from arema.utils.s3client import S3_SERVICE
 
 from fastapi import Depends, APIRouter
 
-from arema.utils.auth import authorization_checker
 from arema.utils.size import size_checker
 
 from pydantic import BaseModel
@@ -29,7 +28,7 @@ s3_client = S3_SERVICE(settings.S3_ENDPOINT_PROTOCOL + settings.S3_ENDPOINT_HOST
 @router.post("/files",
              status_code=200,
              description="-- Upload jpg/png/pdf or any assets to S3 --",
-             dependencies=[Depends(authorization_checker), Depends(size_checker)])
+             dependencies=[Depends(size_checker)])
 async def PostUpload(
         files: list[UploadFile] = File(description="multiple file upload")):
     return {"filenames": [await s3_client.upload_file(file) for file in files]}
@@ -38,7 +37,6 @@ async def PostUpload(
 @router.delete("/files",
                status_code=204,
                description="-- Delete assest present in S3 --",
-               dependencies=[Depends(authorization_checker)]
                )
 async def DeleteUpload(filePath: FilePath):
     [await s3_client.delete_file(path) for path in filePath.paths]

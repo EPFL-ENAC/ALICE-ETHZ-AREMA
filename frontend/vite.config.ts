@@ -82,13 +82,23 @@ export default defineConfig({
     proxy: {
       '^/db': {
         target: 'http://localhost:5984',
-        rewrite: (path) => path.replace(/^\/db/, ''),
+        rewrite: path => path.replace(/^\/db/, ''),
         changeOrigin: true,
         secure: false,
         ws: true,
         headers: {
           Connection: 'keep-alive',
         },
+      },
+      '^/api': {
+        target: 'http://localhost:5050/',
+        rewrite: path => path.replace(/^\/api/, ''),
+        secure: false,
+      },
+      '^/s3': {
+        target: 'http://localhost:5660/',
+        rewrite: path => path.replace(/^\/s3/, ''),
+        secure: false,
       },
     },
   },
