@@ -13,15 +13,16 @@
             Add new {{ title }}
           </v-btn>
         </template>
-        <ResourcesCard @update:dialog="updateDialog" :headers="tableHeaders" :title="title" :modelValue="item"
+        <ResourcesCard @update:dialog="updateDialog" :headers="headers" :title="title" :modelValue="item"
           @update:modelValue="props.store.save" />
       </v-dialog>
     </v-row>
     <v-row justify="center" v-if="list">
       <v-data-table :loading="loading" v-model:items-per-page="itemsPerPage" :headers="headers" :items="list"
         class="elevation-1">
-        <template v-for="(tableHeader, $tableHeaderIndex) in tableHeaders" #[`item.${tableHeader.key}`]="localCell"
+        <template v-for="(tableHeader, $tableHeaderIndex) in tableHeadersFiltered" #[`item.${tableHeader.key}`]="localCell"
           :key="$tableHeaderIndex">
+          {{ tableHeader.key }}
           <div :key="$tableHeaderIndex" :class="tableHeader?.classFormatter(
             _get(localCell.item.raw, tableHeader.key),
             tableHeader,
@@ -39,7 +40,6 @@
           </div>
         </template>
         <template  #[`item.actions`]="localCell">
-          slot actions{{   }}
           <v-icon size="small" class="me-2" @click.stop="() => openDialog(localCell.item.raw, 'item-dialog')">
             mdi-pencil
           </v-icon>
@@ -76,8 +76,7 @@ const headers = toRef(props, 'headers')
 const dialog = ref(false);
 let itemsPerPage = 20;
 
-const tableHeaders: RegenerativeMaterialHeader[] = computed(() => {
-
+const tableHeadersFiltered: RegenerativeMaterialHeader[] = computed(() => {
   return headers.value.filter(
       (header: RegenerativeMaterialHeader) => header.hideFooterContent
     );

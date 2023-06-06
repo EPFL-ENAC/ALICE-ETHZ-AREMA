@@ -18,23 +18,23 @@ const title = 'Building material'
 // buildingElementStore.getAll()
 // console.log(buildingElementStore.list)
 
-// const loading = ref(false)
-// onMounted(() => {
-//   loading.value = true
-//   // await buildingMaterialStore.init()
-//    buildingMaterialStore.getAll()
-//   // await naturalResourceStore.init()
-//    naturalResourceStore.getAll()
-//   // await buildingElementStore.init()
-//    buildingElementStore.getAll()
-//   loading.value = false
-// })
+const loading = ref(false)
+onMounted(async () => {
+  loading.value = true
+  await buildingMaterialStore.init()
+  await buildingMaterialStore.getAll()
+  // await naturalResourceStore.init()
+  await naturalResourceStore.getAll()
+  // await buildingElementStore.init()
+  await buildingElementStore.getAll()
+  loading.value = false
+})
 
-// onBeforeUnmount(async () => {
-//   await buildingMaterialStore.close()
-//   await naturalResourceStore.close()
-//   await buildingElementStore.close()
-// })
+onBeforeUnmount(async () => {
+  await buildingMaterialStore.close()
+  await naturalResourceStore.close()
+  await buildingElementStore.close()
+})
 
 // onMounted(async () => {
 //   await props.store.init()
