@@ -1,8 +1,9 @@
 <script setup lang="ts" generic="T extends any, O extends any">
-import { VFileInput, VSelect, VTextField, VTextarea } from 'vuetify/components'
+import { VFileInput, VImg, VSelect, VTextField, VTextarea } from 'vuetify/components'
 import type { RegenerativeMaterialHeader } from '~/definitions/regenerativeMaterials'
 import { useNaturalResourceStore } from '~/stores/naturalResource'
 import PolygonsMapInput from '~/components/PolygonsMapInput.vue'
+import DisplayImagesUploaded from '~/components/DisplayImagesUploaded.vue'
 
 // access the `store` variable anywhere in the component ✨
 const store = useNaturalResourceStore()
@@ -29,6 +30,7 @@ const naturalResourceHeaders: ComputedRef<
       component: PolygonsMapInput,
       text: 'geographic or geologic provenience', // polygon or coordinate + radius
       required: true,
+      hideContentInTable: true,
       cols: '12',
       sm: '12',
       md: '12',
@@ -89,6 +91,18 @@ const naturalResourceHeaders: ComputedRef<
       'text': 'images',
       'multiple': true,
       'prepend-icon': 'mdi-camera',
+      'hideContentInTable': true,
+
+      // 'formatter': (_: File[], header: RegenerativeMaterialHeader, item: NaturalResource[]) => {
+      //   return item.images_uploaded.map(nr => nr.url).join(' ')
+      // },
+    },
+    {
+      path: 'input.images_uploaded',
+      component: DisplayImagesUploaded,
+      text: 'images uploaded',
+      multiple: true,
+      hideContentInTable: true,
       // 'formatter': (_: File[], header: RegenerativeMaterialHeader, item: NaturalResource[]) => {
       //   return item.images_uploaded.map(nr => nr.url).join(' ')
       // },

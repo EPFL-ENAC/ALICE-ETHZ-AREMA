@@ -97,7 +97,8 @@ export interface RegenerativeMaterialHeader extends Headers {
   conditional: string | string[] // based on other SurveyTableHeader field "US_UNI", needs to have conditional_value set
   endlineOnly?: boolean // show only for enldine table true,
   baselineOnly?: boolean
-  hideFooterContent: boolean // default to true only for table
+  hideContentInTable: boolean // default to true only for table
+  hideFooterContent: boolean
   hideInput: boolean
   computeResults: boolean // false,
 }

@@ -61,26 +61,43 @@ export const useRegenerativeMaterialsStore = defineStore(
         },
       },
     ])
+    // TODO: make english/german translation as key
     const building_elements = [
-      'foundation',
-      'floor load-bearing',
-      'floor non-load-bearing',
-      'wall exterior load-bearing',
-      'wall exterior non-load-bearing',
-      'wall interior load-bearing',
-      'wall interior non-load-bearing',
-      'windows',
-      'doors',
-      'structural',
-      'roof',
-      'insulation exterior',
-      'insulation interior',
-      'cladding interior',
-      'cladding exterior',
+      { definition: 'structure', name: 'Foundation' },
+      { definition: 'structure', name: 'Floor slab Ground Floor' },
+      { definition: 'structure', name: 'Ext. Wall Above Ground' },
+      { definition: 'structure', name: 'Ext Wall Under Ground' },
+      { definition: 'structure', name: 'Balcony' },
+      { definition: 'structure', name: 'Int Wall' },
+      { definition: 'structure', name: 'Roof' },
+      { definition: 'structure', name: 'Ceiling' },
+      { definition: 'structure', name: 'Column' },
+      { definition: 'structure', name: 'Stair' },
+      { definition: 'envelope', name: 'Roof covering' },
+      { definition: 'envelope', name: 'Ext Thermal Insul' },
+      { definition: 'envelope', name: 'Int Thermal Insul' },
+      { definition: 'envelope', name: 'Window & Door' },
+      { definition: 'envelope', name: 'Ext. Wall finishing UG' },
+      { definition: 'envelope', name: 'Ext. Wall finishing AG' },
+      { definition: 'envelope', name: 'Sun & Weather Protection' },
+      { definition: 'interior', name: 'Int Wall finishing' },
+      { definition: 'interior', name: 'Int Door' },
+      { definition: 'interior', name: 'Partition wall' },
+      { definition: 'interior', name: 'Ceiling finishing' },
+      { definition: 'interior', name: 'Floor covering' },
+      { definition: 'tech equipement', name: 'Heat generation' },
+      { definition: 'tech equipement', name: 'Heat distribution & delivery' },
+      { definition: 'tech equipement', name: 'Vent equip' },
+      { definition: 'tech equipement', name: 'Water equipement' },
     ]
-    building_elements.forEach((value, index) => {
+    building_elements.forEach(async (value, index) => {
       // get and create if it does not exist.
-      // couchdb.value.localDB.rel.save(buildingElement, {name: value, id: `BE${index + 1}`})
+      value.id = `BE${index + 1}`
+      const existingsBE = await couchdb.value.localDB.rel.find(buildingElement)
+      // TODO: find a better way to generate BE
+      const existingIds = existingsBE?.buildingElements?.map(be => be.id) ?? []
+      if (!existingIds.includes(value.id))
+        couchdb.value.localDB.rel.save(buildingElement, value)
     })
     return {
       couchdb,

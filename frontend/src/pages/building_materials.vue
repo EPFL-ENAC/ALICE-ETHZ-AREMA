@@ -45,21 +45,27 @@ const buildingMaterialHeaders: ComputedRef<
       items: naturalResourceStore.list,
       itemTitle: 'name',
       itemValue: 'id',
-      text: 'principal constituants', // natural resource name / unique id
+      text: 'principal constituants (natural resources)', // natural resource name / unique id
       multiple: true,
-      formatter: (value: NaturalResource[]) => {
+      formatter: (value: NaturalResource[],_:any, item: any) => {
+        // debugger;
+        // _objects
         return value.map(nr => nr.name).join(' ')
       },
     },
     {
       path: `input.${buildingElement}s`,
-      text: 'Usage',
+      text: 'Usage (Building Elements)',
       component: VSelect,
       items: buildingElementStore.list,
       itemTitle: 'name',
       itemValue: 'id',
       multiple: true,
-      formatter: (value: BuildingElement[]) => {
+      formatter: (value: BuildingElement[],_:any, item: any) => {
+        // debugger;
+        // console.log(item)
+        // _objects
+        // return item
         return value.map(nr => nr.name).join(' ')
       },
     },

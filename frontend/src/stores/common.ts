@@ -7,6 +7,22 @@ import type {
 
 export const MSG_DB_DOES_NOT_EXIST = 'Please, init your database'
 
+export const imageTypes = [
+  'Image',
+  'Drawing',
+  'Report',
+  'Other',
+] as const
+export type ImageType = typeof imageTypes[number]
+
+export interface Image {
+  url: string // path like /s3/unhcr_tss/xx
+  origin_url?: string // only for image
+  description?: string
+  name: string
+  type: ImageType
+}
+
 export function useCommon<T extends RegenerativeMaterial>(
   localDB: PouchDB.Database<T>,
   typeStringLiteral: RegenerativeMaterialType,
@@ -44,6 +60,35 @@ export function useCommon<T extends RegenerativeMaterial>(
     // // return changed doc
     // a.foo = 'bar'
     // return a
+  }
+
+  async function removeAsset(asset: Image, images_uploaded: Image[]): Promise<void | Image[]> {
+    // call delete
+    const assetUrlsFiltered = [asset.url, asset.origin_url].filter(
+      x => x !== undefined,
+    )
+    const options = {
+      method: 'DELETE',
+      body: JSON.stringify({
+        paths: assetUrlsFiltered,
+      }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }
+    return await fetch('/api/files', options)
+      .then(async (response) => {
+        if (response.ok && response.status === 204)
+          return response
+
+        throw new Error(`${response.status} ${response.statusText}`)
+      })
+      .then(() => {
+        return images_uploaded.filter(
+          (image: Image) => !assetUrlsFiltered.includes(image.url),
+        ) ?? []
+      })
   }
 
   async function processUpload(files: File[], images_uploaded: any[]) {
@@ -222,7 +267,7 @@ export function useCommon<T extends RegenerativeMaterial>(
     const transformedMain = response[`${typeStringLiteral}s`].map((item) => {
       otherKeys.forEach((key) => {
         item[`${key}_ids`] = item[key]
-        item[key] = item[key].map(otherKey => hashObjects.value[key][otherKey])
+        item[`${key}`] = item[key].map(otherKey => hashObjects.value[key][otherKey])
       })
       return item
     })
@@ -239,5 +284,7 @@ export function useCommon<T extends RegenerativeMaterial>(
     list,
     item,
     getNew,
+    removeAsset,
+    processUpload,
   }
 }
