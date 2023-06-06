@@ -1,17 +1,17 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { NaturalResource } from '~/definitions/regenerativeMaterials'
 import {
-  naturalResource,
+  professional,
   useRegenerativeMaterialsStore,
 } from '~/stores/regenerativeMaterials'
 import { useCommon } from '~/stores/common'
 
-export const useNaturalResourceStore = defineStore(naturalResource, () => {
+export const useProfessionalStore = defineStore(professional, () => {
   const regenerative_materials = useRegenerativeMaterialsStore()
 
   const commons = useCommon<NaturalResource>(
     regenerative_materials.couchdb.localDB,
-    naturalResource,
+    professional,
   )
 
   function init() {
@@ -26,7 +26,7 @@ export const useNaturalResourceStore = defineStore(naturalResource, () => {
           const docRel = regenerative_materials.couchdb.localDB.rel.parseDocID(
             doc._id,
           )
-          if (docRel.type === naturalResource) return doc
+          if (docRel.type === professional) return doc
         },
       },
     )
@@ -46,6 +46,6 @@ export const useNaturalResourceStore = defineStore(naturalResource, () => {
 
 if (import.meta.hot) {
   import.meta.hot.accept(
-    acceptHMRUpdate(useNaturalResourceStore, import.meta.hot),
+    acceptHMRUpdate(useProfessionalStore, import.meta.hot),
   )
 }

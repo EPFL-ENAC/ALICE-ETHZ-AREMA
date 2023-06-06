@@ -5,14 +5,15 @@
       color="grey-lighten-3"
       rail
     >
-      <v-avatar
-        v-for="(route, $key) in routes"
-        :key="$key"
-        :color="`grey-${$key === 1 ? 'darken' : 'lighten'}-1`"
-        :size="$key === 1 ? 36 : 20"
-        class="d-block text-center mx-auto mb-9"
-      >
-      <router-link :to="{name: route.path}">{{ route.name }}</router-link>
+    <v-avatar
+    v-for="(route, $key) in routes"
+    :key="$key"
+    :color="`grey-${$route.name?.valueOf() == route.pathName ? 'darken' : 'lighten'}-1`"
+    :size="$route.name?.valueOf() == route.pathName ? 36 : 20"
+    class="d-block text-center mx-auto mb-9"
+    >
+     
+      <router-link :to="{name: route.pathName}">{{ route.name[0] }}</router-link>
       </v-avatar>
     </v-navigation-drawer>
 </template>
@@ -23,13 +24,16 @@ const routes = [{
   path: 'index',
   name: 'Home',
 },{
-  path: 'natural_resources',
+  pathName: 'natural_resources',
   name: 'Natural resources',
 },{
-  path: 'professionals',
+  pathName: 'building_materials',
+  name: 'Building materials',
+},{
+  pathName: 'professionals',
   name: 'Professionals',
 },{
-  path: 'test',
+  pathName: 'test',
   name: 'Test',
 }
 // ,{

@@ -45,7 +45,7 @@ cladding exterior
 | Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|Range
 | ----------------- | ------------------------------- | --------- | ------- | --------- | --------- |---|---|
 | name_bm    |                     |          | `[-]`   | string  | y         ||
-| constituant_bm | principal constituants   |          | `[-]`   | string     | y         | <>name_nr  | [1,3]
+| constituant_bm | principal constituants   |          | `[-]`   | string     | y         | <>name_nr  | [1,3]  <-- afficher pouvoir selectionner N zones >=1
 | usage_bm  | which are the common uses  |  | `[-]`              |string      | y         | <>BE       | no limit 
 | mu_bm | vapourdiffusion | mu | `[-]`   | number    |     n      ||1-inf
 | lambda_bm | thermal conductivity |lambda  | `[W/m/K]`   |  number   |         n  | | 0-10
@@ -78,7 +78,6 @@ civil engineer;
 supplier;
 craftsmen;
 building physics;
-supplier;
 association;
 construction firms;
 dealer;
@@ -87,12 +86,18 @@ dealer;
 | Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|
 | ----------------- | ------------------------------- | --------- | ------- | --------- | --------- |---|
 | name_pro    |                     |          | `[-]`   | string  | y         |
-| adress_pro | adress of company    |          | `[-]`   | string     | y         |
+| adress_pro | adress of company    |          | `[-]`   | string     | y         | // stocker le point gps + l'adresse en string validé par streetmap
 | type_pro| drop down from list_pro| |  `[-]`  |string|y|
-| expertise_pro  | expertise with which building mat  |  | `[-]`   |string | y         | <>name_bm and/or <>name_nr   --> { zone seulement (polygones) pour natural resource}
-| area_del_pro| area of delivery if pro=sup| |  `[-]` |polygon | n | | radius + coordinate (make two fields)
-| web_pro | url |  | `[-]`   | string    |     n      |
-| tel_pro |  |  | `[-]`   |  string   |         n  | |
+
+
+// afficher pour que les suppliers
+| expertise_pro_bm  | expertise with which building mat  |  | `[-]`   |string | y     | <>name_bm 
+| expertise_pro_nr  | expertise with which building mat  |  | `[-]`   |string | y     | <>name_nr   --> { zone seulement (polygones) pour natural resource}
+| area_del_pro|  area of delivery if pro=sup| |  `[-]` |cercle | n | | radius + coordinate (make two fields) only one circle
+
+
+|web_pro | url |  | `[-]`   | string    |     n      |
+|tel_pro |  |  | `[-]`   |  string   |         n  | |
 |email_pro| | |  `[-]` |string | n | |
 |image1_pro| url| |`[-]`|image|n|
 |image2_pro| url ||`[-]`|image|n|
@@ -103,17 +108,21 @@ dealer;
 |date_0_pro| date first edition| |  `[-]` |date | y | |
 |date_f_pro| date last revision| |  `[-]` |date | y | |
 
+
+
+
 ### Buildings
 | Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|
 | ----------------- | ------------------------------- | --------- | ------- | --------- | --------- |---|
 | name_bui    |                     |          | `[-]`   | string  | y         |
-| adress_bui | adress of building   |          | `[-]`   | long lat     | y         |
+| adress_bui | adress of building   |          | `[-]`   | string    | y         |
 | pros_bui  | involved professionals  |  | `[-]`   |string | y         | <> name_pro[]
 
-	technical_constructions = ["be1_grey", "be1_wood", "be1_stone",...........]
-|usedbm_be1_bui  | material used for building element BE1 | |`[-]` | string| n | <> name_bm
-|usedbm_be15_bui | material used for building element BE15 | |`[-]` | string| n | <> name_bm
 
+
+|usedbm_be1_bui  | material used for building element BE1 | |`[-]` | string| n | <> technical_constructions
+|usedbm_be15_bui | material used for building element BE15 | |`[-]` | string| n | <> technical_constructions
+// example | usedbm_be22_bui = ["be22_grey", ...]
 
 |sup_bui|suppliers of bm for building | |`[-]` | string| n | <> name_sup [1,]
 

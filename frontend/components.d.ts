@@ -10,9 +10,11 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     CircleMapInput: typeof import('./src/components/CircleMapInput.vue')['default']
+    DisplayImagesUploaded: typeof import('./src/components/DisplayImagesUploaded.vue')['default']
     MapLibreMap: typeof import('./src/components/MapLibreMap.vue')['default']
-    NaturalResourcesCard: typeof import('./src/components/NaturalResources/NaturalResourcesCard.vue')['default']
     PolygonsMapInput: typeof import('./src/components/PolygonsMapInput.vue')['default']
+    ResourcesCard: typeof import('./src/components/ResourcesCard.vue')['default']
+    ResourcesTable: typeof import('./src/components/ResourcesTable.vue')['default']
     RootNavigationDrawer: typeof import('./src/components/RootNavigationDrawer.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

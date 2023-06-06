@@ -1,4 +1,11 @@
 import PouchDB from 'pouchdb-browser'
+import find from 'pouchdb-find'
+import rel from 'relational-pouch'
+import resolveConflicts from 'pouch-resolve-conflicts'
+
+PouchDB.plugin(find)
+PouchDB.plugin(rel)
+PouchDB.plugin(resolveConflicts)
 // import qs from 'qs'
 
 export type ExistingDocument<T extends {}> = PouchDB.Core.ExistingDocument<T>
@@ -26,16 +33,24 @@ function url(value = ''): string {
 }
 
 export function getUrl(path: string): string {
-  console.log(import.meta.env)
   return `${databaseUrl}/${path}`
 }
 
-export class SyncDatabase<T extends {}> {
+interface ExtendedChangeOptions {
+  batch_size?: number
+  timeout?: number
+  since?: string
+  live?: boolean
+  include_docs?: boolean
+  filter?: string | ((doc: any) => boolean)
+  view?: string
+}
 
+export class SyncDatabase<T extends {}> {
   public localDB: PouchDB.Database<T>
   public remoteDB: PouchDB.Database<T>
   private sync: PouchDB.Replication.Sync<T>
-  private onChangeListener: PouchDB.Core.Changes<T> | undefined
+  private onChangeListeners: (PouchDB.Core.Changes<T> | undefined)[]
 
   constructor(name: string) {
     const token = sessionStorage.getItem(SessionStorageKey.Token)
@@ -51,6 +66,7 @@ export class SyncDatabase<T extends {}> {
           }
         : undefined,
     })
+    this.onChangeListeners = []
     this.sync = localDB.sync(
       remoteDB,
       {
@@ -61,59 +77,53 @@ export class SyncDatabase<T extends {}> {
         live: true,
         retry: true,
         back_off_function(delay: number) {
-          if (delay === 27000 || delay === 0) {
-            return 1000
-          }
+          if (delay === 27000 || delay === 0) return 1000
           return delay * 3
         },
       },
       (error: any, result: any) => {
-        if (error) {
-          console.error(error)
-        } else {
-          console.debug('sync', result)
-        }
+        if (error) console.error(error)
+        else console.log('sync', result)
       },
     )
     this.localDB = localDB
     this.remoteDB = remoteDB
   }
-//   /**
-//    * @deprecated use localDB
-//    */
-  // get db(): PouchDB.Database<T> {
-  //   return this.localDB
-  // }
 
-  onChange(
-    listener: (value: PouchDB.Core.ChangesResponseChange<T>) => unknown,
-  ): PouchDB.Core.Changes<T> {
-    this.onChangeListener = this.localDB.changes({
-      batch_size: 5,
-      timeout: 30000,
-      since: 'now',
-      live: true,
-    })
-
-    this.onChangeListener.on('change', listener)
-    return this.onChangeListener
+  defaultOptions: ExtendedChangeOptions = {
+    batch_size: 5,
+    timeout: 30000,
+    since: 'now',
+    live: true,
+    include_docs: false,
+    // filter: '_view', /// here an example of how to make it custom
+    // view: 'natural_resources/list',
+    // view: 'professional/list',
   }
 
-  // async getAllDocuments(): Promise<ExistingDocument<T>[]> {
-  //   const result = await this.localDB.allDocs({
-  //     include_docs: true,
-  //   })
-  //   return result.rows.map((row) => row.doc as ExistingDocument<T>)
-  // }
+  onLocalChange(
+    action: (value: PouchDB.Core.ChangesResponseChange<T>) => unknown,
+    { ...options } = this.defaultOptions,
+  ): PouchDB.Core.Changes<T> {
+    const finalOptions = {
+      ...this.defaultOptions,
+      ...options,
+    }
 
-  // async getDocuments(): Promise<ExistingDocument<T>[]> {
-  //   return (await this.getAllDocuments()).filter(
-  //     (doc) => !doc._id.startsWith(designDocumentPrefix),
-  //   )
-  // }
+    const changeListener = this.localDB.changes(finalOptions)
+    this.onChangeListeners.push(changeListener)
+
+    changeListener.on('change', action)
+    return changeListener
+  }
+
+  closeLocalChanges(): void {
+    this.onChangeListeners?.forEach(changeListener => changeListener?.cancel())
+    this.onChangeListeners = []
+  }
 
   cancel(): void {
     this.sync.cancel()
-    this.onChangeListener?.cancel()
+    this.closeLocalChanges()
   }
 }
