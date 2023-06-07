@@ -48,9 +48,11 @@ defineEmits(['update:modelValue'])
 const loading = ref(false)
 const map= shallowRef<Map | undefined>(undefined)
 
+const containerId = 'map-view-' + Math.random().toString(36).slice(2)
+
 onMounted(() => {
   map.value = markRaw(new Map({
-    container: 'map-view',
+    container: containerId,
     center: [props.center[0], props.center[1]],
     style: 'https://api.maptiler.com/maps/basic/style.json?key=kramlD0izE1YxWEKKCus',
     trackResize: true,
@@ -190,13 +192,7 @@ function randomColor() {
   <div>
     <v-progress-linear v-if="loading" :active="loading" indeterminate />
     <v-responsive :aspect-ratio="aspectRatio" height="100%">
-      <div id="map-view" :style="'height:' + height"/>
+      <div :id="containerId" :style="'height:' + height"/>
     </v-responsive>
   </div>
 </template>
-
-<style scoped>
-#map-view {
-  width: 100%;
-}
-</style>

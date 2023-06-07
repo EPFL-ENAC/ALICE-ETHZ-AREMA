@@ -2,6 +2,8 @@
 import { useI18n } from 'vue-i18n'
 import { round } from 'lodash'
 import MapInput from '~/components/MapInput.vue'
+import * as MapboxDrawGeodesic from 'mapbox-gl-draw-geodesic'
+import { geocoderApi } from '~/utils/geocoder'
 import {
   type Feature,
   type MultiPolygon,
@@ -37,7 +39,14 @@ watch(selectedFeatures, async () => {
     const value = selectedFeatures.value.pop()
     value.properties.circleRadius = round(value.properties.circleRadius, 0)
     radius.value = value.properties.circleRadius
-    emit('update:modelValue', value)
+    const center = MapboxDrawGeodesic.getCircleCenter(unref(value))
+    geocoderApi.reverseGeocode({ query: { lon: center[0], lat: center[1] } }).then((collection) => {
+      if (collection && collection.features && collection.features.length) {
+        const location = collection.features.pop()
+        value.properties = { circleRadius: value.properties.circleRadius, ...location.properties}
+      }
+      emit('update:modelValue', value)
+    })
   }
   else {
     radius.value = 0

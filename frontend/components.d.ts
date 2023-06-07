@@ -9,6 +9,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AddressInput: typeof import('./src/components/AddressInput.vue')['default']
     CircleMapInput: typeof import('./src/components/CircleMapInput.vue')['default']
     DisplayImagesUploaded: typeof import('./src/components/DisplayImagesUploaded.vue')['default']
     MapInput: typeof import('./src/components/MapInput.vue')['default']

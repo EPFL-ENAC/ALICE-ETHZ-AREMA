@@ -79,7 +79,7 @@ const polygons = ref(
       </v-col>
       <v-col cols='3'>
         <div class='text-h4'>Model</div>
-        <pre>
+        <pre class="text-left">
           {{ polygons }}
         </pre>
       </v-col>

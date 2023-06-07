@@ -47,13 +47,14 @@ const emit = defineEmits<{
   (e: 'update:selectedFeatures', value: Feature<Polygon | MultiPolygon>[]): void
 }>()
 
+const containerId = 'map-input-' + Math.random().toString(36).slice(2)
 const loading = ref(false)
 let map: Map | undefined = undefined
 let draw: MapboxDraw | undefined = undefined
 
 onMounted(() => {
   map = new Map({
-    container: 'map-input',
+    container: containerId,
     center: [props.center[0], props.center[1]],
     style: 'https://api.maptiler.com/maps/basic/style.json?key=kramlD0izE1YxWEKKCus',
     trackResize: true,
@@ -136,13 +137,7 @@ function drawTrash() {
   <div>
     <v-progress-linear v-if='loading' :active='loading' indeterminate />
     <v-responsive :aspect-ratio='aspectRatio' height='100%'>
-      <div id='map-input' :style="'height:' + height"/>
+      <div :id="containerId" :style="'height:' + height"/>
     </v-responsive>
   </div>
 </template>
-
-<style scoped>
-#map-input {
-  width: 100%;
-}
-</style>
