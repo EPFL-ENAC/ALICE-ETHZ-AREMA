@@ -26,8 +26,10 @@ const { t } = useI18n()
 
 onMounted(() => {
   const feature = unref(props.modelValue)
-  radius.value = feature.properties.circleRadius
-  mapInput.value?.drawFeature(unref(props.modelValue))
+  if (feature && feature.properties) {
+    radius.value = feature.properties.circleRadius
+    mapInput.value?.drawFeature(feature)
+  }
 })
 
 watch(selectedFeatures, async () => {

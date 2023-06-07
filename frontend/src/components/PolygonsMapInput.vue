@@ -15,7 +15,10 @@ const mapInput = ref<InstanceType<typeof MapInput>>()
 const selectedFeatures = ref<Feature<Polygon | MultiPolygon>[]>([])
 
 onMounted(() => {
-  mapInput.value?.drawFeatures(unref(props.modelValue).features)
+  const featureCollection = unref(props.modelValue)
+  if (featureCollection && featureCollection.features) {
+    mapInput.value?.drawFeatures(featureCollection.features)
+  }
 })
 
 watch(selectedFeatures, async () => {
