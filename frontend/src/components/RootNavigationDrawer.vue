@@ -21,17 +21,24 @@
 <script setup lang="ts">
 
 const routes = [{
-  path: 'index',
-  name: 'Home',
+  pathName: 'index',
+  name: 'IndexPage',
 },{
   pathName: 'natural_resources',
   name: 'Natural resources',
 },{
   pathName: 'building_materials',
   name: 'Building materials',
+}
+,{
+  pathName: 'technical_constructions',
+  name: 'Technical constructions',
 },{
   pathName: 'professionals',
   name: 'Professionals',
+},{
+  pathName: 'buildings',
+  name: 'Buildings',
 },{
   pathName: 'test',
   name: 'Test',

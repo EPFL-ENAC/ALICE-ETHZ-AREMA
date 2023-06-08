@@ -8,8 +8,8 @@ assignees: guilbep
 
 ## Prework
 
-- [ ] Read and agree to the [code of conduct](https://https://github.com/EPFL-ENAC/{YOUR-REPO-NAME}/blob/main/CODE_OF_CONDUCT.md).
-- [ ] If there is [already a relevant issue](https://github.com/EPFL-ENAC/{YOUR-REPO-NAME}/issues), whether open or closed, comment on the existing thread instead of posting a new issue.
+- [ ] Read and agree to the [code of conduct](https://https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/blob/main/CODE_OF_CONDUCT.md).
+- [ ] If there is [already a relevant issue](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/issues), whether open or closed, comment on the existing thread instead of posting a new issue.
 - [ ] Post a minimal reproducible example so the maintainer can troubleshoot the problems you identify. A reproducible example is:
   - [ ] **Runnable**
   - [ ] **Minimal**: reduce runtime wherever possible and remove complicated details that are irrelevant to the issue at hand.

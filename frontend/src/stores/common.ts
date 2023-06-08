@@ -1,9 +1,8 @@
 import { ref } from 'vue'
 import { cloneDeep } from 'lodash'
-import type {
-  RegenerativeMaterial,
-  RegenerativeMaterialType,
-} from './regenerativeMaterials'
+import type { RegenerativeMaterial, RegenerativeMaterialType } from '~/definitions/regenerativeMaterials'
+
+import type { SyncDatabase } from '~/utils/couchdb'
 
 export const MSG_DB_DOES_NOT_EXIST = 'Please, init your database'
 
@@ -24,10 +23,12 @@ export interface Image {
 }
 
 export function useCommon<T extends RegenerativeMaterial>(
-  localDB: PouchDB.Database<T>,
+  couchSync: SyncDatabase<T>,
+  // localDB: PouchDB.Database<T>,
   typeStringLiteral: RegenerativeMaterialType,
 ) {
-  const _db = ref<PouchDB.Database<T>>(localDB)
+  const couchDB = couchSync
+  const _db = ref<PouchDB.Database<T>>(couchDB.localDB)
   const loading = ref(false)
   const list = ref([])
   const item = ref(getNew())
@@ -44,7 +45,11 @@ export function useCommon<T extends RegenerativeMaterial>(
     }
   }
 
-  function resolveFun(a, b) {
+  function resetItem(): void {
+    item.value = getNew()
+  }
+
+  function resolveFun(a: { data: RegenerativeMaterial }, b: { data: RegenerativeMaterial }) {
     // cannot merge: return nothing
     if (!a?.data?.updated_at && !b?.data?.updated_at)
       return
@@ -159,7 +164,7 @@ export function useCommon<T extends RegenerativeMaterial>(
   async function save(payload: T, maxtime = 1): any {
     loading.value = true
     let response
-    if (!localDB)
+    if (!_db.value)
       throw new Error(MSG_DB_DOES_NOT_EXIST)
 
     payload.updated_at = new Date().toISOString()
@@ -178,10 +183,10 @@ export function useCommon<T extends RegenerativeMaterial>(
         webkitRelativePath
       */
       // TODO: add loading bar when uploading files
-      if (payload.images) {
-        payload.images_uploaded = await processUpload(payload.images, payload.images_uploaded)
-        delete payload.images
-      }
+      // if (payload.images) {
+      //   payload.images_uploaded = await processUpload(payload.images, payload.images_uploaded)
+      //   delete payload.images
+      // }
       response = await _db.value.rel.save(typeStringLiteral, payload)
     }
     catch (error) {
@@ -232,26 +237,33 @@ export function useCommon<T extends RegenerativeMaterial>(
       throw new Error(`couchdb remove failed ${typeStringLiteral}`, payload)
   }
 
-  async function getAll({ limit = 100, skip = 0 } = {}) {
-    // debugger;
+  async function get(ids: string | string[]) {
+    ;
     if (!_db.value)
       throw new Error(MSG_DB_DOES_NOT_EXIST)
-    const response = await _db.value.rel.find(typeStringLiteral, {
-      limit,
-      skip,
-    })
+    const response = await _db.value.rel.find(typeStringLiteral, ids)
+    // if (Array.isArray(ids))
+    //   mergeView(response)
+    // else
+    item.value = response[`${typeStringLiteral}s`][0]
+    
+    ;
 
+    return item.value
+  }
+
+  function mergeView(response: any) {
     /*
       - 1) transform every object in hash version.
       - 2) create other keys by removing from the set the typeStringLiteral
       - 3) for the main object transform other keys in object list and rename other key in otherKey_ids
       - 4) that'll be good enough.
     */
-
-    const keys = Object.keys(response)
+    const localCopy = cloneDeep(response)
+    const keys = Object.keys(localCopy)
     // keys.reduce((acc1,key) => {acc1[key] = a[key].reduce((acc, el) => {acc[el.id] = el; return acc}, {}); return acc1}, {})
     hashObjects.value = keys.reduce((acc1, key) => {
-      acc1[key] = response[key].reduce((acc2, el) => {
+      acc1[key] = localCopy[key].reduce((acc2, el) => {
         acc2[el.id] = el
         return acc2
       }, {})
@@ -264,24 +276,73 @@ export function useCommon<T extends RegenerativeMaterial>(
     const otherKeys = Array.from(keySet)
     // step 3
     // const transformedMain = []
-    const transformedMain = response[`${typeStringLiteral}s`].map((item) => {
+    const transformedMain = localCopy[`${typeStringLiteral}s`].map((item) => {
       otherKeys.forEach((key) => {
-        item[`${key}_ids`] = item[key]
-        item[`${key}`] = item[key].map(otherKey => hashObjects.value[key][otherKey])
+        // if item[key] is an array
+        if (Object.prototype.hasOwnProperty.call(item, key) && item[key] !== undefined) {
+
+          item[`${key}_objects`] = item[key].map(otherKey => hashObjects.value[key][otherKey])
+        }
+        else {
+          const newKey = key.slice(0, -1);
+          item[`${key}_objects`] = hashObjects.value[key][item[newKey]]
+        }
+        // else item[key] without an 's'
       })
       return item
     })
     // step 4
     list.value = cloneDeep(transformedMain)
-    return response
+    return list.value
+  }
+
+  async function getAll({ limit = 100, skip = 0 } = {}) {
+    ;
+    if (!_db.value)
+      throw new Error(MSG_DB_DOES_NOT_EXIST)
+    const response = await _db.value.rel.find(typeStringLiteral, {
+      limit,
+      skip,
+    })
+    // list.value = response[`${typeStringLiteral}s`]
+    list.value = mergeView(response)
+    // return list.value
+  }
+
+  function init() {
+    couchDB.onLocalChange(
+      (_: any) => {
+        getAll()
+      },
+      {
+        // filter: '_selector', /// here an example of how to make it custom
+        // query_params: {_deleted: true },
+        filter(doc) {
+          const docRel = _db.value.rel.parseDocID(
+            doc._id,
+          )
+          if (docRel.type === typeStringLiteral)
+            return doc
+        },
+      },
+    )
+  }
+
+  function close() {
+    couchDB.closeLocalChanges()
   }
 
   return {
+    init,
+    close,
     save,
     remove,
+    resetItem,
+    get,
     getAll,
     loading,
     list,
+    hashObjects,
     item,
     getNew,
     removeAsset,

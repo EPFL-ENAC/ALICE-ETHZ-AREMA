@@ -1,14 +1,14 @@
-# {YOUR-REPO-NAME} Contributing Guide
+# ALICE-ETHZ-AREMA Contributing Guide
 
-Hi! Thanks for taking the time to contribute to {YOUR-REPO-NAME}.
+Hi! Thanks for taking the time to contribute to ALICE-ETHZ-AREMA.
 
 _You can contribute in many ways_
 
-- Join the [discussion](https://github.com/EPFL-ENAC/{YOUR-REPO-NAME}/discussions)
+- Join the [discussion](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/discussions)
 
 _Before submitting your contribution, please make sure to take a moment and read through the following guidelines_
 
-- [Code of Conduct](https://github.com/EPFL-ENAC/{YOUR-REPO-NAME}/blob/main/CODE_OF_CONDUCT.md)
+- [Code of Conduct](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/blob/main/CODE_OF_CONDUCT.md)
 - [Issue Reporting Guidelines](#issue-reporting-guidelines)
 - [Pull Request Guidelines](#pull-request-guidelines)
 - [Development Setup](#development-setup)
@@ -18,7 +18,7 @@ _Before submitting your contribution, please make sure to take a moment and read
 
 ## Issue Reporting Guidelines
 
-- Always use [ issue templates ](https://github.com/EPFL-ENAC/{YOUR-REPO-NAME}/issues/new/choose)
+- Always use [ issue templates ](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/issues/new/choose)
 - If you don't find a corresponding issue template please use the template to ask a new template
 
 ## Pull Request Guidelines
@@ -182,4 +182,4 @@ We follow a commit message convention, to have consistent git messages. The goal
 
 ## Credits
 
-Thank you to all the people who have already contributed to {YOUR-REPO-NAME} repository!
+Thank you to all the people who have already contributed to ALICE-ETHZ-AREMA repository!

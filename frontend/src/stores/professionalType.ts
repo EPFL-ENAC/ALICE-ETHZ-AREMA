@@ -1,18 +1,17 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { BuildingMaterial } from '~/definitions/regenerativeMaterials'
+import type { ProfessionalType } from '~/definitions/regenerativeMaterials'
 import {
-  buildingMaterial,
+  professionalType,
   useRegenerativeMaterialsStore,
 } from '~/stores/regenerativeMaterials'
-
 import { useCommon } from '~/stores/common'
 
-export const useBuildingMaterialStore = defineStore(buildingMaterial, () => {
+export const useProfessionalTypeStore = defineStore(professionalType, () => {
   const regenerative_materials = useRegenerativeMaterialsStore()
   regenerative_materials.init()
-  const commons = useCommon<BuildingMaterial>(
+  const commons = useCommon<ProfessionalType>(
     regenerative_materials.couchdb,
-    buildingMaterial,
+    professionalType,
   )
 
   return {
@@ -22,6 +21,6 @@ export const useBuildingMaterialStore = defineStore(buildingMaterial, () => {
 
 if (import.meta.hot) {
   import.meta.hot.accept(
-    acceptHMRUpdate(useBuildingMaterialStore, import.meta.hot),
+    acceptHMRUpdate(useProfessionalTypeStore, import.meta.hot),
   )
 }

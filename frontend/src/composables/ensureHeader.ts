@@ -14,7 +14,7 @@ export function ensureHeaders(item: any): RegenerativeMaterialHeader {
     align: 'start',
     name: item.text,
     sortable: false,
-    hideFooterContent: item?.hideFooterContent ?? true,
+    hideFooterContent: item?.hideFooterContent ?? false,
     hideContentInTable: item?.hideContentInTable ?? false,
     hideInput: item.hideInput ?? false,
     label: item.text, // for form-item-component

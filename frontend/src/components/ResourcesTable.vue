@@ -9,11 +9,11 @@
     <v-row justify="end">
       <v-dialog v-model="dialog" persistent width="1024">
         <template v-slot:activator="{ props }">
-          <v-btn color="primary" v-bind="props">
+          <v-btn color="primary" v-bind="props" @click="store.resetItem">
             Add new {{ title }}
           </v-btn>
         </template>
-        <ResourcesCard :loading="loading" @update:dialog="updateDialog" :headers="headers" :title="title"
+        <ResourcesCard :loading="loading" @update:dialog="toggleDialog" :headers="headers" :title="title"
           :modelValue="item" @update:modelValue="saveAndClose" @remove:image="deleteImageAndSave"/>
       </v-dialog>
     </v-row>
@@ -39,10 +39,10 @@
           </div>
         </template>
         <template #[`item.actions`]="localCell">
-          <v-icon size="small" class="me-2" @click.stop="() => openDialog(localCell.item.raw, 'item-dialog')">
+          <v-icon size="small" class="me-2" @click.stop="() => toggleDialogWithItemValue(localCell.item.raw, true)">
             mdi-pencil
           </v-icon>
-          <v-icon size="small" @click="deleteItem(localCell.item.raw, 'delete-item')">
+          <v-icon size="small" @click="deleteItem(localCell.item.raw)">
             mdi-delete
           </v-icon>
         </template>
@@ -56,13 +56,14 @@
 </template>
 
 <script setup lang="ts">
-import { NaturalResource, RegenerativeMaterialHeader } from "~/definitions/regenerativeMaterials";
+import { NaturalResource, RegenerativeMaterial, RegenerativeMaterialHeader } from "~/definitions/regenerativeMaterials";
 
 import { storeToRefs, Store } from "pinia";
 
 import { VDataTable, } from 'vuetify/labs/components'
 import { get as _get } from "lodash";
 import { ImageType } from "~/stores/common";
+import { cloneDeep } from 'lodash';
 
 const props = defineProps<{
   headers: RegenerativeMaterialHeader[],
@@ -90,21 +91,20 @@ const tableHeadersFiltered: RegenerativeMaterialHeader[] = computed(() => {
 
 });
 
-function updateDialog(e: boolean) {
-  loading.value = true;
-  dialog.value = e;
-  item.value = props.store.getNew();
-  loading.value = false;
 
-}
-function openDialog(value: NaturalResource, name: string) {
-  dialog.value = true;
-  item.value = value;
+function toggleDialog(dialogValue: boolean) {
+  dialog.value = dialogValue;
 }
 
-async function saveAndClose(item: NaturalResource): void {
-  const response = await props.store.save(item)
-  dialog.value = false;
+async function toggleDialogWithItemValue(value: NaturalResource, dialogValue: boolean) {
+  // TODO: ad a loading so we can open the dialog asap
+  await props.store.get(value.id)
+  toggleDialog(dialogValue)
+}
+
+async function saveAndClose(localRef: RegenerativeMaterial) {
+  await props.store.save(localRef)
+  toggleDialog(false)
 }
 
 async function deleteImageAndSave(image: ImageType): void {

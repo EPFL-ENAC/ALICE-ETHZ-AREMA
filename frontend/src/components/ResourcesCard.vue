@@ -34,13 +34,13 @@
 
 <script setup lang="ts">
 import { PropType } from 'vue';
-import { RegenerativeMaterialHeader } from "~/definitions/regenerativeMaterials";
+import { RegenerativeMaterial, RegenerativeMaterialHeader } from "~/definitions/regenerativeMaterials";
 import { cloneDeep } from 'lodash';
 import { ImageType } from '~/stores/common';
 const props = defineProps<{
   headers: RegenerativeMaterialHeader[],
   title: string,
-  modelValue: PropType<unknown>,
+  modelValue: PropType<RegenerativeMaterial>,
   loading: boolean,
 }>()
 
@@ -58,12 +58,8 @@ const closeDialog = () => {
 }
 
 
-const save = async (item: unknown) => {
-  $emit('update:modelValue', item)
-}
-
-function whatup(value: any): void {
-  debugger;
+const save = () => {
+  $emit('update:modelValue', item.value)
 }
 
 // TODO: implement disabled if 

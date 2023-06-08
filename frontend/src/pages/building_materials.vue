@@ -47,10 +47,9 @@ const buildingMaterialHeaders: ComputedRef<
       itemValue: 'id',
       text: 'principal constituants (natural resources)', // natural resource name / unique id
       multiple: true,
-      formatter: (value: NaturalResource[],_:any, item: any) => {
-        // debugger;
+      formatter: (value: NaturalResource[], _: any, item: any) => {
         // _objects
-        return value.map(nr => nr.name).join(' ')
+        return item[`${naturalResource}s_objects`].map(nr => nr.name).join(' ')
       },
     },
     {
@@ -61,12 +60,8 @@ const buildingMaterialHeaders: ComputedRef<
       itemTitle: 'name',
       itemValue: 'id',
       multiple: true,
-      formatter: (value: BuildingElement[],_:any, item: any) => {
-        // debugger;
-        // console.log(item)
-        // _objects
-        // return item
-        return value.map(nr => nr.name).join(' ')
+      formatter: (value: BuildingElement[], _: any, item: any) => {
+        return item[`${buildingElement}s_objects`].map(nr => nr.name).join(' ')
       },
     },
     { path: 'input.description', text: 'description', component: VTextarea, md: 12 },

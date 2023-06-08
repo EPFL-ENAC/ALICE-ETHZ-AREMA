@@ -1,6 +1,14 @@
 import type { Component } from 'vue'
 import type { VDataTable } from 'vuetify/lib/labs/components'
-export type RegenerativeMaterialType = 'natural_resource' | 'building_material' | 'professional' | 'professional_type'
+import { Image } from '~/stores/common'
+
+export type RegenerativeMaterialType = | 'naturalResource'
+| 'buildingElement'
+| 'buildingMaterial'
+| 'professionalType'
+| 'professional'
+| 'building'
+| 'technicalConstruction'
 
 export interface RegenerativeMaterial {
   id?: string
@@ -14,13 +22,13 @@ export interface RegenerativeMaterial {
   type: RegenerativeMaterialType
 }
 
-export interface NaturalResource extends RegenerativeMaterial {
+export interface Building extends RegenerativeMaterial {
   name: string
-  zone: string // "wsg84",
-  dimension: string
-  amount: number
 }
 
+export interface BuildingElement extends RegenerativeMaterial {
+  name: string
+}
 export interface BuildingMaterial extends RegenerativeMaterial {
   name: string
   zone: string // "wsg84",
@@ -29,10 +37,27 @@ export interface BuildingMaterial extends RegenerativeMaterial {
   natural_resources: string[]
 }
 
-export interface BuildingElement extends RegenerativeMaterial {
+export interface NaturalResource extends RegenerativeMaterial {
+  name: string
+  zone: string // "wsg84",
+  dimension: string
+  amount: number
+  images: Image[]
+}
+
+export interface Professional extends RegenerativeMaterial {
   name: string
 }
 
+export interface ProfessionalType extends RegenerativeMaterial {
+  name: string
+}
+
+export interface TechnicalConstruction extends RegenerativeMaterial {
+  images: Image[]
+  buildingElement: string
+  buildingMaterial: string
+}
 // headers regarding NaturalREsources
 
 type Headers = InstanceType<typeof VDataTable>['headers']
