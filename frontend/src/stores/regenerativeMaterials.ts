@@ -72,6 +72,9 @@ export const useRegenerativeMaterialsStore = defineStore(
           [`${buildingMaterial}s`]: {
             hasMany: { type: buildingMaterial, options: { async: false } },
           },
+          [`${professionalType}`]: {
+            belongsTo: { type: professionalType, options: { async: false } },
+          },
         },
       },
       {

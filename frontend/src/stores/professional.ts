@@ -14,7 +14,6 @@ export const useProfessionalStore = defineStore(professional, () => {
     professional,
   )
 
-
   return {
     ...commons,
   }

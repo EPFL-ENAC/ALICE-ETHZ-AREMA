@@ -21,6 +21,105 @@ const professionalHeaders: ComputedRef<
       sm: '12',
       md: '12',
     },
+    {
+      path: 'input.adress', // name_nr
+      component: VTextField,
+      text: 'adress', // should also have a unique ID,
+      required: true,
+      cols: '12',
+      sm: '12',
+      md: '12',
+    },
+    {
+      path: 'input.professionalType', // name_nr
+      component: VTextField,
+      text: 'professionalType', // should also have a unique ID,
+      required: true,
+      cols: '12',
+      sm: '12',
+      md: '12',
+    }, // ProfessionalType.name,
+    {
+      path: 'input.buildingMaterials', // name_nr
+      component: VTextField,
+      text: 'buildingMaterials', // should also have a unique ID,
+      required: true,
+      cols: '12',
+      sm: '12',
+      md: '12',
+    }, // expertise for suppliers
+    {
+      path: 'input.naturalResources', // name_nr
+      component: VTextField,
+      text: 'naturalResources', // should also have a unique ID,
+      required: true,
+      cols: '12',
+      sm: '12',
+      md: '12',
+    }, // expertise for supplisers
+    {
+      path: 'input.areaDelivery', // name_nr
+      component: VTextField,
+      text: 'areaDelivery', // should also have a unique ID,
+      required: true,
+      cols: '12',
+      sm: '12',
+      md: '12',
+    },
+    {
+      path: 'input.url', // name_nr
+      component: VTextField,
+      text: 'url', // should also have a unique ID,
+      required: true,
+      cols: '12',
+      sm: '12',
+      md: '12',
+    },
+    {
+      path: 'input.tel', // name_nr
+      component: VTextField,
+      text: 'tel', // should also have a unique ID,
+      required: true,
+      cols: '12',
+      sm: '12',
+      md: '12',
+    },
+    {
+      path: 'input.email', // name_nr
+      component: VTextField,
+      text: 'email', // should also have a unique ID,
+      required: true,
+      cols: '12',
+      sm: '12',
+      md: '12',
+    },
+    {
+      path: 'input.images', // name_nr
+      component: VTextField,
+      text: 'images', // should also have a unique ID,
+      required: true,
+      cols: '12',
+      sm: '12',
+      md: '12',
+    },
+    {
+      path: 'input.logo', // name_nr
+      component: VTextField,
+      text: 'logo', // should also have a unique ID,
+      required: true,
+      cols: '12',
+      sm: '12',
+      md: '12',
+    },
+    {
+      path: 'input.description', // name_nr
+      component: VTextField,
+      text: 'description', // should also have a unique ID,
+      required: true,
+      cols: '12',
+      sm: '12',
+      md: '12',
+    },
     tableActions,
   ].map(ensureHeaders),
 )

@@ -24,6 +24,11 @@ export interface RegenerativeMaterial {
 
 export interface Building extends RegenerativeMaterial {
   name: string
+  adress: string
+  professionals: string[]
+  technicalConstructions: string[]
+  images: Image[]
+  description: string
 }
 
 export interface BuildingElement extends RegenerativeMaterial {
@@ -47,6 +52,17 @@ export interface NaturalResource extends RegenerativeMaterial {
 
 export interface Professional extends RegenerativeMaterial {
   name: string
+  adress: string
+  professionalType: string // ProfessionalType.name,
+  buildingMaterials?: string[] // expertise for suppliers
+  naturalResources?: string[] // expertise for supplisers
+  areaDelivery?: string[]
+  url: string
+  tel: string
+  email: string
+  images: Image[]
+  logo: Image
+  description: string
 }
 
 export interface ProfessionalType extends RegenerativeMaterial {
