@@ -9,14 +9,14 @@ import {
   type MultiPolygon,
   type Polygon,
 } from '@turf/turf'
-import { computed, ref, watch, onMounted, unref } from 'vue'
+import { ref, watch, onMounted, unref } from 'vue'
 
 const props = defineProps(['modelValue', 'center', 'zoom', 'height'])
 const emit = defineEmits(['update:modelValue'])
 
 const address = ref<string>()
 const search = ref<string>()
-const suggestions = ref<string[]>([])
+const suggestions = ref<Feature[]>([])
 const searching = ref<boolean>(false)
 
 const mapInput = ref<InstanceType<typeof MapInput>>()
@@ -80,9 +80,10 @@ function deleteAll() {
   mapInput.value?.deleteAll()
   address.value = undefined
   search.value = undefined
+  suggestions.value = []
 }
 
-function updateWithLocation(location) {
+function updateWithLocation(location: Feature) {
   let value = unref(props.modelValue)
   if (!value)
     value = {
@@ -101,23 +102,26 @@ function updateWithLocation(location) {
 }
 
 function lookupAddress() {
-  if (search.value && search.value.length > 3) {
+  if (search.value && search.value.length > 2) {
     searching.value = true
-    geocoderApi.forwardGeocode({ query: search.value, limit: 3 }).then((collection) => {
+    geocoderApi.forwardGeocode({ query: search.value, limit: 5 }).then((collection) => {
       searching.value = false
       if (collection && collection.features && collection.features.length) {
-        suggestions.value = collection.features.map(feature => feature.properties.display_name)
-        const location = collection.features.pop()
-        updateWithLocation(location)
+        suggestions.value = collection.features //.map(feature => feature.properties.display_name)
       }
     })
+  }
+  else {
+    suggestions.value = []
   }
 }
 
 const delayedLookupAddress = debounce(lookupAddress, 500)
 
-watch(address, () => {
-  console.log(address)
+watch(address, (newAddress) => {
+  const location = suggestions.value.filter(feature => feature.properties.display_name === newAddress).pop()
+  if (location)
+    updateWithLocation(location)
 })
 
 </script>
@@ -147,8 +151,10 @@ watch(address, () => {
         :items="suggestions"
         :loading="searching"
         :label="$t('address')"
+        item-title="text"
         hide-no-data
         auto-select-first
+        menu
         prepend-inner-icon="mdi-office-building-marker"
       />
       <v-text-field 
