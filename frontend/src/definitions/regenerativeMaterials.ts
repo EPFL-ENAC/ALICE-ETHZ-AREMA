@@ -26,7 +26,11 @@ export interface Building extends RegenerativeMaterial {
   name: string
   adress: string
   professionals: string[]
+  professionals_objects?: Record<string, Professional>
+
   technicalConstructions: string[]
+  technicalConstructions_objects?: Record<string, TechnicalConstruction>
+
   images: Image[]
   description: string
 }
@@ -72,7 +76,9 @@ export interface ProfessionalType extends RegenerativeMaterial {
 export interface TechnicalConstruction extends RegenerativeMaterial {
   images: Image[]
   buildingElement: string
+  buildingElements_objects?: Record<string, BuildingElement>
   buildingMaterial: string
+  buildingMaterials_objects?: Record<string, BuildingMaterial>
 }
 // headers regarding NaturalREsources
 

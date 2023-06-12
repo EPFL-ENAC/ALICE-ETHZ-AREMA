@@ -238,17 +238,14 @@ export function useCommon<T extends RegenerativeMaterial>(
   }
 
   async function get(ids: string | string[]) {
-    ;
     if (!_db.value)
       throw new Error(MSG_DB_DOES_NOT_EXIST)
     const response = await _db.value.rel.find(typeStringLiteral, ids)
     // if (Array.isArray(ids))
     //   mergeView(response)
     // else
+    // TODO: improve get function
     item.value = response[`${typeStringLiteral}s`][0]
-    
-    ;
-
     return item.value
   }
 
@@ -280,11 +277,10 @@ export function useCommon<T extends RegenerativeMaterial>(
       otherKeys.forEach((key) => {
         // if item[key] is an array
         if (Object.prototype.hasOwnProperty.call(item, key) && item[key] !== undefined) {
-
           item[`${key}_objects`] = item[key].map(otherKey => hashObjects.value[key][otherKey])
         }
         else {
-          const newKey = key.slice(0, -1);
+          const newKey = key.slice(0, -1)
           item[`${key}_objects`] = hashObjects.value[key][item[newKey]]
         }
         // else item[key] without an 's'
@@ -297,7 +293,6 @@ export function useCommon<T extends RegenerativeMaterial>(
   }
 
   async function getAll({ limit = 100, skip = 0 } = {}) {
-    ;
     if (!_db.value)
       throw new Error(MSG_DB_DOES_NOT_EXIST)
     const response = await _db.value.rel.find(typeStringLiteral, {

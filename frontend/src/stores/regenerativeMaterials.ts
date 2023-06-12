@@ -94,6 +94,9 @@ export const useRegenerativeMaterialsStore = defineStore(
           [`${professional}s`]: {
             hasMany: { type: professional, options: { async: false } },
           },
+          [`${technicalConstruction}s`]: {
+            hasMany: { type: technicalConstruction, options: { async: false } },
+          },
         },
       },
     ])
