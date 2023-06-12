@@ -81,6 +81,7 @@ onMounted(() => {
   })
   map.addControl(draw as unknown as IControl)
   
+  map.on('draw.add', updateArea)
   map.on('draw.create', updateArea)
   map.on('draw.delete', updateArea)
   map.on('draw.update', updateArea)

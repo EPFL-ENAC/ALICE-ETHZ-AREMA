@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, unref, watch } from 'vue'
+import { debounce } from 'lodash'
 import { geocoderApi } from '~/utils/geocoder'
 
 const props = defineProps(['modelValue', 'center', 'zoom', 'height'])
@@ -14,19 +15,25 @@ onMounted(() => {
     search.value = feature.text
 })
 
+function lookupAddress() {
+  geocoderApi.forwardGeocode({ query: search.value, limit: 1 }).then((collection) => {
+    loading.value = false
+    if (collection && collection.features && collection.features.length) {
+      const value = collection.features.pop()
+      emit('update:modelValue', value)
+    }
+    else {
+      emit('update:modelValue', null)
+    }
+  })
+}
+
+const delayedLookupAddress = debounce(lookupAddress, 500)
+
 watch(search, async () => {
   if (search.value && search.value.length > 3) {
     loading.value = true
-    geocoderApi.forwardGeocode({ query: search.value, limit: 1 }).then((collection) => {
-      loading.value = false
-      if (collection && collection.features && collection.features.length) {
-        const value = collection.features.pop()
-        emit('update:modelValue', value)
-      }
-      else {
-        emit('update:modelValue', null)
-      }
-    })
+    delayedLookupAddress()
   }
 })
 

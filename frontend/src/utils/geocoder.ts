@@ -1,23 +1,29 @@
+import { debounce } from 'lodash'
+
 function handleNominatimResponse(geojson: any): any[] {
   const features = []
+  const place_names: string[] = []
   for (const feature of geojson.features.filter((f: any) => f.properties.address.country_code === 'ch')) {
-    const center = [
-      feature.bbox[0] + (feature.bbox[2] - feature.bbox[0]) / 2,
-      feature.bbox[1] + (feature.bbox[3] - feature.bbox[1]) / 2,
-    ]
-    const point = {
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: center,
-      },
-      place_name: feature.properties.display_name,
-      properties: feature.properties,
-      text: feature.properties.display_name,
-      place_type: ['place'],
-      center,
+    if (!place_names.includes(feature.properties.display_name)) {
+      const center = [
+        feature.bbox[0] + (feature.bbox[2] - feature.bbox[0]) / 2,
+        feature.bbox[1] + (feature.bbox[3] - feature.bbox[1]) / 2,
+      ]
+      const point = {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: center,
+        },
+        place_name: feature.properties.display_name,
+        properties: feature.properties,
+        text: feature.properties.display_name,
+        place_type: ['place'],
+        center,
+      }
+      place_names.push(feature.properties.display_name)
+      features.push(point)
     }
-    features.push(point)
   }
   return features
 }
@@ -72,4 +78,9 @@ export const geocoderApi = {
       features,
     }
   },
+}
+
+export const delayedGeocoderApi = {
+  forwardGeocode: debounce(geocoderApi.forwardGeocode, 500),
+  reverseGeocode: debounce(geocoderApi.reverseGeocode, 500),
 }
