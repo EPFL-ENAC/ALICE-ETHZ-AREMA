@@ -2,6 +2,7 @@
 import { VTextField } from 'vuetify/components'
 import type { RegenerativeMaterialHeader } from '~/definitions/regenerativeMaterials'
 import { useProfessionalStore } from '~/stores/professional'
+import CircleMapInput from '~/components/CircleMapInput.vue'
 
 // access the `store` variable anywhere in the component ✨
 const store = useProfessionalStore()
@@ -16,15 +17,6 @@ const professionalHeaders: ComputedRef<
       path: 'input.name', // name_nr
       component: VTextField,
       text: 'Unique name of professionals*', // should also have a unique ID,
-      required: true,
-      cols: '12',
-      sm: '12',
-      md: '12',
-    },
-    {
-      path: 'input.adress', // name_nr
-      component: VTextField,
-      text: 'adress', // should also have a unique ID,
       required: true,
       cols: '12',
       sm: '12',
@@ -58,10 +50,12 @@ const professionalHeaders: ComputedRef<
       md: '12',
     }, // expertise for supplisers
     {
-      path: 'input.areaDelivery', // name_nr
-      component: VTextField,
-      text: 'areaDelivery', // should also have a unique ID,
+      path: 'input.zone', // zone_nr
+      height: '200px',
+      component: CircleMapInput,
+      text: 'location and area', // address, coordinate + radius
       required: true,
+      hideContentInTable: true,
       cols: '12',
       sm: '12',
       md: '12',

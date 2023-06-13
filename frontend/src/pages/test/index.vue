@@ -15,5 +15,10 @@
         WebMap test
       </v-btn>
     </v-row>
+    <v-row class="mb-5">
+      <v-btn href="test/address">
+        Address test
+      </v-btn>
+    </v-row>
   </v-sheet>
 </template>

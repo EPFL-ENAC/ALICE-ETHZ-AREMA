@@ -5,5 +5,9 @@
       "circle": "Draw a circle",
       "trash": "Delete",
       "deleteAll": "Delete all"
-    }
+    },
+    "address": "Address",
+    "radius": "Radius",
+    "minRadiusValid": "Radius should not be below {n}km",
+    "maxRadiusValid": "Radius should not be above {n}km"
 }

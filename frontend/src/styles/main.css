@@ -9,3 +9,8 @@ body,
 html.dark {
   background: #121212;
 }
+
+.maplibregl-ctrl-geocoder--result-title, .maplibregl-ctrl-geocoder--result-address {
+  text-align: left;
+  white-space: inherit !important;
+}

@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import WebMap from '~/components/WebMap.vue'
 
-const polygons = ref([
+const polygons = [
   {
     id: '4e9da6ffac5d70c8e932aae47014d91b',
     type: 'Feature',
@@ -63,7 +63,9 @@ const polygons = ref([
       type: 'Polygon'
     }
   },
-  {
+]
+
+const circle = {
     id: 'f3cb5b94f5ded23a10aed21038b72b29',
     type: 'Feature',
     properties: {
@@ -73,43 +75,47 @@ const polygons = ref([
       coordinates: [
         [
           [
-            7.819782917575878,
-            46.91568538815676,
+            6.558941929699046,
+            46.6162192918772
           ],
           [
-            7.819782917575878,
-            46.91568538815676,
+            6.558941929699046,
+            46.6162192918772
           ],
           [
-            7.819782917575878,
-            46.91568538815676,
+            6.558941929699046,
+            46.6162192918772
           ],
           [
-            7.819782917575878,
-            46.91568538815676,
+            6.558941929699046,
+            46.6162192918772
           ],
         ],
       ],
       type: 'Polygon',
     },
   }
-],
-)
+
+const areas = ref([{
+  type: 'FeatureCollection',
+  features: polygons
+}, circle])
+
 </script>
 
 <template>
   <v-sheet>
     <v-row class='text-h4'>WebMap</v-row>
     <v-row>
-      <v-col cols='9'>
-        <WebMap v-model='polygons' />
+      <v-col cols='12'>
+        <WebMap v-model='areas' />
       </v-col>
-      <v-col cols='3'>
+      <!-- <v-col cols='3'>
         <div class='text-h4'>Model</div>
         <pre>
-          {{ polygons }}
+          {{ areas }}
         </pre>
-      </v-col>
+      </v-col> -->
     </v-row>
   </v-sheet>
 </template>

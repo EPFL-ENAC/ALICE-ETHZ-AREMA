@@ -77,6 +77,10 @@ export default defineConfig({
     environment: 'jsdom',
   },
 
+  build: {
+    sourcemap: true,
+  },
+
   server: {
     // https://vitejs.dev/config/server-options.html#server-proxy
     proxy: {

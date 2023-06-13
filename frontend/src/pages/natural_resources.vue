@@ -26,7 +26,7 @@ const naturalResourceHeaders: ComputedRef<
     },
     {
       path: 'input.zone', // zone_nr
-      height: '100px',
+      height: '200px',
       component: PolygonsMapInput,
       text: 'geographic or geologic provenience', // polygon or coordinate + radius
       required: true,
