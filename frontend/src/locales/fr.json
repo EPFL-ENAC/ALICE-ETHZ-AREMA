@@ -3,6 +3,7 @@
     "draw": {
       "polygon": "Dessiner un polygone",
       "circle": "Dessiner un cercle",
+      "point": "Dessiner un point",
       "trash": "Supprimer",
       "deleteAll": "Supprimer tout"
     },

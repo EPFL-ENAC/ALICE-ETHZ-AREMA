@@ -3,6 +3,7 @@ import { VSelect, VTextField } from 'vuetify/components'
 import type { Professional, RegenerativeMaterialHeader, TechnicalConstruction } from '~/definitions/regenerativeMaterials'
 import { Building } from '~/definitions/regenerativeMaterials'
 import { useBuildingStore } from '~/stores/building'
+import PointMapInput from '~/components/PointMapInput.vue'
 
 // professionals, technicalConstructions
 import { useProfessionalStore } from '~/stores/professional'
@@ -44,9 +45,10 @@ const buildingHeaders: ComputedRef<
       md: '12',
     },
     {
-      path: 'input.adress', // name_nr
-      component: VTextField,
-      text: 'adress', // should also have a unique ID,
+      path: 'input.address', // name_nr
+      height: '200px',
+      component: PointMapInput,
+      text: 'address', // should also have a unique ID,
       required: true,
       cols: '12',
       sm: '12',
