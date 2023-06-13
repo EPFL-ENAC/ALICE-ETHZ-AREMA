@@ -1,21 +1,21 @@
 <script setup lang='ts'>
 import { ref } from 'vue'
-import AddressInput from '~/components/AddressInput.vue'
+import PointMapInput from '~/components/PointMapInput.vue'
 
-const feature = ref()
+const point = ref()
 </script>
 
 <template>
   <v-sheet>
-    <v-row class="text-h4">AddressInput</v-row>
+    <v-row class="text-h4">PointMapInput</v-row>
     <v-row>
       <v-col cols='9'>
-        <AddressInput v-model="feature" height="800px"/>
+        <PointMapInput v-model="point" height="800px"/>
       </v-col>
       <v-col cols='3'>
         <div class="text-h4">Model</div>
         <pre class="text-left">
-          {{ feature }}
+          {{ point }}
         </pre>
       </v-col>
     </v-row>

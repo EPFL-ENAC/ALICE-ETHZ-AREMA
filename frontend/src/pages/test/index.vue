@@ -1,6 +1,11 @@
 <template>
   <v-sheet>
     <v-row class="mb-5">
+      <v-btn href="test/point">
+        PointMapInput test
+      </v-btn>
+    </v-row>
+    <v-row class="mb-5">
       <v-btn href="test/circle">
         CircleMapInput test
       </v-btn>
@@ -13,11 +18,6 @@
     <v-row class="mb-5">
       <v-btn href="test/map">
         WebMap test
-      </v-btn>
-    </v-row>
-    <v-row class="mb-5">
-      <v-btn href="test/address">
-        Address test
       </v-btn>
     </v-row>
   </v-sheet>
