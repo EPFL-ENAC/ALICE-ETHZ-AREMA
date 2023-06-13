@@ -22,7 +22,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
 
 // Composables
-
+window.global ||= window
 const app = createApp(App)
 
 const router = createRouter({

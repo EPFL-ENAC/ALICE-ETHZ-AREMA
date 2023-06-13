@@ -14,7 +14,6 @@ declare module '@vue/runtime-core' {
     DisplayImagesUploaded: typeof import('./src/components/DisplayImagesUploaded.vue')['default']
     MapInput: typeof import('./src/components/MapInput.vue')['default']
     MapView: typeof import('./src/components/MapView.vue')['default']
-    NaturalResourcesCard: typeof import('./src/components/NaturalResources/NaturalResourcesCard.vue')['default']
     PolygonsMapInput: typeof import('./src/components/PolygonsMapInput.vue')['default']
     ResourcesCard: typeof import('./src/components/ResourcesCard.vue')['default']
     ResourcesTable: typeof import('./src/components/ResourcesTable.vue')['default']

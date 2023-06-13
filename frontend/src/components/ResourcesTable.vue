@@ -18,7 +18,8 @@
       </v-dialog>
     </v-row>
     <v-row justify="center" v-if="list">
-      <v-data-table :loading="loading" v-model:items-per-page="itemsPerPage" :headers="tableHeaders" :items="list"
+      <v-data-table 
+        v-model:page="page" :loading="loading" v-model:items-per-page="itemsPerPage" :headers="tableHeaders" :items="list"
         class="elevation-1">
         <template v-for="(tableHeader, $tableHeaderIndex) in tableHeadersFiltered"
           #[`item.${tableHeader.key}`]="localCell" :key="$tableHeaderIndex">
@@ -49,7 +50,26 @@
         <template v-slot:no-data>
           no data...
         </template>
-
+        <template v-slot:bottom>
+          <div class="text-center pt-2">
+            <v-pagination
+              :model-value="page"
+              @update:model-value="updatePage"
+              :total-visible="7"
+              :length="listLength/itemsPerPage"
+            ></v-pagination>
+            <v-text-field
+              :model-value="itemsPerPage"
+              @update:model-value="updateItemsPerPage"
+              class="pa-2"
+              label="Items per page"
+              type="number"
+              min="-1"
+              max="15"
+              hide-details
+            ></v-text-field>
+          </div>
+        </template>
       </v-data-table>
     </v-row>
   </v-sheet>
@@ -72,10 +92,12 @@ const props = defineProps<{
 }>()
 
 // access the `store` variable anywhere in the component ✨
-const { item, list, loading } = storeToRefs(props.store)
+const { item, list, loading, listLength } = storeToRefs(props.store)
 const headers = toRef(props, 'headers')
 const dialog = ref(false);
-let itemsPerPage = 20;
+// @update:page="updatePage"
+const page = ref(1)
+const itemsPerPage = ref(20);
 
 const tableHeaders: RegenerativeMaterialHeader[] = computed(() => {
   return headers.value.filter(
@@ -94,6 +116,17 @@ const tableHeadersFiltered: RegenerativeMaterialHeader[] = computed(() => {
 
 function toggleDialog(dialogValue: boolean) {
   dialog.value = dialogValue;
+}
+
+function updateItemsPerPage(value: number): void {
+  itemsPerPage.value = value
+  fetchData()
+}
+
+
+function updatePage(value: number): void {
+  page.value = value
+  fetchData()
 }
 
 async function toggleDialogWithItemValue(value: NaturalResource, dialogValue: boolean) {
@@ -117,8 +150,8 @@ async function deleteItem(value: NaturalResource) {
   await props.store.remove(value);
 }
 async function fetchData() {
-  await props.store.init()
-  await props.store.getAll()
+  console.log('fetch data', page.value, itemsPerPage.value)
+  await props.store.getAll({ limit: itemsPerPage.value, skip: (page.value - 1) * itemsPerPage.value })
 }
 // // const router = useRouter()
 const route = useRoute()
@@ -131,6 +164,9 @@ watch(
   { immediate: true }
 )
 
+onBeforeMount(async() => {
+  await props.store.init() // todo improve
+})
 onBeforeUnmount(async () => {
   await props.store.close()
 })

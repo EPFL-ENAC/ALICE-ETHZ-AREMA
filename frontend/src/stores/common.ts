@@ -50,6 +50,7 @@ export function useCommon<T extends RegenerativeMaterial>(
   const list = ref([])
   const item = ref(getNew())
   const hashObjects = ref({})
+  const listLength = ref(0)
 
   function getNew(): RegenerativeMaterial {
     const date = new Date().toISOString()
@@ -294,6 +295,9 @@ export function useCommon<T extends RegenerativeMaterial>(
   async function getAll({ limit = 100, skip = 0 } = {}) {
     if (!_db.value)
       throw new Error(MSG_DB_DOES_NOT_EXIST)
+    // const { rows } = await _db.value.query(`${typeStringLiteral}/count`)
+    // debugger
+    listLength.value = 100; //rows[0].value
     const response = await _db.value.rel.find(typeStringLiteral, {
       limit,
       skip,
@@ -336,6 +340,7 @@ export function useCommon<T extends RegenerativeMaterial>(
     getAll,
     loading,
     list,
+    listLength,
     hashObjects,
     item,
     getNew,

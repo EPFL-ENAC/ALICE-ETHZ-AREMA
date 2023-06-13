@@ -15,9 +15,9 @@ import topLevelAwait from 'vite-plugin-top-level-await'
 
 // https://github.com/pouchdb/pouchdb/issues/8607
 export default defineConfig({
-  define: {
-    global: 'window',
-  },
+  // define: {
+  //   global: {},
+  // },
   // build: {
   //   commonjsOptions: {
   //     transformMixedEsModules: true,

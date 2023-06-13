@@ -2,7 +2,8 @@ import PouchDB from 'pouchdb-browser'
 import find from 'pouchdb-find'
 import rel from 'relational-pouch'
 import resolveConflicts from 'pouch-resolve-conflicts'
-import pouchdbDebug from 'pouchdb-debug'
+
+// import pouchdbDebug from 'pouchdb-debug'
 // import pouchdbQuickSearch from 'pouchdb-quick-search'
 
 PouchDB.plugin(find)
@@ -10,10 +11,10 @@ PouchDB.plugin(rel)
 PouchDB.plugin(resolveConflicts)
 // PouchDB.plugin(pouchdbQuickSearch);
 // only for dev
-if (import.meta.env.DEV) {
-  PouchDB.plugin(pouchdbDebug)
-  PouchDB.debug.enable('*')
-}
+// if (import.meta.env.DEV) {
+//   PouchDB.plugin(pouchdbDebug)
+//   PouchDB.debug.enable('*')
+// }
 // import qs from 'qs'
 
 export type ExistingDocument<T extends {}> = PouchDB.Core.ExistingDocument<T>
@@ -83,20 +84,33 @@ export class SyncDatabase<T extends {}> {
         timeout: 30000,
         batches_limit: 2,
         since: 'now',
-        live: true,
+        live: false,
         retry: true,
         back_off_function(delay: number) {
           if (delay === 27000 || delay === 0)
             return 1000
           return delay * 3
         },
-      },
-      (error: any, result: any) => {
+      })
+      .on('change', (change) => {
+        // debugger
+        console.log(change)
+        // yo, something changed!
+      }).on('paused', (info) => {
+        console.log(info)
+        // replication was paused, usually because of a lost connection
+      }).on('active', (info) => {
+        // replication was resumed
+        console.log(info)
+      })
+      .on('complete', (result) => {
+        console.log(result)
+        // yay, we're in sync!
+      }).on('error', (error) => {
+        // boo, we hit an error!
         if (error)
           console.error(error)
-        else console.log('sync', result)
-      },
-    )
+      })
     this.localDB = localDB
     this.remoteDB = remoteDB
   }
