@@ -114,37 +114,37 @@ const buildingHeaders: ComputedRef<
     tableActions,
   ].map(ensureHeaders),
 )
-let loading = ref(false)
-const items: Ref<string[]> = ref([])
-let search: Ref<string> = ref("")
-let select: Ref<string> = ref("")
+// let loading = ref(false)
+// const items: Ref<string[]> = ref([])
+// let search: Ref<string> = ref("")
+// let select: Ref<string> = ref("")
 
 
-async function querySelections(v: string) {
-  // debounce query serach
-  loading.value = true
-  // Simulated ajax query
-  items.value = await professionalStore.getAll({ limit: 5 })
-  loading.value = false
-  // setTimeout(() => {
-  //   items.value = states.filter(e => {
-  //     return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
-  //   })
-  //   loading.value = false
-  // }, 500)
-}
-const debounceQuerySelections = debounce(querySelections, 300)
+// async function querySelections(v: string) {
+//   // debounce query serach
+//   loading.value = true
+//   // Simulated ajax query
+//   items.value = await professionalStore.getAll({ limit: 5 })
+//   loading.value = false
+//   // setTimeout(() => {
+//   //   items.value = states.filter(e => {
+//   //     return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
+//   //   })
+//   //   loading.value = false
+//   // }, 500)
+// }
+// const debounceQuerySelections = debounce(querySelections, 300)
 
 </script>
 
 <template>
   <v-sheet>
-    {{ items }}
-    {{ select }}
-    <v-autocomplete v-model="select"
+    <!-- {{ items }}
+    {{ select }} -->
+    <!-- <v-autocomplete v-model="select"
       v-model:search="search" @update:search="debounceQuerySelections" :loading="loading"
       :items="items" item-title="name" item-value="id" class="mx-4" density="comfortable" hide-no-data hide-details
-      label="professional" style="max-width: 300px;"></v-autocomplete>
+      label="professional" style="max-width: 300px;"></v-autocomplete> -->
 
     <ResourcesTable :title="title" :headers="buildingHeaders" :store="store" :loading="loadingOther" />
   </v-sheet>
