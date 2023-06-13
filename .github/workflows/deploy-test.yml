@@ -1,0 +1,18 @@
+---
+# https://github.com/EPFL-ENAC/github-actions-runner#readme
+name: deploy-test
+"on":
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: EPFL-ENAC/epfl-enac-deploy-action@main
+        with:
+          ENAC_IT4R_CD_environment: "test"
+          ENAC_IT4R_CD_deployment_id: ${{ secrets.CD_TEST_ID }}
+          ENAC_IT4R_CD_deployment_secret: ${{ secrets.CD_TEST_SECRET }}
+          timeout: "1000"

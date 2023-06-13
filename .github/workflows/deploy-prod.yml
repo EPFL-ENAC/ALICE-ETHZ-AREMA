@@ -1,0 +1,18 @@
+---
+# https://github.com/EPFL-ENAC/github-actions-runner#readme
+name: deploy-prod
+"on":
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: EPFL-ENAC/epfl-enac-deploy-action@main
+        with:
+          ENAC_IT4R_CD_environment: "prod"
+          ENAC_IT4R_CD_deployment_id: ${{ secrets.CD_PROD_ID }}
+          ENAC_IT4R_CD_deployment_secret: ${{ secrets.CD_PROD_SECRET }}
+          timeout: "1000"
