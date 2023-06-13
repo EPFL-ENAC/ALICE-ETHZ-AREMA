@@ -1,6 +1,7 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { SyncDatabase } from '~/utils/couchdb'
 import type { RegenerativeMaterial } from '~/definitions/regenerativeMaterials'
+import { resolveFun } from '~/stores/common'
 
 const DB_NAME = 'regenerative_materials'
 
@@ -101,66 +102,8 @@ export const useRegenerativeMaterialsStore = defineStore(
       },
     ])
 
-    async function init() {
-      // TODO: make english/german translation as key
-      const building_elements = [
-        { definition: 'structure', name: 'Foundation' },
-        { definition: 'structure', name: 'Floor slab Ground Floor' },
-        { definition: 'structure', name: 'Ext. Wall Above Ground' },
-        { definition: 'structure', name: 'Ext Wall Under Ground' },
-        { definition: 'structure', name: 'Balcony' },
-        { definition: 'structure', name: 'Int Wall' },
-        { definition: 'structure', name: 'Roof' },
-        { definition: 'structure', name: 'Ceiling' },
-        { definition: 'structure', name: 'Column' },
-        { definition: 'structure', name: 'Stair' },
-        { definition: 'envelope', name: 'Roof covering' },
-        { definition: 'envelope', name: 'Ext Thermal Insul' },
-        { definition: 'envelope', name: 'Int Thermal Insul' },
-        { definition: 'envelope', name: 'Window & Door' },
-        { definition: 'envelope', name: 'Ext. Wall finishing UG' },
-        { definition: 'envelope', name: 'Ext. Wall finishing AG' },
-        { definition: 'envelope', name: 'Sun & Weather Protection' },
-        { definition: 'interior', name: 'Int Wall finishing' },
-        { definition: 'interior', name: 'Int Door' },
-        { definition: 'interior', name: 'Partition wall' },
-        { definition: 'interior', name: 'Ceiling finishing' },
-        { definition: 'interior', name: 'Floor covering' },
-        { definition: 'tech equipement', name: 'Heat generation' },
-        { definition: 'tech equipement', name: 'Heat distribution & delivery' },
-        { definition: 'tech equipement', name: 'Vent equip' },
-        { definition: 'tech equipement', name: 'Water equipement' },
-      ].map((x, index) => ({...x, id: `BE${index + 1}`}))
-      const existingsBE = await couchdb.value.localDB.rel.find(buildingElement, building_elements.map(x => x.id))
-      const existingsBEIds = existingsBE?.[`${buildingElement}s`]?.map(be => be.id) ?? []
-
-      building_elements.forEach(async (value) => {
-        // get and create if it does not exist.
-        if (!existingsBEIds.includes(value.id))
-          couchdb.value.localDB.rel.save(buildingElement, value)
-      })
-
-      // TODO: make english/german translation as key
-      const professional_types = [
-        'civil engineer',
-        'supplier',
-        'craftsmen',
-        'building physics',
-        'association',
-        'construction firms',
-        'dealer',
-      ].map((x, index) => ({value: x, id: `PT${index + 1}`}))
-      const existingsPT = await couchdb.value.localDB.rel.find(professionalType, professional_types.map(x => x.id))
-      const existingsPTIds = existingsPT?.[`${professionalType}s`]?.map(pt => pt.id) ?? []
-      professional_types.forEach(async (value) => {
-        if (!existingsPTIds.includes(value.id))
-          couchdb.value.localDB.rel.save(professionalType, value)
-      })
-    }
-
     return {
       couchdb,
-      init,
     }
   },
 )

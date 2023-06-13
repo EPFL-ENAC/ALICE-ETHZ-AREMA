@@ -59,7 +59,7 @@ const professionalHeaders: ComputedRef<
       multiple: false,
       formatter: (value: ProfessionalType[], _: any, item: any) => {
         // _objects
-        return item[`${professionalType}s_objects`].value
+        return item?.[`${professionalType}s_objects`]?.value
       },
     }, // ProfessionalType.name,
     {
@@ -76,7 +76,7 @@ const professionalHeaders: ComputedRef<
       multiple: true,
       formatter: (value: BuildingMaterial[], _: any, item: any) => {
         // _objects
-        return item[`${buildingMaterial}s_objects`].map((obj: BuildingMaterial) => obj.name).join(' ')
+        return item?.[`${buildingMaterial}s_objects`]?.map((obj: BuildingMaterial) => obj.name).join(' ')
       },
     }, // expertise for suppliers
     {
@@ -93,7 +93,7 @@ const professionalHeaders: ComputedRef<
       multiple: true,
       formatter: (value: NaturalResource[], _: any, item: any) => {
         // _objects
-        return item[`${naturalResource}s_objects`].map((obj: NaturalResource) => obj.name).join(' ')
+        return item?.[`${naturalResource}s_objects`]?.map((obj: NaturalResource) => obj.name).join(' ')
       },
     }, // expertise for supplisers
     {

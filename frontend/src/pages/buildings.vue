@@ -8,7 +8,7 @@ import { useBuildingStore } from '~/stores/building'
 import { useProfessionalStore } from '~/stores/professional'
 import { professional, technicalConstruction } from '~/stores/regenerativeMaterials'
 import { useTechnicalConstructionStore } from '~/stores/technicalConstruction'
-
+import { debounce } from 'lodash'
 // access the `store` variable anywhere in the component ✨
 const store = useBuildingStore()
 const title = 'Building'
@@ -17,12 +17,12 @@ const title = 'Building'
 const professionalStore = useProfessionalStore()
 const technicalConstructionStore = useTechnicalConstructionStore()
 
-const loading = ref(false)
+const loadingOther = ref(false)
 onMounted(async () => {
-  loading.value = true
+  loadingOther.value = true
   await professionalStore.getAll()
   await technicalConstructionStore.getAll()
-  loading.value = false
+  loadingOther.value = false
 })
 
 onBeforeUnmount(async () => {
@@ -112,10 +112,38 @@ const buildingHeaders: ComputedRef<
     tableActions,
   ].map(ensureHeaders),
 )
+let loading = ref(false)
+const items: Ref<string[]> = ref([])
+let search: Ref<string> = ref("")
+let select: Ref<string> = ref("")
+
+
+async function querySelections(v: string) {
+  // debounce query serach
+  loading.value = true
+  // Simulated ajax query
+  items.value = await professionalStore.getAll({ limit: 5 })
+  loading.value = false
+  // setTimeout(() => {
+  //   items.value = states.filter(e => {
+  //     return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
+  //   })
+  //   loading.value = false
+  // }, 500)
+}
+const debounceQuerySelections = debounce(querySelections, 300)
+
 </script>
 
 <template>
   <v-sheet>
-    <ResourcesTable :title="title" :headers="buildingHeaders" :store="store" :loading="loading" />
+    {{ items }}
+    {{ select }}
+    <v-autocomplete v-model="select"
+      v-model:search="search" @update:search="debounceQuerySelections" :loading="loading"
+      :items="items" item-title="name" item-value="id" class="mx-4" density="comfortable" hide-no-data hide-details
+      label="professional" style="max-width: 300px;"></v-autocomplete>
+
+    <ResourcesTable :title="title" :headers="buildingHeaders" :store="store" :loading="loadingOther" />
   </v-sheet>
 </template>

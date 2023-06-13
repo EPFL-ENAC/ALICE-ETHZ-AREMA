@@ -8,7 +8,7 @@ import { useCommon } from '~/stores/common'
 
 export const useProfessionalTypeStore = defineStore(professionalType, () => {
   const regenerative_materials = useRegenerativeMaterialsStore()
-  regenerative_materials.init()
+  
   const commons = useCommon<ProfessionalType>(
     regenerative_materials.couchdb,
     professionalType,

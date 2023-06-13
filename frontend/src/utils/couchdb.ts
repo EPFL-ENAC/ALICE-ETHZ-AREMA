@@ -2,10 +2,18 @@ import PouchDB from 'pouchdb-browser'
 import find from 'pouchdb-find'
 import rel from 'relational-pouch'
 import resolveConflicts from 'pouch-resolve-conflicts'
+import pouchdbDebug from 'pouchdb-debug'
+// import pouchdbQuickSearch from 'pouchdb-quick-search'
 
 PouchDB.plugin(find)
 PouchDB.plugin(rel)
 PouchDB.plugin(resolveConflicts)
+// PouchDB.plugin(pouchdbQuickSearch);
+// only for dev
+if (import.meta.env.DEV) {
+  PouchDB.plugin(pouchdbDebug)
+  PouchDB.debug.enable('*')
+}
 // import qs from 'qs'
 
 export type ExistingDocument<T extends {}> = PouchDB.Core.ExistingDocument<T>
@@ -23,7 +31,8 @@ export const designDocumentPrefix = '_design/'
 function url(value = ''): string {
   try {
     return new URL(value).toString()
-  } catch {
+  }
+  catch {
     const url = new URL(window.location.origin)
 
     url.pathname = value
@@ -58,7 +67,7 @@ export class SyncDatabase<T extends {}> {
     const remoteDB = new PouchDB<T>(getUrl(name), {
       fetch: token
         ? (url, opts) => {
-            ;(opts?.headers as Headers | undefined)?.set(
+            (opts?.headers as Headers | undefined)?.set(
               'Authorization',
               `Bearer ${token}`,
             )
@@ -77,12 +86,14 @@ export class SyncDatabase<T extends {}> {
         live: true,
         retry: true,
         back_off_function(delay: number) {
-          if (delay === 27000 || delay === 0) return 1000
+          if (delay === 27000 || delay === 0)
+            return 1000
           return delay * 3
         },
       },
       (error: any, result: any) => {
-        if (error) console.error(error)
+        if (error)
+          console.error(error)
         else console.log('sync', result)
       },
     )

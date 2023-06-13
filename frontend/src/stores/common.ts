@@ -21,6 +21,23 @@ export interface Image {
   name: string
   type: ImageType
 }
+export function resolveFun(a: { data: RegenerativeMaterial }, b: { data: RegenerativeMaterial }) {
+  // cannot merge: return nothing
+  if (!a?.data?.updated_at && !b?.data?.updated_at)
+    return
+  if (!a?.data?.updated_at && b.data.updated_at)
+    return b
+  if (!b?.data?.updated_at && a.data.updated_at)
+    return a
+  // return one of the docs
+  if (a.data.updated_at > b.data.updated_at)
+    return a
+  else return b
+
+  // // return changed doc
+  // a.foo = 'bar'
+  // return a
+}
 
 export function useCommon<T extends RegenerativeMaterial>(
   couchSync: SyncDatabase<T>,
@@ -47,24 +64,6 @@ export function useCommon<T extends RegenerativeMaterial>(
 
   function resetItem(): void {
     item.value = getNew()
-  }
-
-  function resolveFun(a: { data: RegenerativeMaterial }, b: { data: RegenerativeMaterial }) {
-    // cannot merge: return nothing
-    if (!a?.data?.updated_at && !b?.data?.updated_at)
-      return
-    if (!a?.data?.updated_at && b.data.updated_at)
-      return b
-    if (!b?.data?.updated_at && a.data.updated_at)
-      return a
-    // return one of the docs
-    if (a.data.updated_at > b.data.updated_at)
-      return a
-    else return b
-
-    // // return changed doc
-    // a.foo = 'bar'
-    // return a
   }
 
   async function removeAsset(asset: Image, images_uploaded: Image[]): Promise<void | Image[]> {
@@ -301,7 +300,7 @@ export function useCommon<T extends RegenerativeMaterial>(
     })
     // list.value = response[`${typeStringLiteral}s`]
     list.value = mergeView(response)
-    // return list.value
+    return list.value
   }
 
   function init() {
