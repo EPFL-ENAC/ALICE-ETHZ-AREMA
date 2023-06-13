@@ -24,7 +24,7 @@ import {
 } from 'maplibre-gl'
 import { onMounted, ref } from 'vue'
 
-defineExpose({ drawPolygon, drawCircle, drawFeature, drawFeatures, drawTrash, deleteAll })
+defineExpose({ drawPolygon, drawCircle, drawPoint, drawFeature, drawFeatures, drawTrash, deleteAll })
 const props = withDefaults(
   defineProps<{
     center?: [number, number]
@@ -123,6 +123,10 @@ function drawCircle() {
   draw?.changeMode('draw_circle')
 }
 
+function drawPoint() {
+  draw?.changeMode('draw_point')
+}
+
 function deleteAll() {
   draw?.trash().deleteAll()
   updateArea()
@@ -138,7 +142,13 @@ function drawTrash() {
   <div>
     <v-progress-linear v-if='loading' :active='loading' indeterminate />
     <v-responsive :aspect-ratio='aspectRatio' height='100%'>
-      <div :id="containerId" :style="'height:' + height"/>
+      <div :id="containerId" :style="`--t-height: ${height}`" class="mapinput"/>
     </v-responsive>
   </div>
 </template>
+
+<style scoped>
+.mapinput {
+  height: var(--t-height)
+}
+</style>
