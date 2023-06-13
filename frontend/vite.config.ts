@@ -11,6 +11,7 @@ import UnoCSS from 'unocss/vite'
 import VueMacros from 'unplugin-vue-macros/vite'
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
+import topLevelAwait from 'vite-plugin-top-level-await'
 
 // https://github.com/pouchdb/pouchdb/issues/8607
 export default defineConfig({
@@ -32,6 +33,12 @@ export default defineConfig({
     },
   },
   plugins: [
+    topLevelAwait({
+      // The export name of top-level await promise for each chunk module
+      promiseExportName: '__tla',
+      // The function to generate import names of top-level await promise in each chunk module
+      promiseImportName: i => `__tla_${i}`,
+    }),
     // https://vue-i18n.intlify.dev/guide/advanced/sfc.html#configure-plugin-for-vite
     VueI18nPlugin({
       include: resolve(

@@ -9,7 +9,7 @@ import { useCommon } from '~/stores/common'
 
 export const useBuildingMaterialStore = defineStore(buildingMaterial, () => {
   const regenerative_materials = useRegenerativeMaterialsStore()
-  regenerative_materials.init()
+  
   const commons = useCommon<BuildingMaterial>(
     regenerative_materials.couchdb,
     buildingMaterial,
