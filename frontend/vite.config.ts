@@ -13,11 +13,7 @@ import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import topLevelAwait from 'vite-plugin-top-level-await'
 
-// https://github.com/pouchdb/pouchdb/issues/8607
 export default defineConfig({
-  define: {
-    global: 'window',
-  },
   // build: {
   //   commonjsOptions: {
   //     transformMixedEsModules: true,
@@ -41,6 +37,7 @@ export default defineConfig({
     }),
     // https://vue-i18n.intlify.dev/guide/advanced/sfc.html#configure-plugin-for-vite
     VueI18nPlugin({
+      runtimeOnly: false,
       include: resolve(
         dirname(fileURLToPath(import.meta.url)),
         './src/locales/**',
