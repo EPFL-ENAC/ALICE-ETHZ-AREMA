@@ -61,24 +61,6 @@ const professionalHeaders: ComputedRef<
       md: '12',
     },
     {
-      path: 'input.adress', // name_nr
-      component: VTextField,
-      text: 'adress', // should also have a unique ID,
-      required: true,
-      cols: '12',
-      sm: '12',
-      md: '12',
-    },
-    {
-      path: 'input.areaDelivery', // name_nr
-      component: VTextField,
-      text: 'areaDelivery', // should also have a unique ID,
-      required: true,
-      cols: '12',
-      sm: '12',
-      md: '12',
-    },
-    {
       path: 'input.url', // name_nr
       component: VTextField,
       text: 'url', // should also have a unique ID,
