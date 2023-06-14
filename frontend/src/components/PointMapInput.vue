@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
 import { debounce, round } from 'lodash'
 import MapInput from '~/components/MapInput.vue'
-import * as MapboxDrawGeodesic from 'mapbox-gl-draw-geodesic'
 import { geocoderApi } from '~/utils/geocoder'
 import {
   type Feature,
@@ -21,8 +19,6 @@ const searching = ref<boolean>(false)
 
 const mapInput = ref<InstanceType<typeof MapInput>>()
 const selectedFeatures = ref<Feature<Polygon | MultiPolygon>[]>([])
-
-const { t } = useI18n()
 
 onMounted(() => {
   const feature = unref(props.modelValue)

@@ -30,7 +30,7 @@ Encoding format: UTF-8, Separator: ',' (comma)
 | Variable name         | Description                                             | Symbol    | Unit    | Data type | Mandatory       |
 | --------------------- | ------------------------------------------------------- | --------- | ------- | --------- | --------------- |
 | nameP                 |                              |        |    |    |               |
-| adressP                 |                              |        |    |    |               |
+| addressP                 |                              |        |    |    |               |
 | expertiseP                 |                              |        |    |    |               |
 | webP                 |                              |        |    |    |               |
 | telP                 |                              |        |    |    |               |

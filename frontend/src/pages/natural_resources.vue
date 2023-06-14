@@ -10,7 +10,7 @@ const store = useNaturalResourceStore()
 // const { item, list, loading } = storeToRefs(store)
 const title = 'Natural resource'
 
-// name_nr, zone_nr	amount_nr	mu_nr	lambda_nr	sigma_nr	lca_nr	image1_nr	image2_nr	descr_nr 	editor_0_nr	editor_f_nr	date_0_nr	date_f_nr	date_f_bm	adress_pro	adress_pro_text	ressource_type
+// name_nr, zone_nr	amount_nr	mu_nr	lambda_nr	sigma_nr	lca_nr	image1_nr	image2_nr	descr_nr 	editor_0_nr	editor_f_nr	date_0_nr	date_f_nr	date_f_bm	address_pro	address_pro_text	ressource_type
 const naturalResourceHeaders: ComputedRef<
   RegenerativeMaterialHeader[]
 > = computed(() =>
@@ -52,7 +52,7 @@ const naturalResourceHeaders: ComputedRef<
       path: 'input.mu',
       component: VTextField,
       type: 'number',
-      text: 'vapourdiffusion',
+      text: 'vapour diffusion',
       suffix: '',
       symbol: 'μ',
       min: 1,
