@@ -10,6 +10,9 @@ import { useProfessionalStore } from '~/stores/professional'
 import { professional, technicalConstruction } from '~/stores/regenerativeMaterials'
 import { useTechnicalConstructionStore } from '~/stores/technicalConstruction'
 import { debounce } from 'lodash'
+import {
+  type Feature,
+} from '@turf/turf'
 // access the `store` variable anywhere in the component ✨
 const store = useBuildingStore()
 const title = 'Building'
@@ -50,6 +53,9 @@ const buildingHeaders: ComputedRef<
       component: PointMapInput,
       text: 'address', // should also have a unique ID,
       required: true,
+      formatter: (value: Feature) => {
+        return value?.properties.display_name
+      },
       cols: '12',
       sm: '12',
       md: '12',

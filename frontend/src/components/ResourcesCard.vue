@@ -9,10 +9,10 @@
           <v-row>
             <v-col v-for="(header) in headers" v-bind="header">
               <template v-if="!header.hideInput">
-                <component :is="header.component" v-bind="header" v-if="header.type === 'number'"
-                  v-model.number="item[header.key]" />
-                <component :is="header.component" v-bind="header" v-else v-model="item[header.key]"
-                  @remove:image="(image: ImageType) => $emit('remove:image', image)" />
+                <component :is="header.component" v-bind="toHeader(header)" v-if="header.type === 'number'"
+                  v-model.number="item[header.key]"/>
+                <component :is="header.component" v-bind="toHeader(header)" v-else v-model="item[header.key]"
+                  @remove:image="(image: ImageType) => $emit('remove:image', image)"/>
               </template>
             </v-col>
           </v-row>
@@ -36,7 +36,11 @@
 import { PropType } from 'vue';
 import { RegenerativeMaterial, RegenerativeMaterialHeader } from "~/definitions/regenerativeMaterials";
 import { cloneDeep } from 'lodash';
+import { useI18n } from 'vue-i18n';
 import { ImageType } from '~/stores/common';
+
+const { t } = useI18n()
+
 const props = defineProps<{
   headers: RegenerativeMaterialHeader[],
   title: string,
@@ -53,10 +57,20 @@ const $emit = defineEmits<{
   (e: 'remove:image', value: ImageType): void
 }>()
 
+// header preprocessing
+const toHeader = (header: RegenerativeMaterialHeader) => {
+  const h = cloneDeep(header)
+  // translate header text
+  h.text = t(h.text)
+  // https://github.com/vuetifyjs/vuetify/issues/15688
+  if (h.type === 'number')
+    delete h.type
+  return h
+}
+
 const closeDialog = () => {
   $emit('update:dialog', false)
 }
-
 
 const save = () => {
   $emit('update:modelValue', item.value)

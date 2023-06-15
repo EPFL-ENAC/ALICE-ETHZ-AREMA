@@ -86,7 +86,7 @@ dealer;
 | Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|
 | ----------------- | ------------------------------- | --------- | ------- | --------- | --------- |---|
 | name_pro    |                     |          | `[-]`   | string  | y         |
-| adress_pro | adress of company    |          | `[-]`   | string     | y         | // stocker le point gps + l'adresse en string validé par streetmap
+| address_pro | address of company    |          | `[-]`   | string     | y         | // stocker le point gps + l'adresse en string validé par streetmap
 | type_pro| drop down from list_pro| |  `[-]`  |string|y|
 
 
@@ -115,7 +115,7 @@ dealer;
 | Variable name     | Description                     | Symbol    | Unit    | Data type | Mandatory |Reference|
 | ----------------- | ------------------------------- | --------- | ------- | --------- | --------- |---|
 | name_bui    |                     |          | `[-]`   | string  | y         |
-| adress_bui | adress of building   |          | `[-]`   | string    | y         |
+| address_bui | address of building   |          | `[-]`   | string    | y         |
 | pros_bui  | involved professionals  |  | `[-]`   |string | y         | <> name_pro[]
 
 

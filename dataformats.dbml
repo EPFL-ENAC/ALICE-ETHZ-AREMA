@@ -81,7 +81,7 @@ Table professional_types {
 Table professionals {
   _id string [primary key]
   name string [not null, unique]
-  adress string [not null, unique]
+  address string [not null, unique]
   type string [ref: - professional_types._id, not null]
   expertise_pro_bm string[] [ref: > building_materials._id]
   expertise_pro_nr string[] [ref: > natural_resources._id, note: "should contain the zone area [{name: chaux, zones: [zone1, zone2]}, chanvre, stone]"]
@@ -91,7 +91,7 @@ Table professionals {
 Table buildings {
   _id integer [primary key]
   name string [not null, unique]
-  adress string [not null, unique] 
+  address string [not null, unique] 
   professional_ids string[] [not null, ref: <> professionals._id]
   technical_construction_ids string[] [ref: > technical_constructions._id, note: "combination of building_material and building_element"]
   images string[] [note: "list of urls"]

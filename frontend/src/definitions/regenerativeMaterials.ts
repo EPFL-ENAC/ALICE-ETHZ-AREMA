@@ -24,7 +24,7 @@ export interface RegenerativeMaterial {
 
 export interface Building extends RegenerativeMaterial {
   name: string
-  adress: string
+  address: string
   professionals: string[]
   professionals_objects?: Record<string, Professional>
 
@@ -56,7 +56,7 @@ export interface NaturalResource extends RegenerativeMaterial {
 
 export interface Professional extends RegenerativeMaterial {
   name: string
-  adress: string
+  address: string
   professionalType: string // ProfessionalType.name,
   buildingMaterials?: string[] // expertise for suppliers
   naturalResources?: string[] // expertise for supplisers
