@@ -2,6 +2,22 @@
 defineOptions({
   name: 'IndexPage',
 })
+
+const images = [
+  "/ALICE.png",
+  "/CIRKLA.png",
+  "/EPFL.png",
+  "/EthZurich.png",
+  "/FGS.png",
+  "/IGP.png",
+  "/LUMA.png",
+  "/MATERIALARCHIV.png",
+  "/MATERIAUTHEQUE.png",
+  "/Opalis.png",
+  "/ROTOR_DC.png",
+  "/SUPSI.png",
+]
+
 </script>
 
 <template>
@@ -43,5 +59,46 @@ defineOptions({
         </ol>
       </ul>
     </p>
+
+    <p>
+      <ul>
+
+      
+<li>Materialarchiv.ch, Joachim Markus</li>
+<li>Opalis & RotorDC, Michael Gyhoot</li>
+<li>Cirkla & Salza, Olivier De Perrot</li>
+<li>Supsi, Dr. Stefano Zerbi</li>
+<li>Georesources Switzerland Group ETHZ, Dr. Stefan Heuberger</li>
+<li>La matériauthèque MATILDA, Audanne Comment</li>
+<li>IBOIS, Yves Weinand</li>
+<li>IGP ETHZ, Dr. Konrad Schindler</li>
+</ul>
+<ul>
+  <li>Web Dev by IT4R at EPFL</li>
+</ul>
+<ul>
+<li>Students ETHZ: Mathieu Lecaille, Despoina Minakaki, Emma Livio, Timon Voide</li>
+<li>Course: EPFL Alice PENS 320 Territoires des matières durables, Alia Bengana, Florence Graezer Bideau </li>
+</ul>
+
+    </p>
+
+    <p class="grid-images">
+      <v-img :src="image"  :width="252" :max-width="252"
+  aspect-ratio="1"
+  inline
+   v-for="image in images">
+
+      </v-img>
+    </p>
   </div>
 </template>
+
+<style>
+.grid-images {
+  display: grid;
+        grid-template-columns: repeat(auto-fill, 252px);
+        justify-content: center;
+        grid-auto-rows: fit-content(150px);
+
+}</style>
