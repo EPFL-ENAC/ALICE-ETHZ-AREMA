@@ -23,6 +23,9 @@ export default defineConfig({
   // optimizeDeps: {
   //   disabled: false,
   // },
+  define: {
+    global: "window",
+  },
   resolve: {
     alias: {
       '~/': `${path.resolve(__dirname, 'src')}/`,

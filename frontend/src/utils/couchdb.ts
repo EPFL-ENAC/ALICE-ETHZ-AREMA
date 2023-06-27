@@ -3,8 +3,10 @@ import find from 'pouchdb-find'
 import rel from 'relational-pouch'
 import resolveConflicts from 'pouch-resolve-conflicts'
 import pouchdbDebug from 'pouchdb-debug'
-// import pouchdbQuickSearch from 'pouchdb-quick-search'
 
+// import pouchdbQuickSearch from 'pouchdb-quick-search'
+// https://github.com/pouchdb/pouchdb/issues/8607
+// window.global ||= window
 PouchDB.plugin(find)
 PouchDB.plugin(rel)
 PouchDB.plugin(resolveConflicts)
@@ -63,8 +65,13 @@ export class SyncDatabase<T extends {}> {
 
   constructor(name: string) {
     const token = sessionStorage.getItem(SessionStorageKey.Token)
-    const localDB = new PouchDB<T>(name)
-    const remoteDB = new PouchDB<T>(getUrl(name), {
+    this.localDB = new PouchDB<T>(name, {
+      auto_compaction: true,
+      revs_limit: 4,
+      purged_infos_limit: 4,
+    })
+    this.remoteDB = new PouchDB<T>(getUrl(name), {
+      skip_setup: true,
       fetch: token
         ? (url, opts) => {
             (opts?.headers as Headers | undefined)?.set(
@@ -73,15 +80,17 @@ export class SyncDatabase<T extends {}> {
             )
             return PouchDB.fetch(url, opts)
           }
-        : undefined,
+        : (url, opts) => {
+            PouchDB.fetch(url, opts)
+          },
     })
     this.onChangeListeners = []
-    this.sync = localDB.sync(
-      remoteDB,
+    this.sync = this.localDB.sync(
+      this.remoteDB,
       {
-        batch_size: 5,
+        batch_size: 50,
         timeout: 30000,
-        batches_limit: 2,
+        batches_limit: 4,
         since: 'now',
         live: true,
         retry: true,
@@ -97,8 +106,6 @@ export class SyncDatabase<T extends {}> {
         else console.log('sync', result)
       },
     )
-    this.localDB = localDB
-    this.remoteDB = remoteDB
   }
 
   defaultOptions: ExtendedChangeOptions = {

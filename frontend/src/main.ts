@@ -24,7 +24,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
 
 // https://github.com/pouchdb/pouchdb/issues/8607
-window.global ||= window
+// window.global ||= window
 const app = createApp(App)
 
 const router = createRouter({

@@ -14,7 +14,7 @@ export const building = 'building'
 export const technicalConstruction = 'technicalConstruction'
 
 export const useRegenerativeMaterialsStore = defineStore(
-  'regenerative_materials',
+  DB_NAME,
   () => {
     const couchdb = ref(new SyncDatabase<RegenerativeMaterial>(DB_NAME))
 
