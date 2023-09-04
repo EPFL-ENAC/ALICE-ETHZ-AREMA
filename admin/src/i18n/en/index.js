@@ -2,12 +2,17 @@
 // so you can safely delete all default props below
 
 export default {
+  main: {
+    brand: 'AREMA',
+    brand_caption: 'Regenerative materials database',
+  },
   login: {
-    title: 'AREMA',
     submit: 'Submit',
     register: 'Register',
     email: 'Email',
     password: 'Password',
+    registerSuccess: 'Registration successful',
+    registerError: 'Registration failed',
   },
   locales: {
     en: 'English',
