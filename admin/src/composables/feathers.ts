@@ -1,4 +1,4 @@
-import { api } from "../feathers-client";
+import { api } from '../feathers-client';
 
 // Provides access to Feathers Client(s)
 export const useFeathers = () => {
@@ -11,7 +11,7 @@ export const useFeathers = () => {
  */
 /* export const useFeathersService = (
   servicePath: string,
-  clientAlias = "api"
+  clientAlias = 'api'
 ) => {
   const clients = useFeathers();
   const client = clients[clientAlias as keyof typeof clients];
