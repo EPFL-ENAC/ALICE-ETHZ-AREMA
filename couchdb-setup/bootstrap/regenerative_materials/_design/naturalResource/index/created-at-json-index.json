@@ -1,9 +1,0 @@
-{
-   "index": {
-      "fields": [
-         "created_at"
-      ]
-   },
-   "name": "created-at-json-index",
-   "type": "json"
-}
