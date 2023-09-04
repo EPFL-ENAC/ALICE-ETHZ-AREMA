@@ -30,8 +30,8 @@ app.configure(swagger({
   ui: swagger.swaggerUI({ docsPath: '/docs' }),
   specs: {
     info: {
-      title: 'A test',
-      description: 'A description',
+      title: 'backend http rest api',
+      description: ' swagger documentation',
       version: '1.0.0',
     },
     components: {

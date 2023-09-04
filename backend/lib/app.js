@@ -31,8 +31,8 @@ app.configure((0, feathers_swagger_1.default)({
     ui: feathers_swagger_1.default.swaggerUI({ docsPath: '/docs' }),
     specs: {
         info: {
-            title: 'A test',
-            description: 'A description',
+            title: 'backend http rest api',
+            description: ' swagger documentation',
             version: '1.0.0',
         },
         components: {
