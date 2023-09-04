@@ -70,41 +70,16 @@ services:
       - "traefik.http.services.s3Server.loadbalancer.server.port=5660"
     ports:
       - '5660:5660'
-  couchdb:
-    build: ./couchdb
-    environment:
-      - COUCHDB_USER=${COUCHDB_USER}
-      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD}
-      - COUCHDB_HOST=couchdb
-    labels:
-      - "traefik.http.routers.couchdb.priority=1000"
-      - "traefik.http.routers.couchdb.tls=true"
-      - "traefik.http.routers.couchdb.rule=PathPrefix(`/db`)"
-      - "traefik.http.routers.couchdb.middlewares=couchdb-stripprefix,test-compress"
-      - "traefik.http.middlewares.couchdb-stripprefix.stripprefix.prefixes=/db"
-      - "traefik.http.services.couchdb.loadbalancer.server.port=5984"
-      - "traefik.http.middlewares.test-compress.compress=true"
+  postgres:
+    image: postgres:15.2-alpine
+    expose:
+      - 5432
     ports:
-      - '5984:5984'
-    restart: unless-stopped
-    volumes:
-      - couchdb_data:/opt/couchdb/data/
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5984"]
-      interval: 1m30s
-      timeout: 30s
-      retries: 5
-      start_period: 10s
-  couchdb-setup:
+      - '5432:5432'
     environment:
-      - COUCHDB_USER=${COUCHDB_USER}
-      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD}
-      - COUCHDB_HOST=couchdb
-    labels:
-      - "traefik.http.services.couchdb-setup.loadbalancer.server.port=9999"
-    build: ./couchdb-setup
-    depends_on:
-      - couchdb
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
 
 volumes:
   couchdb_data:
