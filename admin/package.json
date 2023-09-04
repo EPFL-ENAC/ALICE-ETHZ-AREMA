@@ -15,6 +15,7 @@
   "dependencies": {
     "@feathersjs/client": "^5.0.8",
     "@quasar/extras": "^1.16.4",
+    "backend": "http://localhost:3030/backend-0.0.0.tgz",
     "feathers-pinia": "^4.0.0",
     "quasar": "^2.6.0",
     "vue": "^3.0.0",
