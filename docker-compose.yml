@@ -80,7 +80,17 @@ services:
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
-
+  pgadmin:
+      container_name: pgadmin4_container
+      image: dpage/pgadmin4
+      restart: always
+      environment:
+        PGADMIN_DEFAULT_EMAIL: enacit4research@epfl.ch
+        PGADMIN_DEFAULT_PASSWORD: password
+      ports:
+        - "5050:5050"
+        - "5080:80"
+        - "5443:443"
 volumes:
   couchdb_data:
     driver: local
