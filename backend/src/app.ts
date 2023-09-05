@@ -49,8 +49,6 @@ app.configure(swagger({
 app.configure(postgresql)
 app.configure(authentication)
 app.configure(services)
-//app.configure(channels)
-app.configure(seeder(options))
 // Register hooks that run on all service methods
 app.hooks({
   around: {
