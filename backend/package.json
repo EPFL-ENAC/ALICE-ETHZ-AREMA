@@ -41,7 +41,7 @@
     "start": "node lib/",
     "prettier": "npx prettier \"**/*.ts\" --write",
     "mocha": "cross-env NODE_ENV=test mocha test/ --require ts-node/register --recursive --extension .ts --exit",
-    "test": "cross-env NODE_ENV=test npm run migrate && npm run mocha",
+    "test": "xo && cross-env NODE_ENV=test npm run migrate && npm run mocha",
     "bundle:client": "npm run compile && npm pack --pack-destination ./public",
     "migrate": "knex migrate:latest",
     "migrate:make": "knex migrate:make"
@@ -74,6 +74,8 @@
     "@feathersjs/rest-client": "^5.0.8",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.5.9",
+    "@typescript-eslint/eslint-plugin": "^6.5.0",
+    "@typescript-eslint/parser": "^6.5.0",
     "axios": "^1.5.0",
     "cross-env": "^7.0.3",
     "mocha": "^10.2.0",

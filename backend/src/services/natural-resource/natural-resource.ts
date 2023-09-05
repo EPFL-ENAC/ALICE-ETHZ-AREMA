@@ -41,7 +41,7 @@ export const naturalResource = (app: Application) => {
         naturalResourceQuerySchema },
       docs: {
           // any options for service.docs can be added here
-          securities: ['find', 'get', 'patch', 'remove'],
+          securities: ['all'],
       }
   }),
   })
