@@ -4,6 +4,22 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { buildingProfessionalClient } from './services/building-professional/building-professional.shared'
+export type {
+  BuildingProfessional,
+  BuildingProfessionalData,
+  BuildingProfessionalQuery,
+  BuildingProfessionalPatch
+} from './services/building-professional/building-professional.shared'
+
+import { buildingClient } from './services/building/building.shared'
+export type {
+  Building,
+  BuildingData,
+  BuildingQuery,
+  BuildingPatch
+} from './services/building/building.shared'
+
 import { technicalConstructionClient } from './services/technical-construction/technical-construction.shared'
 export type {
   TechnicalConstruction,
@@ -88,5 +104,7 @@ export const createClient = <Configuration = any>(
   client.configure(professionalClient)
   client.configure(professionalTypeClient)
   client.configure(technicalConstructionClient)
+  client.configure(buildingClient)
+  client.configure(buildingProfessionalClient)
   return client
 }

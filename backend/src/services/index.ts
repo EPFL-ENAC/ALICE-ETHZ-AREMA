@@ -1,3 +1,5 @@
+import { buildingProfessional } from './building-professional/building-professional'
+import { building } from './building/building'
 import { technicalConstruction } from './technical-construction/technical-construction'
 import { professionalType } from './professional-type/professional-type'
 import { professional } from './professional/professional'
@@ -9,6 +11,8 @@ import { user } from './users/users'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
+  app.configure(buildingProfessional)
+  app.configure(building)
   app.configure(technicalConstruction)
   app.configure(professionalType)
   app.configure(professional)

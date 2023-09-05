@@ -2,9 +2,8 @@
 import type { Knex } from 'knex'
 
 export async function up(knex: Knex): Promise<void> {
-  await knex.schema.createTable('professional', (table) => {
+  await knex.schema.createTable('building', (table) => {
     table.increments('id')
-
     table.string('updatedAt') //: Type.Optional(Type.String({ format: 'date-time' })),
     table.string('createAt') //: Type.String({ format: 'date-time' }),
     table.bigint('updatedById').references('id').inTable('users') //: Type.Optional(Type.Number()),
@@ -19,5 +18,5 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-  await knex.schema.dropTable('professional')
+  await knex.schema.dropTable('building')
 }

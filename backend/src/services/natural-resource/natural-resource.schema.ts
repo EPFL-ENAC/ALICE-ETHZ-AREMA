@@ -22,7 +22,7 @@ export const naturalResourceSchema = Type.Object(
     dimension: Type.String(),
     amount: Type.Number(),
     images: Type.Array(Type.String()), // url
-    text: Type.String()
+    description: Type.String()
   },
   { $id: 'NaturalResource', additionalProperties: false }
 )
@@ -35,7 +35,7 @@ export const naturalResourceExternalResolver = resolve<NaturalResource, HookCont
 // Schema for creating new entries
 export const naturalResourceDataSchema = Type.Pick(
   naturalResourceSchema,
-  ['name', 'zone', 'dimension', 'amount', 'images', 'text'],
+  ['name', 'zone', 'dimension', 'amount', 'images', 'description'],
   {
     $id: 'NaturalResourceData'
   }
@@ -64,7 +64,7 @@ export const naturalResourcePatchValidator = getValidator(naturalResourcePatchSc
 export const naturalResourcePatchResolver = resolve<NaturalResource, HookContext>({})
 
 // Schema for allowed query properties
-export const naturalResourceQueryProperties = Type.Pick(naturalResourceSchema, ['id', 'text'])
+export const naturalResourceQueryProperties = Type.Pick(naturalResourceSchema, ['id', 'description'])
 export const naturalResourceQuerySchema = Type.Intersect(
   [
     querySyntax(naturalResourceQueryProperties),
