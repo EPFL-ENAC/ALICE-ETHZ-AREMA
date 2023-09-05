@@ -1,9 +1,9 @@
 {
-  "name": "backend",
+  "name": "@epfl-enac/arema",
   "description": "Backend for ALICE ETHZ AREMA regenerative map",
   "version": "0.0.0",
   "homepage": "",
-  "private": true,
+  "private": false,
   "keywords": [
     "feathers"
   ],
@@ -27,6 +27,9 @@
       "rest"
     ],
     "schema": "typebox"
+  },
+  "publishConfig": {
+    "@epfl-enac:registry": "https://npm.pkg.github.com"
   },
   "directories": {
     "lib": "src",

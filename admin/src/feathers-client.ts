@@ -1,4 +1,4 @@
-import { createClient } from 'backend';
+import { createClient } from '@epfl-enac/arema';
 import { createPiniaClient } from 'feathers-pinia';
 import { pinia } from './modules/pinia';
 import rest from '@feathersjs/rest-client';
