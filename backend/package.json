@@ -29,7 +29,7 @@
     "schema": "typebox"
   },
   "publishConfig": {
-    "@epfl-enac:registry": "https://npm.pkg.github.com"
+    "@EPFL-ENAC:registry": "https://npm.pkg.github.com"
   },
   "directories": {
     "lib": "src",
