@@ -9,8 +9,8 @@ import { logError } from './hooks/log-error'
 import { postgresql } from './postgresql'
 import { authentication } from './authentication'
 import { services } from './services/index'
-import swagger  from 'feathers-swagger';
-import { getSwaggerInitializerScript } from "./plugins/swaggerInit";
+import swagger from 'feathers-swagger'
+import { getSwaggerInitializerScript } from './plugins/swaggerInit'
 const app: Application = koa(feathers())
 
 // Load our app configuration (see config/ folder)
@@ -26,26 +26,27 @@ app.use(bodyParser())
 // Configure services and transports
 app.configure(rest())
 app.configure(swagger.customMethodsHandler)
-app.configure(swagger({
-  ui: swagger.swaggerUI({ getSwaggerInitializerScript }),
-  specs: {
-    info: {
-      title: 'backend http rest api',
-      description: ' swagger documentation',
-      version: '1.0.0',
-    },
-    components: {
-      securitySchemes: {
-        BearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-        },
+app.configure(
+  swagger({
+    ui: swagger.swaggerUI({ getSwaggerInitializerScript }),
+    specs: {
+      info: {
+        title: 'backend http rest api',
+        description: ' swagger documentation',
+        version: '1.0.0'
       },
-    },
-    security: [{ BearerAuth: [] }],
-  },
-  
-}))
+      components: {
+        securitySchemes: {
+          BearerAuth: {
+            type: 'http',
+            scheme: 'bearer'
+          }
+        }
+      },
+      security: [{ BearerAuth: [] }]
+    }
+  })
+)
 app.configure(postgresql)
 app.configure(authentication)
 app.configure(services)

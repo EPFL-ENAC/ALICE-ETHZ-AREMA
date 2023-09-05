@@ -22,7 +22,7 @@ export const naturalResourceSchema = Type.Object(
     dimension: Type.String(),
     amount: Type.Number(),
     images: Type.Array(Type.String()), // url
-    text: Type.String(),
+    text: Type.String()
   },
   { $id: 'NaturalResource', additionalProperties: false }
 )
@@ -33,9 +33,13 @@ export const naturalResourceResolver = resolve<NaturalResource, HookContext>({})
 export const naturalResourceExternalResolver = resolve<NaturalResource, HookContext>({})
 
 // Schema for creating new entries
-export const naturalResourceDataSchema = Type.Pick(naturalResourceSchema, ['name', 'zone', 'dimension', 'amount', 'images', 'text'], {
-  $id: 'NaturalResourceData'
-})
+export const naturalResourceDataSchema = Type.Pick(
+  naturalResourceSchema,
+  ['name', 'zone', 'dimension', 'amount', 'images', 'text'],
+  {
+    $id: 'NaturalResourceData'
+  }
+)
 export type NaturalResourceData = Static<typeof naturalResourceDataSchema>
 export const naturalResourceDataValidator = getValidator(naturalResourceDataSchema, dataValidator)
 export const naturalResourceDataResolver = resolve<NaturalResource, HookContext>({

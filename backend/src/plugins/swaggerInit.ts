@@ -1,8 +1,8 @@
-import type { FnSwaggerUiGetInitializerScript } from 'feathers-swagger';
+import type { FnSwaggerUiGetInitializerScript } from 'feathers-swagger'
 
-export const getSwaggerInitializerScript: FnSwaggerUiGetInitializerScript  = ({ docsJsonPath, ctx }) => {
-  const headers = ctx && ctx.headers;
-  const basePath = headers!['x-forwarded-prefix'] ?? '';
+export const getSwaggerInitializerScript: FnSwaggerUiGetInitializerScript = ({ docsJsonPath, ctx }) => {
+  const headers = ctx && ctx.headers
+  const basePath = headers!['x-forwarded-prefix'] ?? ''
 
   // language=JavaScript
   return `
@@ -73,5 +73,5 @@ export const getSwaggerInitializerScript: FnSwaggerUiGetInitializerScript  = ({ 
       script.src = '//cdn.jsdelivr.net/npm/@mairu/swagger-ui-apikey-auth-form@1/dist/swagger-ui-apikey-auth-form.js';
       document.head.appendChild(script)
     };
-  `;
-};
+  `
+}

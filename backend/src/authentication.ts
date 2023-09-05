@@ -1,14 +1,13 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/authentication.html
 import { AuthenticationService, JWTStrategy } from '@feathersjs/authentication'
 import { LocalStrategy } from '@feathersjs/authentication-local'
-import { ServiceSwaggerOptions } from 'feathers-swagger';
+import { ServiceSwaggerOptions } from 'feathers-swagger'
 
 import type { Application } from './declarations'
 
-
-  class AuthenticationServiceWithDocs extends AuthenticationService {
-    docs: ServiceSwaggerOptions | undefined;
-  }
+class AuthenticationServiceWithDocs extends AuthenticationService {
+  docs: ServiceSwaggerOptions | undefined
+}
 
 declare module './declarations' {
   interface ServiceTypes {
@@ -19,11 +18,10 @@ declare module './declarations' {
 export const authentication = (app: Application) => {
   const authentication = new AuthenticationServiceWithDocs(app)
 
-
   // /* disable eslint for this block */
   authentication.docs = {
     idNames: {
-      remove: 'accessToken',
+      remove: 'accessToken'
     },
     idType: 'string',
     securities: ['remove', 'removeMulti'],
@@ -34,8 +32,8 @@ export const authentication = (app: Application) => {
         properties: {
           strategy: { type: 'string' },
           email: { type: 'string' },
-          password: { type: 'string' },
-        },
+          password: { type: 'string' }
+        }
       },
       authResult: {
         type: 'object',
@@ -44,35 +42,34 @@ export const authentication = (app: Application) => {
           authentication: {
             type: 'object',
             properties: {
-              strategy: { type: 'string' },
-            },
+              strategy: { type: 'string' }
+            }
           },
           payload: {
             type: 'object',
-            properties: {}, // TODO
+            properties: {} // TODO
           },
-          user: { $ref: '#/components/schemas/User' },
-        },
-      },
+          user: { $ref: '#/components/schemas/User' }
+        }
+      }
     },
     refs: {
       createRequest: 'authRequest',
       createResponse: 'authResult',
       removeResponse: 'authResult',
-      removeMultiResponse: 'authResult',
+      removeMultiResponse: 'authResult'
     },
     operations: {
       remove: {
         description: 'Logout the currently logged in user',
-        'parameters[0].description': 'accessToken of the currently logged in user',
+        'parameters[0].description': 'accessToken of the currently logged in user'
       },
       removeMulti: {
         description: 'Logout the currently logged in user',
-        parameters: [],
-      },
-    },
-  };
-    
+        parameters: []
+      }
+    }
+  }
 
   authentication.register('jwt', new JWTStrategy())
   authentication.register('local', new LocalStrategy())

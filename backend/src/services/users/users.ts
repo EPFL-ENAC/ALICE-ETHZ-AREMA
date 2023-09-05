@@ -15,15 +15,13 @@ import {
   userDataSchema,
   userPatchSchema,
   userQuerySchema,
-  userSchema,
-
+  userSchema
 } from './users.schema'
 
 import type { Application } from '../../declarations'
 import { UserService, getOptions } from './users.class'
 import { userPath, userMethods } from './users.shared'
-import { createSwaggerServiceOptions } from 'feathers-swagger';
-
+import { createSwaggerServiceOptions } from 'feathers-swagger'
 
 export * from './users.class'
 export * from './users.schema'
@@ -40,10 +38,10 @@ export const user = (app: Application) => {
     docs: createSwaggerServiceOptions({
       schemas: { userSchema, userDataSchema, userPatchSchema, userQuerySchema },
       docs: {
-          // any options for service.docs can be added here
-          securities: ['find', 'get', 'patch', 'remove'],
+        // any options for service.docs can be added here
+        securities: ['find', 'get', 'patch', 'remove']
       }
-  }),
+    })
   })
   // Initialize hooks
   app.service(userPath).hooks({

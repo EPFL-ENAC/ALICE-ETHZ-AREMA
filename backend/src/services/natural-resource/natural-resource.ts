@@ -21,7 +21,7 @@ import {
 import type { Application } from '../../declarations'
 import { NaturalResourceService, getOptions } from './natural-resource.class'
 import { naturalResourcePath, naturalResourceMethods } from './natural-resource.shared'
-import { createSwaggerServiceOptions } from 'feathers-swagger';
+import { createSwaggerServiceOptions } from 'feathers-swagger'
 
 export * from './natural-resource.class'
 export * from './natural-resource.schema'
@@ -35,15 +35,17 @@ export const naturalResource = (app: Application) => {
     // You can add additional custom events to be sent to clients here
     events: [],
     docs: createSwaggerServiceOptions({
-      schemas: {   naturalResourceDataSchema,
+      schemas: {
+        naturalResourceDataSchema,
         naturalResourceSchema,
         naturalResourcePatchSchema,
-        naturalResourceQuerySchema },
+        naturalResourceQuerySchema
+      },
       docs: {
-          // any options for service.docs can be added here
-          securities: ['all'],
+        // any options for service.docs can be added here
+        securities: ['all']
       }
-  }),
+    })
   })
   // Initialize hooks
   app.service(naturalResourcePath).hooks({

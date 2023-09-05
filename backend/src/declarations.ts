@@ -2,7 +2,7 @@
 import { HookContext as FeathersHookContext, NextFunction } from '@feathersjs/feathers'
 import { Application as FeathersApplication } from '@feathersjs/koa'
 import { ApplicationConfiguration } from './configuration'
-import { ServiceSwaggerOptions } from 'feathers-swagger';
+import { ServiceSwaggerOptions } from 'feathers-swagger'
 
 import { User } from './services/users/users'
 
@@ -29,6 +29,6 @@ declare module '@feathersjs/feathers' {
   }
 
   interface ServiceOptions {
-    docs?: ServiceSwaggerOptions;
+    docs?: ServiceSwaggerOptions
   }
 }
