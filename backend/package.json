@@ -7,7 +7,10 @@
   "keywords": [
     "feathers"
   ],
-  "author": {},
+  "authors": [
+    "pierre.guilbert@epfl.ch",
+    "yannick.marcon@epfl.ch"
+  ],
   "contributors": [],
   "bugs": {},
   "engines": {
