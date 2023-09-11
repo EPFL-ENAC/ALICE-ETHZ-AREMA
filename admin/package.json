@@ -13,7 +13,7 @@
     "build": "quasar build"
   },
   "dependencies": {
-    "@epfl-enac/arema": "^0.0.0",
+    "@epfl-enac/arema": "file:../backend/public/epfl-enac-arema-0.0.0.tgz",
     "@feathersjs/client": "^5.0.8",
     "@quasar/extras": "^1.16.4",
     "feathers-pinia": "^4.0.0",

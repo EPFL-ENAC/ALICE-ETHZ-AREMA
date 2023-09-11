@@ -12,7 +12,6 @@ import { services } from './services/index'
 import swagger from 'feathers-swagger'
 import { getSwaggerInitializerScript } from './plugins/swaggerInit'
 const app: Application = koa(feathers())
-
 // Load our app configuration (see config/ folder)
 app.configure(configuration(configurationValidator))
 
