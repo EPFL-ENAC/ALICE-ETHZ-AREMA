@@ -1,20 +1,21 @@
-import { logger } from "../src/logger";
+import { logger } from '../src/logger'
 
-export const runAsync = (cb: ((...args: any[]) => Promise<any>), ...args: any[]) => async (count: number) => {
-    while(count--) {
-    try {
-      await cb(...args)
-    } catch (error) {
-      logger.error(error);
-    }
+export const runAsync =
+  (cb: (...args: any[]) => Promise<any>, ...args: any[]) =>
+  async (count: number) => {
+    while (count--) {
+      try {
+        await cb(...args)
+      } catch (error) {
+        logger.error(error)
+      }
     }
   }
-export const defaultIterations = 1000;
-
+export const defaultIterations = 1000
 
 // iterate through all the services
 // Object.keys(app.services).forEach(async (path) => {
-  
+
 //   const service = app.service(path as ServiceGenericType<Application>);
 //   // if (path === "users") {
 //     const serviceOptions = getServiceOptions(service);

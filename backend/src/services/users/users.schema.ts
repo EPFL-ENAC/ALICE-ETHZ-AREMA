@@ -20,10 +20,10 @@ export type User = Static<typeof userSchema>
 
 // generate fake data
 export async function generateFake() {
-  return ({
+  return {
     email: faker.internet.email(),
     password: faker.internet.password({ length: 20, memorable: true })
-  });
+  }
 }
 
 export const userValidator = getValidator(userSchema, dataValidator)

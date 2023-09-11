@@ -29,7 +29,7 @@ export const naturalResourceSchema = Type.Object(
     updatedAt: Type.Optional(Type.String({ format: 'date-time' })),
     createdAt: Type.String({ format: 'date-time' }),
     updatedById: Type.Optional(Type.Number()),
-    createdById: Type.Number(),
+    createdById: Type.Number()
   },
   { $id: 'NaturalResource', additionalProperties: false }
 )
@@ -40,7 +40,7 @@ export type NaturalResource = Static<typeof naturalResourceSchema>
 // { createdAt: string; createdById: number; images: string[]; zone: string; dimension: string; amount: number; }
 // generate fake data
 export function generateFake(user: User) {
-  const result = ({
+  const result = {
     createdById: user.id,
     createdAt: new Date().toISOString(),
     name: faker.lorem.words(3),
@@ -49,17 +49,16 @@ export function generateFake(user: User) {
     amount: faker.number.int(100),
     images: [],
     description: faker.lorem.paragraph()
-  })
+  }
   logger.info(`fake data natural resource generated: ${JSON.stringify(result)}`)
-  return result;
+  return result
 }
-
 
 export const naturalResourceValidator = getValidator(naturalResourceSchema, dataValidator)
 export const naturalResourceResolver = resolve<NaturalResource, HookContext>({
   // createdByUser: virtual(async (message, context) => {
   //   // Associate the user that sent the message
-  //   if (message.createdById) {  
+  //   if (message.createdById) {
   //     return context.app.service('users').get(message.createdById)
   //   }
   // }),
@@ -110,8 +109,7 @@ export const naturalResourcePatchResolver = resolve<NaturalResource, HookContext
 })
 
 // Schema for allowed query properties
-export const naturalResourceQueryProperties = Type.Pick(naturalResourceSchema, [
-  'id'])
+export const naturalResourceQueryProperties = Type.Pick(naturalResourceSchema, ['id'])
 export const naturalResourceQuerySchema = Type.Intersect(
   [
     querySyntax(naturalResourceQueryProperties),

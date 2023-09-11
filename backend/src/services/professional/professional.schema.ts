@@ -31,24 +31,21 @@ export const professionalSchema = Type.Object(
 )
 export type Professional = Static<typeof professionalSchema>
 
-
-
 // generate fake data
 export async function generateFake(user: User) {
   // const findUser = app_.find()
-  logger.info(`fake USER building generated: ${JSON.stringify(user.id)}`);
-  const result = ({
+  logger.info(`fake USER building generated: ${JSON.stringify(user.id)}`)
+  const result = {
     updatedById: user.id,
     createdById: user.id,
 
     name: faker.lorem.words(3),
     description: faker.lorem.paragraph(),
     address: faker.location.streetAddress(),
-    images: [],
-
-  });
+    images: []
+  }
   // logger.info(`fake data building generated: ${JSON.stringify(result)}`)
-  return result;
+  return result
 }
 
 export const professionalValidator = getValidator(professionalSchema, dataValidator)
@@ -57,9 +54,13 @@ export const professionalResolver = resolve<Professional, HookContext>({})
 export const professionalExternalResolver = resolve<Professional, HookContext>({})
 
 // Schema for creating new entries
-export const professionalDataSchema = Type.Pick(professionalSchema, ['name', 'description', 'address', 'images'], {
-  $id: 'ProfessionalData'
-})
+export const professionalDataSchema = Type.Pick(
+  professionalSchema,
+  ['name', 'description', 'address', 'images'],
+  {
+    $id: 'ProfessionalData'
+  }
+)
 export type ProfessionalData = Static<typeof professionalDataSchema>
 export const professionalDataValidator = getValidator(professionalDataSchema, dataValidator)
 export const professionalDataResolver = resolve<Professional, HookContext>({})

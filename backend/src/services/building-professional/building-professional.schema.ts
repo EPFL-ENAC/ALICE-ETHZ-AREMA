@@ -16,29 +16,25 @@ export const buildingProfessionalSchema = Type.Object(
     buildingId: Type.Number(),
     professionalId: Type.Number(),
 
-
     updatedAt: Type.Optional(Type.String({ format: 'date-time' })),
     createdAt: Type.String({ format: 'date-time' }),
     updatedById: Type.Optional(Type.Number()),
-    createdById: Type.Number(),
+    createdById: Type.Number()
   },
   { $id: 'BuildingProfessional', additionalProperties: false }
 )
 export type BuildingProfessional = Static<typeof buildingProfessionalSchema>
 
-
-
 // generate fake data
 export async function generateFake(user: User, building: Building, professional: Professional) {
-  const result = ({
+  const result = {
     buildingId: building.id,
     professionalId: professional.id,
-    createdById: user.id,
-  });
+    createdById: user.id
+  }
   logger.info(`fake data building professional generated: ${JSON.stringify(result)}`)
-  return result;
+  return result
 }
-
 
 export const buildingProfessionalValidator = getValidator(buildingProfessionalSchema, dataValidator)
 export const buildingProfessionalResolver = resolve<BuildingProfessional, HookContext>({})
@@ -55,7 +51,16 @@ export const buildingProfessionalDataSchema = Type.Pick(
 )
 export type BuildingProfessionalData = Static<typeof buildingProfessionalDataSchema>
 export const buildingProfessionalDataValidator = getValidator(buildingProfessionalDataSchema, dataValidator)
-export const buildingProfessionalDataResolver = resolve<BuildingProfessional, HookContext>({})
+export const buildingProfessionalDataResolver = resolve<BuildingProfessional, HookContext>({
+  createdAt: async () => {
+    // Return the current date
+    return new Date().toISOString()
+  },
+  createdById: async (value, message, context) => {
+    // Associate the currently authenticated user
+    return context.params?.user?.id ?? message?.createdById
+  }
+})
 
 // Schema for updating existing entries
 export const buildingProfessionalPatchSchema = Type.Partial(buildingProfessionalSchema, {
@@ -63,7 +68,16 @@ export const buildingProfessionalPatchSchema = Type.Partial(buildingProfessional
 })
 export type BuildingProfessionalPatch = Static<typeof buildingProfessionalPatchSchema>
 export const buildingProfessionalPatchValidator = getValidator(buildingProfessionalPatchSchema, dataValidator)
-export const buildingProfessionalPatchResolver = resolve<BuildingProfessional, HookContext>({})
+export const buildingProfessionalPatchResolver = resolve<BuildingProfessional, HookContext>({
+  updatedAt: async () => {
+    // Return the current date
+    return new Date().toISOString()
+  },
+  updatedById: async (value, message, context) => {
+    // Associate the currently authenticated user
+    return context.params?.user?.id ?? message?.updatedById
+  }
+})
 
 // Schema for allowed query properties
 export const buildingProfessionalQueryProperties = Type.Pick(buildingProfessionalSchema, [
