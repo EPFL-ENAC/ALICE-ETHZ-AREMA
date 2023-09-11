@@ -1,9 +1,19 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/authentication.html
-import { AuthenticationService, JWTStrategy } from '@feathersjs/authentication'
+import { AuthenticationBaseStrategy, AuthenticationResult, AuthenticationService, JWTStrategy } from '@feathersjs/authentication'
 import { LocalStrategy } from '@feathersjs/authentication-local'
 import { ServiceSwaggerOptions } from 'feathers-swagger'
 
 import type { Application } from './declarations'
+import { Params } from '@feathersjs/feathers'
+
+class AnonymousStrategy extends AuthenticationBaseStrategy {
+  async authenticate(authentication: AuthenticationResult, params: Params) {
+    return {
+      anonymous: true
+    }
+  }
+}
+
 
 class AuthenticationServiceWithDocs extends AuthenticationService {
   docs: ServiceSwaggerOptions | undefined
@@ -73,5 +83,6 @@ export const authentication = (app: Application) => {
 
   authentication.register('jwt', new JWTStrategy())
   authentication.register('local', new LocalStrategy())
+  authentication.register('anonymous', new AnonymousStrategy())
   app.use('authentication', authentication)
 }

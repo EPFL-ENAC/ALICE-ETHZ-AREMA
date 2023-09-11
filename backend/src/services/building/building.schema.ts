@@ -61,7 +61,7 @@ export const buildingResolver = resolve<Building, HookContext>({
         buildingId: message.id
       }
     })
-    return response.data.map((item: any) => item.id)
+    return response.data.map((item: any) => item.professionalId)
   })
 })
 

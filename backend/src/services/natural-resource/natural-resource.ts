@@ -26,6 +26,7 @@ import { createSwaggerServiceOptions } from 'feathers-swagger'
 import { logger } from '../../logger'
 import { getRandomUser } from '../../helpers/getRandomUser'
 import { userIterations } from '../users/users'
+import { allowAnonymous }  from '../../hooks/allow-anonymous'
 
 export * from './natural-resource.class'
 export * from './natural-resource.schema'
@@ -48,7 +49,7 @@ export const naturalResource = (app: Application) => {
       },
       docs: {
         // any options for service.docs can be added here
-        securities: ['all']
+        securities: ['find', 'get', 'patch', 'remove', 'create']
       }
     }),
     createFake: async () => {
@@ -68,13 +69,12 @@ export const naturalResource = (app: Application) => {
   app.service(naturalResourcePath).hooks({
     around: {
       all: [
-        authenticate('jwt'),
         schemaHooks.resolveExternal(naturalResourceExternalResolver),
         schemaHooks.resolveResult(naturalResourceResolver)
       ],
-      find: [authenticate('jwt')],
-      get: [authenticate('jwt')],
-      create: [],
+      find: [allowAnonymous, authenticate('jwt', 'anonymous')],
+      get: [allowAnonymous, authenticate('jwt', 'anonymous')],
+      create: [authenticate('jwt'),],
       update: [authenticate('jwt')],
       patch: [authenticate('jwt')],
       remove: [authenticate('jwt')]
