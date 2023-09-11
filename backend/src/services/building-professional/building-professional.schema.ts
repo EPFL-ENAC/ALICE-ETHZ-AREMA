@@ -5,16 +5,41 @@ import type { Static } from '@feathersjs/typebox'
 
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
+import { User } from '../users/users.schema'
+import { logger } from '../../logger'
+import { Building } from '../building/building.schema'
+import { Professional } from '../professional/professional.schema'
 
 // Main data model schema
 export const buildingProfessionalSchema = Type.Object(
   {
     buildingId: Type.Number(),
-    professionalId: Type.Number()
+    professionalId: Type.Number(),
+
+
+    updatedAt: Type.Optional(Type.String({ format: 'date-time' })),
+    createdAt: Type.String({ format: 'date-time' }),
+    updatedById: Type.Optional(Type.Number()),
+    createdById: Type.Number(),
   },
   { $id: 'BuildingProfessional', additionalProperties: false }
 )
 export type BuildingProfessional = Static<typeof buildingProfessionalSchema>
+
+
+
+// generate fake data
+export async function generateFake(user: User, building: Building, professional: Professional) {
+  const result = ({
+    buildingId: building.id,
+    professionalId: professional.id,
+    createdById: user.id,
+  });
+  logger.info(`fake data building professional generated: ${JSON.stringify(result)}`)
+  return result;
+}
+
+
 export const buildingProfessionalValidator = getValidator(buildingProfessionalSchema, dataValidator)
 export const buildingProfessionalResolver = resolve<BuildingProfessional, HookContext>({})
 
@@ -23,7 +48,7 @@ export const buildingProfessionalExternalResolver = resolve<BuildingProfessional
 // Schema for creating new entries
 export const buildingProfessionalDataSchema = Type.Pick(
   buildingProfessionalSchema,
-  ['buildingId', 'professionalId'],
+  ['buildingId', 'professionalId', 'createdById'],
   {
     $id: 'BuildingProfessionalData'
   }
@@ -43,7 +68,8 @@ export const buildingProfessionalPatchResolver = resolve<BuildingProfessional, H
 // Schema for allowed query properties
 export const buildingProfessionalQueryProperties = Type.Pick(buildingProfessionalSchema, [
   'buildingId',
-  'professionalId'
+  'professionalId',
+  'createdById'
 ])
 export const buildingProfessionalQuerySchema = Type.Intersect(
   [

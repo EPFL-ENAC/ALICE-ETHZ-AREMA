@@ -6,7 +6,7 @@ import { passwordHash } from '@feathersjs/authentication-local'
 
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
-
+import { faker } from '@faker-js/faker'
 // Main data model schema
 export const userSchema = Type.Object(
   {
@@ -17,6 +17,15 @@ export const userSchema = Type.Object(
   { $id: 'User', additionalProperties: false }
 )
 export type User = Static<typeof userSchema>
+
+// generate fake data
+export async function generateFake() {
+  return ({
+    email: faker.internet.email(),
+    password: faker.internet.password({ length: 20, memorable: true })
+  });
+}
+
 export const userValidator = getValidator(userSchema, dataValidator)
 export const userResolver = resolve<User, HookContext>({})
 

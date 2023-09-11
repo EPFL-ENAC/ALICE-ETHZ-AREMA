@@ -30,5 +30,7 @@ declare module '@feathersjs/feathers' {
 
   interface ServiceOptions {
     docs?: ServiceSwaggerOptions
+    createFake?: any
+    fakerOptions?: Record<string, number>
   }
 }

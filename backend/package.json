@@ -42,7 +42,8 @@
   ],
   "main": "lib/client",
   "scripts": {
-    "dev": "nodemon -x ts-node src/index.ts",
+    "dev": "nodemon --exec 'node --inspect=0.0.0.0 --require ts-node/register src/index.ts'",
+    "dev2": "nodemon -x ts-node src/index.ts",
     "compile": "shx rm -rf lib/ && tsc",
     "start": "node lib/",
     "prettier": "npx prettier \"**/*.ts\" --write",
@@ -50,9 +51,12 @@
     "test": "xo && cross-env NODE_ENV=test npm run migrate && npm run mocha",
     "bundle:client": "npm run compile && npm pack --pack-destination ./public",
     "migrate": "knex migrate:latest",
-    "migrate:make": "knex migrate:make"
+    "migrate:make": "knex migrate:make",
+    "seed": "knex seed:run",
+    "seed:make": "knex seed:make"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.0.2",
     "@feathersjs/adapter-commons": "^5.0.8",
     "@feathersjs/authentication": "^5.0.8",
     "@feathersjs/authentication-client": "^5.0.8",
@@ -80,8 +84,8 @@
     "@feathersjs/rest-client": "^5.0.8",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.5.9",
-    "@typescript-eslint/eslint-plugin": "^6.5.0",
-    "@typescript-eslint/parser": "^6.6.0",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
     "axios": "^1.5.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.48.0",

@@ -5,16 +5,16 @@ export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('natural-resource', (table) => {
     table.increments('id')
 
-    table.string('description')
-    table.string('updatedAt') //: Type.Optional(Type.String({ format: 'date-time' })),
-    table.string('createAt') //: Type.String({ format: 'date-time' }),
-    table.bigint('updatedById').references('id').inTable('users') //: Type.Optional(Type.Number()),
-    table.bigint('createdById').references('id').inTable('users') //: Type.Number(),
-    table.string('name') //: Type.String(),
-    table.string('zone') //: Type.String(), // "wsg84",
-    table.string('dimension') //: Type.String(),
-    table.integer('amount') //: Type.Number(),
-    table.specificType('images', 'text[]') //: Type.Array(Type.String()), // url
+    table.string('description').nullable()
+    table.string('updatedAt').nullable() //: Type.Optional(Type.String({ format: 'date-time' })),
+    table.string('createdAt').nullable() //: Type.String({ format: 'date-time' }),
+    table.bigint('updatedById').nullable().references('id').inTable('users') //: Type.Optional(Type.Number()),
+    table.bigint('createdById').nullable().references('id').inTable('users') //: Type.Number(),
+    table.string('name').nullable() //: Type.String(),
+    table.string('zone').nullable() //: Type.String(), // "wsg84",
+    table.string('dimension').nullable() //: Type.String(),
+    table.integer('amount').nullable() //: Type.Number(),
+    table.specificType('images', 'text[]').nullable() //: Type.Array(Type.String()), // url
   })
 }
 

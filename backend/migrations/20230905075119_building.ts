@@ -4,16 +4,16 @@ import type { Knex } from 'knex'
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('building', (table) => {
     table.increments('id')
-    table.string('updatedAt') //: Type.Optional(Type.String({ format: 'date-time' })),
-    table.string('createAt') //: Type.String({ format: 'date-time' }),
-    table.bigint('updatedById').references('id').inTable('users') //: Type.Optional(Type.Number()),
+    table.string('updatedAt').nullable() //: Type.Optional(Type.String({ format: 'date-time' })),
+    table.string('createdAt') //: Type.String({ format: 'date-time' }),
+    table.bigint('updatedById').nullable().references('id').inTable('users') //: Type.Optional(Type.Number()),
     table.bigint('createdById').references('id').inTable('users') //: Type.Number(),
 
     table.string('name') //: Type.String(),
-    table.string('description')
-    table.string('address') //: Type.String(), // "wsg84",
+    table.string('description').nullable()
+    table.string('address').nullable() //: Type.String(), // "wsg84",
 
-    table.specificType('images', 'text[]') //: Type.Array(Type.String()), // url
+    table.specificType('images', 'text[]').nullable() //: Type.Array(Type.String()), // url
   })
 }
 
