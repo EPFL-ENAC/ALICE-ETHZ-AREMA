@@ -3,8 +3,8 @@ FROM node:18-alpine as build-stage
 
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
 COPY . .
+RUN npm ci
 RUN npm run build
 
 FROM nginx:stable-alpine as production-stage

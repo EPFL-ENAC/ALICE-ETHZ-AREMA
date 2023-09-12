@@ -11,10 +11,10 @@
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
     "build": "quasar build",
-    "preinstall": "cd ../backend && npm run bundle:client"
+    "build-local-dependency": "cd ../backend && npm run bundle:client && cp public/epfl-enac-arema*.tgz ../admin/public/epfl-enac-arema.tgz && cd ../admin"
   },
   "dependencies": {
-    "@epfl-enac/arema": "file:../backend/public/epfl-enac-arema-0.0.1.tgz",
+    "@epfl-enac/arema": "file:./public/epfl-enac-arema.tgz",
     "@feathersjs/client": "^5.0.8",
     "@quasar/extras": "^1.16.4",
     "feathers-pinia": "^4.0.0",

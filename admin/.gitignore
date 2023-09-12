@@ -32,6 +32,7 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+# /public/epfl-enac-arema.tgz
 
 # local .env files
 .env.local*
