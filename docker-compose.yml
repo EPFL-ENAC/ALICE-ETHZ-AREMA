@@ -23,17 +23,27 @@ services:
       - /etc/ssl:/etc/ssl
   frontend:
     build: ./frontend
+    expose:
+      - 80
     labels:
       - "traefik.http.routers.frontend.priority=100"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+      - "traefik.http.routers.frontend.middlewares=frontend-middleware"
+      - "traefik.http.middlewares.frontend-middleware.stripprefix.prefixes=/"
     restart: unless-stopped
   admin:
     build: ./admin
+    expose:
+      - 80
     labels:
-      - "traefik.http.routers.admin.priority=102"
+      - "traefik.http.routers.admin.priority=103"
       - "traefik.http.routers.admin.tls=true"
       - "traefik.http.routers.admin.rule=PathPrefix(`/admin`)"
+      - "traefik.http.services.admin.loadbalancer.server.port=80"
+      - "traefik.http.routers.admin.middlewares=admin-middleware"
+      - "traefik.http.middlewares.admin-middleware.stripprefix.prefixes=/admin"
     restart: unless-stopped
   backend:
     build: ./backend
@@ -93,8 +103,8 @@ services:
     image: postgres:15.2-alpine
     expose:
       - 5432
-    ports:
-      - '5432:5432'
+    # ports:
+    #   - '5432:5432'
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}

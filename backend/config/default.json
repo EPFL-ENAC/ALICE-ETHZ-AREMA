@@ -11,7 +11,13 @@
   },
   "postgresql": {
     "client": "pg",
-    "connection": "postgres://postgres:password@localhost:5432/backend"
+    "connection": "postgres://postgres:password@localhost:5432/backend",
+    "seeds": {
+      "directory": "../seeds"
+    }
+  },
+  "readiness": {
+    "backend": false
   },
   "authentication": {
     "entity": "user",
