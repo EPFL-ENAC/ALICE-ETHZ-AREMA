@@ -28,6 +28,27 @@ services:
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
     restart: unless-stopped
+  admin:
+    build: ./admin
+    labels:
+      - "traefik.http.routers.admin.priority=102"
+      - "traefik.http.routers.admin.tls=true"
+      - "traefik.http.routers.admin.rule=PathPrefix(`/admin`)"
+    restart: unless-stopped
+  backend:
+    build: ./backend
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    expose:
+      - 3030
+    labels:
+      - "traefik.http.routers.backend.priority=1000"
+      - "traefik.http.routers.backend.tls=true"
+      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
+      - "traefik.http.services.backend.loadbalancer.server.port=3030"
+      - "traefik.http.routers.backend.middlewares=backend-middleware"
+      - "traefik.http.middlewares.backend-middleware.stripprefix.prefixes=/api"
+    restart: unless-stopped
   upload-fast-api:
     build: ./uploadFASTAPI
     environment:
@@ -46,13 +67,11 @@ services:
     labels:
       - "traefik.http.routers.uploadFASTAPI.priority=1001"
       - "traefik.http.routers.uploadFASTAPI.tls=true"
-      - "traefik.http.routers.uploadFASTAPI.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.uploadFASTAPI.rule=PathPrefix(`/upload-api`)"
       - "traefik.http.services.uploadFASTAPI.loadbalancer.server.port=5050"
       - "traefik.http.routers.uploadFASTAPI.middlewares=uploadFASTAPI-middleware"
       - "traefik.http.middlewares.uploadFASTAPI-middleware.stripprefix.prefixes=/api"
     restart: unless-stopped
-    #depends_on:
-    #  - couchdb
   s3_server:
     build: ./s3_server
     restart: unless-stopped
