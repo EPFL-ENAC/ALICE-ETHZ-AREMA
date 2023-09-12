@@ -62,7 +62,7 @@ module.exports = configure(function (ctx) {
 
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
-      // publicPath: '/',
+      publicPath: '/admin',
       // analyze: true,
       env: {
         API: ctx.dev ? 'http://localhost:3030' : process.env.AMBER_URL,

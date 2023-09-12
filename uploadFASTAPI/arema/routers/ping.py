@@ -4,7 +4,7 @@ Handle / requests
 from fastapi import Cookie, Header, APIRouter
 
 from typing import Union
-from arema.utils.auth import isUserLoggedIn
+# from arema.utils.auth import isUserLoggedIn
 
 router = APIRouter()
 
@@ -14,6 +14,6 @@ async def ping(AuthSession: Union[str, None] = Cookie(default=None),
                Authorization: Union[str, None] = Header(default=None)):
 
     return {
-        "status": "success",
-        "is_user_logged_in": isUserLoggedIn(AuthSession, Authorization),
+        "status": "success"
+        # "is_user_logged_in": isUserLoggedIn(AuthSession, Authorization),
     }

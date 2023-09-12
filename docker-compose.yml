@@ -26,7 +26,7 @@ services:
     expose:
       - 80
     labels:
-      - "traefik.http.routers.frontend.priority=100"
+      - "traefik.http.routers.frontend.priority=101"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
       - "traefik.http.services.frontend.loadbalancer.server.port=80"
@@ -38,7 +38,7 @@ services:
     expose:
       - 80
     labels:
-      - "traefik.http.routers.admin.priority=103"
+      - "traefik.http.routers.admin.priority=500"
       - "traefik.http.routers.admin.tls=true"
       - "traefik.http.routers.admin.rule=PathPrefix(`/admin`)"
       - "traefik.http.services.admin.loadbalancer.server.port=80"
@@ -72,15 +72,15 @@ services:
       - CORS_ENABLED=${CORS_ENABLED} 
       - ROOT_PATH=
       - AUTH_SERVER="http://couchdb:5984"
-    ports:
-      - '5050:5050'
+    expose:
+      - 5050
     labels:
       - "traefik.http.routers.uploadFASTAPI.priority=1001"
       - "traefik.http.routers.uploadFASTAPI.tls=true"
       - "traefik.http.routers.uploadFASTAPI.rule=PathPrefix(`/upload-api`)"
       - "traefik.http.services.uploadFASTAPI.loadbalancer.server.port=5050"
       - "traefik.http.routers.uploadFASTAPI.middlewares=uploadFASTAPI-middleware"
-      - "traefik.http.middlewares.uploadFASTAPI-middleware.stripprefix.prefixes=/api"
+      - "traefik.http.middlewares.uploadFASTAPI-middleware.stripprefix.prefixes=/upload-api"
     restart: unless-stopped
   s3_server:
     build: ./s3_server
