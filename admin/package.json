@@ -12,6 +12,9 @@
     "dev": "quasar dev",
     "build": "quasar build"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "dependencies": {
     "@epfl-enac/arema": "^0.0.0",
     "@feathersjs/client": "^5.0.8",
