@@ -10,13 +10,11 @@
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
-    "build": "quasar build"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "build": "quasar build",
+    "preinstall": "cd ../backend && npm run bundle:client"
   },
   "dependencies": {
-    "@epfl-enac/arema": "^0.0.0",
+    "@epfl-enac/arema": "file:../backend/public/epfl-enac-arema-0.0.1.tgz",
     "@feathersjs/client": "^5.0.8",
     "@quasar/extras": "^1.16.4",
     "feathers-pinia": "^4.0.0",
