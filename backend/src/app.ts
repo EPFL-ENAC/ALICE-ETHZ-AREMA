@@ -2,6 +2,7 @@
 import { feathers, getServiceOptions } from '@feathersjs/feathers'
 import configuration from '@feathersjs/configuration'
 import { koa, rest, bodyParser, errorHandler, parseAuthentication, cors, serveStatic } from '@feathersjs/koa'
+import socketio from '@feathersjs/socketio'
 
 import { configurationValidator } from './configuration'
 import type { Application } from './declarations'
@@ -24,6 +25,7 @@ app.use(bodyParser())
 
 // Configure services and transports
 app.configure(rest())
+app.configure(socketio())
 app.configure(swagger.customMethodsHandler)
 app.configure(
   swagger({

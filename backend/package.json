@@ -68,6 +68,7 @@
     "@feathersjs/knex": "^5.0.8",
     "@feathersjs/koa": "^5.0.8",
     "@feathersjs/schema": "^5.0.8",
+    "@feathersjs/socketio": "^5.0.8",
     "@feathersjs/transport-commons": "^5.0.8",
     "@feathersjs/typebox": "^5.0.8",
     "@koa/router": "^12.0.0",
