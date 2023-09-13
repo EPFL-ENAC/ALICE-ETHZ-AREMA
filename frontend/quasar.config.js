@@ -12,7 +12,7 @@ const { configure } = require('quasar/wrappers');
 const path = require('path');
 const { feathersPiniaAutoImport } = require('feathers-pinia');
 
-module.exports = configure(function (/* ctx */) {
+module.exports = configure(function (ctx) {
   return {
     eslint: {
       // fix: true,
@@ -64,7 +64,9 @@ module.exports = configure(function (/* ctx */) {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
+      env: {
+        API: ctx.dev ? 'http://localhost:3030' : process.env.API_URL,
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,

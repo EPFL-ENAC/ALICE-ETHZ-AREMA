@@ -7,16 +7,21 @@
       :meta="meta"
     ></example-component>
     <q-page>
-    <div class="row">
-      <pre>user: {{ user }}</pre>
-    </div>
-    <div class="row">
-      <pre>we have {{ total }} naturalResources.</pre>
-    </div>
-    <div class="row">
-      <pre>{{ naturalResources }}</pre>
-    </div>
-  </q-page>
+      <q-btn
+        color="primary"
+        label="next scroll"
+        @click="nextScroll()"
+        />
+      <div class="row">
+        <pre>user: {{ user }}</pre>
+      </div>
+      <div class="row">
+        <pre>we have {{ nr$.total }} naturalResources.</pre>
+      </div>
+      <div class="row">
+        <pre>{{ nr$.data.map(x => x.id + x.name) }}</pre>
+      </div>
+    </q-page>
   </q-page>
 </template>
 
@@ -28,39 +33,44 @@ import { ref } from 'vue';
 const todos = ref<Todo[]>([
   {
     id: 1,
-    content: 'ct1'
+    content: 'ct1',
   },
   {
     id: 2,
-    content: 'ct2'
+    content: 'ct2',
   },
   {
     id: 3,
-    content: 'ct3'
+    content: 'ct3',
   },
   {
     id: 4,
-    content: 'ct4'
+    content: 'ct4',
   },
   {
     id: 5,
-    content: 'ct5'
-  }
+    content: 'ct5',
+  },
 ]);
 const meta = ref<Meta>({
-  totalCount: 1200
+  totalCount: 1200,
 });
 
-const auth = useAuthStore()
-const { api } = useFeathers()
-const NaturalResource = api.service('natural-resource')
+const auth = useAuthStore();
+const { api } = useFeathers();
 
-const user = computed(() => auth.user)
-const messageParams = computed(() => {
-  return { query: {} }
+// https://feathers-pinia.pages.dev/services/use-find.html#usage
+const pagination = { limit: ref(10), skip: ref(0) }
+const params = computed(() => ({ query: {} }))
+const nr$ = api.service('natural-resource').useFind(params, {
+  pagination,
+  paginateOn: 'hybrid'
 })
 
-const { total } = NaturalResource.useFind(messageParams, { paginateOnServer: true, immediate: true })
-const naturalResources = computed(() => NaturalResource.findInStore({ query: {} }).data.value.reverse())
+const user = computed(() => auth.user);
 
+const nextScroll = async () => {
+  pagination.skip.value += 10
+  await nr$.next()
+}
 </script>
