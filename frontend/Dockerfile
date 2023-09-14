@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package*.json ./
 COPY . .
 RUN npm ci
-RUN npm run build
+RUN API_URL="http://localhost/api" npm run build
 
 FROM nginx:stable-alpine as production-stage
 RUN mkdir /app
