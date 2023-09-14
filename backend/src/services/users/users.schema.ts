@@ -14,7 +14,7 @@ export const userSchema = Type.Object(
     email: Type.String(),
     password: Type.Optional(Type.String()),
     // admin, content-reviewer, content-manager, user, guest, inactive
-    roles: Type.Array(Type.String()),
+    // roles: Type.Array(Type.String()),
   },
   { $id: 'User', additionalProperties: false }
 )
@@ -25,7 +25,7 @@ export async function generateFake() {
   return {
     email: faker.internet.email(),
     password: faker.internet.password({ length: 20, memorable: true }),
-    roles: ['user']
+    // roles: ['user']
   }
 }
 
@@ -72,9 +72,9 @@ export const userQueryValidator = getValidator(userQuerySchema, queryValidator)
 export const userQueryResolver = resolve<UserQuery, HookContext>({
   // If there is a user (e.g. with authentication), they are only allowed to see their own data
   id: async (value, user, context) => {
-    // if (context.params.user) {
-    //   return context.params.user.id
-    // }
+    if (context.params.user) {
+      return context.params.user.id
+    }
 
     // TODO: implement role-based access control
 
