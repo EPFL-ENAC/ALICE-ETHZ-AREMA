@@ -115,6 +115,8 @@ services:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
       POSTGRES_HOST: ${DATABASE_HOST}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   pgadmin:
       container_name: pgadmin4_container
       image: dpage/pgadmin4
