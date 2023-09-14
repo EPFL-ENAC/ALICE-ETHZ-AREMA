@@ -11,7 +11,7 @@
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
     "build": "quasar build",
-    "build-local-dependency": "cd ../backend && npm run compile && npm run bundle:client && cp public/epfl-enac-arema*.tgz ../frontend/public/epfl-enac-arema.tgz"
+    "build-local-dependency": "cd ../backend && npm run bundle:client && cp public/epfl-enac-arema*.tgz ../frontend/public/epfl-enac-arema.tgz"
   },
   "dependencies": {
     "@epfl-enac/arema": "file:./public/epfl-enac-arema.tgz",
@@ -26,7 +26,7 @@
     "feathers-pinia": "^4.0.0",
     "pinia": "^2.0.33",
     "quasar": "^2.11.9",
-    "socket.io-client": "^4.6.1",
+    "socket.io-client": "^4.7.2",
     "unplugin-auto-import": "^0.15.2",
     "vue": "^3.0.0",
     "vue-i18n": "^9.2.2",
