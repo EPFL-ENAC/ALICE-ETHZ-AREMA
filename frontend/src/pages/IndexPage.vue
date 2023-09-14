@@ -60,17 +60,25 @@ const auth = useAuthStore();
 const { api } = useFeathers();
 
 // https://feathers-pinia.pages.dev/services/use-find.html#usage
-const pagination = { limit: ref(10), skip: ref(0) }
+const pagination = { limit: ref(20), skip: ref(0) }
 const params = computed(() => ({ query: {} }))
 const nr$ = api.service('natural-resource').useFind(params, {
   pagination,
   paginateOn: 'hybrid'
 })
 
-const user = computed(() => auth.user);
+api.service('natural-resource').on('created', (message) => {
+  console.log('New natural-resource created', message)
+  nr$.find();
+})
 
+
+const user = computed(() => auth.user);
+// Combine the anonymous and authenticated channel
+// const combinedChannel = api.channel('anonymous', 'authenticated')
+
+// combinedChannel.addListener()
 const nextScroll = async () => {
-  pagination.skip.value += 10
   await nr$.next()
 }
 </script>

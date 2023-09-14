@@ -33,6 +33,8 @@ services:
       - "traefik.http.routers.frontend.middlewares=frontend-middleware"
       - "traefik.http.middlewares.frontend-middleware.stripprefix.prefixes=/"
     restart: unless-stopped
+    environment:
+      - API_URL="http://localhost/api"
   admin:
     build: ./admin
     expose:
@@ -45,9 +47,12 @@ services:
       - "traefik.http.routers.admin.middlewares=admin-middleware"
       - "traefik.http.middlewares.admin-middleware.stripprefix.prefixes=/admin"
     restart: unless-stopped
+    environment:
+      - API_URL="http://localhost/api"
   backend:
     build: ./backend
     environment:
+      # - DATABASE_URL=postgres://postgres:password@postgres:5432/backend
       - DATABASE_URL=${DATABASE_URL}
     expose:
       - 3030
@@ -71,7 +76,6 @@ services:
       - S3_Key=${S3_Key} 
       - CORS_ENABLED=${CORS_ENABLED} 
       - ROOT_PATH=
-      - AUTH_SERVER="http://couchdb:5984"
     expose:
       - 5050
     labels:
@@ -110,6 +114,7 @@ services:
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_HOST: ${DATABASE_HOST}
   pgadmin:
       container_name: pgadmin4_container
       image: dpage/pgadmin4

@@ -13,7 +13,7 @@
     "client": "pg",
     "connection": "postgres://postgres:password@localhost:5432/backend",
     "seeds": {
-      "directory": "../seeds"
+      "directory": "./seeds"
     }
   },
   "readiness": {

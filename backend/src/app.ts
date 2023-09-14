@@ -11,6 +11,8 @@ import { postgresql } from './postgresql'
 import { authentication } from './authentication'
 import { services } from './services/index'
 import swagger from 'feathers-swagger'
+import { channels } from './channels'
+
 import { getSwaggerInitializerScript } from './plugins/swaggerInit'
 const app: Application = koa(feathers())
 // Load our app configuration (see config/ folder)
@@ -25,13 +27,17 @@ app.use(bodyParser())
 
 // Configure services and transports
 app.configure(rest())
-app.configure(socketio())
+app.configure(socketio({
+  cors: {
+    origin: app.get('origins')
+  }
+}))
 app.configure(swagger.customMethodsHandler)
 app.configure(
   swagger({
     ui: swagger.swaggerUI({ getSwaggerInitializerScript }),
     specs: {
-      info: {
+      info: { 
         title: 'backend http rest api',
         description: ' swagger documentation',
         version: '1.0.0'
@@ -51,6 +57,8 @@ app.configure(
 app.configure(postgresql)
 app.configure(authentication)
 app.configure(services)
+app.configure(channels)
+
 // Register hooks that run on all service methods
 app.hooks({
   around: {

@@ -6,11 +6,12 @@ import io from 'socket.io-client'
 
 import { pinia } from './modules/pinia'
 
-const host = process.env.API
+const host = process.env.API;
+console.log(host)
 if (!host) {
   throw new Error('process.env.API is not defined')
 }
-const socket = io(host, { transports: ['websocket'] })
+const socket = io(host, { transports: ['websocket'], rejectUnauthorized: false })
 // process.env.API == 'http://localhost:3030'
 // const restClient = rest(process.env.API);
 
