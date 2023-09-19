@@ -10,7 +10,7 @@ export const adminSetup = async (context: HookContext, next: NextFunction) => {
     const users = await context.app.service('users').find({
       query: {
         $limit: 0,
-        role: 'administrator'
+        role: 'admin'
       }
     });
     if (users.total === 0) {
