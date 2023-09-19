@@ -41,7 +41,23 @@
             <q-item-label header>{{ $t('natural_resources') }}</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable v-close-popup :to="'/natural-resources'">
+        <q-item clickable v-close-popup :to="'/building-materials'">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-trowel-bricks" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ $t('building_materials') }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup :to="'/building-elements'">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-door-closed" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ $t('building_elements') }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup :to="'/buildings'">
           <q-item-section avatar>
             <q-icon name="fa-solid fa-building" />
           </q-item-section>
@@ -49,7 +65,17 @@
             <q-item-label header>{{ $t('buildings') }}</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable v-close-popup :to="'/natural-resources'">
+        <q-item clickable v-close-popup :to="'/technical-constructions'">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-compass-drafting" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{
+              $t('technical_constructions')
+            }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup :to="'/professionals'">
           <q-item-section avatar>
             <q-icon name="fa-solid fa-person-digging" />
           </q-item-section>
