@@ -3,6 +3,7 @@ services:
   reverse-proxy:
     image: traefik:v2.9
     command:
+      - "--accesslog=true"
       - "--providers.docker"
       - "--providers.file.directory=/configuration/"
       - "--entrypoints.web.address=:80"
@@ -29,12 +30,15 @@ services:
       - "traefik.http.routers.frontend.priority=101"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
-      - "traefik.http.services.frontend.loadbalancer.server.port=80"
       - "traefik.http.routers.frontend.middlewares=frontend-middleware"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
       - "traefik.http.middlewares.frontend-middleware.stripprefix.prefixes=/"
+      # - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
     restart: unless-stopped
-    environment:
-      - API_URL="http://localhost/api"
+    env_file:
+      - .env
+    # environment:
+    #   - API_URL="https://localhost/api"
   admin:
     build: ./admin
     expose:
@@ -48,7 +52,7 @@ services:
       - "traefik.http.middlewares.admin-middleware.stripprefix.prefixes=/admin"
     restart: unless-stopped
     environment:
-      - API_URL="http://localhost/api"
+      - API_URL="https://localhost/api"
   backend:
     build: ./backend
     environment:
@@ -56,13 +60,19 @@ services:
       - DATABASE_URL=${DATABASE_URL}
     expose:
       - 3030
+    ports:
+      - '3030:3030'
     labels:
       - "traefik.http.routers.backend.priority=1000"
       - "traefik.http.routers.backend.tls=true"
-      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.backend.rule=PathPrefix(`/api`,`/socket.io`)"
       - "traefik.http.services.backend.loadbalancer.server.port=3030"
       - "traefik.http.routers.backend.middlewares=backend-middleware"
       - "traefik.http.middlewares.backend-middleware.stripprefix.prefixes=/api"
+      # - "traefik.http.middlewares.rest-api-ratelimit.ratelimit.average=50"
+      # - "traefik.http.middlewares.rest-api-ratelimit.ratelimit.burst=25"
+      # - "traefik.http.middlewares.rest-api-ratelimit.ratelimit.period=1"
+      # - "traefik.http.middlewares.test-compress.compress=true"
     restart: unless-stopped
   upload-fast-api:
     build: ./uploadFASTAPI

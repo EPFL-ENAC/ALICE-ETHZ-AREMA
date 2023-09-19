@@ -6,17 +6,19 @@ import io from 'socket.io-client';
 
 import { pinia } from './modules/pinia';
 
-const host = process.env.API_URL;
-console.log('THIS IS THE host', host);
+// const host = process.env.API_URL;
+// console.log('THIS IS THE host', host);
 // if (!host) {
 //   throw new Error('process.env.API is not defined')
 // }
-const socket = io(host, {
+console.log("was here io: / and path /api/socket.io/");
+const socket = io("/", {
   transports: ['websocket'],
+  path: '/api/socket.io/',
   rejectUnauthorized: false
 });
 // process.env.API == 'http://localhost:3030'
-// const restClient = rest(process.env.API);
+// const restClient = rest(process.env.API_URL);
 
 export const feathersClient = createClient(
   socketio(socket),
