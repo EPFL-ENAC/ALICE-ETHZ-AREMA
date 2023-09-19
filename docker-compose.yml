@@ -60,8 +60,6 @@ services:
       - DATABASE_URL=${DATABASE_URL}
     expose:
       - 3030
-    ports:
-      - '3030:3030'
     labels:
       - "traefik.http.routers.backend.priority=1000"
       - "traefik.http.routers.backend.tls=true"
@@ -111,14 +109,14 @@ services:
       - "traefik.http.routers.s3Server.middlewares=s3Server-stripprefix"
       - "traefik.http.middlewares.s3Server-stripprefix.stripprefix.prefixes=/s3"
       - "traefik.http.services.s3Server.loadbalancer.server.port=5660"
-    ports:
-      - '5660:5660'
+    expose:
+      - 5660
   postgres:
     image: postgres:15.2-alpine
     expose:
       - 5432
     ports:
-      # Expose Postgres port we need it for dev purposes
+      # Expose Postgres port we need it for dev purposes should not be exposed publicly
       - '5432:5432'
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME}
