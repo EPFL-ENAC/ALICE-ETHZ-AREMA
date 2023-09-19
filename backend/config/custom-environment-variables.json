@@ -1,4 +1,8 @@
 {
+  "clusterCount": {
+    "__name": "CLUSTER_COUNT",
+    "__format": "number"
+  },
   "port": {
     "__name": "PORT",
     "__format": "number"

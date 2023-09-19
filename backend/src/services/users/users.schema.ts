@@ -14,7 +14,7 @@ export const userSchema = Type.Object(
     email: Type.String(),
     password: Type.Optional(Type.String()),
     // admin, content-reviewer, content-manager, user, guest, inactive
-    // roles: Type.Array(Type.String()),
+    role: Type.String(),
   },
   { $id: 'User', additionalProperties: false }
 )
@@ -25,7 +25,7 @@ export async function generateFake() {
   return {
     email: faker.internet.email(),
     password: faker.internet.password({ length: 20, memorable: true }),
-    // roles: ['user']
+    role: 'user'
   }
 }
 
@@ -38,7 +38,7 @@ export const userExternalResolver = resolve<User, HookContext>({
 })
 
 // Schema for creating new entries
-export const userDataSchema = Type.Pick(userSchema, ['email', 'password'], {
+export const userDataSchema = Type.Pick(userSchema, ['email', 'password', 'role'], {
   $id: 'UserData'
 })
 export type UserData = Static<typeof userDataSchema>
@@ -58,7 +58,7 @@ export const userPatchResolver = resolve<User, HookContext>({
 })
 
 // Schema for allowed query properties
-export const userQueryProperties = Type.Pick(userSchema, ['id', 'email'])
+export const userQueryProperties = Type.Pick(userSchema, ['id', 'email', 'role'])
 export const userQuerySchema = Type.Intersect(
   [
     querySyntax(userQueryProperties),

@@ -65,7 +65,7 @@ module.exports = configure(function (ctx) {
       publicPath: '/admin',
       // analyze: true,
       env: {
-        API: ctx.dev ? 'http://localhost:3030' : process.env.AMBER_URL,
+        API: ctx.dev ? 'http://localhost:3030' : process.env.API_URL,
       },
       // rawDefine: {}
       // ignorePublicFolder: true,

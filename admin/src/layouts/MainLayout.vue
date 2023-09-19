@@ -19,13 +19,83 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item-label header> Essential Links </q-item-label>
+        <q-item>
+          <q-chip>{{ authStore.user?.email }}</q-chip>
+        </q-item>
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+        <q-item clickable v-close-popup @click="logout">
+          <q-item-section avatar>
+            <q-icon name="logout" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ $t('logout') }}</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-item-label class="text-h6" header>{{ $t('content') }}</q-item-label>
+        <q-item clickable v-close-popup :to="'/natural-resources'">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-gem" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ $t('natural_resources') }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup :to="'/building-materials'">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-trowel-bricks" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ $t('building_materials') }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup :to="'/building-elements'">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-door-closed" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ $t('building_elements') }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup :to="'/buildings'">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-building" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ $t('buildings') }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup :to="'/technical-constructions'">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-compass-drafting" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{
+              $t('technical_constructions')
+            }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup :to="'/professionals'">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-person-digging" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ $t('professionals') }}</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-item-label class="text-h6" header>{{
+          $t('administration')
+        }}</q-item-label>
+
+        <q-item clickable v-close-popup :to="'/user'">
+          <q-item-section avatar>
+            <q-icon name="person" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ $t('users') }}</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -35,72 +105,28 @@
   </q-layout>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue';
 import EssentialLink from 'components/EssentialLink.vue';
 
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
-  },
-];
+const router = useRouter();
+const authStore = useAuthStore();
 
-export default defineComponent({
-  name: 'MainLayout',
-
-  components: {
-    EssentialLink,
-  },
-
-  setup() {
-    const leftDrawerOpen = ref(false);
-
-    return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value;
-      },
-    };
-  },
+onMounted(() => {
+  if (!authStore.isAuthenticated) {
+    router.push('/login');
+  }
 });
+
+const leftDrawerOpen = ref(false);
+
+function toggleLeftDrawer() {
+  leftDrawerOpen.value = !leftDrawerOpen.value;
+}
+
+function logout() {
+  authStore.logout().then(() => {
+    router.push('/login');
+  });
+}
 </script>

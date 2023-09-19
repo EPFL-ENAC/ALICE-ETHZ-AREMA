@@ -28,7 +28,7 @@ import { logger } from '../../logger'
 export * from './users.class'
 export * from './users.schema'
 
-export const userIterations = 30
+export const userIterations = 10
 // A configure function that registers the service and its hooks via `app.configure`
 export const user = (app: Application) => {
   // Register our service on the Feathers application

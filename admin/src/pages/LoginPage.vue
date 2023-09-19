@@ -116,6 +116,12 @@ const state = reactive({
   password: '',
 });
 
+onMounted(() => {
+  authStore.reAuthenticate().then(() => {
+    if (authStore.isAuthenticated) redirect();
+  });
+});
+
 const localeOptions = computed(() =>
   locales.map((loc) => {
     return {
@@ -132,8 +138,17 @@ function onLocaleSelection(opt: { value: string; label: string }) {
 // login then redirect
 const submit = async () => {
   authStore.clearError();
-  await authStore.authenticate({ strategy: 'local', ...state });
-  redirect();
+  authStore
+    .authenticate({ strategy: 'local', ...state })
+    .then(() => {
+      redirect();
+    })
+    .catch((err) => {
+      $q.notify({
+        message: err.message,
+        type: 'negative',
+      });
+    });
 };
 
 const redirect = async () => {
