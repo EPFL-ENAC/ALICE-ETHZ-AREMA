@@ -18,4 +18,11 @@ export default {
     en: 'English',
     fr: 'Français',
   },
+  logout: 'Logout',
+  content: 'Content',
+  natural_resources: 'Natural resources',
+  buildings: 'Buildings',
+  professionals: 'Professionals',
+  administration: 'Administration',
+  users: 'Users',
 };

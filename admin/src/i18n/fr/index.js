@@ -12,4 +12,11 @@ export default {
     en: 'English',
     fr: 'Français',
   },
+  logout: 'Déconnexion',
+  content: 'Contenu',
+  natural_resources: 'Ressources naturelles',
+  buildings: 'Bâtiments',
+  professionals: 'Professionnels',
+  administration: 'Administration',
+  users: 'Utilisateurs',
 };

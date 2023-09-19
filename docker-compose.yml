@@ -115,8 +115,6 @@ services:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
       POSTGRES_HOST: ${DATABASE_HOST}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
   pgadmin:
       container_name: pgadmin4_container
       image: dpage/pgadmin4
@@ -128,6 +126,8 @@ services:
         - "5050:5050"
         - "5080:80"
         - "5443:443"
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
 volumes:
   couchdb_data:
     driver: local

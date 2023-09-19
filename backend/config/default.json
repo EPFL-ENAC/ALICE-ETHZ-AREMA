@@ -1,6 +1,9 @@
 {
+  "clusterCount": 1,
   "host": "localhost",
   "port": 3030,
+  "administratorEmail": "enacit4research@epfl.ch",
+  "administratorPassword": "password",
   "public": "./public/",
   "origins": [
     "http://localhost:3030"

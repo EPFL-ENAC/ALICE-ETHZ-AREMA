@@ -6,9 +6,12 @@ import { dataValidator } from './validators'
 export const configurationSchema = Type.Intersect([
   defaultAppConfiguration,
   Type.Object({
+    clusterCount: Type.Number(),
     host: Type.String(),
     port: Type.Number(),
-    public: Type.String()
+    public: Type.String(),
+    administratorEmail: Type.String(),
+    administratorPassword: Type.String()
   })
 ])
 
