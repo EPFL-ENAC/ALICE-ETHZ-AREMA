@@ -111,11 +111,11 @@
               style="min-width: 200px"
             />
             <q-input
-              v-if="!selectedUser.id"
               filled
               v-model="selectedUser.password"
               type="password"
               :label="$t('login.password')"
+              :hint="selectedUser.id ? $t('password_edit_hint') : ''"
               class="q-mb-md"
               style="min-width: 200px"
             />
@@ -302,13 +302,29 @@ function onEditUser(user: User) {
 function saveSelectedUser() {
   if (selectedUser.value === undefined) return;
   if (selectedUser.value.id) {
-    userService.patch(selectedUser.value.id, selectedUser.value).then(() => {
-      tableRef.value.requestServerInteraction();
-    });
+    userService
+      .patch(selectedUser.value.id, selectedUser.value)
+      .then(() => {
+        tableRef.value.requestServerInteraction();
+      })
+      .catch((err) => {
+        $q.notify({
+          message: err.message,
+          type: 'negative',
+        });
+      });
   } else {
-    userService.create(selectedUser.value).then(() => {
-      tableRef.value.requestServerInteraction();
-    });
+    userService
+      .create(selectedUser.value)
+      .then(() => {
+        tableRef.value.requestServerInteraction();
+      })
+      .catch((err) => {
+        $q.notify({
+          message: err.message,
+          type: 'negative',
+        });
+      });
   }
 }
 

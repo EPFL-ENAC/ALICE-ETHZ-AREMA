@@ -14,8 +14,8 @@ const roles = ['admin', 'content-reviewer', 'content-manager', 'user', 'guest', 
 export const userSchema = Type.Object(
   {
     id: Type.Number(),
-    email: Type.String(),
-    password: Type.Optional(Type.String()),
+    email: Type.String({ format: 'email' }),
+    password: Type.String({ minLength: 8 }),
     role: Type.String({ enum: roles, default: 'guest' }),
   },
   { $id: 'User', additionalProperties: false }

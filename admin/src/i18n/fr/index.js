@@ -27,6 +27,7 @@ export default {
   add_user: 'Ajouter un utilisateur',
   remove_selected: 'Supprimer les items sélectionnés',
   email: 'Courriel',
+  password_edit_hint: 'Laisser vide pour NE PAS modifier le mot de passe.',
   role: 'Rôle',
   admin: 'Administrateur',
   'content-reviewer': 'Réviseur de contenu',

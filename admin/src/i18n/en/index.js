@@ -33,6 +33,7 @@ export default {
   add_user: 'Add user',
   remove_selected: 'Remove selected items',
   email: 'Email',
+  password_edit_hint: 'Leave empty to NOT modify the password.',
   role: 'Role',
   admin: 'Administrator',
   'content-reviewer': 'Content reviewer',
