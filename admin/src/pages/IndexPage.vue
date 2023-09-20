@@ -1,11 +1,15 @@
 <template>
-  <q-page class="q-pa-md">
-    <example-component
-      title="Example component"
-      active
-      :todos="todos"
-      :meta="meta"
-    ></example-component>
+  <q-page>
+    <div class="text-h5 q-pa-md">{{ $t('dashboard') }}</div>
+    <q-separator />
+    <div class="q-pa-md">
+      <example-component
+        title="Example component"
+        active
+        :todos="todos"
+        :meta="meta"
+      ></example-component>
+    </div>
   </q-page>
 </template>
 

@@ -19,6 +19,7 @@ export default {
     fr: 'Français',
   },
   logout: 'Logout',
+  dashboard: 'Dashboard',
   content: 'Content',
   natural_resources: 'Natural resources',
   buildings: 'Buildings',

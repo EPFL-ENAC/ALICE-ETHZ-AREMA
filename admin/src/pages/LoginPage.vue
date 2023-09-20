@@ -169,9 +169,9 @@ async function register() {
         redirect();
       });
     })
-    .catch(() => {
+    .catch((err) => {
       $q.notify({
-        message: t('login.registerError'),
+        message: `${t('login.registerError')}: ${err.message}`,
         type: 'negative',
       });
     });

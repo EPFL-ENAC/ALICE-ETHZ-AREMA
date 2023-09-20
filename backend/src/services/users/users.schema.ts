@@ -7,14 +7,16 @@ import { passwordHash } from '@feathersjs/authentication-local'
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import { faker } from '@faker-js/faker'
+
+const roles = ['admin', 'content-reviewer', 'content-manager', 'user', 'guest', 'inactive']
+
 // Main data model schema
 export const userSchema = Type.Object(
   {
     id: Type.Number(),
     email: Type.String(),
     password: Type.Optional(Type.String()),
-    // admin, content-reviewer, content-manager, user, guest, inactive
-    role: Type.String(),
+    role: Type.String({ enum: roles, default: 'guest' }),
   },
   { $id: 'User', additionalProperties: false }
 )
@@ -25,7 +27,7 @@ export async function generateFake() {
   return {
     email: faker.internet.email(),
     password: faker.internet.password({ length: 20, memorable: true }),
-    role: 'user'
+    role: faker.helpers.arrayElement(roles.filter((role) => role !== 'admin'))
   }
 }
 
@@ -61,7 +63,11 @@ export const userPatchResolver = resolve<User, HookContext>({
 export const userQueryProperties = Type.Pick(userSchema, ['id', 'email', 'role'])
 export const userQuerySchema = Type.Intersect(
   [
-    querySyntax(userQueryProperties),
+    querySyntax(userQueryProperties, {
+      email: {
+        $like: Type.String()
+      }
+    }),
     // Add additional query properties here
     Type.Object({}, { additionalProperties: false })
   ],
@@ -72,7 +78,7 @@ export const userQueryValidator = getValidator(userQuerySchema, queryValidator)
 export const userQueryResolver = resolve<UserQuery, HookContext>({
   // If there is a user (e.g. with authentication), they are only allowed to see their own data
   id: async (value, user, context) => {
-    if (context.params.user) {
+    if (context.params.user && context.params.user.role !== 'admin') {
       return context.params.user.id
     }
 

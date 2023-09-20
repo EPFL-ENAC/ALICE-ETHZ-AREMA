@@ -13,6 +13,7 @@ export default {
     fr: 'Français',
   },
   logout: 'Déconnexion',
+  dashboard: 'Tableau de bord',
   content: 'Contenu',
   natural_resources: 'Ressources naturelles',
   buildings: 'Bâtiments',
