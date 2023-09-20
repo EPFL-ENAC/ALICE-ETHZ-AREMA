@@ -109,10 +109,14 @@ export const naturalResourcePatchResolver = resolve<NaturalResource, HookContext
 })
 
 // Schema for allowed query properties
-export const naturalResourceQueryProperties = Type.Pick(naturalResourceSchema, ['id'])
+export const naturalResourceQueryProperties = Type.Pick(naturalResourceSchema, ['id', 'name', 'amount'])
 export const naturalResourceQuerySchema = Type.Intersect(
   [
-    querySyntax(naturalResourceQueryProperties),
+    querySyntax(naturalResourceQueryProperties, {
+      name: {
+        $like: Type.String()
+      }
+    }),
     // Add additional query properties here
     Type.Object({}, { additionalProperties: true })
   ],
