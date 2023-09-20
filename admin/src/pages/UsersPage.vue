@@ -8,7 +8,7 @@
         ref="tableRef"
         :rows="rows"
         :columns="columns"
-        row-key="email"
+        row-key="id"
         v-model:pagination="pagination"
         :loading="loading"
         :filter="filter"
@@ -19,21 +19,24 @@
           <q-btn
             color="primary"
             :disable="loading"
-            label="Add user"
+            :label="$t('add_user')"
             @click="onAddUser"
           />
-          <q-btn
-            v-if="rows.length !== 0"
-            class="q-ml-sm"
-            color="red"
-            flat
-            icon="delete"
-            :disable="loading"
-            title="Remove selected users"
-            @click="onRemoveUsers"
-          />
           <q-space />
-          <q-input dense debounce="300" color="primary" v-model="filter">
+          <q-select
+            filled
+            clearable
+            v-model="roles"
+            :options="roleOptions"
+            :label="$t('role')"
+            class="q-mr-md"
+            style="min-width: 200px"
+            @update:model-value="onRoleSelection"
+            multiple
+            emit-value
+            map-options
+          />
+          <q-input dense debounce="300" v-model="filter">
             <template v-slot:append>
               <q-icon name="search" />
             </template>
@@ -44,15 +47,112 @@
             <a :href="`mailto:${props.value}`">{{ props.value }}</a>
           </q-td>
         </template>
+        <template v-slot:body-cell-action="props">
+          <q-td :props="props">
+            <q-btn
+              color="grey-8"
+              size="12px"
+              flat
+              dense
+              round
+              icon="edit"
+              @click="onEditUser(props.row)"
+            >
+            </q-btn>
+            <q-btn
+              v-if="props.row.role === 'inactive'"
+              color="grey-8"
+              size="12px"
+              flat
+              dense
+              round
+              icon="play_arrow"
+              @click="activeateUser(props.row)"
+            >
+            </q-btn>
+            <q-btn
+              v-if="!(props.row.role === 'inactive')"
+              color="grey-8"
+              size="12px"
+              flat
+              dense
+              round
+              icon="pause"
+              @click="deactivateUser(props.row)"
+            >
+            </q-btn>
+            <q-btn
+              color="grey-8"
+              size="12px"
+              flat
+              dense
+              round
+              icon="delete"
+              @click="removeUser(props.row)"
+            >
+            </q-btn>
+          </q-td>
+        </template>
       </q-table>
+
+      <q-dialog
+        v-model="showEditUserDialog"
+        persistent
+        transition-show="scale"
+        transition-hide="scale"
+      >
+        <q-card style="width: 300px">
+          <q-card-section>
+            <q-input
+              filled
+              v-model="selectedUser.email"
+              :label="$t('email')"
+              class="q-mb-md"
+              style="min-width: 200px"
+            />
+            <q-input
+              v-if="!selectedUser.id"
+              filled
+              v-model="selectedUser.password"
+              type="password"
+              :label="$t('login.password')"
+              class="q-mb-md"
+              style="min-width: 200px"
+            />
+            <q-select
+              filled
+              clearable
+              v-model="selectedUser.role"
+              :options="roleOptions"
+              :label="$t('role')"
+              class="q-mr-md"
+              style="min-width: 200px"
+              emit-value
+              map-options
+            />
+          </q-card-section>
+
+          <q-card-actions align="right">
+            <q-btn flat :label="$t('cancel')" v-close-popup />
+            <q-btn
+              color="primary"
+              :label="$t('save')"
+              v-close-popup
+              @click="saveSelectedUser"
+            />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
+import { useQuasar } from 'quasar';
 import { Query } from '@feathersjs/client';
 import { User } from '@epfl-enac/arema';
-
+const { t } = useI18n({ useScope: 'global' });
+const $q = useQuasar();
 const { api } = useFeathers();
 const userService = api.service('users');
 
@@ -60,23 +160,45 @@ const columns = [
   {
     name: 'email',
     required: true,
-    label: 'Email',
+    label: t('email'),
     align: 'left',
-    field: (row: User) => row.email,
-    format: (val: User) => `${val}`,
+    field: 'email',
     sortable: true,
   },
   {
     name: 'role',
     align: 'left',
-    label: 'Role',
+    label: t('role'),
     field: 'role',
+    format: (val: string) => t(val),
     sortable: true,
+  },
+  {
+    name: 'action',
+    align: 'left',
+    label: t('action'),
   },
 ];
 
+const roleOptions = [
+  'admin',
+  'content-reviewer',
+  'content-manager',
+  'user',
+  'guest',
+  'inactive',
+].map((key) => {
+  return {
+    value: key,
+    label: t(key),
+  };
+});
+
+const selectedUser = ref<User>();
+const showEditUserDialog = ref(false);
 const tableRef = ref();
 const rows = ref<User[]>([]);
+const roles = ref<string[] | null>(null);
 const filter = ref('');
 const loading = ref(false);
 const pagination = ref({
@@ -95,6 +217,7 @@ onMounted(() => {
 async function fetchFromServer(
   startRow: number,
   count: number,
+  roles: string[] | null,
   filter: string,
   sortBy: string,
   descending: boolean
@@ -106,6 +229,11 @@ async function fetchFromServer(
       [sortBy]: descending ? -1 : 1,
     },
   };
+  if (roles) {
+    query.role = {
+      $in: roles,
+    };
+  }
   if (filter) {
     query.email = {
       $like: `%${filter}%`,
@@ -131,31 +259,102 @@ function onRequest(props) {
   const startRow = (page - 1) * rowsPerPage;
 
   // fetch data from "server"
-  fetchFromServer(startRow, fetchCount, filter, sortBy, descending).then(
-    (result) => {
-      // update rowsCount with appropriate value
-      pagination.value.rowsNumber = result.total;
+  fetchFromServer(
+    startRow,
+    fetchCount,
+    roles.value,
+    filter,
+    sortBy,
+    descending
+  ).then((result) => {
+    // update rowsCount with appropriate value
+    pagination.value.rowsNumber = result.total;
 
-      // clear out existing data and add new
-      rows.value.splice(0, rows.value.length, ...result.data);
+    // clear out existing data and add new
+    rows.value.splice(0, rows.value.length, ...result.data);
 
-      // don't forget to update local pagination object
-      pagination.value.page = page;
-      pagination.value.rowsPerPage = rowsPerPage;
-      pagination.value.sortBy = sortBy;
-      pagination.value.descending = descending;
+    // don't forget to update local pagination object
+    pagination.value.page = page;
+    pagination.value.rowsPerPage = rowsPerPage;
+    pagination.value.sortBy = sortBy;
+    pagination.value.descending = descending;
 
-      // ...and turn off loading indicator
-      loading.value = false;
-    }
-  );
+    // ...and turn off loading indicator
+    loading.value = false;
+  });
+}
+
+function onRoleSelection() {
+  console.log(roles.value);
+  tableRef.value.requestServerInteraction();
 }
 
 function onAddUser() {
-  console.log('add user');
+  selectedUser.value = { email: '', role: 'user' };
+  showEditUserDialog.value = true;
 }
 
-function onRemoveUsers() {
-  console.log('remove users');
+function onEditUser(user: User) {
+  selectedUser.value = { ...user };
+  showEditUserDialog.value = true;
+}
+
+function saveSelectedUser() {
+  if (selectedUser.value === undefined) return;
+  if (selectedUser.value.id) {
+    userService.patch(selectedUser.value.id, selectedUser.value).then(() => {
+      tableRef.value.requestServerInteraction();
+    });
+  } else {
+    userService.create(selectedUser.value).then(() => {
+      tableRef.value.requestServerInteraction();
+    });
+  }
+}
+
+function activeateUser(user: User) {
+  userService
+    .patch(user.id, {
+      role: 'guest',
+    })
+    .then(() => {
+      tableRef.value.requestServerInteraction();
+    })
+    .catch((err) => {
+      $q.notify({
+        message: err.message,
+        type: 'negative',
+      });
+    });
+}
+
+function deactivateUser(user: User) {
+  userService
+    .patch(user.id, {
+      role: 'inactive',
+    })
+    .then(() => {
+      tableRef.value.requestServerInteraction();
+    })
+    .catch((err) => {
+      $q.notify({
+        message: err.message,
+        type: 'negative',
+      });
+    });
+}
+
+function removeUser(user: User) {
+  userService
+    .remove(user.id)
+    .then(() => {
+      tableRef.value.requestServerInteraction();
+    })
+    .catch((err) => {
+      $q.notify({
+        message: err.message,
+        type: 'negative',
+      });
+    });
 }
 </script>
