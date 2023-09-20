@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="text-h5 q-pa-md">{{ $t('users') }}</div>
+    <div class="text-h5 q-pa-md">{{ $t('natural_resources') }}</div>
     <q-separator />
     <div class="q-pa-md">
       <q-table
@@ -24,28 +24,15 @@
             @click="onAdd"
           />
           <q-space />
-          <q-select
-            filled
-            clearable
-            v-model="roles"
-            :options="roleOptions"
-            :label="$t('role')"
-            class="q-mr-md"
-            style="min-width: 200px"
-            @update:model-value="onRoleSelection"
-            multiple
-            emit-value
-            map-options
-          />
           <q-input dense debounce="300" v-model="filter">
             <template v-slot:append>
               <q-icon name="search" />
             </template>
           </q-input>
         </template>
-        <template v-slot:body-cell-email="props">
-          <q-td :props="props">
-            <a :href="`mailto:${props.value}`">{{ props.value }}</a>
+        <template v-slot:body-cell-description="props">
+          <q-td :props="props" class="ellipsis" style="max-width: 200px">
+            {{ props.value }}
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -58,28 +45,6 @@
               round
               icon="edit"
               @click="onEdit(props.row)"
-            >
-            </q-btn>
-            <q-btn
-              v-if="props.row.role === 'inactive'"
-              color="grey-8"
-              size="12px"
-              flat
-              dense
-              round
-              icon="play_arrow"
-              @click="activate(props.row)"
-            >
-            </q-btn>
-            <q-btn
-              v-if="!(props.row.role === 'inactive')"
-              color="grey-8"
-              size="12px"
-              flat
-              dense
-              round
-              icon="pause"
-              @click="deactivate(props.row)"
             >
             </q-btn>
             <q-btn
@@ -106,30 +71,40 @@
           <q-card-section>
             <q-input
               filled
-              v-model="selected.email"
-              :label="$t('email')"
+              v-model="selected.name"
+              :label="$t('name')"
               class="q-mb-md"
               style="min-width: 200px"
             />
             <q-input
               filled
-              v-model="selected.password"
-              type="password"
-              :label="$t('login.password')"
-              :hint="selected.id ? $t('password_edit_hint') : ''"
+              v-model="selected.description"
+              autogrow
+              :label="$t('description')"
               class="q-mb-md"
               style="min-width: 200px"
             />
-            <q-select
+            <q-input
               filled
-              clearable
-              v-model="selected.role"
-              :options="roleOptions"
-              :label="$t('role')"
-              class="q-mr-md"
+              v-model="selected.zone"
+              :label="$t('zone')"
+              class="q-mb-md"
               style="min-width: 200px"
-              emit-value
-              map-options
+            />
+            <q-input
+              filled
+              v-model="selected.dimension"
+              :label="$t('dimension')"
+              class="q-mb-md"
+              style="min-width: 200px"
+            />
+            <q-input
+              filled
+              v-model.number="selected.amount"
+              type="number"
+              :label="$t('amount')"
+              class="q-mb-md"
+              style="min-width: 200px"
             />
           </q-card-section>
 
@@ -151,28 +126,63 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { Query } from '@feathersjs/client';
-import { User } from '@epfl-enac/arema';
+import { NaturalResource } from '@epfl-enac/arema';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const { api } = useFeathers();
-const service = api.service('users');
+const service = api.service('natural-resource');
 
 const columns = [
   {
-    name: 'email',
+    name: 'name',
     required: true,
-    label: t('email'),
+    label: t('name'),
     align: 'left',
-    field: 'email',
+    field: 'name',
     sortable: true,
   },
   {
-    name: 'role',
+    name: 'description',
+    required: true,
+    label: t('description'),
     align: 'left',
-    label: t('role'),
-    field: 'role',
-    format: (val: string) => t(val),
+    field: 'description',
+    sortable: false,
+  },
+  {
+    name: 'zone',
+    required: true,
+    label: t('zone'),
+    align: 'left',
+    field: 'zone',
+    sortable: false,
+  },
+  {
+    name: 'dimension',
+    required: true,
+    label: t('dimension'),
+    align: 'left',
+    field: 'dimension',
+    sortable: false,
+  },
+  {
+    name: 'amount',
+    required: true,
+    label: t('amount'),
+    align: 'left',
+    field: 'amount',
     sortable: true,
+  },
+  {
+    name: 'lastModification',
+    required: true,
+    label: t('last_modification'),
+    align: 'left',
+    field: (row: NaturalResource) => {
+      const dateStr = row.updatedAt || row.createdAt;
+      return new Date(dateStr).toLocaleDateString();
+    },
+    sortable: false,
   },
   {
     name: 'action',
@@ -181,29 +191,15 @@ const columns = [
   },
 ];
 
-const roleOptions = [
-  'admin',
-  'content-reviewer',
-  'content-manager',
-  'user',
-  'guest',
-  'inactive',
-].map((key) => {
-  return {
-    value: key,
-    label: t(key),
-  };
-});
-
-const selected = ref<User>();
+const selected = ref<NaturalResource>();
 const showEditDialog = ref(false);
 const tableRef = ref();
-const rows = ref<User[]>([]);
+const rows = ref<NaturalResource[]>([]);
 const roles = ref<string[] | null>(null);
 const filter = ref('');
 const loading = ref(false);
 const pagination = ref({
-  sortBy: 'email',
+  sortBy: 'name',
   descending: false,
   page: 1,
   rowsPerPage: 10,
@@ -218,7 +214,6 @@ onMounted(() => {
 async function fetchFromServer(
   startRow: number,
   count: number,
-  roles: string[] | null,
   filter: string,
   sortBy: string,
   descending: boolean
@@ -230,13 +225,8 @@ async function fetchFromServer(
       [sortBy]: descending ? -1 : 1,
     },
   };
-  if (roles) {
-    query.role = {
-      $in: roles,
-    };
-  }
   if (filter) {
-    query.email = {
+    query.name = {
       $like: `%${filter}%`,
     };
   }
@@ -260,29 +250,24 @@ function onRequest(props) {
   const startRow = (page - 1) * rowsPerPage;
 
   // fetch data from "server"
-  fetchFromServer(
-    startRow,
-    fetchCount,
-    roles.value,
-    filter,
-    sortBy,
-    descending
-  ).then((result) => {
-    // update rowsCount with appropriate value
-    pagination.value.rowsNumber = result.total;
+  fetchFromServer(startRow, fetchCount, filter, sortBy, descending).then(
+    (result) => {
+      // update rowsCount with appropriate value
+      pagination.value.rowsNumber = result.total;
 
-    // clear out existing data and add new
-    rows.value.splice(0, rows.value.length, ...result.data);
+      // clear out existing data and add new
+      rows.value.splice(0, rows.value.length, ...result.data);
 
-    // don't forget to update local pagination object
-    pagination.value.page = page;
-    pagination.value.rowsPerPage = rowsPerPage;
-    pagination.value.sortBy = sortBy;
-    pagination.value.descending = descending;
+      // don't forget to update local pagination object
+      pagination.value.page = page;
+      pagination.value.rowsPerPage = rowsPerPage;
+      pagination.value.sortBy = sortBy;
+      pagination.value.descending = descending;
 
-    // ...and turn off loading indicator
-    loading.value = false;
-  });
+      // ...and turn off loading indicator
+      loading.value = false;
+    }
+  );
 }
 
 function onRoleSelection() {
@@ -295,14 +280,18 @@ function onAdd() {
   showEditDialog.value = true;
 }
 
-function onEdit(user: User) {
-  selected.value = { ...user };
+function onEdit(resource: NaturalResource) {
+  selected.value = { ...resource };
   showEditDialog.value = true;
 }
 
 function saveSelected() {
   if (selected.value === undefined) return;
   if (selected.value.id) {
+    delete selected.value.createdAt;
+    delete selected.value.createdById;
+    delete selected.value.updatedAt;
+    delete selected.value.updatedById;
     service
       .patch(selected.value.id, selected.value)
       .then(() => {
@@ -315,6 +304,7 @@ function saveSelected() {
         });
       });
   } else {
+    selected.value.images = [];
     service
       .create(selected.value)
       .then(() => {
@@ -329,41 +319,9 @@ function saveSelected() {
   }
 }
 
-function activate(user: User) {
+function remove(resource: NaturalResource) {
   service
-    .patch(user.id, {
-      role: 'guest',
-    })
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch((err) => {
-      $q.notify({
-        message: err.message,
-        type: 'negative',
-      });
-    });
-}
-
-function deactivate(user: User) {
-  service
-    .patch(user.id, {
-      role: 'inactive',
-    })
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch((err) => {
-      $q.notify({
-        message: err.message,
-        type: 'negative',
-      });
-    });
-}
-
-function remove(user: User) {
-  service
-    .remove(user.id)
+    .remove(resource.id)
     .then(() => {
       tableRef.value.requestServerInteraction();
     })
