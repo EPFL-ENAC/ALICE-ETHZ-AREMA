@@ -29,6 +29,7 @@ app.use(bodyParser())
 // Configure services and transports
 app.configure(rest())
 app.configure(socketio({
+  path: '/socket.io',
   cors: {
     origin: app.get('origins')
   }

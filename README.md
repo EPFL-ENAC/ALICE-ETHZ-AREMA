@@ -45,3 +45,32 @@ Encoding format: UTF-8, Separator: ',' (comma)
 # Points d'entrées
 - Soit on arrive par les humains (professionals)
 - Soit les buildings
+
+
+# What the .env file should look like
+
+```sh
+NODE_ENV=development
+# for s3 and custom cdn (epfl dns)
+DNS=128.178.15.8
+
+S3_ENDPOINT_HOSTNAME=s3.epfl.ch
+S3_ENDPOINT_PROTOCOL=https://
+S3_ACCESS_KEY_ID=xxxxxxxxxxx
+S3_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+S3_REGION=EU
+S3_Bucket=xxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+S3_Key=alice-ethz-arema-local/
+
+# the domain where the api will be hosted + proper protocol
+API_URL=https://localhost/
+# use by the frontend and admin to request infos (for http and ws)
+API_PATH=/api
+
+DATABASE_USERNAME=postgres
+DATABASE_PASSWORD=xxx
+DATABASE_NAME=backend
+DATABASE_HOST=postgre
+
+DATABASE_URL=postgres://postgres:xxx@postgres:5432/backend
+```
