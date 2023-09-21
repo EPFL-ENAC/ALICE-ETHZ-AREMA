@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="text-h5 q-pa-md">{{ $t('natural_resources') }}</div>
+    <div class="text-h5 q-pa-md">{{ $t('buildings') }}</div>
     <q-separator />
     <div class="q-pa-md">
       <q-table
@@ -87,23 +87,8 @@
             />
             <q-input
               filled
-              v-model="selected.zone"
-              :label="$t('zone')"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
-            <q-input
-              filled
-              v-model="selected.dimension"
-              :label="$t('dimension')"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
-            <q-input
-              filled
-              v-model.number="selected.amount"
-              type="number"
-              :label="$t('amount')"
+              v-model="selected.address"
+              :label="$t('address')"
               class="q-mb-md"
               style="min-width: 200px"
             />
@@ -127,13 +112,13 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { Query } from '@feathersjs/client';
-import { NaturalResource } from '@epfl-enac/arema';
+import { Building } from '@epfl-enac/arema';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const { api } = useFeathers();
-const service = api.service('natural-resource');
+const service = api.service('building');
 
 const columns = [
   {
@@ -153,35 +138,19 @@ const columns = [
     sortable: false,
   },
   {
-    name: 'zone',
+    name: 'address',
     required: true,
-    label: t('zone'),
+    label: t('address'),
     align: 'left',
-    field: 'zone',
+    field: 'address',
     sortable: false,
-  },
-  {
-    name: 'dimension',
-    required: true,
-    label: t('dimension'),
-    align: 'left',
-    field: 'dimension',
-    sortable: false,
-  },
-  {
-    name: 'amount',
-    required: true,
-    label: t('amount'),
-    align: 'left',
-    field: 'amount',
-    sortable: true,
   },
   {
     name: 'lastModification',
     required: true,
     label: t('last_modification'),
     align: 'left',
-    field: (row: NaturalResource) => {
+    field: (row: Building) => {
       const date = new Date(row.updatedAt || row.createdAt);
       return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
     },
@@ -194,10 +163,10 @@ const columns = [
   },
 ];
 
-const selected = ref<NaturalResource>();
+const selected = ref<Building>();
 const showEditDialog = ref(false);
 const tableRef = ref();
-const rows = ref<NaturalResource[]>([]);
+const rows = ref<Building[]>([]);
 const filter = ref('');
 const loading = ref(false);
 const pagination = ref<PaginationOptions>({
@@ -220,6 +189,7 @@ function fetchFromServer(
   sortBy: string,
   descending: boolean
 ) {
+  loading.value = true;
   const query: Query = {
     $skip: startRow,
     $limit: count,
@@ -228,9 +198,18 @@ function fetchFromServer(
     },
   };
   if (filter) {
-    query.name = {
-      $like: `%${filter}%`,
-    };
+    query.$or = [
+      {
+        name: {
+          $like: `%${filter}%`,
+        },
+      },
+      {
+        address: {
+          $like: `%${filter}%`,
+        },
+      },
+    ];
   }
   return service.find({
     query,
@@ -248,7 +227,7 @@ function onAdd() {
   showEditDialog.value = true;
 }
 
-function onEdit(resource: NaturalResource) {
+function onEdit(resource: Building) {
   selected.value = { ...resource };
   showEditDialog.value = true;
 }
@@ -287,7 +266,7 @@ function saveSelected() {
   }
 }
 
-function remove(resource: NaturalResource) {
+function remove(resource: Building) {
   service
     .remove(resource.id)
     .then(() => {

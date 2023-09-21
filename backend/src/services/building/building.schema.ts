@@ -45,6 +45,7 @@ export type Building = Static<typeof buildingSchema>
 export async function generateFake(user: User) {
   const result = {
     createdById: user.id,
+    createdAt: new Date().toISOString(),
     name: faker.lorem.words(3),
     description: faker.lorem.paragraph(),
     address: faker.location.streetAddress(),
@@ -81,7 +82,7 @@ export const buildingProfessionResolver = resolve<Building, HookContext>({
 export const buildingExternalResolver = resolve<Building, HookContext>({})
 
 // Schema for creating new entries
-export const buildingDataSchema = Type.Pick(buildingSchema, ['description'], {
+export const buildingDataSchema = Type.Pick(buildingSchema, ['name', 'description', 'address'], {
   $id: 'BuildingData'
 })
 export type BuildingData = Static<typeof buildingDataSchema>
@@ -115,10 +116,20 @@ export const buildingPatchResolver = resolve<Building, HookContext>({
 })
 
 // Schema for allowed query properties
-export const buildingQueryProperties = Type.Pick(buildingSchema, ['id', 'description'])
+export const buildingQueryProperties = Type.Pick(buildingSchema, ['id', 'name', 'description', 'address'])
 export const buildingQuerySchema = Type.Intersect(
   [
-    querySyntax(buildingQueryProperties),
+    querySyntax(buildingQueryProperties, {
+      name: {
+        $like: Type.String()
+      },
+      description: {
+        $like: Type.String()
+      },
+      address: {
+        $like: Type.String()
+      }
+    }),
     // Add additional query properties here
     Type.Object({}, { additionalProperties: false })
   ],

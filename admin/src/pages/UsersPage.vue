@@ -14,6 +14,7 @@
         :filter="filter"
         binary-state-sort
         @request="onRequest"
+        :rows-per-page-options="[10, 25, 50]"
       >
         <template v-slot:top>
           <q-btn
@@ -152,6 +153,8 @@
 import { useQuasar } from 'quasar';
 import { Query } from '@feathersjs/client';
 import { User } from '@epfl-enac/arema';
+import { makePaginationRequestHandler } from '../utils/pagination';
+import type { PaginationOptions } from '../utils/pagination';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const { api } = useFeathers();
@@ -202,7 +205,7 @@ const rows = ref<User[]>([]);
 const roles = ref<string[] | null>(null);
 const filter = ref('');
 const loading = ref(false);
-const pagination = ref({
+const pagination = ref<PaginationOptions>({
   sortBy: 'email',
   descending: false,
   page: 1,
@@ -215,10 +218,9 @@ onMounted(() => {
   tableRef.value.requestServerInteraction();
 });
 
-async function fetchFromServer(
+function fetchFromServer(
   startRow: number,
   count: number,
-  roles: string[] | null,
   filter: string,
   sortBy: string,
   descending: boolean
@@ -230,9 +232,9 @@ async function fetchFromServer(
       [sortBy]: descending ? -1 : 1,
     },
   };
-  if (roles) {
+  if (roles.value) {
     query.role = {
-      $in: roles,
+      $in: roles.value,
     };
   }
   if (filter) {
@@ -240,53 +242,18 @@ async function fetchFromServer(
       $like: `%${filter}%`,
     };
   }
-  const result = await service.find({
+  return service.find({
     query,
-  });
-  return result;
-}
-
-function onRequest(props) {
-  const { page, rowsPerPage, sortBy, descending } = props.pagination;
-  const filter = props.filter;
-
-  loading.value = true;
-
-  // get all rows if "All" (0) is selected
-  const fetchCount =
-    rowsPerPage === 0 ? pagination.value.rowsNumber : rowsPerPage;
-
-  // calculate starting row of data
-  const startRow = (page - 1) * rowsPerPage;
-
-  // fetch data from "server"
-  fetchFromServer(
-    startRow,
-    fetchCount,
-    roles.value,
-    filter,
-    sortBy,
-    descending
-  ).then((result) => {
-    // update rowsCount with appropriate value
-    pagination.value.rowsNumber = result.total;
-
-    // clear out existing data and add new
-    rows.value.splice(0, rows.value.length, ...result.data);
-
-    // don't forget to update local pagination object
-    pagination.value.page = page;
-    pagination.value.rowsPerPage = rowsPerPage;
-    pagination.value.sortBy = sortBy;
-    pagination.value.descending = descending;
-
-    // ...and turn off loading indicator
+  }).then((result) => {
+    rows.value = result.data;
     loading.value = false;
+    return result;    
   });
 }
+
+const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
 
 function onRoleSelection() {
-  console.log(roles.value);
   tableRef.value.requestServerInteraction();
 }
 
