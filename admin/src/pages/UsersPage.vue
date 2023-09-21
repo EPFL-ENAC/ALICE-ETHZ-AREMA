@@ -215,10 +215,9 @@ onMounted(() => {
   tableRef.value.requestServerInteraction();
 });
 
-async function fetchFromServer(
+function fetchFromServer(
   startRow: number,
   count: number,
-  roles: string[] | null,
   filter: string,
   sortBy: string,
   descending: boolean
@@ -230,9 +229,9 @@ async function fetchFromServer(
       [sortBy]: descending ? -1 : 1,
     },
   };
-  if (roles) {
+  if (roles.value) {
     query.role = {
-      $in: roles,
+      $in: roles.value,
     };
   }
   if (filter) {
@@ -240,10 +239,9 @@ async function fetchFromServer(
       $like: `%${filter}%`,
     };
   }
-  const result = await service.find({
+  return service.find({
     query,
   });
-  return result;
 }
 
 function onRequest(props) {
@@ -263,25 +261,20 @@ function onRequest(props) {
   fetchFromServer(
     startRow,
     fetchCount,
-    roles.value,
     filter,
     sortBy,
     descending
-  ).then((result) => {
-    // update rowsCount with appropriate value
-    pagination.value.rowsNumber = result.total;
-
-    // clear out existing data and add new
-    rows.value.splice(0, rows.value.length, ...result.data);
-
-    // don't forget to update local pagination object
-    pagination.value.page = page;
-    pagination.value.rowsPerPage = rowsPerPage;
-    pagination.value.sortBy = sortBy;
-    pagination.value.descending = descending;
-
-    // ...and turn off loading indicator
+  )
+  .then((result) => {
+    rows.value = result.data;
+    pagination.value = { ...props.pagination, rowsNumber: result.total,  };
     loading.value = false;
+  })
+  .catch((err) => {
+    $q.notify({
+      message: err.message,
+      type: 'negative',
+    });
   });
 }
 
