@@ -14,8 +14,7 @@ const socket = io(host, {//'https://localhost/', {
   path: `${apiPath}/socket.io/`,//path: '/api/socket.io/',
   rejectUnauthorized: false
 });
-// const restClient = rest(process.env.API_URL);
-
+// const restClient = rest(`${process.env.API_URL}${process.env.API_PATH}`);
 export const feathersClient = createClient(
   socketio(socket),
   // restClient.fetch(window.fetch.bind(window)),

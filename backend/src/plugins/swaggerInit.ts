@@ -6,6 +6,17 @@ export const getSwaggerInitializerScript: FnSwaggerUiGetInitializerScript = ({ d
 
   // language=JavaScript
   return `
+  var UrlMutatorPlugin = (system) => ({
+    rootInjects: {
+      setServer: (server) => {
+        var jsonSpec = system.getState().toJSON().spec.json;
+        var servers = [{url: server}];
+        var newJsonSpec = Object.assign({}, jsonSpec, { servers });
+        return system.specActions.updateJsonSpec(newJsonSpec);
+      }
+    }
+  });
+
     window.onload = function () {
       var script = document.createElement('script');
       script.onload = function () {
@@ -19,8 +30,13 @@ export const getSwaggerInitializerScript: FnSwaggerUiGetInitializerScript = ({ d
             SwaggerUIApiKeyAuthFormPlugin,
           ],
           plugins: [
-            SwaggerUIBundle.plugins.DownloadUrl
+            SwaggerUIBundle.plugins.DownloadUrl,
+            UrlMutatorPlugin,
           ],
+          // if we want to set the server after the page is loaded, which we don't right now
+          // onComplete: () => {
+          //   window.ui.setServer("/api")
+          // },
           layout: "StandaloneLayout",
           configs: {
             apiKeyAuthFormPlugin: {
@@ -38,7 +54,7 @@ export const getSwaggerInitializerScript: FnSwaggerUiGetInitializerScript = ({ d
                   },
                   authCallback(values, callback) {
                     window.ui.fn.fetch({
-                      url: '/authentication',
+                      url: '${basePath}/authentication', // we dynamically set basePath on docker container start
                       method: 'post',
                       headers: {
                         Accept: 'application/json',

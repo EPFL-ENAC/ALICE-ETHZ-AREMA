@@ -9,6 +9,7 @@ export const configurationSchema = Type.Intersect([
     clusterCount: Type.Number(),
     host: Type.String(),
     port: Type.Number(),
+    basePath: Type.String(), // we use basePath only for docs right now (for dev/prod platform)
     public: Type.String(),
     administratorEmail: Type.String(),
     administratorPassword: Type.String()

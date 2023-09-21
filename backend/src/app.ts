@@ -39,6 +39,8 @@ app.configure(
   swagger({
     ui: swagger.swaggerUI({ getSwaggerInitializerScript }),
     specs: {
+      // we use basePath only for docs right now (for dev/prod platform)
+      servers: [{ url: app.get('basePath') }],
       info: { 
         title: 'backend http rest api',
         description: ' swagger documentation',
@@ -56,6 +58,7 @@ app.configure(
     }
   })
 )
+
 app.configure(postgresql)
 app.configure(authentication)
 app.configure(services)
