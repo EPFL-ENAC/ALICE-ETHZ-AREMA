@@ -74,10 +74,20 @@ export const professionalPatchValidator = getValidator(professionalPatchSchema, 
 export const professionalPatchResolver = resolve<Professional, HookContext>({})
 
 // Schema for allowed query properties
-export const professionalQueryProperties = Type.Pick(professionalSchema, ['id', 'description'])
+export const professionalQueryProperties = Type.Pick(professionalSchema, ['id', 'name', 'description', 'address'])
 export const professionalQuerySchema = Type.Intersect(
   [
-    querySyntax(professionalQueryProperties),
+    querySyntax(professionalQueryProperties, {
+      name: {
+        $like: Type.String()
+      },
+      description: {
+        $like: Type.String()
+      },
+      address: {
+        $like: Type.String()
+      }
+    }),
     // Add additional query properties here
     Type.Object({}, { additionalProperties: false })
   ],

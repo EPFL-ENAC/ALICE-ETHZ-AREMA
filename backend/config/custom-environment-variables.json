@@ -13,5 +13,7 @@
   },
   "postgresql": {
     "connection": "DATABASE_URL"
-  }
+  },
+  "administratorEmail": "ADMINISTRATOR_EMAIL",
+  "administratorPassword": "ADMINISTRATOR_PASSWORD"
 }

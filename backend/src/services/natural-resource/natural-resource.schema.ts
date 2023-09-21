@@ -36,8 +36,6 @@ export const naturalResourceSchema = Type.Object(
 
 export type NaturalResource = Static<typeof naturalResourceSchema>
 
-// { createdById: number;  zone: string; dimension: string; amount: number; images: never[]; }
-// { createdAt: string; createdById: number; images: string[]; zone: string; dimension: string; amount: number; }
 // generate fake data
 export function generateFake(user: User) {
   const result = {
@@ -75,7 +73,7 @@ export const naturalResourceExternalResolver = resolve<NaturalResource, HookCont
 // Schema for creating new entries
 export const naturalResourceDataSchema = Type.Pick(
   naturalResourceSchema,
-  ['name', 'zone', 'dimension', 'amount', 'images', 'description', 'createdById', 'createdAt'],
+  ['name', 'zone', 'dimension', 'amount', 'images', 'description'],
   {
     $id: 'NaturalResourceData'
   }

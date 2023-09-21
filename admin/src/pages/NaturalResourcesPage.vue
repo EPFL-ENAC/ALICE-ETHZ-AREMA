@@ -179,8 +179,8 @@ const columns = [
     label: t('last_modification'),
     align: 'left',
     field: (row: NaturalResource) => {
-      const dateStr = row.updatedAt || row.createdAt;
-      return new Date(dateStr).toLocaleDateString();
+      const date = new Date(row.updatedAt || row.createdAt);
+      return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
     },
     sortable: false,
   },
@@ -195,7 +195,6 @@ const selected = ref<NaturalResource>();
 const showEditDialog = ref(false);
 const tableRef = ref();
 const rows = ref<NaturalResource[]>([]);
-const roles = ref<string[] | null>(null);
 const filter = ref('');
 const loading = ref(false);
 const pagination = ref({
@@ -270,13 +269,8 @@ function onRequest(props) {
   );
 }
 
-function onRoleSelection() {
-  console.log(roles.value);
-  tableRef.value.requestServerInteraction();
-}
-
 function onAdd() {
-  selected.value = { email: '', role: 'user' };
+  selected.value = {};
   showEditDialog.value = true;
 }
 

@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="text-h5 q-pa-md">{{ $t('users') }}</div>
+    <div class="text-h5 q-pa-md">{{ $t('professionals') }}</div>
     <q-separator />
     <div class="q-pa-md">
       <q-table
@@ -24,28 +24,15 @@
             @click="onAdd"
           />
           <q-space />
-          <q-select
-            filled
-            clearable
-            v-model="roles"
-            :options="roleOptions"
-            :label="$t('role')"
-            class="q-mr-md"
-            style="min-width: 200px"
-            @update:model-value="onRoleSelection"
-            multiple
-            emit-value
-            map-options
-          />
           <q-input dense debounce="300" v-model="filter">
             <template v-slot:append>
               <q-icon name="search" />
             </template>
           </q-input>
         </template>
-        <template v-slot:body-cell-email="props">
-          <q-td :props="props">
-            <a :href="`mailto:${props.value}`">{{ props.value }}</a>
+        <template v-slot:body-cell-description="props">
+          <q-td :props="props" class="ellipsis" style="max-width: 200px">
+            {{ props.value }}
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -58,28 +45,6 @@
               round
               icon="edit"
               @click="onEdit(props.row)"
-            >
-            </q-btn>
-            <q-btn
-              v-if="props.row.role === 'inactive'"
-              color="grey-8"
-              size="12px"
-              flat
-              dense
-              round
-              icon="play_arrow"
-              @click="activate(props.row)"
-            >
-            </q-btn>
-            <q-btn
-              v-if="!(props.row.role === 'inactive')"
-              color="grey-8"
-              size="12px"
-              flat
-              dense
-              round
-              icon="pause"
-              @click="deactivate(props.row)"
             >
             </q-btn>
             <q-btn
@@ -106,30 +71,25 @@
           <q-card-section>
             <q-input
               filled
-              v-model="selected.email"
-              :label="$t('email')"
+              v-model="selected.name"
+              :label="$t('name')"
               class="q-mb-md"
               style="min-width: 200px"
             />
             <q-input
               filled
-              v-model="selected.password"
-              type="password"
-              :label="$t('login.password')"
-              :hint="selected.id ? $t('password_edit_hint') : ''"
+              v-model="selected.description"
+              autogrow
+              :label="$t('description')"
               class="q-mb-md"
               style="min-width: 200px"
             />
-            <q-select
+            <q-input
               filled
-              clearable
-              v-model="selected.role"
-              :options="roleOptions"
-              :label="$t('role')"
-              class="q-mr-md"
+              v-model="selected.address"
+              :label="$t('address')"
+              class="q-mb-md"
               style="min-width: 200px"
-              emit-value
-              map-options
             />
           </q-card-section>
 
@@ -151,28 +111,47 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { Query } from '@feathersjs/client';
-import { User } from '@epfl-enac/arema';
+import { Professional } from '@epfl-enac/arema';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const { api } = useFeathers();
-const service = api.service('users');
+const service = api.service('professional');
 
 const columns = [
   {
-    name: 'email',
+    name: 'name',
     required: true,
-    label: t('email'),
+    label: t('name'),
     align: 'left',
-    field: 'email',
+    field: 'name',
     sortable: true,
   },
   {
-    name: 'role',
+    name: 'description',
+    required: true,
+    label: t('description'),
     align: 'left',
-    label: t('role'),
-    field: 'role',
-    format: (val: string) => t(val),
-    sortable: true,
+    field: 'description',
+    sortable: false,
+  },
+  {
+    name: 'address',
+    required: true,
+    label: t('address'),
+    align: 'left',
+    field: 'address',
+    sortable: false,
+  },
+  {
+    name: 'lastModification',
+    required: true,
+    label: t('last_modification'),
+    align: 'left',
+    field: (row: Professional) => {
+      const date = new Date(row.updatedAt || row.createdAt);
+      return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+    },
+    sortable: false,
   },
   {
     name: 'action',
@@ -181,29 +160,14 @@ const columns = [
   },
 ];
 
-const roleOptions = [
-  'admin',
-  'content-reviewer',
-  'content-manager',
-  'user',
-  'guest',
-  'inactive',
-].map((key) => {
-  return {
-    value: key,
-    label: t(key),
-  };
-});
-
-const selected = ref<User>();
+const selected = ref<Professional>();
 const showEditDialog = ref(false);
 const tableRef = ref();
-const rows = ref<User[]>([]);
-const roles = ref<string[] | null>(null);
+const rows = ref<Professional[]>([]);
 const filter = ref('');
 const loading = ref(false);
 const pagination = ref({
-  sortBy: 'email',
+  sortBy: 'name',
   descending: false,
   page: 1,
   rowsPerPage: 10,
@@ -218,7 +182,6 @@ onMounted(() => {
 async function fetchFromServer(
   startRow: number,
   count: number,
-  roles: string[] | null,
   filter: string,
   sortBy: string,
   descending: boolean
@@ -230,15 +193,19 @@ async function fetchFromServer(
       [sortBy]: descending ? -1 : 1,
     },
   };
-  if (roles) {
-    query.role = {
-      $in: roles,
-    };
-  }
   if (filter) {
-    query.email = {
-      $like: `%${filter}%`,
-    };
+    query.$or = [
+      {
+        name: {
+          $like: `%${filter}%`,
+        },
+      },
+      {
+        address: {
+          $like: `%${filter}%`,
+        },
+      },
+    ];
   }
   const result = await service.find({
     query,
@@ -260,48 +227,43 @@ function onRequest(props) {
   const startRow = (page - 1) * rowsPerPage;
 
   // fetch data from "server"
-  fetchFromServer(
-    startRow,
-    fetchCount,
-    roles.value,
-    filter,
-    sortBy,
-    descending
-  ).then((result) => {
-    // update rowsCount with appropriate value
-    pagination.value.rowsNumber = result.total;
+  fetchFromServer(startRow, fetchCount, filter, sortBy, descending).then(
+    (result) => {
+      // update rowsCount with appropriate value
+      pagination.value.rowsNumber = result.total;
 
-    // clear out existing data and add new
-    rows.value.splice(0, rows.value.length, ...result.data);
+      // clear out existing data and add new
+      rows.value.splice(0, rows.value.length, ...result.data);
 
-    // don't forget to update local pagination object
-    pagination.value.page = page;
-    pagination.value.rowsPerPage = rowsPerPage;
-    pagination.value.sortBy = sortBy;
-    pagination.value.descending = descending;
+      // don't forget to update local pagination object
+      pagination.value.page = page;
+      pagination.value.rowsPerPage = rowsPerPage;
+      pagination.value.sortBy = sortBy;
+      pagination.value.descending = descending;
 
-    // ...and turn off loading indicator
-    loading.value = false;
-  });
-}
-
-function onRoleSelection() {
-  tableRef.value.requestServerInteraction();
+      // ...and turn off loading indicator
+      loading.value = false;
+    }
+  );
 }
 
 function onAdd() {
-  selected.value = { email: '', role: 'user' };
+  selected.value = {};
   showEditDialog.value = true;
 }
 
-function onEdit(user: User) {
-  selected.value = { ...user };
+function onEdit(resource: Professional) {
+  selected.value = { ...resource };
   showEditDialog.value = true;
 }
 
 function saveSelected() {
   if (selected.value === undefined) return;
   if (selected.value.id) {
+    delete selected.value.createdAt;
+    delete selected.value.createdById;
+    delete selected.value.updatedAt;
+    delete selected.value.updatedById;
     service
       .patch(selected.value.id, selected.value)
       .then(() => {
@@ -314,6 +276,7 @@ function saveSelected() {
         });
       });
   } else {
+    selected.value.images = [];
     service
       .create(selected.value)
       .then(() => {
@@ -328,41 +291,9 @@ function saveSelected() {
   }
 }
 
-function activate(user: User) {
+function remove(resource: Professional) {
   service
-    .patch(user.id, {
-      role: 'guest',
-    })
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch((err) => {
-      $q.notify({
-        message: err.message,
-        type: 'negative',
-      });
-    });
-}
-
-function deactivate(user: User) {
-  service
-    .patch(user.id, {
-      role: 'inactive',
-    })
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch((err) => {
-      $q.notify({
-        message: err.message,
-        type: 'negative',
-      });
-    });
-}
-
-function remove(user: User) {
-  service
-    .remove(user.id)
+    .remove(resource.id)
     .then(() => {
       tableRef.value.requestServerInteraction();
     })
