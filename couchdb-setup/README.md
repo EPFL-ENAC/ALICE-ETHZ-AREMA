@@ -1,2 +1,0 @@
-# ALICE-ETHZ-AREMA
-

@@ -3,6 +3,7 @@ services:
   reverse-proxy:
     image: traefik:v2.9
     command:
+      - "--accesslog=true"
       - "--providers.docker"
       - "--providers.file.directory=/configuration/"
       - "--entrypoints.web.address=:80"
@@ -22,11 +23,54 @@ services:
       - ./traefik.yaml:/configuration/traefik.yml
       - /etc/ssl:/etc/ssl
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        - API_URL
+        - API_PATH
+    expose:
+      - 80
     labels:
-      - "traefik.http.routers.frontend.priority=100"
+      - "traefik.http.routers.frontend.priority=101"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.frontend.middlewares=frontend-middleware"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+      - "traefik.http.middlewares.frontend-middleware.stripprefix.prefixes=/"
+    restart: unless-stopped
+  admin:
+    build:
+      context: ./admin
+      args:
+        - API_URL
+        - API_PATH
+    expose:
+      - 80
+    labels:
+      - "traefik.http.routers.admin.priority=500"
+      - "traefik.http.routers.admin.tls=true"
+      - "traefik.http.routers.admin.rule=PathPrefix(`/admin`)"
+      - "traefik.http.services.admin.loadbalancer.server.port=80"
+      - "traefik.http.routers.admin.middlewares=admin-middleware"
+      - "traefik.http.middlewares.admin-middleware.stripprefix.prefixes=/admin"
+    restart: unless-stopped
+  backend:
+    build: ./backend
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    expose:
+      - 3030
+    labels:
+      - "traefik.http.routers.backend.priority=1000"
+      - "traefik.http.routers.backend.tls=true"
+      - "traefik.http.routers.backend.rule=PathPrefix(`${API_PATH}`)"
+      - "traefik.http.services.backend.loadbalancer.server.port=3030"
+      - "traefik.http.routers.backend.middlewares=backend-stripprefix,backend-ratelimit,backend-compress"
+      - "traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes=${API_PATH}"
+      - "traefik.http.middlewares.backend-ratelimit.ratelimit.average=50"
+      - "traefik.http.middlewares.backend-ratelimit.ratelimit.burst=25"
+      - "traefik.http.middlewares.backend-ratelimit.ratelimit.period=1"
+      - "traefik.http.middlewares.backend-compress.compress=true"
     restart: unless-stopped
   upload-fast-api:
     build: ./uploadFASTAPI
@@ -40,19 +84,16 @@ services:
       - S3_Key=${S3_Key} 
       - CORS_ENABLED=${CORS_ENABLED} 
       - ROOT_PATH=
-      - AUTH_SERVER="http://couchdb:5984"
-    ports:
-      - '5050:5050'
+    expose:
+      - 5050
     labels:
       - "traefik.http.routers.uploadFASTAPI.priority=1001"
       - "traefik.http.routers.uploadFASTAPI.tls=true"
-      - "traefik.http.routers.uploadFASTAPI.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.uploadFASTAPI.rule=PathPrefix(`/upload-api`)"
       - "traefik.http.services.uploadFASTAPI.loadbalancer.server.port=5050"
       - "traefik.http.routers.uploadFASTAPI.middlewares=uploadFASTAPI-middleware"
-      - "traefik.http.middlewares.uploadFASTAPI-middleware.stripprefix.prefixes=/api"
+      - "traefik.http.middlewares.uploadFASTAPI-middleware.stripprefix.prefixes=/upload-api"
     restart: unless-stopped
-    #depends_on:
-    #  - couchdb
   s3_server:
     build: ./s3_server
     restart: unless-stopped
@@ -68,44 +109,33 @@ services:
       - "traefik.http.routers.s3Server.middlewares=s3Server-stripprefix"
       - "traefik.http.middlewares.s3Server-stripprefix.stripprefix.prefixes=/s3"
       - "traefik.http.services.s3Server.loadbalancer.server.port=5660"
+    expose:
+      - 5660
+  postgres:
+    image: postgres:15.2-alpine
+    expose:
+      - 5432
     ports:
-      - '5660:5660'
-  couchdb:
-    build: ./couchdb
+      # Expose Postgres port we need it for dev purposes should not be exposed publicly
+      - '5432:5432'
     environment:
-      - COUCHDB_USER=${COUCHDB_USER}
-      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD}
-      - COUCHDB_HOST=couchdb
-    labels:
-      - "traefik.http.routers.couchdb.priority=1000"
-      - "traefik.http.routers.couchdb.tls=true"
-      - "traefik.http.routers.couchdb.rule=PathPrefix(`/db`)"
-      - "traefik.http.routers.couchdb.middlewares=couchdb-stripprefix,test-compress"
-      - "traefik.http.middlewares.couchdb-stripprefix.stripprefix.prefixes=/db"
-      - "traefik.http.services.couchdb.loadbalancer.server.port=5984"
-      - "traefik.http.middlewares.test-compress.compress=true"
-    ports:
-      - '5984:5984'
-    restart: unless-stopped
-    volumes:
-      - couchdb_data:/opt/couchdb/data/
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5984"]
-      interval: 1m30s
-      timeout: 30s
-      retries: 5
-      start_period: 10s
-  couchdb-setup:
-    environment:
-      - COUCHDB_USER=${COUCHDB_USER}
-      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD}
-      - COUCHDB_HOST=couchdb
-    labels:
-      - "traefik.http.services.couchdb-setup.loadbalancer.server.port=9999"
-    build: ./couchdb-setup
-    depends_on:
-      - couchdb
-
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_HOST: ${DATABASE_HOST}
+  pgadmin:
+      container_name: pgadmin4_container
+      image: dpage/pgadmin4
+      restart: always
+      environment:
+        PGADMIN_DEFAULT_EMAIL: enacit4research@epfl.ch
+        PGADMIN_DEFAULT_PASSWORD: password
+      ports:
+        - "5050:5050"
+        - "5080:80"
+        - "5443:443"
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
 volumes:
   couchdb_data:
     driver: local

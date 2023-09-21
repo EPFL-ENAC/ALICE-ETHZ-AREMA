@@ -1,0 +1,19 @@
+{
+  "clusterCount": {
+    "__name": "CLUSTER_COUNT",
+    "__format": "number"
+  },
+  "port": {
+    "__name": "PORT",
+    "__format": "number"
+  },
+  "host": "HOSTNAME",
+  "authentication": {
+    "secret": "FEATHERS_SECRET"
+  },
+  "postgresql": {
+    "connection": "DATABASE_URL"
+  },
+  "administratorEmail": "ADMINISTRATOR_EMAIL",
+  "administratorPassword": "ADMINISTRATOR_PASSWORD"
+}
