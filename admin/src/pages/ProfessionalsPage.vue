@@ -14,6 +14,7 @@
         :filter="filter"
         binary-state-sort
         @request="onRequest"
+        :rows-per-page-options="[10, 25, 50]"
       >
         <template v-slot:top>
           <q-btn
@@ -112,6 +113,8 @@
 import { useQuasar } from 'quasar';
 import { Query } from '@feathersjs/client';
 import { Professional } from '@epfl-enac/arema';
+import { makePaginationRequestHandler } from '../utils/pagination';
+import type { PaginationOptions } from '../utils/pagination';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const { api } = useFeathers();
@@ -166,7 +169,7 @@ const tableRef = ref();
 const rows = ref<Professional[]>([]);
 const filter = ref('');
 const loading = ref(false);
-const pagination = ref({
+const pagination = ref<PaginationOptions>({
   sortBy: 'name',
   descending: false,
   page: 1,
@@ -209,38 +212,14 @@ function fetchFromServer(
   }
   return service.find({
     query,
+  }).then((result) => {
+    rows.value = result.data;
+    loading.value = false;
+    return result;    
   });
 }
 
-function onRequest(props) {
-  const { page, rowsPerPage, sortBy, descending } = props.pagination;
-  const filter = props.filter;
-
-  loading.value = true;
-
-  // get all rows if "All" (0) is selected
-  const fetchCount =
-    rowsPerPage === 0 ? pagination.value.rowsNumber : rowsPerPage;
-
-  // calculate starting row of data
-  const startRow = (page - 1) * rowsPerPage;
-
-  // fetch data from "server"
-  fetchFromServer(startRow, fetchCount, filter, sortBy, descending)
-  .then(
-    (result) => {
-      rows.value = result.data;
-      pagination.value = { ...props.pagination, rowsNumber: result.total,  };
-      loading.value = false;
-    }
-  )
-  .catch((err) => {
-    $q.notify({
-      message: err.message,
-      type: 'negative',
-    });
-  });
-}
+const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
 
 function onAdd() {
   selected.value = {};
