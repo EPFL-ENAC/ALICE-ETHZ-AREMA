@@ -40,3 +40,7 @@ $ npx feathers generate service               # Generate a new Service
 ## Help
 
 For more information on all the things you can do with Feathers visit [docs.feathersjs.com](http://docs.feathersjs.com).
+
+## Migration on kubernetes
+
+follow this maybe: https://stackoverflow.com/questions/70909419/how-to-run-knex-migrations-from-dockerfile-or-docker-compose

@@ -59,6 +59,8 @@ services:
     environment:
       - API_PATH=${API_PATH}
       - DATABASE_URL=${DATABASE_URL}
+    depends_on:
+      - postgres
     expose:
       - 3030
     labels:
@@ -119,6 +121,7 @@ services:
     ports:
       # Expose Postgres port we need it for dev purposes should not be exposed publicly
       - '5432:5432'
+    restart: always
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
