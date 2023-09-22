@@ -3,7 +3,7 @@ import { createPiniaClient } from 'feathers-pinia';
 import { pinia } from './modules/pinia';
 import rest from '@feathersjs/rest-client';
 
-const restClient = rest(process.env.API_URL);
+const restClient = rest(`${process.env.API_URL}${process.env.API_PATH}`);
 
 export const feathersClient = createClient(
   restClient.fetch(window.fetch.bind(window)),
