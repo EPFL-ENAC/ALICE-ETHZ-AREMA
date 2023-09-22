@@ -72,6 +72,11 @@ api.service('natural-resource').on('created', (message) => {
   nr$.find();
 })
 
+api.service('natural-resource').on('deleted', (message) => {
+  console.log('New natural-resource created', message)
+  nr$.find();
+})
+
 
 const user = computed(() => auth.user);
 // Combine the anonymous and authenticated channel

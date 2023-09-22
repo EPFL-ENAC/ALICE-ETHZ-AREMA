@@ -57,6 +57,7 @@ services:
   backend:
     build: ./backend
     environment:
+      - API_PATH=${API_PATH}
       - DATABASE_URL=${DATABASE_URL}
     expose:
       - 3030

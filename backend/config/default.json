@@ -12,6 +12,7 @@
     "default": 10,
     "max": 50
   },
+  "basePath": "/",
   "postgresql": {
     "client": "pg",
     "connection": "postgres://postgres:password@localhost:5432/backend",

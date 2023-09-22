@@ -1,6 +1,10 @@
-import { useQuasar } from 'quasar';
+import { Notify } from 'quasar'
 
-type PaginationRequestHandler = (props: any) => void;
+type PaginationProperties = {
+  pagination: PaginationOptions;
+  filter: string;
+};
+type PaginationRequestHandler = (props: PaginationProperties) => void;
 type PaginationRequestFetcher = (startRow: number, fetchCount: number, filter: string, sortBy: string, descending: boolean) => Promise<PaginationFetchResult>;
 export type PaginationOptions = {
   sortBy: string;
@@ -32,7 +36,7 @@ export function makePaginationRequestHandler(fetchFromServer: PaginationRequestF
       }
     )
     .catch((err: Error) => {
-      useQuasar().notify({
+      Notify.create({
         message: err.message,
         type: 'negative',
       });
