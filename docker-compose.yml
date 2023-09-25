@@ -59,6 +59,8 @@ services:
     environment:
       - API_PATH=${API_PATH}
       - DATABASE_URL=${DATABASE_URL}
+      - ADMINISTRATOR_EMAIL=${ADMINISTRATOR_EMAIL}
+      - ADMINISTRATOR_PASSWORD=${ADMINISTRATOR_PASSWORD}
     depends_on:
       - postgres
     expose:

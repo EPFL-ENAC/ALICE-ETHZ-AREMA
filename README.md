@@ -70,7 +70,7 @@ DATABASE_NAME=myDbNAME
 DATABASE_HOST=localhost
 
 DATABASE_URL=postgres://postgres:xxxxx@localhost:5432/myDbNAME
-ADMIN_PASSWORD="xxxx"
-ADMIN_EMAIL="no-reply@epfl.ch"
+ADMINISTRATOR_EMAIL="xxxx"
+ADMINISTRATOR_EMAIL="no-reply@epfl.ch"
 FEATHERS_SECRET="xxxxxxxxxxxxxxxx"
 ```
