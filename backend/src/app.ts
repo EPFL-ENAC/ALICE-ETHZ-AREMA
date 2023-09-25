@@ -7,7 +7,6 @@ import socketio from '@feathersjs/socketio'
 import { configurationValidator } from './configuration'
 import type { Application } from './declarations'
 import { logError } from './hooks/log-error'
-import { adminSetup } from './hooks/admin-setup'
 import { postgresql } from './postgresql'
 import { authentication } from './authentication'
 import { services } from './services/index'
@@ -75,7 +74,7 @@ app.hooks({
 })
 // Register application setup and teardown hooks here
 app.hooks({
-  setup: [adminSetup],
+  setup: [],
   teardown: []
 })
 

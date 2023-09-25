@@ -9,7 +9,10 @@
   },
   "host": "HOSTNAME",
   "authentication": {
-    "secret": "FEATHERS_SECRET"
+    "secret": "FEATHERS_SECRET",
+    "jwtOptions": {
+      "audience": "API_URL"
+    }
   },
   "postgresql": {
     "connection": "DATABASE_URL"

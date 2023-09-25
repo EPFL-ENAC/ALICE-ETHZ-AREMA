@@ -51,26 +51,26 @@ Encoding format: UTF-8, Separator: ',' (comma)
 
 ```sh
 NODE_ENV=development
-# for s3 and custom cdn (epfl dns)
 DNS=128.178.15.8
 
 S3_ENDPOINT_HOSTNAME=s3.epfl.ch
 S3_ENDPOINT_PROTOCOL=https://
-S3_ACCESS_KEY_ID=xxxxxxxxxxx
-S3_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+S3_ACCESS_KEY_ID=xxx
+S3_SECRET_ACCESS_KEY=xxxxx
 S3_REGION=EU
-S3_Bucket=xxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-S3_Key=alice-ethz-arema-local/
+S3_Bucket=xxxxx-xxxxx
+S3_Key=alice-ethz-arema-suffix/
 
-# the domain where the api will be hosted + proper protocol
-API_URL=https://localhost/
-# use by the frontend and admin to request infos (for http and ws)
+API_URL=https://localhost
 API_PATH=/api
 
 DATABASE_USERNAME=postgres
-DATABASE_PASSWORD=xxx
-DATABASE_NAME=backend
-DATABASE_HOST=postgre
+DATABASE_PASSWORD=xxxxx
+DATABASE_NAME=myDbNAME
+DATABASE_HOST=localhost
 
-DATABASE_URL=postgres://postgres:xxx@postgres:5432/backend
+DATABASE_URL=postgres://postgres:xxxxx@localhost:5432/myDbNAME
+ADMIN_PASSWORD="xxxx"
+ADMIN_EMAIL="no-reply@epfl.ch"
+FEATHERS_SECRET="xxxxxxxxxxxxxxxx"
 ```

@@ -35,7 +35,7 @@
       "header": {
         "typ": "access"
       },
-      "audience": "https://yourdomain.com",
+      "audience": "https://alice-ethz-arema.epfl.ch",
       "algorithm": "HS256",
       "expiresIn": "1d"
     },

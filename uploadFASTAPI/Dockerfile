@@ -17,7 +17,7 @@ LABEL description="FastAPI upload via boto3"
 
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
-EXPOSE 5050
+EXPOSE 5053
 WORKDIR /app
 RUN apk add --no-cache \
     g++ \
@@ -37,6 +37,6 @@ COPY ./arema /app/arema
 RUN pip install --no-cache-dir .
 
 
-CMD [ "uvicorn", "arema.main:app", "--host", "0.0.0.0", "--port", "5050" ]
+CMD [ "uvicorn", "arema.main:app", "--host", "0.0.0.0", "--port", "5053" ]
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=3s --retries=2 CMD wget --no-verbose --tries=1 --spider http://localhost:5050/ping || exit 1
