@@ -55,7 +55,7 @@ services:
       - "traefik.http.middlewares.admin-middleware.stripprefix.prefixes=/admin"
     restart: unless-stopped
   backend:
-    build: ./backend
+    image: ghcr.io/epfl-enac/backend:feat-build-and-publish.yml
     environment:
       - API_PATH=${API_PATH}
       - DATABASE_URL=${DATABASE_URL}
