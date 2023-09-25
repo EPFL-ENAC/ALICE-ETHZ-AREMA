@@ -27,6 +27,7 @@ import { logger } from '../../logger'
 import { getRandomUser } from '../../helpers/getRandomUser'
 import { userIterations } from '../users/users'
 import { allowAnonymous }  from '../../hooks/allow-anonymous'
+import { entityCreated } from '../../hooks/entity-created'
 
 export * from './natural-resource.class'
 export * from './natural-resource.schema'
@@ -88,6 +89,7 @@ export const naturalResource = (app: Application) => {
       get: [],
       create: [
         schemaHooks.validateData(naturalResourceDataValidator),
+        entityCreated,
         schemaHooks.resolveData(naturalResourceDataResolver)
       ],
       patch: [

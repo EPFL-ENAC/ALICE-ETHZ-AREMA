@@ -27,9 +27,9 @@ export const naturalResourceSchema = Type.Object(
     // createdByUser: Type.Ref(userSchema)
 
     updatedAt: Type.Optional(Type.String({ format: 'date-time' })),
-    createdAt: Type.String({ format: 'date-time' }),
+    createdAt: Type.Optional(Type.String({ format: 'date-time' })),
     updatedById: Type.Optional(Type.Number()),
-    createdById: Type.Number()
+    createdById: Type.Optional(Type.Number())
   },
   { $id: 'NaturalResource', additionalProperties: false }
 )
@@ -39,8 +39,6 @@ export type NaturalResource = Static<typeof naturalResourceSchema>
 // generate fake data
 export function generateFake(user: User) {
   const result = {
-    createdById: user.id,
-    createdAt: new Date().toISOString(),
     name: faker.lorem.words(3),
     zone: `${faker.location.latitude()}, ${faker.location.longitude()}`,
     dimension: JSON.stringify(faker.number.int(100)),

@@ -29,6 +29,8 @@ import { logger } from '../../logger'
 import { HookContext } from '@feathersjs/feathers'
 import { getRandomUser } from '../../helpers/getRandomUser'
 import { userIterations } from '../users/users'
+import { en } from '@faker-js/faker'
+import { entityCreated } from '../../hooks/entity-created'
 
 export * from './building.class'
 export * from './building.schema'
@@ -92,6 +94,7 @@ export const building = (app: Application) => {
       get: [],
       create: [
         schemaHooks.validateData(buildingDataValidator),
+        entityCreated,
         schemaHooks.resolveData(buildingDataResolver)
       ],
       patch: [

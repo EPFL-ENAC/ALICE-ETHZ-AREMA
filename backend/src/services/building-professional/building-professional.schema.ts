@@ -14,12 +14,12 @@ import { Professional } from '../professional/professional.schema'
 export const buildingProfessionalSchema = Type.Object(
   {
     buildingId: Type.Number(),
-    professionalId: Type.Number(),
+    professionalId: Type.Optional(Type.Number()),
 
     updatedAt: Type.Optional(Type.String({ format: 'date-time' })),
-    createdAt: Type.String({ format: 'date-time' }),
+    createdAt: Type.Optional(Type.String({ format: 'date-time' })),
     updatedById: Type.Optional(Type.Number()),
-    createdById: Type.Number()
+    createdById: Type.Optional(Type.Number())
   },
   { $id: 'BuildingProfessional', additionalProperties: false }
 )
