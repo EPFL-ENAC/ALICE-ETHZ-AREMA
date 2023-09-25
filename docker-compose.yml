@@ -59,6 +59,10 @@ services:
     environment:
       - API_PATH=${API_PATH}
       - DATABASE_URL=${DATABASE_URL}
+      - ADMINISTRATOR_EMAIL=${ADMINISTRATOR_EMAIL}
+      - ADMINISTRATOR_PASSWORD=${ADMINISTRATOR_PASSWORD}
+    depends_on:
+      - postgres
     expose:
       - 3030
     labels:
@@ -86,12 +90,12 @@ services:
       - CORS_ENABLED=${CORS_ENABLED} 
       - ROOT_PATH=
     expose:
-      - 5050
+      - 5053
     labels:
       - "traefik.http.routers.uploadFASTAPI.priority=1001"
       - "traefik.http.routers.uploadFASTAPI.tls=true"
       - "traefik.http.routers.uploadFASTAPI.rule=PathPrefix(`/upload-api`)"
-      - "traefik.http.services.uploadFASTAPI.loadbalancer.server.port=5050"
+      - "traefik.http.services.uploadFASTAPI.loadbalancer.server.port=5053"
       - "traefik.http.routers.uploadFASTAPI.middlewares=uploadFASTAPI-middleware"
       - "traefik.http.middlewares.uploadFASTAPI-middleware.stripprefix.prefixes=/upload-api"
     restart: unless-stopped
@@ -119,6 +123,7 @@ services:
     ports:
       # Expose Postgres port we need it for dev purposes should not be exposed publicly
       - '5432:5432'
+    restart: always
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
