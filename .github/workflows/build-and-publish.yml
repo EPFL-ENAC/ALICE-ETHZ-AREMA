@@ -1,8 +1,10 @@
+---
+# https://github.com/EPFL-ENAC/github-actions-runner#readme
 name: Build & publish alice-ethz-arema images
-on:
-  release:
-    types: [published]
-
+"on":
+  push:
+    tags:
+      - 'v*'
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
