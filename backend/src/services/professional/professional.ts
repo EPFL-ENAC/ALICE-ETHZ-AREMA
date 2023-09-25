@@ -27,6 +27,7 @@ import { User, userPath } from '../users/users.shared'
 import { logger } from '../../logger'
 import { getRandomUser } from '../../helpers/getRandomUser'
 import { userIterations } from '../users/users'
+import { entityCreated } from '../../hooks/entity-created'
 
 export * from './professional.class'
 export * from './professional.schema'
@@ -83,14 +84,8 @@ export const professional = (app: Application) => {
       get: [],
       create: [
         schemaHooks.validateData(professionalDataValidator),
-        schemaHooks.resolveData(professionalDataResolver),
-        async (context: HookContext) => {
-          context.data = {
-            ...context.data,
-            createdAt: new Date().toISOString(),
-            updatedById: context?.params?.user?.id // it is not passed from client cli
-          }
-        }
+        entityCreated,
+        schemaHooks.resolveData(professionalDataResolver)
       ],
       patch: [
         schemaHooks.validateData(professionalPatchValidator),

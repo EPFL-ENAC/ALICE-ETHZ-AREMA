@@ -17,10 +17,6 @@ import { Service } from '@feathersjs/feathers'
 export const buildingSchema = Type.Object(
   {
     id: Type.Number(),
-    updatedAt: Type.Optional(Type.String({ format: 'date-time' })),
-    createdAt: Type.String({ format: 'date-time' }),
-    updatedById: Type.Optional(Type.Number()),
-    createdById: Type.Number(),
 
     name: Type.String({ minLength: 1 }),
     description: Type.String(),
@@ -35,17 +31,20 @@ export const buildingSchema = Type.Object(
     updatedByUser: Type.Optional(Type.Ref(userSchema)),
     createdByUser: Type.Optional(Type.Ref(userSchema)),
     professionalIds: Type.Optional(Type.Array(Type.Number())),
-    professionals: Type.Optional(Type.Array(Type.Ref(professionalSchema)))
+    professionals: Type.Optional(Type.Array(Type.Ref(professionalSchema))),
+
+    updatedAt: Type.Optional(Type.String({ format: 'date-time' })),
+    createdAt: Type.Optional(Type.String({ format: 'date-time' })),
+    updatedById: Type.Optional(Type.Number()),
+    createdById: Type.Optional(Type.Number())
   },
-  { $id: 'Building', additionalProperties: true }
+  { $id: 'Building', additionalProperties: false }
 )
 export type Building = Static<typeof buildingSchema>
 
 // generate fake data
 export async function generateFake(user: User) {
   const result = {
-    createdById: user.id,
-    createdAt: new Date().toISOString(),
     name: faker.lorem.words(3),
     description: faker.lorem.paragraph(),
     address: faker.location.streetAddress(),
@@ -82,21 +81,12 @@ export const buildingProfessionResolver = resolve<Building, HookContext>({
 export const buildingExternalResolver = resolve<Building, HookContext>({})
 
 // Schema for creating new entries
-export const buildingDataSchema = Type.Pick(buildingSchema, ['name', 'description', 'address'], {
+export const buildingDataSchema = Type.Pick(buildingSchema, ['name', 'description', 'address', 'images'], {
   $id: 'BuildingData'
 })
 export type BuildingData = Static<typeof buildingDataSchema>
 export const buildingDataValidator = getValidator(buildingDataSchema, dataValidator)
-export const buildingDataResolver = resolve<Building, HookContext>({
-  createdAt: async () => {
-    // Return the current date
-    return new Date().toISOString()
-  },
-  createdById: async (value, message, context) => {
-    // Associate the currently authenticated user
-    return context.params?.user?.id ?? message?.createdById
-  }
-})
+export const buildingDataResolver = resolve<Building, HookContext>({})
 
 // Schema for updating existing entries
 export const buildingPatchSchema = Type.Partial(buildingSchema, {

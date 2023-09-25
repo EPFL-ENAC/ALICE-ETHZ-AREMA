@@ -31,6 +31,7 @@ import { logger } from '../../logger'
 import { userIterations } from '../users/users'
 import { buildingIterations } from '../building/building'
 import { professionalIterations } from '../professional/professional'
+import { entityCreated } from '../../hooks/entity-created'
 
 export * from './building-professional.class'
 export * from './building-professional.schema'
@@ -92,6 +93,7 @@ export const buildingProfessional = (app: Application) => {
       get: [],
       create: [
         schemaHooks.validateData(buildingProfessionalDataValidator),
+        entityCreated,
         schemaHooks.resolveData(buildingProfessionalDataResolver)
       ],
       patch: [
