@@ -49,4 +49,12 @@ export default {
   dimension: 'Dimension',
   amount: 'Amount',
   last_modification: 'Last modification',
+  classic: 'Classic',
+  light: 'Light',
+  dark: 'Dark',
+  aerial: 'Aerial',
+  radius: 'Radius',
+  address: 'Address',
+  no_results: 'No results',
+  areaDelivery: 'Area of delivery',
 };
