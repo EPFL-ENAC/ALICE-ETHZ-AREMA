@@ -36,6 +36,16 @@
             {{ props.value }}
           </q-td>
         </template>
+        <template v-slot:body-cell-address="props">
+          <q-td :props="props" style="max-width: 200px; white-space: inherit;">
+            {{ props.value }}
+          </q-td>
+        </template>
+        <template v-slot:body-cell-areaDelivery="props">
+          <q-td :props="props">
+            <q-chip>{{ props.value.radius }} km</q-chip>
+          </q-td>
+        </template>
         <template v-slot:body-cell-action="props">
           <q-td :props="props">
             <q-btn
@@ -67,8 +77,9 @@
         persistent
         transition-show="scale"
         transition-hide="scale"
+        full-width
       >
-        <q-card style="width: 300px">
+        <q-card>
           <q-card-section>
             <q-input
               filled
@@ -85,13 +96,7 @@
               class="q-mb-md"
               style="min-width: 200px"
             />
-            <q-input
-              filled
-              v-model="selected.address"
-              :label="$t('address')"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
+            <circle-map-input v-model="circle" height="600px" @update:model-value="onCircleInputUpdated"></circle-map-input>
           </q-card-section>
 
           <q-card-actions align="right">
@@ -101,6 +106,7 @@
               :label="$t('save')"
               v-close-popup
               @click="saveSelected"
+              :disabled="disableSave()"
             />
           </q-card-actions>
         </q-card>
@@ -115,6 +121,8 @@ import { Query } from '@feathersjs/client';
 import { Professional } from '@epfl-enac/arema';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
+import CircleMapInput from '../components/CircleMapInput.vue';
+import { onMounted, ref, watch } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const { api } = useFeathers();
@@ -146,6 +154,14 @@ const columns = [
     sortable: false,
   },
   {
+    name: 'areaDelivery',
+    required: true,
+    label: t('areaDelivery'),
+    align: 'left',
+    field: 'areaDelivery',
+    sortable: false,
+  },
+  {
     name: 'lastModification',
     required: true,
     label: t('last_modification'),
@@ -164,6 +180,7 @@ const columns = [
 ];
 
 const selected = ref<Professional>();
+const circle = ref({});
 const showEditDialog = ref(false);
 const tableRef = ref();
 const rows = ref<Professional[]>([]);
@@ -181,6 +198,10 @@ onMounted(() => {
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
 });
+
+function disableSave() {
+  return !selected.value.name || !selected.value.description || !selected.value.address || !selected.value.areaDelivery;
+}
 
 function fetchFromServer(
   startRow: number,
@@ -221,13 +242,46 @@ function fetchFromServer(
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
 
+function onCircleInputUpdated(newValue) {
+  if (newValue && newValue.properties && newValue.geometry) {
+      selected.value.address = newValue.properties.display_name;
+      selected.value.areaDelivery = {
+        radius: newValue.properties.circleRadius,
+        coordinates: newValue.geometry.coordinates[0][0],
+      };
+    } else {
+      selected.value.address = null;
+      selected.value.areaDelivery = null;
+    }
+}
+
 function onAdd() {
   selected.value = {};
+  circle.value = {};
   showEditDialog.value = true;
 }
 
 function onEdit(resource: Professional) {
   selected.value = { ...resource };
+  const center = unref(selected.value.areaDelivery.coordinates);
+  circle.value = {
+    type: 'Feature',
+    properties: {
+      display_name: selected.value.address,
+      circleRadius: selected.value.areaDelivery.radius,
+    },
+    geometry: {
+      type: 'Polygon',
+      coordinates: [
+        [
+          center,
+          center,
+          center,
+          center,
+        ]
+      ]
+    }
+  };
   showEditDialog.value = true;
 }
 

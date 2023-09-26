@@ -41,7 +41,7 @@ export async function generateFake(user: User) {
     address: faker.location.streetAddress(),
     images: [],
     areaDelivery: {
-      coordinates: [faker.location.latitude(), faker.location.longitude()]  as [number, number],
+      coordinates: [faker.location.longitude({ min: 5.9, max: 10.5 }), faker.location.latitude({ min: 45.8, max: 47.8 })]  as [number, number],
       radius: faker.number.int({ min: 1, max: 100 })
     }
   }
