@@ -117,13 +117,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
 
 onMounted(() => {
   if (!authStore.isAuthenticated) {
+    authStore.loginRedirect = router.currentRoute.value.fullPath;
     router.push('/login');
   }
 });

@@ -124,7 +124,7 @@ export default defineComponent({
       emit('update:modelValue', value)
     }
 
-    function lookupAddress(val, update, abort) {
+    function lookupAddress(val, update) {
       update(() => {
         if (val && val.length > 2) {
           geocoderApi.forwardGeocode({ query: val, limit: 5 }).then((collection) => {
