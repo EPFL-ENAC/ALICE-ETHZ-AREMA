@@ -55,7 +55,7 @@ services:
       - "traefik.http.middlewares.admin-middleware.stripprefix.prefixes=/admin"
     restart: unless-stopped
   backend:
-    image: ghcr.io/epfl-enac/backend:feat-build-and-publish.yml
+    image: ghcr.io/epfl-enac/backend:latest
     environment:
       - API_PATH=${API_PATH}
       - DATABASE_URL=${DATABASE_URL}
@@ -143,5 +143,5 @@ services:
       extra_hosts:
         - "host.docker.internal:host-gateway"
 volumes:
-  couchdb_data:
+  postgres:
     driver: local
