@@ -19,19 +19,19 @@ jobs:
         include:
           - Dockerfile: ./s3_server/Dockerfile
             context: ./s3_server
-            image: ghcr.io/EPFL-ENAC/s3_server
+            image: ghcr.io/epfl-enac/s3_server
           - Dockerfile: ./uploadFASTAPI/Dockerfile
             context: ./uploadFASTAPI
-            image: ghcr.io/EPFL-ENAC/uploadFASTAPI
+            image: ghcr.io/epfl-enac/uploadfastapi
           - Dockerfile: ./backend/Dockerfile
             context: ./backend
-            image: ghcr.io/EPFL-ENAC/backend
+            image: ghcr.io/epfl-enac/backend
           - Dockerfile: ./admin/Dockerfile
             context: ./admin
-            image: ghcr.io/EPFL-ENAC/admin
+            image: ghcr.io/epfl-enac/admin
           - Dockerfile: ./frontend/Dockerfile
             context: ./frontend
-            image: ghcr.io/EPFL-ENAC/frontend
+            image: ghcr.io/epfl-enac/frontend
     permissions:
       contents: read
       packages: write
@@ -62,5 +62,5 @@ jobs:
             "API_PATH=${{ secrets.API_PATH }}"
             "API_URL=${{ secrets.API_URL }}"
           file: ${{ matrix.dockerfile }}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }},${{ matrix.image }}:${{ github.sha }},${{ matrix.image }}:latest
           labels: ${{ steps.meta.outputs.labels }}
