@@ -63,5 +63,5 @@ jobs:
             "API_URL=${{ secrets.API_URL }}"
           file: ${{ matrix.dockerfile }}
           tags: ${{ steps.meta.outputs.tags }},${{ github.sha }},latest
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64,linux/arm64/v8
           labels: ${{ steps.meta.outputs.labels }}
