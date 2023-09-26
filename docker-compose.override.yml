@@ -1,7 +1,7 @@
-version: "3.9"
-services:
-  backend:
-    build: ./backend
-    image: !reset null
-    ports:
-      - '3030:3030'
+# version: "3.9"
+# services:
+#   backend:
+#     build: ./backend
+#     image: !reset null
+#     ports:
+#       - '3030:3030'
