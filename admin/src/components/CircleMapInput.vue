@@ -142,8 +142,6 @@ export default defineComponent({
     }
 
     function onAddressUpdate() {
-      console.log('onAddressUpdate', address.value)
-      console.log('suggestedFeatures', suggestedFeatures.value)
       const location = suggestedFeatures.value.find(feature => feature.properties?.text === address.value)
       if (location)
         updateWithLocation(location)
