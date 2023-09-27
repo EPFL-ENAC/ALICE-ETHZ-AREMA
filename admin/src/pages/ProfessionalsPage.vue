@@ -30,6 +30,15 @@
               <q-icon name="search" />
             </template>
           </q-input>
+          <div style="width: 100%" class="q-mt-md">
+            <map-view
+              :features="features"
+              :center="[6.632273, 46.519962]"
+              :zoom="6"
+              :minZoom="10"
+              :maxZoom="18"
+              height="300px"/>
+          </div>
         </template>
         <template v-slot:body-cell-description="props">
           <q-td :props="props" class="ellipsis" style="max-width: 200px">
@@ -71,6 +80,7 @@
           </q-td>
         </template>
       </q-table>
+
 
       <q-dialog
         v-model="showEditDialog"
@@ -122,7 +132,8 @@ import { Professional } from '@epfl-enac/arema';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
 import CircleMapInput from '../components/CircleMapInput.vue';
-import { onMounted, ref, watch } from 'vue';
+import MapView from 'src/components/MapView.vue';
+import { onMounted, ref, computed } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const { api } = useFeathers();
@@ -197,6 +208,32 @@ const pagination = ref<PaginationOptions>({
 onMounted(() => {
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
+});
+
+const features = computed(() => {
+  return rows.value.map((row) => {
+    return {
+      type: 'Feature',
+      id: row.id,
+      properties: {
+        name: row.name,
+        description: row.description,
+        address: row.address,
+        circleRadius: row.areaDelivery.radius,
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            row.areaDelivery.coordinates,
+            row.areaDelivery.coordinates,
+            row.areaDelivery.coordinates,
+            row.areaDelivery.coordinates,
+          ]
+        ]
+      }
+    };
+  });
 });
 
 function disableSave() {

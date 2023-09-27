@@ -36,10 +36,13 @@ export function makePaginationRequestHandler(fetchFromServer: PaginationRequestF
       }
     )
     .catch((err: Error) => {
-      Notify.create({
-        message: err.message,
-        type: 'negative',
-      });
+      // auth error will be handled in the layout component
+      if (err.name !== 'NotAuthenticated') {
+        Notify.create({
+          message: err.message,
+          type: 'negative',
+        });
+      }
     });
   }
 }
