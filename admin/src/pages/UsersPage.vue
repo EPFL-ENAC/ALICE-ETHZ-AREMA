@@ -38,7 +38,7 @@
             emit-value
             map-options
           />
-          <q-input dense debounce="300" v-model="filter">
+          <q-input dense debounce="300" v-model="filter" clearable>
             <template v-slot:append>
               <q-icon name="search" />
             </template>
@@ -108,6 +108,7 @@
             <q-input
               filled
               v-model="selected.email"
+              type="email"
               :label="$t('email')"
               class="q-mb-md"
               style="min-width: 200px"

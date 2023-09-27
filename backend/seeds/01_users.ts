@@ -8,6 +8,7 @@ export async function seed(knex: Knex): Promise<void> {
   await knex('natural-resource').del()
   await knex('building').del()
   await knex('professional').del()
+  await knex('professional-type').del()
   await knex('building-professional').del()
   await knex('users').del()
 
