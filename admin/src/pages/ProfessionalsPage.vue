@@ -25,7 +25,20 @@
             @click="onAdd"
           />
           <q-space />
-          <q-input dense debounce="300" v-model="filter">
+          <q-select
+            filled
+            clearable
+            v-model="types"
+            :options="professionalTypeOptions"
+            :label="$t('type')"
+            class="q-mr-md"
+            style="min-width: 200px"
+            @update:model-value="onTypeSelection"
+            multiple
+            emit-value
+            map-options
+          />
+          <q-input dense debounce="300" v-model="filter" clearable>
             <template v-slot:append>
               <q-icon name="search" />
             </template>
@@ -43,6 +56,11 @@
         <template v-slot:body-cell-description="props">
           <q-td :props="props" class="ellipsis" style="max-width: 200px">
             {{ props.value }}
+          </q-td>
+        </template>
+        <template v-slot:body-cell-web="props">
+          <q-td :props="props">
+            <a :href="props.value" target="_blank">{{ props.value }}</a>
           </q-td>
         </template>
         <template v-slot:body-cell-address="props">
@@ -91,13 +109,29 @@
       >
         <q-card>
           <q-card-section>
-            <q-input
-              filled
-              v-model="selected.name"
-              :label="$t('name')"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
+            <div class="row q-mb-md">
+              <div class="col-12 col-sm-6">
+                <q-input
+                  filled
+                  v-model="selected.name"
+                  :label="$t('name')"
+                  style="min-width: 200px"
+                />
+              </div>
+              <div class="col-12 col-sm-6">
+                <q-select
+                  filled
+                  clearable
+                  v-model="selected.professionalTypeId"
+                  :options="professionalTypeOptions"
+                  :label="$t('type')"
+                  class="on-right"
+                  style="min-width: 200px"
+                  emit-value
+                  map-options
+                />  
+              </div>
+            </div>
             <q-input
               filled
               v-model="selected.description"
@@ -106,6 +140,35 @@
               class="q-mb-md"
               style="min-width: 200px"
             />
+            <div class="row q-mb-md">
+              <div class="col-12 col-sm-4">
+                <q-input
+                  filled
+                  v-model="selected.tel"
+                  :label="$t('phone')"
+                  style="min-width: 200px"
+                />
+              </div>
+              <div class="col-12 col-sm-4">
+                <q-input
+                  filled
+                  v-model="selected.email"
+                  type="email"
+                  :label="$t('email')"
+                  class="on-right"
+                  style="min-width: 200px"
+                />  
+              </div>
+              <div class="col-12 col-sm-4">
+                <q-input
+                  filled
+                  v-model="selected.web"
+                  :label="$t('website')"
+                  class="on-right"
+                  style="min-width: 200px"
+                />  
+              </div>
+            </div>
             <circle-map-input v-model="circle" height="600px" @update:model-value="onCircleInputUpdated"></circle-map-input>
           </q-card-section>
 
@@ -128,7 +191,7 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { Query } from '@feathersjs/client';
-import { Professional } from '@epfl-enac/arema';
+import { Professional, ProfessionalType } from '@epfl-enac/arema';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
 import CircleMapInput from '../components/CircleMapInput.vue';
@@ -138,6 +201,7 @@ const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const { api } = useFeathers();
 const service = api.service('professional');
+const serviceType = api.service('professional-type');
 
 const columns = [
   {
@@ -157,12 +221,29 @@ const columns = [
     sortable: false,
   },
   {
+    name: 'professionalTypeId',
+    required: true,
+    label: t('type'),
+    align: 'left',
+    field: 'professionalType',
+    format: (val: ProfessionalType) => val ? t(val.text) : undefined,
+    sortable: true,
+  },
+  {
+    name: 'web',
+    required: true,
+    label: t('website'),
+    align: 'left',
+    field: 'web',
+    sortable: true,
+  },
+  {
     name: 'address',
     required: true,
     label: t('address'),
     align: 'left',
     field: 'address',
-    sortable: false,
+    sortable: true,
   },
   {
     name: 'areaDelivery',
@@ -190,11 +271,26 @@ const columns = [
   },
 ];
 
+const professionalTypes = ref<ProfessionalType[]>([]);
+const professionalTypeOptions = computed(() => {
+  return professionalTypes.value
+  .map((type) => {
+    return {
+      value: type.id + '',
+      label: t(type.text),
+    };
+  })
+  .sort((a, b) => {
+    return a.label.localeCompare(b.label);
+  })
+})
+
 const selected = ref<Professional>();
 const circle = ref({});
 const showEditDialog = ref(false);
 const tableRef = ref();
 const rows = ref<Professional[]>([]);
+const types = ref<string[] | null>(null);
 const filter = ref('');
 const loading = ref(false);
 const pagination = ref<PaginationOptions>({
@@ -206,6 +302,10 @@ const pagination = ref<PaginationOptions>({
 });
 
 onMounted(() => {
+  serviceType.find({ query: { $limit: 50 } })
+  .then((result) => {
+    professionalTypes.value = result.data;
+  });
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
 });
@@ -237,7 +337,7 @@ const features = computed(() => {
 });
 
 function disableSave() {
-  return !selected.value.name || !selected.value.description || !selected.value.address || !selected.value.areaDelivery;
+  return !selected.value.name || !selected.value.professionalTypeId || !selected.value.address || !selected.value.areaDelivery;
 }
 
 function fetchFromServer(
@@ -254,6 +354,11 @@ function fetchFromServer(
       [sortBy]: descending ? -1 : 1,
     },
   };
+  if (types.value) {
+    query.professionalTypeId = {
+      $in: types.value.map((type) => parseInt(type)),
+    };
+  }
   if (filter) {
     query.$or = [
       {
@@ -278,6 +383,10 @@ function fetchFromServer(
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
+
+function onTypeSelection() {
+  tableRef.value.requestServerInteraction();
+}
 
 function onCircleInputUpdated(newValue) {
   if (newValue && newValue.properties && newValue.geometry) {
@@ -325,10 +434,9 @@ function onEdit(resource: Professional) {
 function saveSelected() {
   if (selected.value === undefined) return;
   if (selected.value.id) {
-    delete selected.value.createdAt;
-    delete selected.value.createdById;
-    delete selected.value.updatedAt;
-    delete selected.value.updatedById;
+    delete selected.value.professionalType;
+    // FIXME "find" returns a string whereas "create/patch" requires a number
+    selected.value.professionalTypeId = parseInt(selected.value.professionalTypeId);
     service
       .patch(selected.value.id, selected.value)
       .then(() => {
@@ -342,6 +450,8 @@ function saveSelected() {
       });
   } else {
     selected.value.images = [];
+    selected.value.links = [];
+    selected.value.professionalTypeId = parseInt(selected.value.professionalTypeId);
     service
       .create(selected.value)
       .then(() => {

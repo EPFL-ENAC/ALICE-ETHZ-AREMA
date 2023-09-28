@@ -5,16 +5,42 @@ import type { Static } from '@feathersjs/typebox'
 
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
+import { User } from '../users/users.schema'
+import { logger } from '../../logger'
+import { faker } from '@faker-js/faker'
 
 // Main data model schema
 export const professionalTypeSchema = Type.Object(
   {
-    id: Type.Number(),
+    id: Type.Optional(Type.Number()),
     text: Type.String()
   },
   { $id: 'ProfessionalType', additionalProperties: false }
 )
 export type ProfessionalType = Static<typeof professionalTypeSchema>
+
+export const defaultProfessionalTypes = [
+  'architect',
+  'civil engineer',
+  'material producer',
+  'craftsman',
+  'building physics',
+  'association',
+  'construction firm',
+  'other'
+]
+
+// generate fake data
+export async function generateFake(user: User) {
+  // const findUser = app_.find()
+  logger.info(`fake USER professional-type generated: ${JSON.stringify(user.id)}`)
+  const result: ProfessionalType = {
+    text: faker.helpers.arrayElement(defaultProfessionalTypes)
+  }
+  // logger.info(`fake data building generated: ${JSON.stringify(result)}`)
+  return result
+}
+
 export const professionalTypeValidator = getValidator(professionalTypeSchema, dataValidator)
 export const professionalTypeResolver = resolve<ProfessionalType, HookContext>({})
 

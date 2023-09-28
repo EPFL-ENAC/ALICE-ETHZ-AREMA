@@ -53,6 +53,7 @@
     "migrate": "knex migrate:latest",
     "migrate:make": "knex migrate:make",
     "seed": "knex seed:run",
+    "seed:admin": "knex seed:run --specific 00_admin_user.ts",
     "seed:make": "knex seed:make"
   },
   "dependencies": {

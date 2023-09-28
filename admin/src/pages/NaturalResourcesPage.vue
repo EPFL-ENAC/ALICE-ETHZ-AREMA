@@ -25,7 +25,7 @@
             @click="onAdd"
           />
           <q-space />
-          <q-input dense debounce="300" v-model="filter">
+          <q-input dense debounce="300" v-model="filter" clearable>
             <template v-slot:append>
               <q-icon name="search" />
             </template>
@@ -256,10 +256,6 @@ function onEdit(resource: NaturalResource) {
 function saveSelected() {
   if (selected.value === undefined) return;
   if (selected.value.id) {
-    delete selected.value.createdAt;
-    delete selected.value.createdById;
-    delete selected.value.updatedAt;
-    delete selected.value.updatedById;
     service
       .patch(selected.value.id, selected.value)
       .then(() => {

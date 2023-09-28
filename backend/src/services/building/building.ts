@@ -31,6 +31,7 @@ import { getRandomUser } from '../../helpers/getRandomUser'
 import { userIterations } from '../users/users'
 import { en } from '@faker-js/faker'
 import { entityCreated } from '../../hooks/entity-created'
+import { timestampsStripping } from '../../hooks/timestamps-stripping'
 
 export * from './building.class'
 export * from './building.schema'
@@ -98,6 +99,7 @@ export const building = (app: Application) => {
         schemaHooks.resolveData(buildingDataResolver)
       ],
       patch: [
+        timestampsStripping,
         schemaHooks.validateData(buildingPatchValidator),
         schemaHooks.resolveData(buildingPatchResolver)
       ],

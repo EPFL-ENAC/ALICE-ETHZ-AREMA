@@ -23,11 +23,13 @@ import type { Application, HookContext } from '../../declarations'
 import { ProfessionalService, getOptions } from './professional.class'
 import { professionalPath, professionalMethods } from './professional.shared'
 import { createSwaggerServiceOptions } from 'feathers-swagger'
-import { User, userPath } from '../users/users.shared'
 import { logger } from '../../logger'
 import { getRandomUser } from '../../helpers/getRandomUser'
+import { getRandomProfessionalType } from '../../helpers/getRandomProfessionalType'
 import { userIterations } from '../users/users'
+import { professionalTypeIterations } from '../professional-type/professional-type'
 import { entityCreated } from '../../hooks/entity-created'
+import { timestampsStripping } from '../../hooks/timestamps-stripping'
 
 export * from './professional.class'
 export * from './professional.schema'
@@ -55,7 +57,8 @@ export const professional = (app: Application) => {
     }),
     createFake: async () => {
       const user = await getRandomUser(app, userIterations)
-      const fakeData = await generateFake(user)
+      const professionalType = await getRandomProfessionalType(app, professionalTypeIterations)
+      const fakeData = await generateFake(user, professionalType)
 
       logger.info(`fake professional data generated: ${JSON.stringify(fakeData)}`)
       const fakeDataCreatedByService = await app.service(professionalPath).create(fakeData, {})
@@ -88,6 +91,7 @@ export const professional = (app: Application) => {
         schemaHooks.resolveData(professionalDataResolver)
       ],
       patch: [
+        timestampsStripping,
         schemaHooks.validateData(professionalPatchValidator),
         schemaHooks.resolveData(professionalPatchResolver),
         async (context: HookContext) => {
