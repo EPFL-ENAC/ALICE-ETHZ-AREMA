@@ -65,7 +65,7 @@ export const userQuerySchema = Type.Intersect(
   [
     querySyntax(userQueryProperties, {
       email: {
-        $like: Type.String()
+        $ilike: Type.String()
       }
     }),
     // Add additional query properties here

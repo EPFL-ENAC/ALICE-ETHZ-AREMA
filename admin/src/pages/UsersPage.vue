@@ -240,7 +240,7 @@ function fetchFromServer(
   }
   if (filter) {
     query.email = {
-      $like: `%${filter}%`,
+      $ilike: `%${filter}%`,
     };
   }
   return service.find({

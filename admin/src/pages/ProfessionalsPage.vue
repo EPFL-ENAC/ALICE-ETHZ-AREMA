@@ -363,12 +363,12 @@ function fetchFromServer(
     query.$or = [
       {
         name: {
-          $like: `%${filter}%`,
+          $ilike: `%${filter}%`,
         },
       },
       {
         address: {
-          $like: `%${filter}%`,
+          $ilike: `%${filter}%`,
         },
       },
     ];

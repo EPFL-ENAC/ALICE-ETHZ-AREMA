@@ -110,7 +110,7 @@ export const naturalResourceQuerySchema = Type.Intersect(
   [
     querySyntax(naturalResourceQueryProperties, {
       name: {
-        $like: Type.String()
+        $ilike: Type.String()
       }
     }),
     // Add additional query properties here

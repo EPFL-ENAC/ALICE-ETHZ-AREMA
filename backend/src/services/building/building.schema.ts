@@ -111,13 +111,13 @@ export const buildingQuerySchema = Type.Intersect(
   [
     querySyntax(buildingQueryProperties, {
       name: {
-        $like: Type.String()
+        $ilike: Type.String()
       },
       description: {
-        $like: Type.String()
+        $ilike: Type.String()
       },
       address: {
-        $like: Type.String()
+        $ilike: Type.String()
       }
     }),
     // Add additional query properties here

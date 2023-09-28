@@ -229,7 +229,7 @@ function fetchFromServer(
   };
   if (filter) {
     query.name = {
-      $like: `%${filter}%`,
+      $ilike: `%${filter}%`,
     };
   }
   return service.find({

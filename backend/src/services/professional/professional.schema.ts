@@ -123,13 +123,13 @@ export const professionalQuerySchema = Type.Intersect(
   [
     querySyntax(professionalQueryProperties, {
       name: {
-        $like: Type.String()
+        $ilike: Type.String()
       },
       description: {
-        $like: Type.String()
+        $ilike: Type.String()
       },
       address: {
-        $like: Type.String()
+        $ilike: Type.String()
       }
     }),
     // Add additional query properties here
