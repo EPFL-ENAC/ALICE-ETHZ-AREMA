@@ -1,22 +1,22 @@
 version: '3.9'
 services:
   backend:
-    image: ghcr.io/epfl-enac/alice-ethz-arema-backend:latest.yml
+    image: ghcr.io/epfl-enac/alice-ethz-arema-backend:main
     build: !reset null
     restart: always
   s3_server:
-    image: ghcr.io/epfl-enac/alice-ethz-arema-s3_server:latest.yml
+    image: ghcr.io/epfl-enac/alice-ethz-arema-s3_server:main
     build: !reset null
     restart: always
   uploadfastapi:
-    image: ghcr.io/epfl-enac/alice-ethz-arema-uploadfastapi:latest.yml
+    image: ghcr.io/epfl-enac/alice-ethz-arema-uploadfastapi:main
     build: !reset null
     restart: always
   admin:
-    image: ghcr.io/epfl-enac/alice-ethz-arema-admin:latest.yml
+    image: ghcr.io/epfl-enac/alice-ethz-arema-admin:main
     build: !reset null
     restart: always
   frontend:
-    image: ghcr.io/epfl-enac/alice-ethz-arema-frontend:latest.yml
+    image: ghcr.io/epfl-enac/alice-ethz-arema-frontend:main
     build: !reset null
     restart: always
