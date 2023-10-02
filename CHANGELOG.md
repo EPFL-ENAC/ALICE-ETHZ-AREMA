@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.1.0](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/compare/v1.0.1...v1.1.0) (2023-10-02)
+
+
+### Features
+
+* circles can be drawn to locate professionals ([321e966](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/321e966d5f1a159f27c4f9ae966dcc7b95398d3f))
+* frontend mockup pages ([ea551dd](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/ea551dd3254644c7929e6585219622bc1dc5c37c))
+* map viewer component added, applied to profesionnals ([f5b9db9](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/f5b9db9e79f56d327097f60c8bff33670da51fe6))
+* professional - professional type relation implemented ([779b33b](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/779b33bf96a6972fb63719f33a80e2bc1114e26e))
+
+
+### Bug Fixes
+
+* case insensitive search ([944d448](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/944d44826c1f47e63c5fc512b7a70a816a9f7164))
+
 ## 1.0.0 (2023-09-25)
 
 
