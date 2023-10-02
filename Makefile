@@ -29,6 +29,5 @@ setup:
 	echo "nothing to see here"
 
 run:
-	docker compose pull
-	docker compose -f docker-compose.yml -f docker-compose.prod.yml  up -d --remove-orphans
+	docker compose -f docker-compose.yml -f docker-compose.prod.yml  up  --pull=always -d --remove-orphans
 
