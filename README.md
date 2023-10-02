@@ -74,3 +74,8 @@ ADMINISTRATOR_EMAIL="xxxx"
 ADMINISTRATOR_EMAIL="no-reply@epfl.ch"
 FEATHERS_SECRET="xxxxxxxxxxxxxxxx"
 ```
+
+# add compose command line for production
+```
+docker compose -f compose.yml -f production.yml up -d
+```

@@ -1,4 +1,4 @@
-version: "3.9"
+version: '3.9'
 services:
   reverse-proxy:
     image: traefik:v2.9
@@ -77,8 +77,8 @@ services:
       - "traefik.http.middlewares.backend-ratelimit.ratelimit.period=1"
       - "traefik.http.middlewares.backend-compress.compress=true"
     restart: unless-stopped
-  upload-fast-api:
-    build: ./uploadFASTAPI
+  uploadfastapi:
+    build: ./uploadfastapi
     environment:
       - S3_ENDPOINT_HOSTNAME=${S3_ENDPOINT_HOSTNAME}
       - S3_ENDPOINT_PROTOCOL=${S3_ENDPOINT_PROTOCOL}
@@ -92,12 +92,12 @@ services:
     expose:
       - 5053
     labels:
-      - "traefik.http.routers.uploadFASTAPI.priority=1001"
-      - "traefik.http.routers.uploadFASTAPI.tls=true"
-      - "traefik.http.routers.uploadFASTAPI.rule=PathPrefix(`/upload-api`)"
-      - "traefik.http.services.uploadFASTAPI.loadbalancer.server.port=5053"
-      - "traefik.http.routers.uploadFASTAPI.middlewares=uploadFASTAPI-middleware"
-      - "traefik.http.middlewares.uploadFASTAPI-middleware.stripprefix.prefixes=/upload-api"
+      - "traefik.http.routers.uploadfastapi.priority=1001"
+      - "traefik.http.routers.uploadfastapi.tls=true"
+      - "traefik.http.routers.uploadfastapi.rule=PathPrefix(`/upload-api`)"
+      - "traefik.http.services.uploadfastapi.loadbalancer.server.port=5053"
+      - "traefik.http.routers.uploadfastapi.middlewares=uploadfastapi-middleware"
+      - "traefik.http.middlewares.uploadfastapi-middleware.stripprefix.prefixes=/upload-api"
     restart: unless-stopped
   s3_server:
     build: ./s3_server
@@ -143,5 +143,5 @@ services:
       extra_hosts:
         - "host.docker.internal:host-gateway"
 volumes:
-  couchdb_data:
+  postgres:
     driver: local

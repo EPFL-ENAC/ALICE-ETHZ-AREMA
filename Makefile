@@ -30,5 +30,5 @@ setup:
 
 run:
 	docker compose pull
-	docker compose build --parallel --no-cache
-	docker compose up -d --remove-orphans
+	docker compose -f docker-compose.yml -f docker-compose.prod.yml  up -d --remove-orphans
+
