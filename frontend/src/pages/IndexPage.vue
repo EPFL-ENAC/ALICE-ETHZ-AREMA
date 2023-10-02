@@ -118,7 +118,7 @@
           </div>
           <div class="text-overline q-mt-md">Copyright</div>
           <div class="text-body2">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+            Lorem ipsum dolor sit amet.
           </div>
         </div>
         <div class="col-12 col-md-4">
