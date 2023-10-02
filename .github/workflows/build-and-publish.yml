@@ -19,19 +19,19 @@ jobs:
         include:
           - Dockerfile: ./s3_server/Dockerfile
             context: ./s3_server
-            image: ghcr.io/epfl-enac/s3_server
+            image: ghcr.io/epfl-enac/alice-ethz-arema-s3_server
           - Dockerfile: ./uploadFASTAPI/Dockerfile
             context: ./uploadFASTAPI
-            image: ghcr.io/epfl-enac/uploadfastapi
+            image: ghcr.io/epfl-enac/alice-ethz-arema-uploadfastapi
           - Dockerfile: ./backend/Dockerfile
             context: ./backend
-            image: ghcr.io/epfl-enac/backend
+            image: ghcr.io/epfl-enac/alice-ethz-arema-backend
           - Dockerfile: ./admin/Dockerfile
             context: ./admin
-            image: ghcr.io/epfl-enac/admin
+            image: ghcr.io/epfl-enac/alice-ethz-arema-admin
           - Dockerfile: ./frontend/Dockerfile
             context: ./frontend
-            image: ghcr.io/epfl-enac/frontend
+            image: ghcr.io/epfl-enac/alice-ethz-arema-frontend
     permissions:
       contents: read
       packages: write
