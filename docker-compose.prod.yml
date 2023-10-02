@@ -1,8 +1,22 @@
-version: "3.9"
+version: '3.9'
 services:
   backend:
-    image: ghcr.io/epfl-enac/backend:feat-build-and-publish.yml
+    image: ghcr.io/epfl-enac/backend:latest.yml
     build: !reset null
     restart: always
-    ports:
-      - "3030:3030"
+  s3_server:
+    image: ghcr.io/epfl-enac/s3_server:latest.yml
+    build: !reset null
+    restart: always
+  uploadfastapi:
+    image: ghcr.io/epfl-enac/uploadfastapi:latest.yml
+    build: !reset null
+    restart: always
+  admin:
+    image: ghcr.io/epfl-enac/admin:latest.yml
+    build: !reset null
+    restart: always
+  frontend:
+    image: ghcr.io/epfl-enac/frontend:latest.yml
+    build: !reset null
+    restart: always
