@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/compare/v1.1.0...v1.2.0) (2023-10-02)
+
+
+### Features
+
+* **chore:** add build and change docker compose prod ([8a57666](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/8a576665cd9f773b71e6f530e7353a11ad45fd93))
+
 ## [1.1.0](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/compare/v1.0.1...v1.1.0) (2023-10-02)
 
 
