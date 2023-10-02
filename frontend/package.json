@@ -2,7 +2,7 @@
   "name": "alice-ethz-arema-frontend",
   "version": "0.0.1",
   "description": "Frontend public for alice ethz arema",
-  "productName": "frontend",
+  "productName": "AREMA",
   "author": "Pierre Guilbert and Yannick Marcon",
   "private": true,
   "scripts": {

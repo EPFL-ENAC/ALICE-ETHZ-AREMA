@@ -30,6 +30,7 @@ import { userIterations } from '../users/users'
 import { professionalTypeIterations } from '../professional-type/professional-type'
 import { entityCreated } from '../../hooks/entity-created'
 import { timestampsStripping } from '../../hooks/timestamps-stripping'
+import { allowAnonymous }  from '../../hooks/allow-anonymous'
 
 export * from './professional.class'
 export * from './professional.schema'
@@ -76,7 +77,13 @@ export const professional = (app: Application) => {
         authenticate('jwt'),
         schemaHooks.resolveExternal(professionalExternalResolver),
         schemaHooks.resolveResult(professionalResolver)
-      ]
+      ],
+      find: [allowAnonymous, authenticate('jwt', 'anonymous')],
+      get: [allowAnonymous, authenticate('jwt', 'anonymous')],
+      create: [authenticate('jwt'),],
+      update: [authenticate('jwt')],
+      patch: [authenticate('jwt')],
+      remove: [authenticate('jwt')]
     },
     before: {
       all: [
