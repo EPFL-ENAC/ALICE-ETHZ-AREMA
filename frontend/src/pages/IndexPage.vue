@@ -29,11 +29,17 @@
           </div>
         </q-carousel-slide>
         <q-carousel-slide :name="2" img-src="crop-field.jpg">
-          <div class="text-h2 text-weight-thin text-white">
-            Regenerative Materials
-          </div>
-          <div class="text-subtitle1 text-white">
-            Natural resources, building materials...
+          <div class="row q-pa-lg q-mt-md">
+            <div class="col"></div>
+            <div class="col-md-6 col-sm-8 col-xs-12">
+              <div class="text-h2 text-weight-thin text-white">
+                Regenerative Materials
+              </div>
+              <div class="text-subtitle1 text-white">
+                Natural resources, building materials...
+              </div>
+            </div>
+            <div class="col"></div>
           </div>
         </q-carousel-slide>
       </q-carousel>
