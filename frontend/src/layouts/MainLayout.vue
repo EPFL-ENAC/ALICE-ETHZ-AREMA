@@ -8,6 +8,14 @@
         <div><a href="#" class="text-grey-10">fr</a></div>
       </q-bar>
       <q-toolbar :style="isHome ? 'height: 100px' : ''">
+        <q-btn
+          v-if="isSearch"
+          dense
+          flat
+          round
+          icon="menu"
+          @click="toggleLeftDrawer"
+        />
         <q-toolbar-title>
           <span v-if="isHome" class="q-pr-md"
             >Atlas of REgenerative MAterials</span
@@ -57,6 +65,14 @@
       </q-toolbar>
     </q-header>
 
+    <q-drawer v-if="isSearch" v-model="leftDrawerOpen" side="left" bordered>
+      <!-- drawer content -->
+    </q-drawer>
+
+    <q-drawer v-if="isSearch" v-model="rightDrawerOpen" side="right" bordered>
+      <!-- drawer content -->
+    </q-drawer>
+
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -66,6 +82,16 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 const route = useRoute();
-
+const leftDrawerOpen = ref(true);
+const rightDrawerOpen = ref(false);
 const isHome = computed(() => route.path === '/');
+const isSearch = computed(() => route.path === '/search');
+
+function toggleLeftDrawer() {
+  leftDrawerOpen.value = !leftDrawerOpen.value;
+}
+
+function toggleRightDrawer() {
+  rightDrawerOpen.value = !rightDrawerOpen.value;
+}
 </script>

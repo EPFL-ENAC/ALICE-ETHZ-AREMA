@@ -15,13 +15,23 @@
         style="height: 600px"
       >
         <q-carousel-slide :name="1" img-src="building-architecture-wood.jpg">
-          <div class="text-h2 text-white">Regenerative Materials</div>
-          <div class="text-subtitle1 text-white">
-            Buildings, building elements, professionals...
+          <div class="row q-pa-lg q-mt-md">
+            <div class="col"></div>
+            <div class="col-md-6 col-sm-8 col-xs-12">
+              <div class="text-h2 text-weight-thin text-white">
+                Regenerative Materials
+              </div>
+              <div class="text-subtitle1 text-white">
+                Buildings, building elements, professionals...
+              </div>
+            </div>
+            <div class="col"></div>
           </div>
         </q-carousel-slide>
         <q-carousel-slide :name="2" img-src="crop-field.jpg">
-          <div class="text-h2 text-white">Regenerative Materials</div>
+          <div class="text-h2 text-weight-thin text-white">
+            Regenerative Materials
+          </div>
           <div class="text-subtitle1 text-white">
             Natural resources, building materials...
           </div>
@@ -78,7 +88,7 @@
       </div>
     </div>
     <div class="col-12 q-pa-xl bg-grey-4">
-      <div class="text-h2 q-mb-lg">Maps</div>
+      <div class="text-h2 text-weight-thin q-mb-lg">Maps</div>
       <div class="text-body1 q-mb-md">
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam, porro
         beatae alias repudiandae nobis officiis amet a veniam nihil accusantium
@@ -89,7 +99,7 @@
       </div>
     </div>
     <div class="col-12 q-pa-xl">
-      <div class="text-h2 q-mb-lg">About</div>
+      <div class="text-h2 text-weight-thin q-mb-lg">About</div>
       <div class="text-body1">
         The construction sector's greenhouse gas emissions require urgent
         development of low-carbon building solutions. Regenerative Materials
@@ -117,9 +127,7 @@
             fugiat deleniti? Eum quasi quidem quibusdam.
           </div>
           <div class="text-overline q-mt-md">Copyright</div>
-          <div class="text-body2">
-            In shoshana we trust.
-          </div>
+          <div class="text-body2">In shoshana we trust.</div>
         </div>
         <div class="col-12 col-md-4">
           <div class="text-overline">Contact</div>

@@ -12,6 +12,10 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/ContributePage.vue'),
       },
       { path: 'charta', component: () => import('pages/ChartaPage.vue') },
+      {
+        path: 'professional/:id',
+        component: () => import('pages/ProfessionalPage.vue'),
+      },
     ],
   },
 
