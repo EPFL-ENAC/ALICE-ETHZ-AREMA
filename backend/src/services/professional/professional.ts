@@ -74,7 +74,6 @@ export const professional = (app: Application) => {
   app.service(professionalPath).hooks({
     around: {
       all: [
-        authenticate('jwt'),
         schemaHooks.resolveExternal(professionalExternalResolver),
         schemaHooks.resolveResult(professionalResolver)
       ],

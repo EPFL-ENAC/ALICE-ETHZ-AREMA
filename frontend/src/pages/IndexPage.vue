@@ -48,7 +48,7 @@
       <div class="row q-col-gutter-md">
         <div class="col-12 col-md-4">
           <q-card>
-            <a href="/search?type=professional">
+            <a href="/search?q=professional">
               <q-img src="wood-work.jpg" height="250px" />
             </a>
             <q-card-section>
@@ -59,7 +59,7 @@
         </div>
         <div class="col-12 col-md-4">
           <q-card>
-            <a href="/search?type=building">
+            <a href="/search?q=building">
               <q-img src="chaux.jpg" height="250px" />
             </a>
             <q-card-section>
@@ -70,7 +70,7 @@
         </div>
         <div class="col-12 col-md-4">
           <q-card>
-            <a href="/search?type=natural-resource">
+            <a href="/search?q=natural-resource">
               <q-img src="granite.jpg" height="250px" />
             </a>
             <q-card-section>
@@ -94,7 +94,7 @@
       </div>
     </div>
     <div class="col-12 q-pa-xl bg-grey-4">
-      <div class="text-h2 text-weight-thin q-mb-lg">Maps</div>
+      <div class="text-h2 text-weight-thin q-mb-lg">Explore</div>
       <div class="text-body1 q-mb-md">
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam, porro
         beatae alias repudiandae nobis officiis amet a veniam nihil accusantium
@@ -156,18 +156,6 @@
         </div>
       </div>
     </div>
-    <div class="col-12 q-pa-xl" style="display: none">
-      <q-btn color="primary" label="next scroll" @click="nextScroll()" />
-      <div class="row">
-        <pre>user: {{ user }}</pre>
-      </div>
-      <div class="row">
-        <pre>we have {{ nr$.total }} naturalResources.</pre>
-      </div>
-      <div class="row">
-        <pre>{{ nr$.data.map((x) => x.id + x.name) }}</pre>
-      </div>
-    </div>
   </q-page>
 </template>
 
@@ -193,33 +181,4 @@ const images = [
   'SUPSI.png',
 ];
 const $q = useQuasar();
-const auth = useAuthStore();
-const { api } = useFeathers();
-
-// https://feathers-pinia.pages.dev/services/use-find.html#usage
-const pagination = { limit: ref(20), skip: ref(0) };
-const params = computed(() => ({ query: {} }));
-const nr$ = api.service('natural-resource').useFind(params, {
-  pagination,
-  paginateOn: 'hybrid',
-});
-
-api.service('natural-resource').on('created', (message) => {
-  console.log('New natural-resource created', message);
-  nr$.find();
-});
-
-api.service('natural-resource').on('deleted', (message) => {
-  console.log('New natural-resource created', message);
-  nr$.find();
-});
-
-const user = computed(() => auth.user);
-// Combine the anonymous and authenticated channel
-// const combinedChannel = api.channel('anonymous', 'authenticated')
-
-// combinedChannel.addListener()
-const nextScroll = async () => {
-  await nr$.next();
-};
 </script>
