@@ -4,3 +4,38 @@ a {
   color: black;
   text-decoration: underline;
 }
+
+.marked ul,
+.marked ol {
+  margin-left: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.marked h1,
+.marked h2,
+.marked h3,
+.marked h4,
+.marked h5,
+.marked p {
+  margin-bottom: 20px;
+}
+
+.marked table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.marked table th,
+.marked table td {
+  padding: 6px 13px;
+  border-bottom: 1px solid #ccc;
+}
+
+.marked th {
+  background-color: #eee;
+}
+
+.marked tr:nth-child(even) {
+  background-color: #f6f8fa;
+}

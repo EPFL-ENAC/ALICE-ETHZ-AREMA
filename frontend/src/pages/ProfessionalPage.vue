@@ -21,7 +21,7 @@
         </div>
         <q-card flat class="text-body1 bg-grey-2 q-mt-md">
           <q-card-section>
-            {{ entity?.description }}
+            <div v-html="description" class="marked"></div>
           </q-card-section>
         </q-card>
         <div class="text-body1 q-mt-md">
@@ -68,6 +68,8 @@
 <script setup lang="ts">
 import { Professional } from '@epfl-enac/arema';
 import { useRoute, useRouter } from 'vue-router';
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 const { api } = useFeathers();
 const route = useRoute();
 const router = useRouter();
@@ -75,6 +77,13 @@ const router = useRouter();
 const entityId = computed(() => (route.params.id as string).split('-').pop());
 const entity = ref<Professional>();
 const slide = ref(1);
+
+const description = computed(() => {
+  if (!entity.value) return '';
+  return DOMPurify.sanitize(
+    marked.parse(entity.value.description, { headerIds: false, mangle: false })
+  );
+});
 
 onMounted(() => {
   api
