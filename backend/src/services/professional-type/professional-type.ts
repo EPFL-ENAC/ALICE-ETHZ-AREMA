@@ -28,6 +28,7 @@ import { logger } from '../../logger'
 import { getRandomUser } from '../../helpers/getRandomUser'
 import { userIterations } from '../users/users'
 import { entityCreated } from '../../hooks/entity-created'
+import { allowAnonymous }  from '../../hooks/allow-anonymous'
 
 export * from './professional-type.class'
 export * from './professional-type.schema'
@@ -67,10 +68,15 @@ export const professionalType = (app: Application) => {
   app.service(professionalTypePath).hooks({
     around: {
       all: [
-        authenticate('jwt'),
         schemaHooks.resolveExternal(professionalTypeExternalResolver),
         schemaHooks.resolveResult(professionalTypeResolver)
-      ]
+      ],
+      find: [allowAnonymous, authenticate('jwt', 'anonymous')],
+      get: [allowAnonymous, authenticate('jwt', 'anonymous')],
+      create: [authenticate('jwt'),],
+      update: [authenticate('jwt')],
+      patch: [authenticate('jwt')],
+      remove: [authenticate('jwt')]
     },
     before: {
       all: [

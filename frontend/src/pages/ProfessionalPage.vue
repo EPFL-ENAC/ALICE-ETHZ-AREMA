@@ -88,21 +88,21 @@ const description = computed(() => {
 onMounted(() => {
   api
     .service('professional')
-    .find({
-      query: {
-        $limit: 1,
-        name: {
-          $ilike: `%${route.params.id}%`,
-        },
-      },
-    })
+    // .find({
+    //   query: {
+    //     $limit: 1,
+    //     name: {
+    //       $ilike: `%${route.params.id}%`,
+    //     },
+    //   },
+    // })
+    // .then((res) => {
+    //   if (res.data.length === 0) router.push('/error');
+    //   entity.value = res.data.pop() as Professional;
+    // });
+    .get(entityId.value)
     .then((res) => {
-      if (res.data.length === 0) router.push('/error');
-      entity.value = res.data.pop() as Professional;
+      entity.value = res as Professional;
     });
-  // .get(entityId.value)
-  // .then((res) => {
-  //   entity.value = res as Professional;
-  // });
 });
 </script>
