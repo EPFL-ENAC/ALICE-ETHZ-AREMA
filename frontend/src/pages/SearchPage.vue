@@ -163,7 +163,7 @@
                     <strong></strong>
                   </q-card-section>
                   <q-card-section class="q-pa-none">
-                    <q-img src="/public/faker/slope9.jpg" />
+                    <q-img src="/faker/slope9.jpg" />
                   </q-card-section>
                   <q-card-section class="flex flex-center">
                     <q-chip>{{ props.row.professionalType.text }}</q-chip>
