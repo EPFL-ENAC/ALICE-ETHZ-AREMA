@@ -85,7 +85,7 @@
         <div class="col-12 fit row justify-center">
           <q-btn
             label="More resources"
-            size="xl"
+            :size="$q.screen.lt.sm ? 'lg' : 'xl'"
             class=""
             to="/search"
             no-caps
@@ -120,7 +120,7 @@
         <div class="col-12 col-md-4">
           <q-img
             src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-black.svg"
-            width="100px"
+            :width="$q.screen.lt.sm ? '50px' : '100px'"
           />
           <span class="text-h6 on-right">AREMA</span>
         </div>
@@ -173,6 +173,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useQuasar } from 'quasar';
 
 const slide = ref(1);
 const autoplay = ref(true);
@@ -191,7 +192,7 @@ const images = [
   'ROTOR_DC.png',
   'SUPSI.png',
 ];
-
+const $q = useQuasar();
 const auth = useAuthStore();
 const { api } = useFeathers();
 

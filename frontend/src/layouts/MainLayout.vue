@@ -7,7 +7,7 @@
         <div><a href="#" class="text-grey-10">de</a></div>
         <div><a href="#" class="text-grey-10">fr</a></div>
       </q-bar>
-      <q-toolbar :style="isHome ? 'height: 100px' : ''">
+      <q-toolbar :style="isHome && !$q.screen.lt.sm ? 'height: 100px' : ''">
         <q-btn
           v-if="isSearch"
           dense
@@ -24,7 +24,7 @@
             v-else
             flat
             label="Atlas of REgenerative MAterials"
-            :size="isHome ? 'lg' : 'md'"
+            :size="isHome && !$q.screen.lt.sm ? 'lg' : 'md'"
             to="/"
             no-caps
           />
@@ -37,7 +37,7 @@
         <q-btn
           flat
           dense
-          :size="isHome ? 'lg' : 'md'"
+          :size="isHome && !$q.screen.lt.sm ? 'lg' : 'md'"
           icon="search"
           label="Search"
           no-caps
@@ -47,7 +47,7 @@
         <q-btn
           flat
           dense
-          :size="isHome ? 'lg' : 'md'"
+          :size="isHome && !$q.screen.lt.sm ? 'lg' : 'md'"
           label="Contribute"
           no-caps
           class="on-right"
@@ -56,7 +56,7 @@
         <q-btn
           flat
           dense
-          :size="isHome ? 'lg' : 'md'"
+          :size="isHome && !$q.screen.lt.sm ? 'lg' : 'md'"
           label="Charta"
           no-caps
           class="on-right"
@@ -81,6 +81,9 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
+import { useQuasar } from 'quasar';
+
+const $q = useQuasar();
 const route = useRoute();
 const leftDrawerOpen = ref(true);
 const rightDrawerOpen = ref(false);
