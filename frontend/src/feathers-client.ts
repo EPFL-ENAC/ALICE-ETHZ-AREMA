@@ -1,6 +1,6 @@
 import { createClient } from '@epfl-enac/arema'; // exported by your feathers-api
 import { createPiniaClient } from 'feathers-pinia';
-import socketio from '@feathersjs/socketio-client';
+// import socketio from '@feathersjs/socketio-client';
 import rest from '@feathersjs/rest-client';
 // import io from 'socket.io-client';
 

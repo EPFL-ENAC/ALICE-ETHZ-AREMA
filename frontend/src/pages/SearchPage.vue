@@ -86,15 +86,24 @@
         <div class="q-pa-lg">
           <div class="text-h2 text-weight-thin">{{ $t('search') }}</div>
           <div class="row q-mt-md">
-            <div class="col-12 col-md-6">
-              <q-input dense debounce="300" v-model="filter" clearable>
+            <div class="col-12 col-sm-6 col-md-6">
+              <q-input
+                dense
+                debounce="300"
+                v-model="filter"
+                clearable
+                style="width: 250px"
+              >
                 <template v-slot:append>
                   <q-icon name="search" />
                 </template>
               </q-input>
             </div>
-            <div class="col-12 col-md-6">
-              <q-btn-group flat class="float-right">
+            <div class="col-12 col-sm-6 col-md-6">
+              <q-btn-group
+                flat
+                :class="$q.screen.lt.sm ? 'q-mt-md' : 'float-right'"
+              >
                 <q-btn
                   flat
                   icon="grid_view"
@@ -117,7 +126,10 @@
             </div>
           </div>
         </div>
-        <div v-if="view !== 'map'" class="q-pa-sm">
+        <div
+          v-show="view !== 'map' && professionals && professionals.length > 0"
+          class="q-pa-sm"
+        >
           <q-table
             flat
             :grid="view === 'grid'"
@@ -142,6 +154,13 @@
                 {{ props.value }}
               </q-td>
             </template>
+            <template v-slot:body-cell-professionalType="props">
+              <q-td :props="props">
+                <q-chip color="info" text-color="white">{{
+                  props.value
+                }}</q-chip>
+              </q-td>
+            </template>
             <template v-slot:body-cell-web="props">
               <q-td :props="props">
                 <a :href="props.value" target="_blank">{{ props.value }}</a>
@@ -161,7 +180,7 @@
               </q-td>
             </template>
             <template v-slot:item="props">
-              <div class="col-12 col-sm-6 col-md-2">
+              <div class="col-12 col-sm-4 col-md-3 col-lg-2">
                 <q-card flat bordered class="q-ma-md">
                   <q-card-section class="q-pa-none">
                     <q-img
@@ -170,19 +189,29 @@
                     />
                   </q-card-section>
                   <q-card-section class="flex flex-center">
-                    <div class="q-mb-sm">
+                    <div class="q-mb-sm text-center full-width">
                       <a :href="`/professional/${props.row.id}`">{{
                         props.row.name
                       }}</a>
                     </div>
-                    <div>
-                      <q-chip>{{ $t(props.row.professionalType.text) }}</q-chip>
-                    </div>
+                    <q-chip>{{ $t(props.row.professionalType.text) }}</q-chip>
                   </q-card-section>
                 </q-card>
               </div>
             </template>
           </q-table>
+        </div>
+        <div v-show="view === 'map'" class="full-height">
+          <div>
+            <map-view
+              :features="features"
+              :center="[6.632273, 46.519962]"
+              :zoom="6"
+              :minZoom="10"
+              :maxZoom="18"
+              height="800px"
+            />
+          </div>
         </div>
       </q-page>
     </q-page-container>
@@ -195,6 +224,10 @@ import { Professional, ProfessionalType } from '@epfl-enac/arema';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
 import { useCookies } from 'vue3-cookies';
+import MapView from '../components/MapView.vue';
+import { useQuasar } from 'quasar';
+
+const $q = useQuasar();
 
 const { cookies } = useCookies();
 const { api } = useFeathers();
@@ -223,8 +256,8 @@ const expanded = ref([0]);
 const professionalTypes = ref([
   {
     id: 0,
-    text: 'Type of professional',
-    avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+    text: t('type_of_professional'),
+    icon: 'engineering',
     children: [],
   },
 ]);
@@ -247,7 +280,7 @@ const columns = [
     sortable: false,
   },
   {
-    name: 'professionalTypeId',
+    name: 'professionalType',
     required: true,
     label: t('type'),
     align: 'left',
@@ -281,6 +314,32 @@ const columns = [
   },
 ];
 
+const features = computed(() => {
+  return professionals.value.map((row) => {
+    return {
+      type: 'Feature',
+      id: row.id,
+      properties: {
+        name: row.name,
+        description: row.description,
+        address: row.address,
+        circleRadius: row.areaDelivery.radius,
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            row.areaDelivery.coordinates,
+            row.areaDelivery.coordinates,
+            row.areaDelivery.coordinates,
+            row.areaDelivery.coordinates,
+          ],
+        ],
+      },
+    };
+  });
+});
+
 onMounted(() => {
   api
     .service('professional-type')
@@ -308,6 +367,7 @@ onMounted(() => {
 function onLocaleSelection(lang: string) {
   locale.value = lang;
   cookies.set('locale', lang);
+  window.location.reload();
 }
 
 function fetchFromServer(
@@ -343,6 +403,7 @@ function fetchFromServer(
       },
     ];
   }
+  console.log('query', query);
   return api
     .service('professional')
     .find({
@@ -359,14 +420,18 @@ const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
 
 function onSelect() {
   console.log('selected', ticked.value);
-  tableRef.value.requestServerInteraction();
+  if (ticked.value && ticked.value.length > 0) {
+    tableRef.value.requestServerInteraction();
+  } else {
+    professionals.value = [];
+  }
 }
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
 
-function toggleRightDrawer() {
-  rightDrawerOpen.value = !rightDrawerOpen.value;
-}
+// function toggleRightDrawer() {
+//   rightDrawerOpen.value = !rightDrawerOpen.value;
+// }
 </script>

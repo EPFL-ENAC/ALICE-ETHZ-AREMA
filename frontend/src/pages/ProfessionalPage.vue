@@ -4,16 +4,19 @@
       <div class="col"></div>
       <div class="col-md-6 col-sm-8 col-xs-12">
         <div class="text-h4 text-weight-thin q-mb-lg">
-          Professional ::: {{ entity?.name }}
+          {{ $t('professional') }} ::: {{ entity?.name }}
         </div>
         <div>
-          <q-chip v-if="entity?.professionalType">{{
-            entity?.professionalType?.text
-          }}</q-chip>
+          <q-chip
+            color="info"
+            text-color="white"
+            v-if="entity?.professionalType"
+            >{{ $t(entity?.professionalType?.text) }}</q-chip
+          >
           <q-chip
             v-for="tag in entity?.tags"
             :key="tag"
-            :label="tag"
+            :label="$t(tag)"
             color="amber"
             text-color="grey-10"
             class="q-mr-sm q-mb-sm"
@@ -60,7 +63,7 @@
           <a
             :href="`/search?q=professional&type=${entity?.professionalTypeId}`"
           >
-            <q-icon name="search" /> {{ entity?.professionalType?.text }}</a
+            <q-icon name="search" /> {{ $t(entity?.professionalType?.text) }}</a
           >
         </div>
       </div>
