@@ -3,9 +3,16 @@
     <q-header reveal elevated class="bg-white text-grey-10">
       <q-bar dense class="bg-amber text-grey-8 q-pr-md">
         <q-space />
-        <div class="text-weight-bold">en</div>
-        <div><a href="#" class="text-grey-10">de</a></div>
-        <div><a href="#" class="text-grey-10">fr</a></div>
+        <div v-for="lang in locales" :key="lang">
+          <a
+            href="#"
+            :class="locale === lang ? 'text-weight-bold' : ''"
+            :style="locale === lang ? 'text-decoration: none' : ''"
+            class="text-grey-10"
+            @click="onLocaleSelection(lang)"
+            >{{ lang }}</a
+          >
+        </div>
       </q-bar>
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
@@ -28,7 +35,7 @@
           dense
           size="md"
           icon="search"
-          label="Search"
+          :label="$t('search')"
           no-caps
           class="on-right"
           to="/search"
@@ -37,7 +44,7 @@
           flat
           dense
           size="md"
-          label="Contribute"
+          :label="$t('contribute')"
           no-caps
           class="on-right"
           to="/contribute"
@@ -46,7 +53,7 @@
           flat
           dense
           size="md"
-          label="Charta"
+          :label="$t('charter')"
           no-caps
           class="on-right"
           to="/charta"
@@ -56,7 +63,7 @@
 
     <q-drawer v-model="leftDrawerOpen" side="left" bordered>
       <div class="q-pt-lg">
-        <div class="text-h6 q-pl-sm">Professionals</div>
+        <div class="text-h6 q-pl-sm">{{ $t('professionals') }}</div>
         <q-tree
           :nodes="professionalTypes"
           node-key="id"
@@ -77,7 +84,7 @@
     <q-page-container>
       <q-page>
         <div class="q-pa-lg">
-          <div class="text-h2 text-weight-thin">Search</div>
+          <div class="text-h2 text-weight-thin">{{ $t('search') }}</div>
           <div class="row q-mt-md">
             <div class="col-12 col-md-6">
               <q-input dense debounce="300" v-model="filter" clearable>
@@ -156,17 +163,21 @@
             <template v-slot:item="props">
               <div class="col-12 col-sm-6 col-md-2">
                 <q-card flat bordered class="q-ma-md">
-                  <q-card-section class="text-center">
-                    <a :href="`/professional/${props.row.id}`">{{
-                      props.row.name
-                    }}</a>
-                    <strong></strong>
-                  </q-card-section>
                   <q-card-section class="q-pa-none">
-                    <q-img src="/faker/slope9.jpg" />
+                    <q-img
+                      :src="`/faker/${props.row.professionalType.text}.jpg`"
+                      height="150px"
+                    />
                   </q-card-section>
                   <q-card-section class="flex flex-center">
-                    <q-chip>{{ props.row.professionalType.text }}</q-chip>
+                    <div class="q-mb-sm">
+                      <a :href="`/professional/${props.row.id}`">{{
+                        props.row.name
+                      }}</a>
+                    </div>
+                    <div>
+                      <q-chip>{{ $t(props.row.professionalType.text) }}</q-chip>
+                    </div>
                   </q-card-section>
                 </q-card>
               </div>
@@ -183,8 +194,13 @@ import { Query } from '@feathersjs/client';
 import { Professional, ProfessionalType } from '@epfl-enac/arema';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
-const { t } = useI18n({ useScope: 'global' });
+import { useCookies } from 'vue3-cookies';
+
+const { cookies } = useCookies();
 const { api } = useFeathers();
+const { t, locale } = useI18n({ useScope: 'global' });
+
+const locales = ['en', 'de', 'fr'];
 
 const view = ref('grid');
 const tableRef = ref();
@@ -274,15 +290,25 @@ onMounted(() => {
       },
     })
     .then((res) => {
-      professionalTypes.value[0].children = res.data.sort(
-        (a: ProfessionalType, b: ProfessionalType) => {
+      professionalTypes.value[0].children = res.data
+        .map((pt: ProfessionalType) => {
+          return {
+            id: pt.id,
+            text: t(pt.text),
+          };
+        })
+        .sort((a: ProfessionalType, b: ProfessionalType) => {
           return a.text.localeCompare(b.text);
-        }
-      );
+        });
       ticked.value = res.data.map((pt: ProfessionalType) => pt.id);
       tableRef.value.requestServerInteraction();
     });
 });
+
+function onLocaleSelection(lang: string) {
+  locale.value = lang;
+  cookies.set('locale', lang);
+}
 
 function fetchFromServer(
   startRow: number,

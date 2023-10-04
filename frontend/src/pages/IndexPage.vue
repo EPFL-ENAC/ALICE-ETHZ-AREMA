@@ -19,7 +19,7 @@
             <div class="col"></div>
             <div class="col-md-6 col-sm-8 col-xs-12">
               <div class="text-h2 text-weight-thin text-white">
-                Regenerative Materials
+                {{ $t('regenerative_materials') }}
               </div>
               <div class="text-subtitle1 text-white">
                 Buildings, building elements, professionals...
@@ -33,7 +33,7 @@
             <div class="col"></div>
             <div class="col-md-6 col-sm-8 col-xs-12">
               <div class="text-h2 text-weight-thin text-white">
-                Regenerative Materials
+                {{ $t('regenerative_materials') }}
               </div>
               <div class="text-subtitle1 text-white">
                 Natural resources, building materials...
@@ -52,7 +52,7 @@
               <q-img src="wood-work.jpg" height="250px" />
             </a>
             <q-card-section>
-              <div class="text-h6">Professionals</div>
+              <div class="text-h6">{{ $t('professionals') }}</div>
               <div class="text-subtitle2">...</div>
             </q-card-section>
           </q-card>
@@ -63,7 +63,7 @@
               <q-img src="chaux.jpg" height="250px" />
             </a>
             <q-card-section>
-              <div class="text-h6">Buildings</div>
+              <div class="text-h6">{{ $t('buildings') }}</div>
               <div class="text-subtitle2">...</div>
             </q-card-section>
           </q-card>
@@ -74,7 +74,7 @@
               <q-img src="granite.jpg" height="250px" />
             </a>
             <q-card-section>
-              <div class="text-h6">Natural Resources</div>
+              <div class="text-h6">{{ $t('natural_resources') }}</div>
               <div class="text-subtitle2">...</div>
             </q-card-section>
           </q-card>
@@ -84,7 +84,7 @@
       <div class="row q-mt-xl">
         <div class="col-12 fit row justify-center">
           <q-btn
-            label="More resources"
+            :label="$t('more_resources')"
             :size="$q.screen.lt.sm ? 'lg' : 'xl'"
             class=""
             to="/search"
@@ -94,7 +94,7 @@
       </div>
     </div>
     <div class="col-12 q-pa-xl bg-grey-4">
-      <div class="text-h2 text-weight-thin q-mb-lg">Explore</div>
+      <div class="text-h2 text-weight-thin q-mb-lg">{{ $t('explore') }}</div>
       <div class="text-body1 q-mb-md">
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam, porro
         beatae alias repudiandae nobis officiis amet a veniam nihil accusantium
@@ -105,7 +105,7 @@
       </div>
     </div>
     <div class="col-12 q-pa-xl">
-      <div class="text-h2 text-weight-thin q-mb-lg">About</div>
+      <div class="text-h2 text-weight-thin q-mb-lg">{{ $t('about') }}</div>
       <div class="text-body1">
         The construction sector's greenhouse gas emissions require urgent
         development of low-carbon building solutions. Regenerative Materials

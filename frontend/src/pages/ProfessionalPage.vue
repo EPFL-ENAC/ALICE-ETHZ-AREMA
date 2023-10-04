@@ -44,6 +44,10 @@
         </div>
         <div class="q-mt-md">
           <q-carousel animated v-model="slide" arrows infinite thumbnails>
+            <q-carousel-slide
+              :name="0"
+              :img-src="`/faker/${entity?.professionalType?.text}.jpg`"
+            />
             <q-carousel-slide :name="1" img-src="/faker/slope9.jpg" />
             <q-carousel-slide
               :name="2"
@@ -76,7 +80,7 @@ const router = useRouter();
 
 const entityId = computed(() => (route.params.id as string).split('-').pop());
 const entity = ref<Professional>();
-const slide = ref(1);
+const slide = ref(0);
 
 const description = computed(() => {
   if (!entity.value) return '';
@@ -88,21 +92,12 @@ const description = computed(() => {
 onMounted(() => {
   api
     .service('professional')
-    // .find({
-    //   query: {
-    //     $limit: 1,
-    //     name: {
-    //       $ilike: `%${route.params.id}%`,
-    //     },
-    //   },
-    // })
-    // .then((res) => {
-    //   if (res.data.length === 0) router.push('/error');
-    //   entity.value = res.data.pop() as Professional;
-    // });
-    .get(entityId.value)
+    .get(entityId.value as string)
     .then((res) => {
       entity.value = res as Professional;
+    })
+    .catch((err) => {
+      router.push('/error');
     });
 });
 </script>

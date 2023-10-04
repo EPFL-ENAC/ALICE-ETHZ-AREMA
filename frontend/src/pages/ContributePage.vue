@@ -3,7 +3,7 @@
     <div class="row q-pa-lg q-mt-md">
       <div class="col"></div>
       <div class="col-md-6 col-sm-8 col-xs-12">
-        <div class="text-h2 text-weight-thin">Contribute</div>
+        <div class="text-h2 text-weight-thin">{{ $t('contribute') }}</div>
         <div class="text-body1 q-mt-lg">
           Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptate
           atque iste sapiente doloremque facilis, veniam maxime quod ipsam odit
@@ -30,7 +30,7 @@
           <q-btn
             color="primary"
             size="lg"
-            label="Register"
+            :label="$t('register')"
             icon="add"
             class="q-mr-md"
             to="/admin"

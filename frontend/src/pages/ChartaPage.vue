@@ -3,7 +3,7 @@
     <div class="row q-pa-lg q-mt-md">
       <div class="col"></div>
       <div class="col-md-6 col-sm-8 col-xs-12">
-        <div class="text-h2 text-weight-thin q-mb-lg">Charta</div>
+        <div class="text-h2 text-weight-thin q-mb-lg">{{ $t('charter') }}</div>
         <div class="text-body1 q-mt-md">
           Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptate
           atque iste sapiente doloremque facilis, veniam maxime quod ipsam odit
