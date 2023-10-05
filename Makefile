@@ -17,12 +17,11 @@ lint:
 lint-staged:
 	$(MAKE) -C frontend lint-staged
 
+run-db:
+	docker compose up -d --pull=always postgres
 
-run-database:
-	docker-compose up --build -d couchdb
-
-setup-database:
-	docker-compose up --build --force-recreate couchdb-setup
+stop-db:
+	docker compose stop postgres
 
 # setup and run when deploying on server
 setup:
