@@ -50,7 +50,8 @@
               :zoom="6"
               :minZoom="10"
               :maxZoom="18"
-              height="300px"/>
+              height="300px"
+            />
           </div>
         </template>
         <template v-slot:body-cell-description="props">
@@ -64,13 +65,13 @@
           </q-td>
         </template>
         <template v-slot:body-cell-address="props">
-          <q-td :props="props" style="max-width: 200px; white-space: inherit;">
+          <q-td :props="props" style="max-width: 200px; white-space: inherit">
             {{ props.value }}
           </q-td>
         </template>
-        <template v-slot:body-cell-areaDelivery="props">
+        <template v-slot:body-cell-radius="props">
           <q-td :props="props">
-            <q-chip>{{ props.value.radius }} km</q-chip>
+            <q-chip>{{ props.value }} km</q-chip>
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -98,7 +99,6 @@
           </q-td>
         </template>
       </q-table>
-
 
       <q-dialog
         v-model="showEditDialog"
@@ -129,7 +129,7 @@
                   style="min-width: 200px"
                   emit-value
                   map-options
-                />  
+                />
               </div>
             </div>
             <q-input
@@ -157,7 +157,7 @@
                   :label="$t('email')"
                   class="on-right"
                   style="min-width: 200px"
-                />  
+                />
               </div>
               <div class="col-12 col-sm-4">
                 <q-input
@@ -166,10 +166,14 @@
                   :label="$t('website')"
                   class="on-right"
                   style="min-width: 200px"
-                />  
+                />
               </div>
             </div>
-            <circle-map-input v-model="circle" height="600px" @update:model-value="onCircleInputUpdated"></circle-map-input>
+            <circle-map-input
+              v-model="circle"
+              height="600px"
+              @update:model-value="onCircleInputUpdated"
+            ></circle-map-input>
           </q-card-section>
 
           <q-card-actions align="right">
@@ -226,7 +230,7 @@ const columns = [
     label: t('type'),
     align: 'left',
     field: 'professionalType',
-    format: (val: ProfessionalType) => val ? t(val.text) : undefined,
+    format: (val: ProfessionalType) => (val ? t(val.text) : undefined),
     sortable: true,
   },
   {
@@ -246,11 +250,11 @@ const columns = [
     sortable: true,
   },
   {
-    name: 'areaDelivery',
+    name: 'radius',
     required: true,
     label: t('areaDelivery'),
     align: 'left',
-    field: 'areaDelivery',
+    field: 'radius',
     sortable: false,
   },
   {
@@ -274,16 +278,16 @@ const columns = [
 const professionalTypes = ref<ProfessionalType[]>([]);
 const professionalTypeOptions = computed(() => {
   return professionalTypes.value
-  .map((type) => {
-    return {
-      value: type.id + '',
-      label: t(type.text),
-    };
-  })
-  .sort((a, b) => {
-    return a.label.localeCompare(b.label);
-  })
-})
+    .map((type) => {
+      return {
+        value: type.id + '',
+        label: t(type.text),
+      };
+    })
+    .sort((a, b) => {
+      return a.label.localeCompare(b.label);
+    });
+});
 
 const selected = ref<Professional>();
 const circle = ref({});
@@ -302,8 +306,7 @@ const pagination = ref<PaginationOptions>({
 });
 
 onMounted(() => {
-  serviceType.find({ query: { $limit: 50 } })
-  .then((result) => {
+  serviceType.find({ query: { $limit: 50 } }).then((result) => {
     professionalTypes.value = result.data;
   });
   // get initial data from server (1st page)
@@ -319,25 +322,29 @@ const features = computed(() => {
         name: row.name,
         description: row.description,
         address: row.address,
-        circleRadius: row.areaDelivery.radius,
+        circleRadius: row.radius,
       },
       geometry: {
         type: 'Polygon',
         coordinates: [
           [
-            row.areaDelivery.coordinates,
-            row.areaDelivery.coordinates,
-            row.areaDelivery.coordinates,
-            row.areaDelivery.coordinates,
-          ]
-        ]
-      }
+            row.coordinates.point,
+            row.coordinates.point,
+            row.coordinates.point,
+            row.coordinates.point,
+          ],
+        ],
+      },
     };
   });
 });
 
 function disableSave() {
-  return !selected.value.name || !selected.value.professionalTypeId || !selected.value.address || !selected.value.areaDelivery;
+  return (
+    !selected.value.name ||
+    !selected.value.professionalTypeId ||
+    !selected.value.address
+  );
 }
 
 function fetchFromServer(
@@ -373,13 +380,15 @@ function fetchFromServer(
       },
     ];
   }
-  return service.find({
-    query,
-  }).then((result) => {
-    rows.value = result.data;
-    loading.value = false;
-    return result;    
-  });
+  return service
+    .find({
+      query,
+    })
+    .then((result) => {
+      rows.value = result.data;
+      loading.value = false;
+      return result;
+    });
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
@@ -390,15 +399,14 @@ function onTypeSelection() {
 
 function onCircleInputUpdated(newValue) {
   if (newValue && newValue.properties && newValue.geometry) {
-      selected.value.address = newValue.properties.display_name;
-      selected.value.areaDelivery = {
-        radius: newValue.properties.circleRadius,
-        coordinates: newValue.geometry.coordinates[0][0],
-      };
-    } else {
-      selected.value.address = null;
-      selected.value.areaDelivery = null;
-    }
+    selected.value.address = newValue.properties.display_name;
+    selected.value.radius = newValue.properties.circleRadius;
+    selected.value.coordinates = { point: newValue.geometry.coordinates[0][0] };
+  } else {
+    selected.value.address = null;
+    selected.value.radius = null;
+    selected.value.coordinates = null;
+  }
 }
 
 function onAdd() {
@@ -409,24 +417,17 @@ function onAdd() {
 
 function onEdit(resource: Professional) {
   selected.value = { ...resource };
-  const center = unref(selected.value.areaDelivery.coordinates);
+  const center = unref(selected.value.coordinates.point);
   circle.value = {
     type: 'Feature',
     properties: {
       display_name: selected.value.address,
-      circleRadius: selected.value.areaDelivery.radius,
+      circleRadius: selected.value.radius,
     },
     geometry: {
       type: 'Polygon',
-      coordinates: [
-        [
-          center,
-          center,
-          center,
-          center,
-        ]
-      ]
-    }
+      coordinates: [[center, center, center, center]],
+    },
   };
   showEditDialog.value = true;
 }
@@ -436,7 +437,9 @@ function saveSelected() {
   if (selected.value.id) {
     delete selected.value.professionalType;
     // FIXME "find" returns a string whereas "create/patch" requires a number
-    selected.value.professionalTypeId = parseInt(selected.value.professionalTypeId);
+    selected.value.professionalTypeId = parseInt(
+      selected.value.professionalTypeId
+    );
     service
       .patch(selected.value.id, selected.value)
       .then(() => {
@@ -451,7 +454,9 @@ function saveSelected() {
   } else {
     selected.value.images = [];
     selected.value.links = [];
-    selected.value.professionalTypeId = parseInt(selected.value.professionalTypeId);
+    selected.value.professionalTypeId = parseInt(
+      selected.value.professionalTypeId
+    );
     service
       .create(selected.value)
       .then(() => {

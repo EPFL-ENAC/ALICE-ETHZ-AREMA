@@ -1,6 +1,7 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/databases.html
 import knex from 'knex'
-import type { Knex } from 'knex'
+import KnexPostgis from 'knex-postgis'
+import { Knex } from 'knex'
 import type { Application } from './declarations'
 
 declare module './declarations' {
@@ -12,6 +13,7 @@ declare module './declarations' {
 export const postgresql = (app: Application) => {
   const config = app.get('postgresql')
   const db = knex(config!)
+  KnexPostgis(db) // decorate knex with postgis functions
 
   app.set('postgresqlClient', db)
 }

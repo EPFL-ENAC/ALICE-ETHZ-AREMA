@@ -46,7 +46,7 @@ export function generateFake(user: User) {
     images: [],
     description: faker.lorem.paragraph()
   }
-  logger.info(`fake data natural resource generated: ${JSON.stringify(result)}`)
+  logger.debug(`fake data natural resource generated: ${JSON.stringify(result)}`)
   return result
 }
 
