@@ -174,9 +174,9 @@
                 {{ props.value }}
               </q-td>
             </template>
-            <template v-slot:body-cell-areaDelivery="props">
+            <template v-slot:body-cell-radius="props">
               <q-td :props="props">
-                <q-chip>{{ props.value.radius }} km</q-chip>
+                <q-chip>{{ props.value }} km</q-chip>
               </q-td>
             </template>
             <template v-slot:item="props">
@@ -305,11 +305,11 @@ const columns = [
     sortable: true,
   },
   {
-    name: 'areaDelivery',
+    name: 'radius',
     required: true,
     label: t('areaDelivery'),
     align: 'left',
-    field: 'areaDelivery',
+    field: 'radius',
     sortable: false,
   },
 ];
@@ -323,16 +323,16 @@ const features = computed(() => {
         name: row.name,
         description: row.description,
         address: row.address,
-        circleRadius: row.areaDelivery.radius,
+        circleRadius: row.radius,
       },
       geometry: {
         type: 'Polygon',
         coordinates: [
           [
-            row.areaDelivery.coordinates,
-            row.areaDelivery.coordinates,
-            row.areaDelivery.coordinates,
-            row.areaDelivery.coordinates,
+            row.coordinates.point,
+            row.coordinates.point,
+            row.coordinates.point,
+            row.coordinates.point,
           ],
         ],
       },

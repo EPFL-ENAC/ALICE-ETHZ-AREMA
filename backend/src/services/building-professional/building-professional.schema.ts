@@ -32,7 +32,7 @@ export async function generateFake(user: User, building: Building, professional:
     professionalId: professional.id,
     createdById: user.id
   }
-  logger.info(`fake data building professional generated: ${JSON.stringify(result)}`)
+  logger.debug(`fake data building professional generated: ${JSON.stringify(result)}`)
   return result
 }
 

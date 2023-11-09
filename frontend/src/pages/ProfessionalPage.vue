@@ -99,7 +99,7 @@ onMounted(() => {
     .then((res) => {
       entity.value = res as Professional;
     })
-    .catch((err) => {
+    .catch(() => {
       router.push('/error');
     });
 });

@@ -23,6 +23,15 @@ run-db:
 stop-db:
 	docker compose stop postgres
 
+down-db:
+	docker compose down postgres
+
+run-dbadmin:
+	docker compose up -d --pull=always pgadmin
+
+stop-dbadmin:
+	docker compose stop pgadmin
+
 # setup and run when deploying on server
 setup:
 	echo "nothing to see here"

@@ -33,11 +33,11 @@ export const defaultProfessionalTypes = [
 // generate fake data
 export async function generateFake(user: User) {
   // const findUser = app_.find()
-  logger.info(`fake USER professional-type generated: ${JSON.stringify(user.id)}`)
+  logger.debug(`fake USER professional-type generated: ${JSON.stringify(user.id)}`)
   const result: ProfessionalType = {
     text: faker.helpers.arrayElement(defaultProfessionalTypes)
   }
-  // logger.info(`fake data building generated: ${JSON.stringify(result)}`)
+  // logger.debug(`fake data building generated: ${JSON.stringify(result)}`)
   return result
 }
 
