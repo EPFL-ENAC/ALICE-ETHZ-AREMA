@@ -21,6 +21,8 @@ export const buildingSchema = Type.Object(
     name: Type.String({ minLength: 1 }),
     description: Type.String(),
     address: Type.String({ minLength: 1 }),
+    coordinates: Type.Object({ point: Type.Tuple([Type.Number(), Type.Number()]) }),
+    geom: Type.Optional(Type.Any()), // geometry
     // professionalIds: Type.Array(Type.Number()),
     // technicalConstructionIds: Type.Array(Type.Number()),
     images: Type.Array(Type.String()), // url
@@ -44,10 +46,12 @@ export type Building = Static<typeof buildingSchema>
 
 // generate fake data
 export async function generateFake(user: User) {
+  const point = [faker.location.longitude({ min: 5.9, max: 10.5 }), faker.location.latitude({ min: 45.8, max: 47.8 })]  as [number, number]
   const result = {
     name: faker.lorem.words(3),
     description: faker.lorem.paragraph(),
     address: faker.location.streetAddress(),
+    coordinates: { point: point },
     images: []
   }
   return result
@@ -78,10 +82,13 @@ export const buildingProfessionResolver = resolve<Building, HookContext>({
   })
 })
 
-export const buildingExternalResolver = resolve<Building, HookContext>({})
+export const buildingExternalResolver = resolve<Building, HookContext>({
+  // The geometry should never be visible externally
+  geom: async () => undefined
+})
 
 // Schema for creating new entries
-export const buildingDataSchema = Type.Pick(buildingSchema, ['name', 'description', 'address', 'images'], {
+export const buildingDataSchema = Type.Pick(buildingSchema, ['name', 'description', 'address', 'coordinates', 'images'], {
   $id: 'BuildingData'
 })
 export type BuildingData = Static<typeof buildingDataSchema>
@@ -106,7 +113,7 @@ export const buildingPatchResolver = resolve<Building, HookContext>({
 })
 
 // Schema for allowed query properties
-export const buildingQueryProperties = Type.Pick(buildingSchema, ['id', 'name', 'description', 'address'])
+export const buildingQueryProperties = Type.Pick(buildingSchema, ['id', 'name', 'description', 'address', 'coordinates'])
 export const buildingQuerySchema = Type.Intersect(
   [
     querySyntax(buildingQueryProperties, {

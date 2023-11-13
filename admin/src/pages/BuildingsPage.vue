@@ -30,6 +30,16 @@
               <q-icon name="search" />
             </template>
           </q-input>
+          <div style="width: 100%" class="q-mt-md">
+            <map-view
+              :features="features"
+              :center="[6.632273, 46.519962]"
+              :zoom="6"
+              :minZoom="10"
+              :maxZoom="18"
+              height="300px"
+            />
+          </div>
         </template>
         <template v-slot:body-cell-description="props">
           <q-td :props="props" class="ellipsis" style="max-width: 200px">
@@ -67,6 +77,7 @@
         persistent
         transition-show="scale"
         transition-hide="scale"
+        full-width
       >
         <q-card style="width: 300px">
           <q-card-section>
@@ -85,13 +96,11 @@
               class="q-mb-md"
               style="min-width: 200px"
             />
-            <q-input
-              filled
-              v-model="selected.address"
-              :label="$t('address')"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
+            <point-map-input
+              v-model="location"
+              height="600px"
+              @update:model-value="onPointInputUpdated"
+            ></point-map-input>
           </q-card-section>
 
           <q-card-actions align="right">
@@ -115,6 +124,8 @@ import { Query } from '@feathersjs/client';
 import { Building } from '@epfl-enac/arema';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
+import PointMapInput from '../components/PointMapInput.vue';
+import MapView from 'src/components/MapView.vue';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const { api } = useFeathers();
@@ -164,6 +175,7 @@ const columns = [
 ];
 
 const selected = ref<Building>();
+const location = ref({});
 const showEditDialog = ref(false);
 const tableRef = ref();
 const rows = ref<Building[]>([]);
@@ -180,6 +192,24 @@ const pagination = ref<PaginationOptions>({
 onMounted(() => {
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
+});
+
+const features = computed(() => {
+  return rows.value.map((row) => {
+    return {
+      type: 'Feature',
+      id: row.id,
+      properties: {
+        name: row.name,
+        description: row.description,
+        address: row.address,
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: row.coordinates.point,
+      },
+    };
+  });
 });
 
 function fetchFromServer(
@@ -211,24 +241,47 @@ function fetchFromServer(
       },
     ];
   }
-  return service.find({
-    query,
-  }).then((result) => {
-    rows.value = result.data;
-    loading.value = false;
-    return result;    
-  });
+  return service
+    .find({
+      query,
+    })
+    .then((result) => {
+      rows.value = result.data;
+      loading.value = false;
+      return result;
+    });
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
 
+function onPointInputUpdated(newValue) {
+  if (newValue && newValue.properties && newValue.geometry) {
+    selected.value.address = newValue.properties.display_name;
+    selected.value.coordinates = { point: newValue.geometry.coordinates };
+  } else {
+    selected.value.address = null;
+    selected.value.coordinates = null;
+  }
+}
+
 function onAdd() {
   selected.value = {};
+  location.value = {};
   showEditDialog.value = true;
 }
 
 function onEdit(resource: Building) {
   selected.value = { ...resource };
+  location.value = {
+    type: 'Feature',
+    properties: {
+      display_name: selected.value.address,
+    },
+    geometry: {
+      type: 'Point',
+      coordinates: selected.value.coordinates.point,
+    },
+  };
   showEditDialog.value = true;
 }
 

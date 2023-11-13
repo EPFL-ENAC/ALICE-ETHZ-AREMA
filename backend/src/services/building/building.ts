@@ -32,6 +32,7 @@ import { userIterations } from '../users/users'
 import { en } from '@faker-js/faker'
 import { entityCreated } from '../../hooks/entity-created'
 import { timestampsStripping } from '../../hooks/timestamps-stripping'
+import { geometries } from '../../hooks/geometries'
 
 export * from './building.class'
 export * from './building.schema'
@@ -96,11 +97,13 @@ export const building = (app: Application) => {
       create: [
         schemaHooks.validateData(buildingDataValidator),
         entityCreated,
+        geometries,
         schemaHooks.resolveData(buildingDataResolver)
       ],
       patch: [
         timestampsStripping,
         schemaHooks.validateData(buildingPatchValidator),
+        geometries,
         schemaHooks.resolveData(buildingPatchResolver)
       ],
       remove: []
