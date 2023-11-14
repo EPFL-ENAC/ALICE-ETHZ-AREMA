@@ -2,7 +2,6 @@
 import { useI18n } from 'vue-i18n';
 import { round } from 'lodash';
 import MapInput from './MapInput.vue';
-import * as MapboxDrawGeodesic from 'mapbox-gl-draw-geodesic';
 import { geocoderApi } from '../utils/geocoder';
 import { type Feature, type MultiPolygon, type Polygon } from '@turf/turf';
 import { defineComponent, ref, onMounted, unref } from 'vue';
@@ -73,7 +72,7 @@ export default defineComponent({
               ) {
                 const location = collection.features.pop();
                 value.properties = {
-                  ...location.properties,
+                  ...location?.properties,
                 };
               }
               address.value = value.properties?.display_name;

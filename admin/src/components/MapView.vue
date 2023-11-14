@@ -83,7 +83,7 @@ onMounted(() => {
     }),
     'top-left'
   );
-  map.value.addControl(new ThemeSwitcherControl(themes));
+  map.value.addControl(new ThemeSwitcherControl(themes, themes[0].id));
 
   map.value.on('load', function () {
     displayFeatures();

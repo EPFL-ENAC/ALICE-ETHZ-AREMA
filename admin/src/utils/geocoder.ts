@@ -1,14 +1,20 @@
-import { debounce } from 'lodash'
+import { type Feature, type FeatureCollection } from '@turf/turf';
 
-function handleNominatimResponse(geojson: any): any[] {
-  const features = []
-  const place_names: string[] = []
-  for (const feature of geojson.features.filter((f: any) => f.properties.address.country_code === 'ch')) {
-    if (!place_names.includes(feature.properties.display_name)) {
+function handleNominatimResponse(geojson: FeatureCollection): Feature[] {
+  const features: Feature[] = [];
+  const place_names: string[] = [];
+  for (const feature of geojson.features.filter(
+    (f: Feature) => f.properties?.address.country_code === 'ch'
+  )) {
+    if (
+      feature.properties &&
+      !place_names.includes(feature.properties.display_name) &&
+      feature.bbox
+    ) {
       const center = [
         feature.bbox[0] + (feature.bbox[2] - feature.bbox[0]) / 2,
         feature.bbox[1] + (feature.bbox[3] - feature.bbox[1]) / 2,
-      ]
+      ];
       const point = {
         type: 'Feature',
         geometry: {
@@ -20,16 +26,16 @@ function handleNominatimResponse(geojson: any): any[] {
         text: feature.properties.display_name,
         place_type: ['place'],
         center,
-      }
-      place_names.push(feature.properties.display_name)
-      features.push(point)
+      } as Feature;
+      place_names.push(feature.properties.display_name);
+      features.push(point);
     }
   }
-  return features
+  return features;
 }
 
-let searchController: AbortController
-let reverseController: AbortController
+let searchController: AbortController;
+let reverseController: AbortController;
 
 /**
  * Example: https://maplibre.org/maplibre-gl-js-docs/example/geocoder/
@@ -37,50 +43,47 @@ let reverseController: AbortController
  * Output format: https://web.archive.org/web/20210224184722/https://github.com/mapbox/carmen/blob/master/carmen-geojson.md
  */
 export const geocoderApi = {
-  forwardGeocode: async (config: { query: string; limit: number; countries: string[] }) => {
-    let features = []
+  forwardGeocode: async (config: {
+    query: string;
+    limit: number;
+    countries: string[];
+  }) => {
+    let features: Feature[] = [];
     try {
-      let countrycodes = 'ch'
+      let countrycodes = 'ch';
       if (config.countries && config.countries.length > 0)
-        countrycodes = config.countries.join(',')
-      const request = `https://nominatim.openstreetmap.org/search?q=${config.query}&limit=${config.limit}&format=geojson&polygon_geojson=1&addressdetails=1&countrycodes=${countrycodes}`
-      if (searchController)
-        searchController.abort()
-      searchController = new AbortController()
-      const response = await fetch(request, { signal: searchController.signal })
-      const geojson = await response.json()
-      features = handleNominatimResponse(geojson)
-    }
-    catch (e: any) {
-      if (e.name !== 'AbortError')
-        console.error(`Failed to forwardGeocode with error: ${e}`)
+        countrycodes = config.countries.join(',');
+      const request = `https://nominatim.openstreetmap.org/search?q=${config.query}&limit=${config.limit}&format=geojson&polygon_geojson=1&addressdetails=1&countrycodes=${countrycodes}`;
+      if (searchController) searchController.abort();
+      searchController = new AbortController();
+      const response = await fetch(request, {
+        signal: searchController.signal,
+      });
+      const geojson = await response.json();
+      features = handleNominatimResponse(geojson);
+    } catch (e: unknown) {
+      console.error(`Failed to forwardGeocode with error: ${e}`);
     }
     return {
       features,
-    }
+    };
   },
-  reverseGeocode: async (config: { query: any }) => {
-    let features = []
+  reverseGeocode: async (config: { query: { lon: number; lat: number } }) => {
+    let features: Feature[] = [];
     try {
-      if (reverseController)
-        reverseController.abort()
-      reverseController = new AbortController()
-      const request = `https://nominatim.openstreetmap.org/reverse?lat=${config.query.lat}&lon=${config.query.lon}&format=geojson&polygon_geojson=1&addressdetails=1`
-      const response = await fetch(request, { signal: reverseController.signal })
-      const geojson = await response.json()
-      features = handleNominatimResponse(geojson)
-    }
-    catch (e: any) {
-      if (e.name !== 'AbortError')
-        console.error(`Failed to reverseGeocode with error: ${e}`)
+      if (reverseController) reverseController.abort();
+      reverseController = new AbortController();
+      const request = `https://nominatim.openstreetmap.org/reverse?lat=${config.query.lat}&lon=${config.query.lon}&format=geojson&polygon_geojson=1&addressdetails=1`;
+      const response = await fetch(request, {
+        signal: reverseController.signal,
+      });
+      const geojson = await response.json();
+      features = handleNominatimResponse(geojson);
+    } catch (e: unknown) {
+      console.error(`Failed to reverseGeocode with error: ${e}`);
     }
     return {
       features,
-    }
+    };
   },
-}
-
-export const delayedGeocoderApi = {
-  forwardGeocode: debounce(geocoderApi.forwardGeocode, 500),
-  reverseGeocode: debounce(geocoderApi.reverseGeocode, 500),
-}
+};
