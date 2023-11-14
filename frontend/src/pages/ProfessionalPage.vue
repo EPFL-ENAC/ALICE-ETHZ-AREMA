@@ -61,7 +61,7 @@
         <div class="text-h6 q-mt-md">More...</div>
         <div v-if="entity?.professionalType" class="text-body1 q-mt-md">
           <a
-            :href="`/search?q=professional&type=${entity?.professionalTypeId}`"
+            :href="`/search?tab=professionals&type=${entity?.professionalTypeId}`"
           >
             <q-icon name="search" /> {{ $t(entity?.professionalType?.text) }}</a
           >

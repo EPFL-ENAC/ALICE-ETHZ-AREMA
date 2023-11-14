@@ -369,8 +369,10 @@ import type { PaginationOptions } from '../utils/pagination';
 import { useCookies } from 'vue3-cookies';
 import MapView from '../components/MapView.vue';
 import { useQuasar } from 'quasar';
+import { useRoute } from 'vue-router';
 
 const $q = useQuasar();
+const route = useRoute();
 
 const { cookies } = useCookies();
 const { api } = useFeathers();
@@ -404,7 +406,7 @@ const buildingsPagination = ref<PaginationOptions>({
 const leftDrawerOpen = ref(true);
 const rightDrawerOpen = ref(false);
 
-const professionalTypesTicked = ref<string[]>([]);
+const professionalTypesTicked = ref<number[]>([]);
 const buildingTypesTicked = ref<string[]>([]);
 const lithologyTicked = ref<string[]>([]);
 const cropTicked = ref<string[]>([]);
@@ -473,50 +475,6 @@ const lithologies = [
   },
 ];
 
-/*
-Sandsteine
-Kalksteine
-Dolomit
-Kieselkalke
-Sandkalke bis Kieselkalke
-Kalksteine bis Kalkmarmore
-Dolomitmarmore
-Sandstein- und Mergellagen
-kalkhaltiger Quarzsandsteine
-Konglomerate
-Konglomerate bis Brekzien
-Serizitreiche Konglomerate und Brekzien
-Zweiglimmer- bis Biotitgneise mit Phengit
-Granit
-Quarzite
-Biotit- bis muskowitreiche Gneise
-Gneise mit reichlich Feldspat
-Serizit-Chloritgneise bis -schiefer
-Syenite
-Mischzone von Amphiboliten und Gneisen
-Brekzien und Konglomerate
-Kalkbrekzien oder Kalkkonglomerate
-Zweiglimmer- bis Biotitgneise
-Zweiglimmer- bis Biotitgneise feldspatreich
-Biotit- bis muskowitreiche Gneise chloritführend
-Porphyrite und Porphyrittuffe
-Vulkanite und Pyroklastika
-Diorite und Gabbros
-Quarzphyllite
-Tone
-Grünschiefer
-Tonschiefer bis Phyllite
-Mergelschiefer bis Kalkphyllite
-Mergel
-Peridotite und Olivinfelse
-Radiolarite
-Serpentinite
-Amphibolite
-Kalkphyllite bis Kalkglimmerschiefer
-Tonschiefer
-Quarzporphyre
-*/
-
 const crops = [
   {
     id: 0,
@@ -538,40 +496,6 @@ const crops = [
     ],
   },
 ];
-
-/*
-Anderer Hanf
-Buchweizen
-Dinkel
-Emmer, Einkorn
-Einjährige nachwachsende Rohstoffe (Kenaf, usw.)
-Futterweizen gemäss Sortenliste swiss granum
-Getreide siliert
-Hafer
-Hanf zur Fasernutzung
-Hanf zur Nutzung der Samen
-Hirse
-Hopfen
-Körnermais
-Lein
-Leindotter
-Mischel Brotgetreide
-Mischel Futtergetreide
-Quinoa
-Reis
-Roggen
-Saatmais (Vertragsanbau)
-Saflor
-Silo- und Grünmais
-Sommergerste
-Sommerweizen (ohne Futterweizen der Sortenliste swiss granum)
-Sonnenblumen als nachwachsender Rohstoff
-Sonnenblumen zur Speiseölgewinnung
-Sorghum
-Triticale
-Wintergerste
-Winterweizen (ohne Futterweizen der Sortenliste swiss granum)
-*/
 
 const professionalsColumns = [
   {
@@ -697,6 +621,10 @@ const buildingsFeatures = computed(() => {
 });
 
 onMounted(() => {
+  console.log(route.query);
+  if (route.query.tab) {
+    tab.value = route.query.tab as string;
+  }
   api
     .service('professional-type')
     .find({
@@ -715,10 +643,19 @@ onMounted(() => {
         .sort((a: ProfessionalType, b: ProfessionalType) => {
           return a.text.localeCompare(b.text);
         });
-      professionalTypesTicked.value = res.data.map(
-        (pt: ProfessionalType) => pt.id
+      professionalTypesTicked.value = professionalTypes.value[0].children.map(
+        (pt) => pt.id
       );
-      professionalsTableRef.value.requestServerInteraction();
+      if (tab.value === 'professionals') {
+        if (route.query.type) {
+          professionalTypesTicked.value = [
+            parseInt(route.query.type as string),
+          ];
+        }
+        professionalsTableRef.value.requestServerInteraction();
+      } else if (tab.value === 'buildings') {
+        buildingsTableRef.value.requestServerInteraction();
+      }
     });
   buildingTypesTicked.value = buildingTypes[0].children.map((bt) => bt.id);
   lithologyTicked.value = lithologies[0].children.map((l) => l.id);
@@ -745,6 +682,7 @@ function fetchProfessionalsFromServer(
       [sortBy]: descending ? -1 : 1,
     },
   };
+  console.log('professionalTypesTicked', professionalTypesTicked.value);
   if (
     professionalTypesTicked.value &&
     professionalTypesTicked.value.length > 0

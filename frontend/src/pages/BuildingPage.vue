@@ -35,6 +35,16 @@
           </q-carousel>
         </div>
         <div class="text-h6 q-mt-md">More...</div>
+        <div class="text-h6 q-mt-md">{{ $t('professionals') }}</div>
+        <div
+          v-for="professional in entity?.professionals"
+          :key="professional.id"
+          class="text-body1 q-mt-md"
+        >
+          <a :href="`/professional/${professional.id}`">
+            <q-icon name="manage_accounts" /> {{ professional.name }}</a
+          >
+        </div>
       </div>
       <div class="col"></div>
     </div>
