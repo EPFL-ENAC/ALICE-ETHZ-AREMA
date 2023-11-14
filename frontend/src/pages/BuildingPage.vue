@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { Professional } from '@epfl-enac/arema';
+import { Building } from '@epfl-enac/arema';
 import { useRoute, useRouter } from 'vue-router';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
@@ -51,7 +51,7 @@ const route = useRoute();
 const router = useRouter();
 
 const entityId = computed(() => (route.params.id as string).split('-').pop());
-const entity = ref<Professional>();
+const entity = ref<Building>();
 const slide = ref(0);
 
 const description = computed(() => {
@@ -63,10 +63,10 @@ const description = computed(() => {
 
 onMounted(() => {
   api
-    .service('professional')
+    .service('building')
     .get(entityId.value as string)
     .then((res) => {
-      entity.value = res as Professional;
+      entity.value = res as Building;
     })
     .catch(() => {
       router.push('/error');
