@@ -35,6 +35,7 @@ export default {
   areaDelivery: 'Liefergebiet',
   type_of_building: 'Gebäudeart',
   building: {
+    title: 'Gebäude',
     residential: 'Wohngebäude',
     industrial: 'Industriegebäude',
     recreational: 'Freizeitgebäude',

@@ -35,6 +35,7 @@ export default {
   areaDelivery: 'Area of delivery',
   type_of_building: 'Type of building',
   building: {
+    title: 'Building',
     residential: 'Residential',
     industrial: 'Industrial',
     recreational: 'Recreational',
