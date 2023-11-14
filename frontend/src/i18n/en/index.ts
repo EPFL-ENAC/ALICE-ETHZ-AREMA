@@ -33,4 +33,24 @@ export default {
   type: 'Type',
   address: 'Address',
   areaDelivery: 'Area of delivery',
+  type_of_building: 'Type of building',
+  building: {
+    residential: 'Residential',
+    industrial: 'Industrial',
+    recreational: 'Recreational',
+  },
+  lithology: 'Lithology',
+  litho: {
+    dolomite: 'Dolomite',
+    granite: 'Granite',
+    limestone: 'Limestone',
+    marble: 'Marble',
+    sandstone: 'Sandstone',
+  },
+  crops: 'Crops',
+  crop: {
+    buckwheat: 'Buckwheat',
+    hemp: 'Hemp',
+    wheat: 'Wheat',
+  },
 };

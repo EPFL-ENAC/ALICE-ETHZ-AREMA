@@ -12,6 +12,7 @@ import {
   type Feature,
   type MultiPolygon,
   type Polygon,
+  type Point,
   center,
   circle,
   FeatureCollection,
@@ -32,7 +33,8 @@ const { t, locale } = useI18n({ useScope: 'global' });
 const props = withDefaults(
   defineProps<{
     features: [
-      Feature<Polygon | MultiPolygon>[] | Feature<Polygon | MultiPolygon>
+      | Feature<Polygon | MultiPolygon | Point>[]
+      | Feature<Polygon | MultiPolygon | Point>
     ];
     centre?: [number, number];
     zoom?: number;
@@ -120,6 +122,8 @@ function displayFeatures() {
           displayPolygons(feature);
         } else if (MapboxDrawGeodesic.isCircle(feature)) {
           displayCircle(feature);
+        } else if (feature.type === 'Feature') {
+          displayPoint(feature);
         }
       });
   }
@@ -135,10 +139,10 @@ function displayCircle(feature: Feature<Polygon>) {
       offset: 25,
     }).setHTML(`
       <div class="text-h6"><a href="/professional/${feature.id}">${
-      feature.properties.name
+      feature.properties?.name
     }</a></div>
-      <p>${feature.properties.description}</p>
-      <p><b>${t('address')}</b>: ${feature.properties.address}</p>
+      <p>${feature.properties?.description}</p>
+      <p><b>${t('address')}</b>: ${feature.properties?.address}</p>
       <p><b>${t('areaDelivery')}</b>: ${radius}km</p>
       `);
     markers.push(
@@ -171,6 +175,25 @@ function displayCircle(feature: Feature<Polygon>) {
         'fill-opacity': 0.2,
       },
     });
+  }
+}
+
+function displayPoint(feature: Feature<Point>) {
+  if (map.value) {
+    const center = feature.geometry.coordinates;
+    const popup = new Popup({
+      closeButton: false,
+      offset: 25,
+    }).setHTML(`
+      <div class="text-h6">${feature.properties?.name}</div>
+      <p>${feature.properties?.description}</p>
+      <p><b>${t('address')}</b>: ${feature.properties?.address}</p>`);
+    markers.push(
+      new Marker({ color: '#FF0000' })
+        .setLngLat(center)
+        .setPopup(popup)
+        .addTo(map.value)
+    );
   }
 }
 

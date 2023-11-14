@@ -32,6 +32,7 @@ import { userIterations } from '../users/users'
 import { en } from '@faker-js/faker'
 import { entityCreated } from '../../hooks/entity-created'
 import { timestampsStripping } from '../../hooks/timestamps-stripping'
+import { allowAnonymous }  from '../../hooks/allow-anonymous'
 import { geometries } from '../../hooks/geometries'
 
 export * from './building.class'
@@ -76,13 +77,12 @@ export const building = (app: Application) => {
   app.service(buildingPath).hooks({
     around: {
       all: [
-        authenticate('jwt'),
         schemaHooks.resolveExternal(buildingExternalResolver),
         schemaHooks.resolveResult(buildingResolver, buildingProfessionResolver)
       ],
-      find: [authenticate('jwt')],
-      get: [authenticate('jwt')],
-      create: [],
+      find: [allowAnonymous, authenticate('jwt', 'anonymous')],
+      get: [allowAnonymous, authenticate('jwt', 'anonymous')],
+      create: [authenticate('jwt')],
       update: [authenticate('jwt')],
       patch: [authenticate('jwt')],
       remove: [authenticate('jwt')]

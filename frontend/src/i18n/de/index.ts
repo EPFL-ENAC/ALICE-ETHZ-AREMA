@@ -33,4 +33,24 @@ export default {
   type: 'Art',
   address: 'Adresse',
   areaDelivery: 'Liefergebiet',
+  type_of_building: 'Gebäudeart',
+  building: {
+    residential: 'Wohngebäude',
+    industrial: 'Industriegebäude',
+    recreational: 'Freizeitgebäude',
+  },
+  lithology: 'Litologie',
+  litho: {
+    dolomite: 'Dolomit',
+    granite: 'Granit',
+    limestone: 'Kalkstein',
+    marble: 'Marmor',
+    sandstone: 'Sandstein',
+  },
+  crops: 'Kulturen',
+  crop: {
+    buckwheat: 'Buchweizen',
+    hemp: 'Hanf',
+    wheat: 'Weizen',
+  },
 };

@@ -63,17 +63,72 @@
 
     <q-drawer v-model="leftDrawerOpen" side="left" bordered>
       <div class="q-pt-lg">
-        <div class="text-h6 q-pl-sm">{{ $t('professionals') }}</div>
-        <q-tree
-          :nodes="professionalTypes"
-          node-key="id"
-          label-key="text"
-          no-connectors
-          tick-strategy="leaf"
-          v-model:ticked="ticked"
-          v-model:expanded="expanded"
-          @update:ticked="onSelect"
-        />
+        <q-expansion-item
+          icon="manage_accounts"
+          :label="$t('professionals')"
+          default-opened
+        >
+          <div class="q-mt-sm q-pl-md q-pr-md q-pb-md">
+            <q-tree
+              :nodes="professionalTypes"
+              node-key="id"
+              label-key="text"
+              no-connectors
+              tick-strategy="leaf"
+              v-model:ticked="professionalTypesTicked"
+              v-model:expanded="professionalTypesExpanded"
+              @update:ticked="onSelectProfessionalTypes"
+            />
+          </div>
+        </q-expansion-item>
+
+        <q-expansion-item
+          icon="home_work"
+          :label="$t('buildings')"
+          default-opened
+        >
+          <div class="q-mt-sm q-pl-md q-pr-md q-pb-md">
+            <q-tree
+              :nodes="buildingTypes"
+              node-key="id"
+              label-key="text"
+              no-connectors
+              tick-strategy="leaf"
+              v-model:ticked="buildingTypesTicked"
+              v-model:expanded="buildingTypesExpanded"
+              @update:ticked="onSelectBuildingTypes"
+            />
+          </div>
+        </q-expansion-item>
+
+        <q-expansion-item
+          icon="landslide"
+          :label="$t('natural_resources')"
+          default-opened
+        >
+          <div class="q-mt-sm q-pl-md q-pr-md q-pb-md">
+            <q-tree
+              :nodes="lithologies"
+              node-key="id"
+              label-key="text"
+              no-connectors
+              tick-strategy="leaf"
+              v-model:ticked="lithologyTicked"
+              v-model:expanded="lithologyExpanded"
+              @update:ticked="onSelectLithologies"
+            />
+            <q-tree
+              :nodes="crops"
+              node-key="id"
+              label-key="text"
+              no-connectors
+              tick-strategy="leaf"
+              v-model:ticked="cropTicked"
+              v-model:expanded="cropExpanded"
+              @update:ticked="onSelectCrops"
+            />
+          </div>
+        </q-expansion-item>
       </div>
     </q-drawer>
 
@@ -126,93 +181,181 @@
             </div>
           </div>
         </div>
-        <div
-          v-show="view !== 'map' && professionals && professionals.length > 0"
-          class="q-pa-sm"
+        <q-tabs
+          v-model="tab"
+          dense
+          class="text-grey"
+          active-color="primary"
+          indicator-color="primary"
+          align="justify"
+          narrow-indicator
+          @update:model-value="onTabChange"
         >
-          <q-table
-            flat
-            :grid="view === 'grid'"
-            ref="tableRef"
-            :rows="professionals"
-            :columns="columns"
-            row-key="id"
-            v-model:pagination="pagination"
-            :loading="loading"
-            :filter="filter"
-            binary-state-sort
-            @request="onRequest"
-            :rows-per-page-options="[10, 25, 50]"
-          >
-            <template v-slot:body-cell-name="props">
-              <q-td :props="props">
-                <a :href="`/professional/${props.row.id}`">{{ props.value }}</a>
-              </q-td>
-            </template>
-            <template v-slot:body-cell-description="props">
-              <q-td :props="props" class="ellipsis" style="max-width: 200px">
-                {{ props.value }}
-              </q-td>
-            </template>
-            <template v-slot:body-cell-professionalType="props">
-              <q-td :props="props">
-                <q-chip color="info" text-color="white">{{
-                  props.value
-                }}</q-chip>
-              </q-td>
-            </template>
-            <template v-slot:body-cell-web="props">
-              <q-td :props="props">
-                <a :href="props.value" target="_blank">{{ props.value }}</a>
-              </q-td>
-            </template>
-            <template v-slot:body-cell-address="props">
-              <q-td
-                :props="props"
-                style="max-width: 200px; white-space: inherit"
-              >
-                {{ props.value }}
-              </q-td>
-            </template>
-            <template v-slot:body-cell-radius="props">
-              <q-td :props="props">
-                <q-chip>{{ props.value }} km</q-chip>
-              </q-td>
-            </template>
-            <template v-slot:item="props">
-              <div class="col-12 col-sm-4 col-md-3 col-lg-2">
-                <q-card flat bordered class="q-ma-md">
-                  <q-card-section class="q-pa-none">
-                    <q-img
-                      :src="`/faker/${props.row.professionalType.text}.jpg`"
-                      height="150px"
-                    />
-                  </q-card-section>
-                  <q-card-section class="flex flex-center">
-                    <div class="q-mb-sm text-center full-width">
-                      <a :href="`/professional/${props.row.id}`">{{
-                        props.row.name
-                      }}</a>
-                    </div>
-                    <q-chip>{{ $t(props.row.professionalType.text) }}</q-chip>
-                  </q-card-section>
-                </q-card>
-              </div>
-            </template>
-          </q-table>
-        </div>
-        <div v-show="view === 'map'" class="full-height">
-          <div>
-            <map-view
-              :features="features"
-              :center="[6.632273, 46.519962]"
-              :zoom="6"
-              :minZoom="10"
-              :maxZoom="18"
-              height="800px"
-            />
+          <q-tab name="professionals" :label="$t('professionals')" />
+          <q-tab name="buildings" :label="$t('buildings')" />
+          <q-tab name="natural-resources" :label="$t('natural_resources')" />
+        </q-tabs>
+        <div v-show="tab === 'professionals'">
+          <div v-show="view !== 'map' && professionals" class="q-pa-sm">
+            <q-table
+              flat
+              :grid="view === 'grid'"
+              ref="professionalsTableRef"
+              :rows="professionals"
+              :columns="professionalsColumns"
+              row-key="id"
+              v-model:pagination="professionalsPagination"
+              :loading="loading"
+              :filter="filter"
+              binary-state-sort
+              @request="onProfessionalsRequest"
+              :rows-per-page-options="[10, 25, 50]"
+            >
+              <template v-slot:body-cell-name="props">
+                <q-td :props="props">
+                  <a :href="`/professional/${props.row.id}`">{{
+                    props.value
+                  }}</a>
+                </q-td>
+              </template>
+              <template v-slot:body-cell-description="props">
+                <q-td :props="props" class="ellipsis" style="max-width: 200px">
+                  {{ props.value }}
+                </q-td>
+              </template>
+              <template v-slot:body-cell-professionalType="props">
+                <q-td :props="props">
+                  <q-chip color="info" text-color="white">{{
+                    props.value
+                  }}</q-chip>
+                </q-td>
+              </template>
+              <template v-slot:body-cell-web="props">
+                <q-td :props="props">
+                  <a :href="props.value" target="_blank">{{ props.value }}</a>
+                </q-td>
+              </template>
+              <template v-slot:body-cell-address="props">
+                <q-td
+                  :props="props"
+                  style="max-width: 200px; white-space: inherit"
+                >
+                  {{ props.value }}
+                </q-td>
+              </template>
+              <template v-slot:body-cell-radius="props">
+                <q-td :props="props">
+                  <q-chip>{{ props.value }} km</q-chip>
+                </q-td>
+              </template>
+              <template v-slot:item="props">
+                <div class="col-12 col-sm-4 col-md-3 col-lg-2">
+                  <q-card flat bordered class="q-ma-md">
+                    <q-card-section class="q-pa-none">
+                      <q-img
+                        :src="`/faker/${props.row.professionalType.text}.jpg`"
+                        height="150px"
+                      />
+                    </q-card-section>
+                    <q-card-section class="flex flex-center">
+                      <div class="q-mb-sm text-center full-width">
+                        <a :href="`/professional/${props.row.id}`">{{
+                          props.row.name
+                        }}</a>
+                      </div>
+                      <q-chip>{{ $t(props.row.professionalType.text) }}</q-chip>
+                    </q-card-section>
+                  </q-card>
+                </div>
+              </template>
+            </q-table>
+          </div>
+          <div v-show="view === 'map'" class="full-height q-mt-md">
+            <div>
+              <map-view
+                :features="professionalsFeatures"
+                :center="[6.632273, 46.519962]"
+                :zoom="6"
+                :minZoom="10"
+                :maxZoom="18"
+                height="800px"
+              />
+            </div>
           </div>
         </div>
+
+        <div v-show="tab === 'buildings'">
+          <div v-show="view !== 'map' && buildings" class="q-pa-sm">
+            <q-table
+              flat
+              :grid="view === 'grid'"
+              ref="buildingsTableRef"
+              :rows="buildings"
+              :columns="buildingsColumns"
+              row-key="id"
+              v-model:pagination="buildingsPagination"
+              :loading="loading"
+              :filter="filter"
+              binary-state-sort
+              @request="onBuildingsRequest"
+              :rows-per-page-options="[10, 25, 50]"
+            >
+              <template v-slot:body-cell-name="props">
+                <q-td :props="props">
+                  <a :href="`/building/${props.row.id}`">{{ props.value }}</a>
+                </q-td>
+              </template>
+              <template v-slot:body-cell-description="props">
+                <q-td :props="props" class="ellipsis" style="max-width: 200px">
+                  {{ props.value }}
+                </q-td>
+              </template>
+              <template v-slot:body-cell-web="props">
+                <q-td :props="props">
+                  <a :href="props.value" target="_blank">{{ props.value }}</a>
+                </q-td>
+              </template>
+              <template v-slot:body-cell-address="props">
+                <q-td
+                  :props="props"
+                  style="max-width: 200px; white-space: inherit"
+                >
+                  {{ props.value }}
+                </q-td>
+              </template>
+              <template v-slot:item="props">
+                <div class="col-12 col-sm-4 col-md-3 col-lg-2">
+                  <q-card flat bordered class="q-ma-md">
+                    <q-card-section class="q-pa-none">
+                      <q-img :src="`/faker/empty.jpg`" height="150px" />
+                    </q-card-section>
+                    <q-card-section class="flex flex-center">
+                      <div class="q-mb-sm text-center full-width">
+                        <a :href="`/building/${props.row.id}`">{{
+                          props.row.name
+                        }}</a>
+                      </div>
+                    </q-card-section>
+                  </q-card>
+                </div>
+              </template>
+            </q-table>
+          </div>
+          <div v-show="view === 'map'" class="full-height q-mt-md">
+            <div>
+              <map-view
+                :features="buildingsFeatures"
+                :center="[6.632273, 46.519962]"
+                :zoom="6"
+                :minZoom="10"
+                :maxZoom="18"
+                height="800px"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div v-show="tab === 'natural-resources'"></div>
       </q-page>
     </q-page-container>
   </q-layout>
@@ -220,7 +363,7 @@
 
 <script setup lang="ts">
 import { Query } from '@feathersjs/client';
-import { Professional, ProfessionalType } from '@epfl-enac/arema';
+import { Building, Professional, ProfessionalType } from '@epfl-enac/arema';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
 import { useCookies } from 'vue3-cookies';
@@ -235,12 +378,22 @@ const { t, locale } = useI18n({ useScope: 'global' });
 
 const locales = ['en', 'de', 'fr'];
 
+const tab = ref('professionals');
 const view = ref('grid');
-const tableRef = ref();
+const professionalsTableRef = ref();
 const professionals = ref<Professional[]>([]);
+const buildingsTableRef = ref();
+const buildings = ref<Building[]>([]);
 const filter = ref('');
 const loading = ref(false);
-const pagination = ref<PaginationOptions>({
+const professionalsPagination = ref<PaginationOptions>({
+  sortBy: 'name',
+  descending: false,
+  page: 1,
+  rowsPerPage: 25,
+  rowsNumber: 25,
+});
+const buildingsPagination = ref<PaginationOptions>({
   sortBy: 'name',
   descending: false,
   page: 1,
@@ -251,8 +404,14 @@ const pagination = ref<PaginationOptions>({
 const leftDrawerOpen = ref(true);
 const rightDrawerOpen = ref(false);
 
-const ticked = ref([]);
-const expanded = ref([0]);
+const professionalTypesTicked = ref<string[]>([]);
+const buildingTypesTicked = ref<string[]>([]);
+const lithologyTicked = ref<string[]>([]);
+const cropTicked = ref<string[]>([]);
+const professionalTypesExpanded = ref([0]);
+const buildingTypesExpanded = ref([0]);
+const lithologyExpanded = ref([0]);
+const cropExpanded = ref([0]);
 const professionalTypes = ref([
   {
     id: 0,
@@ -262,7 +421,159 @@ const professionalTypes = ref([
   },
 ]);
 
-const columns = [
+const buildingTypes = [
+  {
+    id: 0,
+    text: t('type_of_building'),
+    icon: 'domain',
+    children: [
+      {
+        id: 'residential',
+        text: t('building.residential'),
+      },
+      {
+        id: 'industrial',
+        text: t('building.industrial'),
+      },
+      {
+        id: 'recreational',
+        text: t('building.recreational'),
+      },
+    ],
+  },
+];
+
+const lithologies = [
+  {
+    id: 0,
+    text: t('lithology'),
+    icon: 'legend_toggle',
+    children: [
+      {
+        id: 'dolomite',
+        text: t('litho.dolomite'),
+      },
+      {
+        id: 'granite',
+        text: t('litho.granite'),
+      },
+      {
+        id: 'limestone',
+        text: t('litho.limestone'),
+      },
+      {
+        id: 'marble',
+        text: t('litho.marble'),
+      },
+      {
+        id: 'sandstone',
+        text: t('litho.sandstone'),
+      },
+    ],
+  },
+];
+
+/*
+Sandsteine
+Kalksteine
+Dolomit
+Kieselkalke
+Sandkalke bis Kieselkalke
+Kalksteine bis Kalkmarmore
+Dolomitmarmore
+Sandstein- und Mergellagen
+kalkhaltiger Quarzsandsteine
+Konglomerate
+Konglomerate bis Brekzien
+Serizitreiche Konglomerate und Brekzien
+Zweiglimmer- bis Biotitgneise mit Phengit
+Granit
+Quarzite
+Biotit- bis muskowitreiche Gneise
+Gneise mit reichlich Feldspat
+Serizit-Chloritgneise bis -schiefer
+Syenite
+Mischzone von Amphiboliten und Gneisen
+Brekzien und Konglomerate
+Kalkbrekzien oder Kalkkonglomerate
+Zweiglimmer- bis Biotitgneise
+Zweiglimmer- bis Biotitgneise feldspatreich
+Biotit- bis muskowitreiche Gneise chloritführend
+Porphyrite und Porphyrittuffe
+Vulkanite und Pyroklastika
+Diorite und Gabbros
+Quarzphyllite
+Tone
+Grünschiefer
+Tonschiefer bis Phyllite
+Mergelschiefer bis Kalkphyllite
+Mergel
+Peridotite und Olivinfelse
+Radiolarite
+Serpentinite
+Amphibolite
+Kalkphyllite bis Kalkglimmerschiefer
+Tonschiefer
+Quarzporphyre
+*/
+
+const crops = [
+  {
+    id: 0,
+    text: t('crops'),
+    icon: 'agriculture',
+    children: [
+      {
+        id: 'buckwheat',
+        text: t('crop.buckwheat'),
+      },
+      {
+        id: 'hemp',
+        text: t('crop.hemp'),
+      },
+      {
+        id: 'wheat',
+        text: t('crop.wheat'),
+      },
+    ],
+  },
+];
+
+/*
+Anderer Hanf
+Buchweizen
+Dinkel
+Emmer, Einkorn
+Einjährige nachwachsende Rohstoffe (Kenaf, usw.)
+Futterweizen gemäss Sortenliste swiss granum
+Getreide siliert
+Hafer
+Hanf zur Fasernutzung
+Hanf zur Nutzung der Samen
+Hirse
+Hopfen
+Körnermais
+Lein
+Leindotter
+Mischel Brotgetreide
+Mischel Futtergetreide
+Quinoa
+Reis
+Roggen
+Saatmais (Vertragsanbau)
+Saflor
+Silo- und Grünmais
+Sommergerste
+Sommerweizen (ohne Futterweizen der Sortenliste swiss granum)
+Sonnenblumen als nachwachsender Rohstoff
+Sonnenblumen zur Speiseölgewinnung
+Sorghum
+Triticale
+Wintergerste
+Winterweizen (ohne Futterweizen der Sortenliste swiss granum)
+*/
+
+const professionalsColumns = [
   {
     name: 'name',
     required: true,
@@ -314,7 +625,34 @@ const columns = [
   },
 ];
 
-const features = computed(() => {
+const buildingsColumns = [
+  {
+    name: 'name',
+    required: true,
+    label: t('name'),
+    align: 'left',
+    field: 'name',
+    sortable: true,
+  },
+  {
+    name: 'description',
+    required: true,
+    label: t('description'),
+    align: 'left',
+    field: 'description',
+    sortable: false,
+  },
+  {
+    name: 'address',
+    required: true,
+    label: t('address'),
+    align: 'left',
+    field: 'address',
+    sortable: true,
+  },
+];
+
+const professionalsFeatures = computed(() => {
   return professionals.value.map((row) => {
     return {
       type: 'Feature',
@@ -340,6 +678,24 @@ const features = computed(() => {
   });
 });
 
+const buildingsFeatures = computed(() => {
+  return buildings.value.map((row) => {
+    return {
+      type: 'Feature',
+      id: row.id,
+      properties: {
+        name: row.name,
+        description: row.description,
+        address: row.address,
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: row.coordinates.point,
+      },
+    };
+  });
+});
+
 onMounted(() => {
   api
     .service('professional-type')
@@ -359,9 +715,14 @@ onMounted(() => {
         .sort((a: ProfessionalType, b: ProfessionalType) => {
           return a.text.localeCompare(b.text);
         });
-      ticked.value = res.data.map((pt: ProfessionalType) => pt.id);
-      tableRef.value.requestServerInteraction();
+      professionalTypesTicked.value = res.data.map(
+        (pt: ProfessionalType) => pt.id
+      );
+      professionalsTableRef.value.requestServerInteraction();
     });
+  buildingTypesTicked.value = buildingTypes[0].children.map((bt) => bt.id);
+  lithologyTicked.value = lithologies[0].children.map((l) => l.id);
+  cropTicked.value = crops[0].children.map((c) => c.id);
 });
 
 function onLocaleSelection(lang: string) {
@@ -370,7 +731,7 @@ function onLocaleSelection(lang: string) {
   window.location.reload();
 }
 
-function fetchFromServer(
+function fetchProfessionalsFromServer(
   startRow: number,
   count: number,
   filter: string,
@@ -384,9 +745,12 @@ function fetchFromServer(
       [sortBy]: descending ? -1 : 1,
     },
   };
-  if (ticked.value && ticked.value.length > 0) {
+  if (
+    professionalTypesTicked.value &&
+    professionalTypesTicked.value.length > 0
+  ) {
     query.professionalTypeId = {
-      $in: ticked.value,
+      $in: professionalTypesTicked.value,
     };
   }
   if (filter) {
@@ -416,15 +780,88 @@ function fetchFromServer(
     });
 }
 
-const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
+const onProfessionalsRequest = makePaginationRequestHandler(
+  fetchProfessionalsFromServer,
+  professionalsPagination
+);
 
-function onSelect() {
-  console.log('selected', ticked.value);
-  if (ticked.value && ticked.value.length > 0) {
-    tableRef.value.requestServerInteraction();
+function fetchBuildingsFromServer(
+  startRow: number,
+  count: number,
+  filter: string,
+  sortBy: string,
+  descending: boolean
+) {
+  const query: Query = {
+    $skip: startRow,
+    $limit: count,
+    $sort: {
+      [sortBy]: descending ? -1 : 1,
+    },
+  };
+  if (filter) {
+    query.$or = [
+      {
+        name: {
+          $ilike: `%${filter}%`,
+        },
+      },
+      {
+        address: {
+          $ilike: `%${filter}%`,
+        },
+      },
+    ];
+  }
+  console.log('query', query);
+  return api
+    .service('building')
+    .find({
+      query,
+    })
+    .then((result) => {
+      buildings.value = result.data;
+      loading.value = false;
+      return result;
+    });
+}
+
+const onBuildingsRequest = makePaginationRequestHandler(
+  fetchBuildingsFromServer,
+  buildingsPagination
+);
+
+function onTabChange() {
+  console.log('tab changed', tab.value);
+  if (tab.value === 'professionals') {
+    professionalsTableRef.value.requestServerInteraction();
+  } else if (tab.value === 'buildings') {
+    buildingsTableRef.value.requestServerInteraction();
+  }
+}
+
+function onSelectProfessionalTypes() {
+  console.log('selected', professionalTypesTicked.value);
+  if (
+    professionalTypesTicked.value &&
+    professionalTypesTicked.value.length > 0
+  ) {
+    professionalsTableRef.value.requestServerInteraction();
   } else {
     professionals.value = [];
   }
+}
+
+function onSelectBuildingTypes() {
+  console.log('selected', buildingTypesTicked.value);
+}
+
+function onSelectLithologies() {
+  console.log('selected', lithologyTicked.value);
+}
+
+function onSelectCrops() {
+  console.log('selected', cropTicked.value);
 }
 
 function toggleLeftDrawer() {
