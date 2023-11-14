@@ -1,5 +1,37 @@
 # Changelog
 
+## [1.3.0](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/compare/v1.2.0...v1.3.0) (2023-11-14)
+
+
+### Features
+
+* admin deps updated ([5f014d7](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/5f014d7404f15d0a555a9a09d01ed36c04c53fbd))
+* building page added ([9d13e56](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/9d13e569289f2c648cf6f30989937202d997933b))
+* buildings location added ([3d8473c](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/3d8473c18618380d41574a0503e24a5c406e644c))
+* display list of pros in the building page ([8a84a58](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/8a84a5851d09727a522b7a5b9f6d255cdfd04488))
+* fake professional page ([180e1e2](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/180e1e28739e778bbf3c81dbf77eea4aac72e597))
+* **frontend:** home page ([c147c7c](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/c147c7c85eb854bff536bd71259cb14a37dd6b69))
+* **frontend:** professional page ([d185327](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/d185327a8d7cd29955865f0b2e04f2961dbd5ae2))
+* **frontend:** search page own layout, query for professionals ([dd8264c](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/dd8264cbe4eac00bdcf25d223fcff1f768c17fce))
+* **frontend:** search result view in grid/table/map, translations ([a19a966](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/a19a966c05d20695530a4068b98408ce636c8524))
+* **frontend:** shorten copyright ([0f2bad7](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/0f2bad7465825d16d7953dfa6bad57b6a9e3e870))
+* **frontend:** shorten copyright ([57995c0](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/57995c075840814d493bd002f88ed31a7a164e03))
+* **frontend:** translations and fake images ([1cb4162](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/1cb416264b2ab79ffaebe2afc1448ddbe6aaaebe))
+* list buildings in search page ([68ff01d](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/68ff01dad5fe93b07d5bde5895e858b1792f0665))
+* postgres replaced by postgis ([8e6bc9d](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/8e6bc9d66ab3757b4f00ddcfe9bf91a5c1397a1e))
+* professional coordinates are saved as a postgis geometry ([6223450](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/622345097feb5cf746ca0691bb04ded9aa266fe0))
+* professional description can be markdown ([ff00dcb](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/ff00dcbbd5a58316f76f7edfeb8c22e44c035c12))
+* styling for small devices ([56c5920](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/56c5920b79b8009473f611a8b94c0f07ea711646))
+
+
+### Bug Fixes
+
+* building page service call ([0391cc8](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/0391cc8a0e5864aff86631b1b37d3fd87f1d280b))
+* **docker-prod:** use :main tag ([4c1ef6f](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/4c1ef6f58e9e7c784a40cf95bf17955eda1ea3c4))
+* enable postgis extension in postgresql ([67e7e8f](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/67e7e8fde3f8b79fc78a6044bfd7a4db907986c6))
+* **frontend:** image path ([aed796d](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/aed796d3d85f1a67b1b1e0ed5e9be2560b5d5c23))
+* **workflow:** merge build and deploy ([513147f](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/513147f5005e4aefc6d7aaf30059e19a4cd5d368))
+
 ## [1.2.0](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/compare/v1.1.0...v1.2.0) (2023-10-02)
 
 
