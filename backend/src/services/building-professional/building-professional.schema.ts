@@ -8,12 +8,14 @@ import { dataValidator, queryValidator } from '../../validators'
 import { User } from '../users/users.schema'
 import { logger } from '../../logger'
 import { Building } from '../building/building.schema'
+import { BuildingElement } from '../building-element/building-element.schema'
 import { Professional } from '../professional/professional.schema'
 
 // Main data model schema
 export const buildingProfessionalSchema = Type.Object(
   {
     buildingId: Type.Number(),
+    buildingElementId: Type.Optional(Type.Number()),
     professionalId: Type.Optional(Type.Number()),
 
     updatedAt: Type.Optional(Type.String({ format: 'date-time' })),
@@ -26,9 +28,10 @@ export const buildingProfessionalSchema = Type.Object(
 export type BuildingProfessional = Static<typeof buildingProfessionalSchema>
 
 // generate fake data
-export async function generateFake(user: User, building: Building, professional: Professional) {
+export async function generateFake(user: User, building: Building, buildingElement: BuildingElement, professional: Professional) {
   const result = {
     buildingId: building.id,
+    buildingElementId: buildingElement.id,
     professionalId: professional.id,
     createdById: user.id
   }
@@ -44,7 +47,7 @@ export const buildingProfessionalExternalResolver = resolve<BuildingProfessional
 // Schema for creating new entries
 export const buildingProfessionalDataSchema = Type.Pick(
   buildingProfessionalSchema,
-  ['buildingId', 'professionalId', 'createdById'],
+  ['buildingId', 'buildingElementId', 'professionalId', 'createdById'],
   {
     $id: 'BuildingProfessionalData'
   }
@@ -82,6 +85,7 @@ export const buildingProfessionalPatchResolver = resolve<BuildingProfessional, H
 // Schema for allowed query properties
 export const buildingProfessionalQueryProperties = Type.Pick(buildingProfessionalSchema, [
   'buildingId',
+  'buildingElementId',
   'professionalId',
   'createdById'
 ])

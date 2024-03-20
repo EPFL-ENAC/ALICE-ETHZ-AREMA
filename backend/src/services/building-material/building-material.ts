@@ -4,6 +4,10 @@ import { authenticate } from '@feathersjs/authentication'
 import { hooks as schemaHooks } from '@feathersjs/schema'
 
 import {
+  buildingMaterialDataSchema,
+  buildingMaterialSchema,
+  buildingMaterialPatchSchema,
+  buildingMaterialQuerySchema,
   buildingMaterialDataValidator,
   buildingMaterialPatchValidator,
   buildingMaterialQueryValidator,
@@ -17,6 +21,7 @@ import {
 import type { Application } from '../../declarations'
 import { BuildingMaterialService, getOptions } from './building-material.class'
 import { buildingMaterialPath, buildingMaterialMethods } from './building-material.shared'
+import { createSwaggerServiceOptions } from 'feathers-swagger'
 
 export * from './building-material.class'
 export * from './building-material.schema'
@@ -28,7 +33,19 @@ export const buildingMaterial = (app: Application) => {
     // A list of all methods this service exposes externally
     methods: buildingMaterialMethods,
     // You can add additional custom events to be sent to clients here
-    events: []
+    events: [],
+    docs: createSwaggerServiceOptions({
+      schemas: {
+        buildingMaterialDataSchema,
+        buildingMaterialSchema,
+        buildingMaterialPatchSchema,
+        buildingMaterialQuerySchema
+      },
+      docs: {
+        // any options for service.docs can be added here
+        securities: ['find', 'get', 'patch', 'remove', 'create']
+      }
+    }),
   })
   // Initialize hooks
   app.service(buildingMaterialPath).hooks({

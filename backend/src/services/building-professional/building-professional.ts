@@ -19,13 +19,15 @@ import {
   generateFake
 } from './building-professional.schema'
 
+import { defaultBuildingElements } from '../building-element/building-element.schema'
+
 import type { Application } from '../../declarations'
 import { BuildingProfessionalService, getOptions } from './building-professional.class'
 import { buildingProfessionalPath, buildingProfessionalMethods } from './building-professional.shared'
 import { createSwaggerServiceOptions } from 'feathers-swagger'
-import { User, userPath } from '../users/users.shared'
 import { getRandomUser } from '../../helpers/getRandomUser'
 import { getRandomBuilding } from '../../helpers/getRandomBuilding'
+import { getRandomBuildingElement } from '../../helpers/getRandomBuildingElement'
 import { getRandomProfessional } from '../../helpers/getRandomProfessional'
 import { logger } from '../../logger'
 import { userIterations } from '../users/users'
@@ -36,7 +38,7 @@ import { entityCreated } from '../../hooks/entity-created'
 export * from './building-professional.class'
 export * from './building-professional.schema'
 
-export const buildingProfessionalIterations = 6000
+export const buildingProfessionalIterations = 1000
 // A configure function that registers the service and its hooks via `app.configure`
 
 // information on how to create a joint table: https://github.com/feathersjs/feathers/issues/852
@@ -63,8 +65,9 @@ export const buildingProfessional = (app: Application) => {
     createFake: async () => {
       const user = await getRandomUser(app, userIterations)
       const building = await getRandomBuilding(app, buildingIterations)
+      const buildingElement = await getRandomBuildingElement(app, defaultBuildingElements.length)
       const professional = await getRandomProfessional(app, professionalIterations)
-      const fakeData = await generateFake(user, building, professional)
+      const fakeData = await generateFake(user, building, buildingElement, professional)
 
       logger.debug(`fake data generated: ${JSON.stringify(fakeData)}`)
       const fakeDataCreatedByService = await app.service(buildingProfessionalPath).create(fakeData, {})

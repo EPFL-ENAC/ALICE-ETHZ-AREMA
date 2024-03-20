@@ -33,7 +33,7 @@ import { timestampsStripping } from '../../hooks/timestamps-stripping'
 export * from './natural-resource.class'
 export * from './natural-resource.schema'
 
-export const naturalResourceIterations = 3000
+export const naturalResourceIterations = 1000
 // A configure function that registers the service and its hooks via `app.configure`
 export const naturalResource = (app: Application) => {
   // Register our service on the Feathers application

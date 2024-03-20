@@ -10,7 +10,27 @@ import { dataValidator, queryValidator } from '../../validators'
 export const technicalConstructionSchema = Type.Object(
   {
     id: Type.Number(),
-    text: Type.String()
+    name: Type.String(),
+    images: Type.Array(Type.String()), // url
+    description: Type.String(),
+
+    // TODO min/max variations
+    density: Type.Optional(Type.Number()),
+    compressive_strength: Type.Optional(Type.Number()),
+    tensile_strength: Type.Optional(Type.Number()),
+    youngs_modulus: Type.Optional(Type.Number()),
+    shrinkage: Type.Optional(Type.Number()),
+    settlement: Type.Optional(Type.Number()),
+    thermal_conductivity: Type.Optional(Type.Number()),
+    thermal_capacity: Type.Optional(Type.Number()),
+    vapor_diffusion_resistance: Type.Optional(Type.Number()),
+    moisture_buffering: Type.Optional(Type.Number()),
+    u: Type.Optional(Type.Number()),
+    effusivity: Type.Optional(Type.Number()),
+    diffusivity: Type.Optional(Type.Number()),
+    absorption_coefficient: Type.Optional(Type.Number()),
+    sound_reduction_index: Type.Optional(Type.Number()),
+    fire_resistance: Type.Optional(Type.Number()),
   },
   { $id: 'TechnicalConstruction', additionalProperties: false }
 )
@@ -21,7 +41,7 @@ export const technicalConstructionResolver = resolve<TechnicalConstruction, Hook
 export const technicalConstructionExternalResolver = resolve<TechnicalConstruction, HookContext>({})
 
 // Schema for creating new entries
-export const technicalConstructionDataSchema = Type.Pick(technicalConstructionSchema, ['text'], {
+export const technicalConstructionDataSchema = Type.Pick(technicalConstructionSchema, ['name', 'images', 'description', 'density', 'compressive_strength', 'tensile_strength', 'youngs_modulus', 'shrinkage', 'settlement', 'thermal_conductivity', 'thermal_capacity', 'vapor_diffusion_resistance', 'moisture_buffering', 'u', 'effusivity', 'diffusivity', 'absorption_coefficient', 'sound_reduction_index', 'fire_resistance'], {
   $id: 'TechnicalConstructionData'
 })
 export type TechnicalConstructionData = Static<typeof technicalConstructionDataSchema>
@@ -40,10 +60,17 @@ export const technicalConstructionPatchValidator = getValidator(
 export const technicalConstructionPatchResolver = resolve<TechnicalConstruction, HookContext>({})
 
 // Schema for allowed query properties
-export const technicalConstructionQueryProperties = Type.Pick(technicalConstructionSchema, ['id', 'text'])
+export const technicalConstructionQueryProperties = Type.Pick(technicalConstructionSchema, ['id', 'name', 'description', 'density', 'compressive_strength', 'tensile_strength', 'youngs_modulus', 'shrinkage', 'settlement', 'thermal_conductivity', 'thermal_capacity', 'vapor_diffusion_resistance', 'moisture_buffering', 'u', 'effusivity', 'diffusivity', 'absorption_coefficient', 'sound_reduction_index', 'fire_resistance'])
 export const technicalConstructionQuerySchema = Type.Intersect(
   [
-    querySyntax(technicalConstructionQueryProperties),
+    querySyntax(technicalConstructionQueryProperties, {
+      name: {
+        $ilike: Type.String()
+      },
+      description: {
+        $ilike: Type.String()
+      }
+    }),
     // Add additional query properties here
     Type.Object({}, { additionalProperties: false })
   ],

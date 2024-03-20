@@ -38,7 +38,7 @@ import { geometries } from '../../hooks/geometries'
 export * from './building.class'
 export * from './building.schema'
 
-export const buildingIterations = 3000
+export const buildingIterations = 1000
 // A configure function that registers the service and its hooks via `app.configure`
 export const building = (app: Application) => {
   // Register our service on the Feathers application
