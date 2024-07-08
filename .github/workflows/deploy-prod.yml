@@ -13,7 +13,6 @@ env:
 
 jobs:
   deploy:
-    needs: build-and-push-image
     runs-on: ubuntu-latest
     steps:
       - uses: EPFL-ENAC/epfl-enac-deploy-action@main
