@@ -58,14 +58,6 @@
             <q-item-label header>{{ $t('building_materials') }}</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable v-close-popup :to="'/building-elements'">
-          <q-item-section avatar>
-            <q-icon name="fa-solid fa-door-closed" size="xs" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label header>{{ $t('building_elements') }}</q-item-label>
-          </q-item-section>
-        </q-item>
         <q-item clickable v-close-popup :to="'/buildings'">
           <q-item-section avatar>
             <q-icon name="fa-solid fa-building" size="xs" />
