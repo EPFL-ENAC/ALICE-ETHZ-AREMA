@@ -4,6 +4,11 @@ import { authenticate } from '@feathersjs/authentication'
 import { hooks as schemaHooks } from '@feathersjs/schema'
 
 import {
+
+  technicalConstructionDataSchema,
+  technicalConstructionSchema,
+  technicalConstructionPatchSchema,
+  technicalConstructionQuerySchema,
   technicalConstructionDataValidator,
   technicalConstructionPatchValidator,
   technicalConstructionQueryValidator,
@@ -17,6 +22,7 @@ import {
 import type { Application } from '../../declarations'
 import { TechnicalConstructionService, getOptions } from './technical-construction.class'
 import { technicalConstructionPath, technicalConstructionMethods } from './technical-construction.shared'
+import { createSwaggerServiceOptions } from 'feathers-swagger'
 
 export * from './technical-construction.class'
 export * from './technical-construction.schema'
@@ -28,7 +34,19 @@ export const technicalConstruction = (app: Application) => {
     // A list of all methods this service exposes externally
     methods: technicalConstructionMethods,
     // You can add additional custom events to be sent to clients here
-    events: []
+    events: [],
+    docs: createSwaggerServiceOptions({
+      schemas: {
+        technicalConstructionDataSchema,
+        technicalConstructionSchema,
+        technicalConstructionPatchSchema,
+        technicalConstructionQuerySchema
+      },
+      docs: {
+        // any options for service.docs can be added here
+        securities: ['find', 'get', 'patch', 'remove', 'create']
+      }
+    }),
   })
   // Initialize hooks
   app.service(technicalConstructionPath).hooks({

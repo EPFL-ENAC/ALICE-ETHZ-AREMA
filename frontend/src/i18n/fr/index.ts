@@ -36,9 +36,8 @@ export default {
   type_of_building: 'Type of building',
   building: {
     title: 'Bâtiment',
-    residential: 'Résidentiel',
-    industrial: 'Industriel',
-    recreational: 'Recréatif',
+    new: 'Neuf',
+    renovation: 'Rénovation',
   },
   lithology: 'Lithologie',
   litho: {

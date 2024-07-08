@@ -36,7 +36,7 @@ import { geometries } from '../../hooks/geometries'
 export * from './professional.class'
 export * from './professional.schema'
 
-export const professionalIterations = 6000
+export const professionalIterations = 1000
 // A configure function that registers the service and its hooks via `app.configure`
 export const professional = (app: Application) => {
   // Register our service on the Feathers application

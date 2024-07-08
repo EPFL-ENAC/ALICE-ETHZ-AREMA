@@ -14,39 +14,39 @@
     "build-local-dependency": "cd ../backend && npm run bundle:client && cp public/epfl-enac-arema*.tgz ../admin/public/epfl-enac-arema.tgz && cd ../admin"
   },
   "dependencies": {
-    "@epfl-enac/arema": "file:./public/epfl-enac-arema.tgz",
-    "@feathersjs/client": "^5.0.8",
+    "@epfl-enac/arema": "^0.0.2",
+    "@feathersjs/client": "^5.0.27",
     "@mapbox/mapbox-gl-draw": "^1.4.2",
     "@maplibre/maplibre-gl-geocoder": "^1.5.0",
     "@quasar/extras": "^1.16.4",
     "@turf/turf": "^6.5.0",
     "feathers-pinia": "^4.1.1",
     "lodash": "^4.17.21",
-    "maplibre-gl": "^3.5.1",
     "mapbox-gl-draw-geodesic": "^2.1.3",
     "mapbox-gl-draw-waypoint": "^1.0.3",
-    "maplibregl-theme-switcher": "github:EPFL-ENAC/maplibregl-theme-switcher#1.1.0",
-    "quasar": "^2.6.0",
-    "unplugin-auto-import": "^0.16.6",
-    "vue": "^3.0.0",
-    "vue-i18n": "^9.2.2",
-    "vue-router": "^4.0.0"
+    "maplibre-gl": "^4.3.2",
+    "maplibregl-theme-switcher": "github:EPFL-ENAC/maplibregl-theme-switcher#1.2.0",
+    "quasar": "^2.16.4",
+    "vue": "^3.4.27",
+    "vue-i18n": "^9.13.1",
+    "vue-router": "^4.3.2"
   },
   "devDependencies": {
     "@intlify/vite-plugin-vue-i18n": "^7.0.0",
     "@quasar/app-vite": "^1.3.0",
     "@types/node": "^12.20.21",
-    "@typescript-eslint/eslint-plugin": "^6.11.0",
-    "@typescript-eslint/parser": "^6.11.0",
+    "@typescript-eslint/eslint-plugin": "^7.12.0",
+    "@typescript-eslint/parser": "^7.12.0",
     "autoprefixer": "^10.4.2",
     "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^9.0.0",
-    "prettier": "^2.5.1",
-    "typescript": "^5.2.2"
+    "prettier": "^3.3.0",
+    "typescript": "^5.3.0",
+    "unplugin-auto-import": "^0.17.6"
   },
   "engines": {
-    "node": "^18 || ^16 || ^14.19",
+    "node": "^20 || ^18 || ^16",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
   }

@@ -11,7 +11,7 @@ export const runAsync =
       }
     }
   }
-export const defaultIterations = 1000
+export const defaultIterations = 200
 
 // iterate through all the services
 // Object.keys(app.services).forEach(async (path) => {

@@ -5,16 +5,31 @@ import type { Static } from '@feathersjs/typebox'
 
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
+import { User } from '../users/users.schema'
+import { logger } from '../../logger'
+import { faker } from '@faker-js/faker'
 
 // Main data model schema
 export const buildingElementSchema = Type.Object(
   {
-    id: Type.Number(),
+    id: Type.Optional(Type.Number()),
     text: Type.String()
   },
   { $id: 'BuildingElement', additionalProperties: false }
 )
 export type BuildingElement = Static<typeof buildingElementSchema>
+
+export const defaultBuildingElements = [...Array(26).keys()].map((i) => `BE${i + 1}`);
+
+// generate fake data
+export async function generateFake(user: User) {
+  logger.debug(`fake USER building-element generated: ${JSON.stringify(user.id)}`)
+  const result: BuildingElement = {
+    text: faker.helpers.arrayElement(defaultBuildingElements)
+  }
+  return result
+}
+
 export const buildingElementValidator = getValidator(buildingElementSchema, dataValidator)
 export const buildingElementResolver = resolve<BuildingElement, HookContext>({})
 

@@ -1,7 +1,7 @@
 {
   "name": "@epfl-enac/arema",
   "description": "Backend for ALICE ETHZ AREMA regenerative map",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "",
   "private": false,
   "keywords": [
@@ -14,7 +14,7 @@
   "contributors": [],
   "bugs": {},
   "engines": {
-    "node": "^18 || ^16 || ^14.19",
+    "node": "^20 || ^18 || ^16",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
   },
@@ -54,27 +54,29 @@
     "migrate:make": "knex migrate:make",
     "seed": "knex seed:run",
     "seed:admin": "knex seed:run --specific 00_admin_user.ts",
+    "seed:professional-types": "knex seed:run --specific 04_professional-type.ts",
+    "seed:building-element": "knex seed:run --specific 06_building-element.ts",
     "seed:make": "knex seed:make"
   },
   "dependencies": {
     "@faker-js/faker": "^8.0.2",
-    "@feathersjs/adapter-commons": "^5.0.8",
-    "@feathersjs/authentication": "^5.0.8",
-    "@feathersjs/authentication-client": "^5.0.8",
-    "@feathersjs/authentication-local": "^5.0.8",
-    "@feathersjs/authentication-oauth": "^5.0.8",
-    "@feathersjs/configuration": "^5.0.8",
-    "@feathersjs/errors": "^5.0.8",
-    "@feathersjs/feathers": "^5.0.8",
-    "@feathersjs/knex": "^5.0.8",
-    "@feathersjs/koa": "^5.0.8",
-    "@feathersjs/schema": "^5.0.8",
-    "@feathersjs/socketio": "^5.0.8",
-    "@feathersjs/transport-commons": "^5.0.8",
-    "@feathersjs/typebox": "^5.0.8",
+    "@feathersjs/adapter-commons": "^5.0.27",
+    "@feathersjs/authentication": "^5.0.27",
+    "@feathersjs/authentication-client": "^5.0.27",
+    "@feathersjs/authentication-local": "^5.0.27",
+    "@feathersjs/authentication-oauth": "^5.0.27",
+    "@feathersjs/configuration": "^5.0.27",
+    "@feathersjs/errors": "^5.0.27",
+    "@feathersjs/feathers": "^5.0.27",
+    "@feathersjs/knex": "^5.0.27",
+    "@feathersjs/koa": "^5.0.27",
+    "@feathersjs/schema": "^5.0.27",
+    "@feathersjs/socketio": "^5.0.27",
+    "@feathersjs/transport-commons": "^5.0.27",
+    "@feathersjs/typebox": "^5.0.27",
     "@koa/router": "^12.0.0",
     "feathers-swagger": "^3.0.0",
-    "knex": "^2.5.1",
+    "knex": "^3.1.0",
     "knex-postgis": "^0.14.3",
     "koa-mount": "^4.0.0",
     "koa-static": "^5.0.0",
@@ -83,8 +85,8 @@
     "winston": "^3.10.0"
   },
   "devDependencies": {
-    "@feathersjs/cli": "^5.0.8",
-    "@feathersjs/rest-client": "^5.0.8",
+    "@feathersjs/cli": "^5.0.27",
+    "@feathersjs/rest-client": "^5.0.27",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.5.9",
     "@typescript-eslint/eslint-plugin": "latest",
@@ -97,6 +99,6 @@
     "prettier": "^2.8.8",
     "shx": "^0.3.4",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.5"
+    "typescript": "^5.3.0"
   }
 }

@@ -430,16 +430,12 @@ const buildingTypes = [
     icon: 'domain',
     children: [
       {
-        id: 'residential',
-        text: t('building.residential'),
+        id: 'renovation',
+        text: t('building.renovation'),
       },
       {
-        id: 'industrial',
-        text: t('building.industrial'),
-      },
-      {
-        id: 'recreational',
-        text: t('building.recreational'),
+        id: 'new',
+        text: t('building.new'),
       },
     ],
   },
