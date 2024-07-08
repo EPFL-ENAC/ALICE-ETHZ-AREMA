@@ -14,7 +14,7 @@
     "build-local-dependency": "cd ../backend && npm run bundle:client && cp public/epfl-enac-arema*.tgz ../admin/public/epfl-enac-arema.tgz && cd ../admin"
   },
   "dependencies": {
-    "@epfl-enac/arema": "file:./public/epfl-enac-arema.tgz",
+    "@epfl-enac/arema": "^0.0.2",
     "@feathersjs/client": "^5.0.27",
     "@mapbox/mapbox-gl-draw": "^1.4.2",
     "@maplibre/maplibre-gl-geocoder": "^1.5.0",
