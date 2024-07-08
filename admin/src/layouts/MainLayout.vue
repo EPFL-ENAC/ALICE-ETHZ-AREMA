@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="hHh lpR fFf">
+    <q-header bordered class="bg-white text-grey-10">
       <q-toolbar>
         <q-btn
           flat
@@ -14,24 +14,29 @@
         <q-toolbar-title>
           {{ $t('main.brand') }}
         </q-toolbar-title>
+
+        <q-btn-dropdown flat no-caps :label="username">
+            <q-list>
+              <q-item
+                clickable
+                v-close-popup
+                @click="onLogout"
+                v-if="authStore.isAuthenticated"
+              >
+                <q-item-section avatar>
+                  <q-icon name="logout" size="xs" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>{{ $t('logout') }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item>
-          <q-chip>{{ authStore.user?.email }}</q-chip>
-        </q-item>
-
-        <q-item clickable v-close-popup @click="logout">
-          <q-item-section avatar>
-            <q-icon name="logout" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label header>{{ $t('logout') }}</q-item-label>
-          </q-item-section>
-        </q-item>
-
         <q-item clickable v-close-popup :to="'/'">
           <q-item-section avatar>
             <q-icon name="dashboard" />
@@ -123,11 +128,13 @@ onMounted(() => {
 
 const leftDrawerOpen = ref(false);
 
+const username = computed(() => authStore.user?.email)
+
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
 
-function logout() {
+function onLogout() {
   authStore.logout().then(() => {
     router.push('/login');
   });

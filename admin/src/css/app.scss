@@ -1,1 +1,50 @@
 // app global css in SCSS form
+a {
+  text-decoration: none;
+  color: black;
+}
+
+a.q-markdown--link,
+a.epfl {
+  text-decoration: underline;
+  text-decoration-color: red;
+  text-decoration-thickness: min(0.08em, 0.1rem);
+  text-underline-offset: 0.14em;
+  color: black;
+}
+
+a:hover.q-markdown--link,
+a:hover.epfl {
+  text-decoration: underline;
+  text-decoration-color: black;
+  color: red;
+}
+
+.text-help {
+  color: $grey-6;
+}
+
+li + li {
+  margin-top: 10px;
+}
+
+.text-logo {
+  color: red;
+  font-family: 'Helvetica';
+  font-weight: bold;
+  font-size: 2.3em;
+}
+
+.app-md {
+  blockquote.q-markdown--note {
+    border-width: 0px 0px 0px 8px;
+    border-radius: 0;
+    border-style: solid;
+    border-color: #9e9e9e #009688;
+    background-color: white;
+  }
+
+  table.q-markdown--table ul {
+    padding-left: 20px;
+  }
+}

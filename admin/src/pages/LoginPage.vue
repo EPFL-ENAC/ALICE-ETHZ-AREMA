@@ -1,7 +1,7 @@
 <template>
   <q-layout>
     <q-page-container>
-      <q-page class="flex flex-center bg-blue">
+      <q-page class="flex flex-center">
         <div
           class="column"
           :style="
@@ -13,7 +13,7 @@
           "
         >
           <div>
-            <div class="colcol text-center text-white q-mb-lg">
+            <div class="colcol text-center q-mb-lg">
               <div class="text-h6">
                 {{ $t('main.brand') }}
               </div>

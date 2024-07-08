@@ -15,6 +15,7 @@ export default {
   logout: 'Déconnexion',
   dashboard: 'Tableau de bord',
   content: 'Contenu',
+  error_not_found: 'Oups. Il n\'y a rien ici...',
   natural_resources: 'Ressources naturelles',
   buildings: 'Bâtiments',
   building_elements: 'Éléments de bâtiment',

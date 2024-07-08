@@ -20,6 +20,7 @@ export default {
   },
   logout: 'Logout',
   dashboard: 'Dashboard',
+  error_not_found: 'Oops. Nothing here...',
   content: 'Content',
   natural_resources: 'Natural resources',
   buildings: 'Buildings',
