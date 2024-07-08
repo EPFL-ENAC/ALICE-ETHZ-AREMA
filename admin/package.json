@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@epfl-enac/arema": "file:./public/epfl-enac-arema.tgz",
-    "@feathersjs/client": "^5.0.8",
+    "@feathersjs/client": "^5.0.27",
     "@mapbox/mapbox-gl-draw": "^1.4.2",
     "@maplibre/maplibre-gl-geocoder": "^1.5.0",
     "@quasar/extras": "^1.16.4",
