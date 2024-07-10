@@ -35,6 +35,11 @@ li + li {
   font-size: 2.3em;
 }
 
+.text-hint {
+  color: $grey-8;
+  font-size: 0.8em;
+}
+
 .app-md {
   blockquote.q-markdown--note {
     border-width: 0px 0px 0px 8px;
@@ -47,4 +52,19 @@ li + li {
   table.q-markdown--table ul {
     padding-left: 20px;
   }
+}
+
+.dialog-sm {
+  width: 500px !important;
+  max-width: 80vw !important;
+}
+
+.dialog-md {
+  width: 700px !important;
+  max-width: 80vw !important;
+}
+
+.dialog-lg {
+  width: 900px !important;
+  max-width: 80vw !important;
 }

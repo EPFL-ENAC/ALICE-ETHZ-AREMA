@@ -62,64 +62,7 @@
         </template>
       </q-table>
 
-      <q-dialog
-        v-model="showEditDialog"
-        persistent
-        transition-show="scale"
-        transition-hide="scale"
-      >
-        <q-card style="width: 300px">
-          <q-card-section>
-            <q-input
-              filled
-              v-model="selected.name"
-              :label="$t('name')"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
-            <q-input
-              filled
-              v-model="selected.description"
-              autogrow
-              :label="$t('description')"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
-            <q-input
-              filled
-              v-model="selected.zone"
-              :label="$t('zone')"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
-            <q-input
-              filled
-              v-model="selected.dimension"
-              :label="$t('dimension')"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
-            <q-input
-              filled
-              v-model.number="selected.amount"
-              type="number"
-              :label="$t('amount')"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
-          </q-card-section>
-
-          <q-card-actions align="right">
-            <q-btn flat :label="$t('cancel')" v-close-popup />
-            <q-btn
-              color="primary"
-              :label="$t('save')"
-              v-close-popup
-              @click="saveSelected"
-            />
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
+      <natural-resource-dialog v-model="showEditDialog" :item="selected" @saved="onSaved"></natural-resource-dialog>
     </div>
   </q-page>
 </template>
@@ -128,6 +71,7 @@
 import { useQuasar } from 'quasar';
 import { Query } from '@feathersjs/client';
 import { NaturalResource } from '@epfl-enac/arema';
+import NaturalResourceDialog from 'src/components/NaturalResourceDialog.vue';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
 const { t } = useI18n({ useScope: 'global' });
@@ -151,30 +95,6 @@ const columns = [
     align: 'left',
     field: 'description',
     sortable: false,
-  },
-  {
-    name: 'zone',
-    required: true,
-    label: t('zone'),
-    align: 'left',
-    field: 'zone',
-    sortable: false,
-  },
-  {
-    name: 'dimension',
-    required: true,
-    label: t('dimension'),
-    align: 'left',
-    field: 'dimension',
-    sortable: false,
-  },
-  {
-    name: 'amount',
-    required: true,
-    label: t('amount'),
-    align: 'left',
-    field: 'amount',
-    sortable: true,
   },
   {
     name: 'lastModification',
@@ -253,34 +173,8 @@ function onEdit(resource: NaturalResource) {
   showEditDialog.value = true;
 }
 
-function saveSelected() {
-  if (selected.value === undefined) return;
-  if (selected.value.id) {
-    service
-      .patch(selected.value.id, selected.value)
-      .then(() => {
-        tableRef.value.requestServerInteraction();
-      })
-      .catch((err) => {
-        $q.notify({
-          message: err.message,
-          type: 'negative',
-        });
-      });
-  } else {
-    selected.value.images = [];
-    service
-      .create(selected.value)
-      .then(() => {
-        tableRef.value.requestServerInteraction();
-      })
-      .catch((err) => {
-        $q.notify({
-          message: err.message,
-          type: 'negative',
-        });
-      });
-  }
+function onSaved() {
+  tableRef.value.requestServerInteraction();
 }
 
 function remove(resource: NaturalResource) {
