@@ -1,5 +1,5 @@
 // // For more information about this file see https://dove.feathersjs.com/guides/cli/service.schemas.html
-import { resolve } from '@feathersjs/schema'
+import { resolve, virtual } from '@feathersjs/schema'
 import { Type, getValidator, querySyntax } from '@feathersjs/typebox'
 import type { ObjectPropertyKeys, Static } from '@feathersjs/typebox'
 
@@ -15,7 +15,12 @@ export const buildingMaterialSchema = Type.Object(
     images: Type.Array(Type.String()), // url
     description: Type.String(),
 
-    ...allPhysicalPropertiesSchema
+    ...allPhysicalPropertiesSchema,
+
+    updatedAt: Type.Optional(Type.String({ format: 'date-time' })),
+    createdAt: Type.Optional(Type.String({ format: 'date-time' })),
+    updatedById: Type.Optional(Type.Number()),
+    createdById: Type.Optional(Type.Number())
   },
   { $id: 'BuildingMaterial', additionalProperties: false }
 )
@@ -34,7 +39,15 @@ export const buildingMaterialDataSchema = Type.Pick(
   })
 export type BuildingMaterialData = Static<typeof buildingMaterialDataSchema>
 export const buildingMaterialDataValidator = getValidator(buildingMaterialDataSchema, dataValidator)
-export const buildingMaterialDataResolver = resolve<BuildingMaterial, HookContext>({})
+export const buildingMaterialDataResolver = resolve<BuildingMaterial, HookContext>({
+  createdAt: virtual(async () => {
+    return new Date().toISOString()
+  }),
+  createdById: virtual(async (message, context) => {
+    // Associate the user that sent the message
+    return context?.params?.user?.id
+  })
+})
 
 // Schema for updating existing entries
 export const buildingMaterialPatchSchema = Type.Partial(buildingMaterialSchema, {
@@ -42,7 +55,15 @@ export const buildingMaterialPatchSchema = Type.Partial(buildingMaterialSchema, 
 })
 export type BuildingMaterialPatch = Static<typeof buildingMaterialPatchSchema>
 export const buildingMaterialPatchValidator = getValidator(buildingMaterialPatchSchema, dataValidator)
-export const buildingMaterialPatchResolver = resolve<BuildingMaterial, HookContext>({})
+export const buildingMaterialPatchResolver = resolve<BuildingMaterial, HookContext>({
+  updatedAt: virtual(async () => {
+    return new Date().toISOString()
+  }),
+  updatedById: virtual(async (message, context) => {
+    // Associate the user that sent the message
+    return context?.params?.user?.id
+  })
+})
 
 // Schema for allowed query properties
 export const buildingMaterialQueryProperties = Type.Pick(
