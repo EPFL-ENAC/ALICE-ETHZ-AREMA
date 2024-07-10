@@ -4,6 +4,14 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { buildingMaterialNaturalResourceClient } from './services/building-material-natural-resource/building-material-natural-resource.shared'
+export type {
+  BuildingMaterialNaturalResource,
+  BuildingMaterialNaturalResourceData,
+  BuildingMaterialNaturalResourceQuery,
+  BuildingMaterialNaturalResourcePatch
+} from './services/building-material-natural-resource/building-material-natural-resource.shared'
+
 import { buildingProfessionalClient } from './services/building-professional/building-professional.shared'
 export type {
   BuildingProfessional,
@@ -87,7 +95,7 @@ export type ClientApplication = Application<ServiceTypes, Configuration>
  * @see https://dove.feathersjs.com/api/client.html
  * @returns The Feathers client application
  */
-export const createClient = <Configuration = any>(
+export const createClient = <Configuration = any,>(
   connection: TransportConnection<ServiceTypes>,
   authenticationOptions: Partial<AuthenticationClientOptions> = {}
 ) => {
@@ -106,5 +114,6 @@ export const createClient = <Configuration = any>(
   client.configure(technicalConstructionClient)
   client.configure(buildingClient)
   client.configure(buildingProfessionalClient)
+  client.configure(buildingMaterialNaturalResourceClient)
   return client
 }

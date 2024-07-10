@@ -1,3 +1,4 @@
+import { buildingMaterialNaturalResource } from './building-material-natural-resource/building-material-natural-resource'
 import { buildingProfessional } from './building-professional/building-professional'
 import { building } from './building/building'
 import { technicalConstruction } from './technical-construction/technical-construction'
@@ -11,6 +12,7 @@ import { user } from './users/users'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
+  app.configure(buildingMaterialNaturalResource)
   app.configure(buildingProfessional)
   app.configure(building)
   app.configure(technicalConstruction)
