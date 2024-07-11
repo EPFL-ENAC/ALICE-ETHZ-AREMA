@@ -12,12 +12,7 @@ export const buildingMaterialNaturalResourceSchema = Type.Object(
   {
     id: Type.Optional(Type.Union([Type.Null(), Type.Number()])),
     buildingMaterialId: Type.Number(),
-    naturalResourceId: Type.Number(),
-
-    updatedAt: Type.Optional(Type.String({ format: 'date-time' })),
-    createdAt: Type.Optional(Type.String({ format: 'date-time' })),
-    updatedById: Type.Optional(Type.Number()),
-    createdById: Type.Optional(Type.Number())
+    naturalResourceId: Type.Number()
   },
   { $id: 'BuildingMaterialNaturalResource', additionalProperties: false }
 )
@@ -52,15 +47,7 @@ export const buildingMaterialNaturalResourceDataValidator = getValidator(
 export const buildingMaterialNaturalResourceDataResolver = resolve<
   BuildingMaterialNaturalResource,
   HookContext<BuildingMaterialNaturalResourceService>
->({
-  createdAt: virtual(async () => {
-    return new Date().toISOString()
-  }),
-  createdById: virtual(async (message, context) => {
-    // Associate the user that sent the message
-    return context?.params?.user?.id
-  })
-})
+>({})
 
 // Schema for updating existing entries
 export const buildingMaterialNaturalResourcePatchSchema = Type.Partial(
@@ -77,15 +64,7 @@ export const buildingMaterialNaturalResourcePatchValidator = getValidator(
 export const buildingMaterialNaturalResourcePatchResolver = resolve<
   BuildingMaterialNaturalResource,
   HookContext<BuildingMaterialNaturalResourceService>
->({
-  updatedAt: virtual(async () => {
-    return new Date().toISOString()
-  }),
-  updatedById: virtual(async (message, context) => {
-    // Associate the user that sent the message
-    return context?.params?.user?.id
-  })
-})
+>({})
 
 // Schema for allowed query properties
 export const buildingMaterialNaturalResourceQueryProperties = Type.Pick(

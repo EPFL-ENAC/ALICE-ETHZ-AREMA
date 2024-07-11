@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="text-h5 q-pa-md">{{ $t('building_materials') }}</div>
+    <div class="text-h5 q-pa-md">{{ $t('technical_constructions') }}</div>
     <q-separator />
     <div class="q-pa-md">
       <q-table
@@ -62,11 +62,11 @@
         </template>
       </q-table>
 
-      <building-material-dialog
+      <technical-construction-dialog
         v-model="showEditDialog"
         :item="selected"
         @saved="onSaved"
-      ></building-material-dialog>
+      ></technical-construction-dialog>
     </div>
   </q-page>
 </template>
@@ -74,14 +74,14 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { Query } from '@feathersjs/client';
-import { BuildingMaterial } from '@epfl-enac/arema';
-import BuildingMaterialDialog from 'src/components/BuildingMaterialDialog.vue';
+import { TechnicalConstruction } from '@epfl-enac/arema';
+import TechnicalConstructionDialog from 'src/components/TechnicalConstructionDialog.vue';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const { api } = useFeathers();
-const service = api.service('building-material');
+const service = api.service('technical-construction');
 
 const columns = [
   {
@@ -101,21 +101,11 @@ const columns = [
     sortable: false,
   },
   {
-    name: 'constituants',
-    required: true,
-    label: t('constituants'),
-    align: 'left',
-    field: (row: BuildingMaterial) => {
-      return row.constituants ? row.constituants.length : 0;
-    },
-    sortable: false,
-  },
-  {
     name: 'lastModification',
     required: true,
     label: t('last_modification'),
     align: 'left',
-    field: (row: BuildingMaterial) => {
+    field: (row: TechnicalConstruction) => {
       const date = new Date(row.updatedAt || row.createdAt);
       return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
     },
@@ -128,10 +118,10 @@ const columns = [
   },
 ];
 
-const selected = ref<BuildingMaterial>();
+const selected = ref<TechnicalConstruction>();
 const showEditDialog = ref(false);
 const tableRef = ref();
-const rows = ref<BuildingMaterial[]>([]);
+const rows = ref<TechnicalConstruction[]>([]);
 const filter = ref('');
 const loading = ref(false);
 const pagination = ref<PaginationOptions>({
@@ -184,7 +174,7 @@ function onAdd() {
   showEditDialog.value = true;
 }
 
-function onEdit(item: BuildingMaterial) {
+function onEdit(item: TechnicalConstruction) {
   selected.value = { ...item };
   showEditDialog.value = true;
 }
@@ -193,7 +183,7 @@ function onSaved() {
   tableRef.value.requestServerInteraction();
 }
 
-function remove(item: BuildingMaterial) {
+function remove(item: TechnicalConstruction) {
   service
     .remove(item.id)
     .then(() => {

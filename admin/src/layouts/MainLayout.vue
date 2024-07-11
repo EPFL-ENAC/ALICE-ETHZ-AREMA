@@ -16,22 +16,22 @@
         </q-toolbar-title>
 
         <q-btn-dropdown flat no-caps :label="username">
-            <q-list>
-              <q-item
-                clickable
-                v-close-popup
-                @click="onLogout"
-                v-if="authStore.isAuthenticated"
-              >
-                <q-item-section avatar>
-                  <q-icon name="logout" size="xs" />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>{{ $t('logout') }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
+          <q-list>
+            <q-item
+              clickable
+              v-close-popup
+              @click="onLogout"
+              v-if="authStore.isAuthenticated"
+            >
+              <q-item-section avatar>
+                <q-icon name="logout" size="xs" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ $t('logout') }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
       </q-toolbar>
     </q-header>
 
@@ -63,14 +63,6 @@
             <q-item-label header>{{ $t('building_materials') }}</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable v-close-popup :to="'/buildings'">
-          <q-item-section avatar>
-            <q-icon name="fa-solid fa-building" size="xs" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label header>{{ $t('buildings') }}</q-item-label>
-          </q-item-section>
-        </q-item>
         <q-item clickable v-close-popup :to="'/technical-constructions'">
           <q-item-section avatar>
             <q-icon name="fa-solid fa-compass-drafting" size="xs" />
@@ -79,6 +71,14 @@
             <q-item-label header>{{
               $t('technical_constructions')
             }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup :to="'/buildings'">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-building" size="xs" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ $t('buildings') }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable v-close-popup :to="'/professionals'">
@@ -128,7 +128,7 @@ onMounted(() => {
 
 const leftDrawerOpen = ref(false);
 
-const username = computed(() => authStore.user?.email)
+const username = computed(() => authStore.user?.email);
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
