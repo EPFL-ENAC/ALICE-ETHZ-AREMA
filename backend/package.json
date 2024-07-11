@@ -56,7 +56,6 @@
     "seed": "knex seed:run",
     "seed:admin": "knex seed:run --specific 00_admin_user.ts",
     "seed:professional-types": "knex seed:run --specific 04_professional-type.ts",
-    "seed:building-element": "knex seed:run --specific 06_building-element.ts",
     "seed:make": "knex seed:make"
   },
   "dependencies": {

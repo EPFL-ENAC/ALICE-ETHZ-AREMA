@@ -12,14 +12,6 @@ export type {
   TechnicalConstructionBuildingMaterialPatch
 } from './services/technical-construction-building-material/technical-construction-building-material.shared'
 
-import { technicalConstructionNaturalResourceClient } from './services/technical-construction-natural-resource/technical-construction-natural-resource.shared'
-export type {
-  TechnicalConstructionNaturalResource,
-  TechnicalConstructionNaturalResourceData,
-  TechnicalConstructionNaturalResourceQuery,
-  TechnicalConstructionNaturalResourcePatch
-} from './services/technical-construction-natural-resource/technical-construction-natural-resource.shared'
-
 import { buildingMaterialNaturalResourceClient } from './services/building-material-natural-resource/building-material-natural-resource.shared'
 export type {
   BuildingMaterialNaturalResource,
@@ -76,14 +68,6 @@ export type {
   BuildingMaterialPatch
 } from './services/building-material/building-material.shared'
 
-import { buildingElementClient } from './services/building-element/building-element.shared'
-export type {
-  BuildingElement,
-  BuildingElementData,
-  BuildingElementQuery,
-  BuildingElementPatch
-} from './services/building-element/building-element.shared'
-
 import { naturalResourceClient } from './services/natural-resource/natural-resource.shared'
 export type {
   NaturalResource,
@@ -123,7 +107,6 @@ export const createClient = <Configuration = any,>(
 
   client.configure(userClient)
   client.configure(naturalResourceClient)
-  client.configure(buildingElementClient)
   client.configure(buildingMaterialClient)
   client.configure(professionalClient)
   client.configure(professionalTypeClient)
@@ -131,7 +114,6 @@ export const createClient = <Configuration = any,>(
   client.configure(buildingClient)
   client.configure(buildingProfessionalClient)
   client.configure(buildingMaterialNaturalResourceClient)
-  client.configure(technicalConstructionNaturalResourceClient)
   client.configure(technicalConstructionBuildingMaterialClient)
   return client
 }
