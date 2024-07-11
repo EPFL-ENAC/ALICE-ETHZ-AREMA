@@ -106,7 +106,7 @@ const columns = [
     label: t('constituants'),
     align: 'left',
     field: (row: BuildingMaterial) => {
-      return row.constituants ? row.constituants.length : 0;
+      return row.naturalResourceIds ? row.naturalResourceIds.length : 0;
     },
     sortable: false,
   },

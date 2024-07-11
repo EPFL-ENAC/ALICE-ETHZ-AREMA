@@ -26,6 +26,7 @@ import { allowAnonymous }  from '../../hooks/allow-anonymous'
 import { entityCreated } from '../../hooks/entity-created'
 import { timestampsStripping } from '../../hooks/timestamps-stripping'
 import { bmNrRelation } from '../../hooks/bm-nr-relation'
+import { tcBmRelation } from '../../hooks/tc-bm-relation'
 
 export * from './building-material.class'
 export * from './building-material.schema'
@@ -83,7 +84,8 @@ export const buildingMaterial = (app: Application) => {
         schemaHooks.resolveData(buildingMaterialPatchResolver)
       ],
       remove: [
-        bmNrRelation
+        bmNrRelation,
+        tcBmRelation
       ]
     },
     after: {

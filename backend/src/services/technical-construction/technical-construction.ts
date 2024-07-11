@@ -26,6 +26,7 @@ import { createSwaggerServiceOptions } from 'feathers-swagger'
 import { allowAnonymous }  from '../../hooks/allow-anonymous'
 import { entityCreated } from '../../hooks/entity-created'
 import { timestampsStripping } from '../../hooks/timestamps-stripping'
+import { tcBmRelation } from '../../hooks/tc-bm-relation'
 
 export * from './technical-construction.class'
 export * from './technical-construction.schema'
@@ -82,7 +83,9 @@ export const technicalConstruction = (app: Application) => {
         schemaHooks.validateData(technicalConstructionPatchValidator),
         schemaHooks.resolveData(technicalConstructionPatchResolver)
       ],
-      remove: []
+      remove: [
+        tcBmRelation
+      ]
     },
     after: {
       all: []

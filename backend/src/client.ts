@@ -4,6 +4,22 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { technicalConstructionBuildingMaterialClient } from './services/technical-construction-building-material/technical-construction-building-material.shared'
+export type {
+  TechnicalConstructionBuildingMaterial,
+  TechnicalConstructionBuildingMaterialData,
+  TechnicalConstructionBuildingMaterialQuery,
+  TechnicalConstructionBuildingMaterialPatch
+} from './services/technical-construction-building-material/technical-construction-building-material.shared'
+
+import { technicalConstructionNaturalResourceClient } from './services/technical-construction-natural-resource/technical-construction-natural-resource.shared'
+export type {
+  TechnicalConstructionNaturalResource,
+  TechnicalConstructionNaturalResourceData,
+  TechnicalConstructionNaturalResourceQuery,
+  TechnicalConstructionNaturalResourcePatch
+} from './services/technical-construction-natural-resource/technical-construction-natural-resource.shared'
+
 import { buildingMaterialNaturalResourceClient } from './services/building-material-natural-resource/building-material-natural-resource.shared'
 export type {
   BuildingMaterialNaturalResource,
@@ -115,5 +131,7 @@ export const createClient = <Configuration = any,>(
   client.configure(buildingClient)
   client.configure(buildingProfessionalClient)
   client.configure(buildingMaterialNaturalResourceClient)
+  client.configure(technicalConstructionNaturalResourceClient)
+  client.configure(technicalConstructionBuildingMaterialClient)
   return client
 }

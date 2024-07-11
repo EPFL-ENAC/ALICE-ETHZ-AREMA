@@ -36,13 +36,14 @@
             />
             <q-select
               filled
-              v-model="constituants"
-              :options="constituantsOptions"
+              v-model="naturalResources"
+              :options="naturalResourcesOptions"
               multiple
               map-options
               emit-value
               use-chips
               :label="$t('constituants')"
+              :hint="$t('building_material_constituants_hint')"
               class="q-mb-md"
             />
           </q-tab-panel>
@@ -197,8 +198,13 @@ const showDialog = ref(props.modelValue);
 const selected = ref<BuildingMaterial>({ name: '' } as BuildingMaterial);
 const editMode = ref(false);
 const tab = ref('general');
-const constituants = ref([]);
-const constituantsOptions = ref<{ label: string; value: number }>([]);
+const naturalResources = ref([]);
+const naturalResourcesOptions = ref<
+  {
+    label: string | undefined;
+    value: number | undefined;
+  }[]
+>([]);
 
 const isValid = computed(() => {
   return selected.value.name && selected.value.description;
@@ -211,7 +217,7 @@ watch(
       selected.value = { ...props.item };
       editMode.value = selected.value.id !== undefined;
       tab.value = 'general';
-      constituants.value = [];
+      naturalResources.value = [];
       nrService
         .find({
           query: {
@@ -220,7 +226,7 @@ watch(
           },
         })
         .then((res) => {
-          constituantsOptions.value = res.data.map((item) => ({
+          naturalResourcesOptions.value = res.data.map((item) => ({
             label: item.name,
             value: item.id,
           }));
@@ -234,7 +240,7 @@ watch(
             },
           })
           .then((res) => {
-            constituants.value = res.data.map((item) =>
+            naturalResources.value = res.data.map((item) =>
               parseInt(item.naturalResourceId),
             );
           });
@@ -252,7 +258,7 @@ function onHide() {
 async function onSave() {
   if (selected.value === undefined) return;
   if (selected.value.id) {
-    delete selected.value.constituants;
+    delete selected.value.naturalResourceIds;
     service
       .patch(selected.value.id, selected.value)
       .then((res) => {
@@ -290,13 +296,9 @@ async function onSave() {
 }
 
 async function saveConstituants(bm: BuildingMaterial) {
-  if (constituants.value.length === 0) return Promise.resolve();
+  if (naturalResources.value.length === 0) return Promise.resolve();
   return bmNrService.create(
-    // {
-    //   buildingMaterialId: bm.id,
-    //   naturalResourceId: constituants.value[0],
-    // },
-    constituants.value.map((item) => ({
+    naturalResources.value.map((item) => ({
       buildingMaterialId: bm.id,
       naturalResourceId: item,
     })),

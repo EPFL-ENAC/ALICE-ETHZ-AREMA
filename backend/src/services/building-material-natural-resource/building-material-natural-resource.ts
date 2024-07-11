@@ -30,8 +30,6 @@ import {
 
 import { createSwaggerServiceOptions } from 'feathers-swagger'
 import { allowAnonymous }  from '../../hooks/allow-anonymous'
-import { entityCreated } from '../../hooks/entity-created'
-import { timestampsStripping } from '../../hooks/timestamps-stripping'
 
 export * from './building-material-natural-resource.class'
 export * from './building-material-natural-resource.schema'
@@ -80,11 +78,9 @@ export const buildingMaterialNaturalResource = (app: Application) => {
       get: [],
       create: [
         schemaHooks.validateData(buildingMaterialNaturalResourceDataValidator),
-        entityCreated,
         schemaHooks.resolveData(buildingMaterialNaturalResourceDataResolver)
       ],
       patch: [
-        timestampsStripping,
         schemaHooks.validateData(buildingMaterialNaturalResourcePatchValidator),
         schemaHooks.resolveData(buildingMaterialNaturalResourcePatchResolver)
       ],

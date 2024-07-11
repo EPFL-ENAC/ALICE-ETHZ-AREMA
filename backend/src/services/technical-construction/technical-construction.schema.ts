@@ -21,12 +21,20 @@ export const technicalConstructionSchema = Type.Object(
     createdAt: Type.Optional(Type.String({ format: 'date-time' })),
     updatedById: Type.Optional(Type.Number()),
     createdById: Type.Optional(Type.Number()),
+
+    buildingMaterialIds: Type.Optional(Type.Array(Type.Number()))
   },
   { $id: 'TechnicalConstruction', additionalProperties: false }
 )
 export type TechnicalConstruction = Static<typeof technicalConstructionSchema>
 export const technicalConstructionValidator = getValidator(technicalConstructionSchema, dataValidator)
-export const technicalConstructionResolver = resolve<TechnicalConstruction, HookContext>({})
+export const technicalConstructionResolver = resolve<TechnicalConstruction, HookContext>({
+  buildingMaterialIds: virtual(async (data: TechnicalConstruction, context: HookContext) => {
+    // Populate the user associated via `userId`
+    const rels = await context.app.service('technical-construction-building-material').find({ query: { technicalConstructionId: data.id }})
+    return rels.data.map(rel => rel.buildingMaterialId)
+  })
+})
 
 export const technicalConstructionExternalResolver = resolve<TechnicalConstruction, HookContext>({})
 

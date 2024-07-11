@@ -36,6 +36,14 @@ export default {
   association: 'Association',
   building_elements: 'Building elements',
   building_materials: 'Building materials',
+  building_material_constituants_hint:
+    'Building material are made of natural resources.',
+  natural_resource_constituants: 'Natural resources constituants',
+  technical_construction_natural_resource_constituants_hint:
+    'Technical constructions are made of natural resources.',
+  building_material_constituants: 'Building material constituants',
+  technical_construction_building_material_constituants_hint:
+    'Technical constructions are made of building materials.',
   buildings: 'Buildings',
   cancel: 'Cancel',
   classic: 'Classic',
