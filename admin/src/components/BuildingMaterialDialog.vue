@@ -252,10 +252,10 @@ function onHide() {
 async function onSave() {
   if (selected.value === undefined) return;
   if (selected.value.id) {
+    delete selected.value.constituants;
     service
       .patch(selected.value.id, selected.value)
       .then((res) => {
-        emit('saved', selected.value);
         bmNrService
           .remove(null, {
             query: {
@@ -265,9 +265,9 @@ async function onSave() {
           .finally(() => {
             saveConstituants(selected.value).then(() => {
               onHide();
+              emit('saved', selected.value);
             });
           });
-        onHide();
       })
       .catch((err) => {
         notifyError(err.message);
@@ -278,9 +278,9 @@ async function onSave() {
     service
       .create(selected.value)
       .then((res) => {
-        emit('saved', res);
         saveConstituants(res).then(() => {
           onHide();
+          emit('saved', res);
         });
       })
       .catch((err) => {

@@ -20,13 +20,21 @@ export const buildingMaterialSchema = Type.Object(
     updatedAt: Type.Optional(Type.String({ format: 'date-time' })),
     createdAt: Type.Optional(Type.String({ format: 'date-time' })),
     updatedById: Type.Optional(Type.Number()),
-    createdById: Type.Optional(Type.Number())
+    createdById: Type.Optional(Type.Number()),
+
+    constituants: Type.Optional(Type.Array(Type.Number()))
   },
   { $id: 'BuildingMaterial', additionalProperties: false }
 )
 export type BuildingMaterial = Static<typeof buildingMaterialSchema>
 export const buildingMaterialValidator = getValidator(buildingMaterialSchema, dataValidator)
-export const buildingMaterialResolver = resolve<BuildingMaterial, HookContext>({})
+export const buildingMaterialResolver = resolve<BuildingMaterial, HookContext>({
+  constituants: virtual(async (data: BuildingMaterial, context: HookContext) => {
+    // Populate the user associated via `userId`
+    const rels = await context.app.service('building-material-natural-resource').find({ query: { buildingMaterialId: data.id }})
+    return rels.data.map(rel => rel.naturalResourceId)
+  })
+})
 
 export const buildingMaterialExternalResolver = resolve<BuildingMaterial, HookContext>({})
 

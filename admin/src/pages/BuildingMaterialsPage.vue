@@ -101,6 +101,16 @@ const columns = [
     sortable: false,
   },
   {
+    name: 'constituants',
+    required: true,
+    label: t('constituants'),
+    align: 'left',
+    field: (row: BuildingMaterial) => {
+      return row.constituants ? row.constituants.length : 0;
+    },
+    sortable: false,
+  },
+  {
     name: 'lastModification',
     required: true,
     label: t('last_modification'),
