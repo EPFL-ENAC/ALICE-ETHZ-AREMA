@@ -25,6 +25,7 @@ import { createSwaggerServiceOptions } from 'feathers-swagger'
 import { allowAnonymous }  from '../../hooks/allow-anonymous'
 import { entityCreated } from '../../hooks/entity-created'
 import { timestampsStripping } from '../../hooks/timestamps-stripping'
+import { bmNrRelation } from '../../hooks/bm-nr-relation'
 
 export * from './building-material.class'
 export * from './building-material.schema'
@@ -81,7 +82,9 @@ export const buildingMaterial = (app: Application) => {
         schemaHooks.validateData(buildingMaterialPatchValidator),
         schemaHooks.resolveData(buildingMaterialPatchResolver)
       ],
-      remove: []
+      remove: [
+        bmNrRelation
+      ]
     },
     after: {
       all: []

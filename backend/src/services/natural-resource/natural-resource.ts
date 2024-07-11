@@ -29,6 +29,7 @@ import { userIterations } from '../users/users'
 import { allowAnonymous }  from '../../hooks/allow-anonymous'
 import { entityCreated } from '../../hooks/entity-created'
 import { timestampsStripping } from '../../hooks/timestamps-stripping'
+import { bmNrRelation } from '../../hooks/bm-nr-relation'
 
 export * from './natural-resource.class'
 export * from './natural-resource.schema'
@@ -98,7 +99,9 @@ export const naturalResource = (app: Application) => {
         schemaHooks.validateData(naturalResourcePatchValidator),
         schemaHooks.resolveData(naturalResourcePatchResolver)
       ],
-      remove: []
+      remove: [
+        bmNrRelation
+      ]
     },
     after: {
       all: []

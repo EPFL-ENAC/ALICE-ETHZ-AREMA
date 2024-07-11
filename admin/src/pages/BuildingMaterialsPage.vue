@@ -82,7 +82,6 @@ const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const { api } = useFeathers();
 const service = api.service('building-material');
-const bmNrService = api.service('building-material-natural-resource');
 
 const columns = [
   {
@@ -185,24 +184,16 @@ function onSaved() {
 }
 
 function remove(bm: BuildingMaterial) {
-  bmNrService
-    .remove(null, {
-      query: {
-        buildingMaterialId: bm.id,
-      },
+  service
+    .remove(bm.id)
+    .then(() => {
+      tableRef.value.requestServerInteraction();
     })
-    .finally(() => {
-      service
-        .remove(bm.id)
-        .then(() => {
-          tableRef.value.requestServerInteraction();
-        })
-        .catch((err) => {
-          $q.notify({
-            message: err.message,
-            type: 'negative',
-          });
-        });
+    .catch((err) => {
+      $q.notify({
+        message: err.message,
+        type: 'negative',
+      });
     });
 }
 </script>

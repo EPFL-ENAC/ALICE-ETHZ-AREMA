@@ -10,7 +10,7 @@ import type { BuildingMaterialNaturalResourceService } from './building-material
 // Main data model schema
 export const buildingMaterialNaturalResourceSchema = Type.Object(
   {
-    id: Type.Number(),
+    id: Type.Optional(Type.Union([Type.Null(), Type.Number()])),
     buildingMaterialId: Type.Number(),
     naturalResourceId: Type.Number(),
 
