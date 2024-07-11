@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.4.0](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/compare/v1.3.0...v1.4.0) (2024-07-11)
+
+
+### Features
+
+* epfl style applied to admin ui ([9ba2813](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/9ba281303b2a70f56fbab7ec5450c5c836dc63c9))
+* more physical properties ([469a223](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/469a2232915308589485a8b282cc03402dd961fa))
+* natural resources, building materials and technical constructions relations and ui ([#46](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/issues/46)) ([71e24db](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/71e24dbc781e6a24575f0229fc1c705a40da1439))
+* **ui:** more physical properties ([b2471f5](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/b2471f50161923eb1ac65cf31f4f1ecdbcd8ad61))
+
+
+### Bug Fixes
+
+* npm packages auth ([5e6bba2](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/5e6bba29c442673be575c68145ca4ad96f162169))
+* npm packages auth from docker ([6572553](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/6572553c1ca3480ab61e606f26e51cc8aeb3ccf8))
+* npm packages auth from docker ([ae662b2](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/ae662b23ada4b11f6e9556e7f346c1c38fd315dc))
+* reinstated docker images publications ([326cbf6](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/commit/326cbf6de253802d26949d29f56e4ec4ebe7f41e))
+
 ## [1.3.0](https://github.com/EPFL-ENAC/ALICE-ETHZ-AREMA/compare/v1.2.0...v1.3.0) (2024-07-08)
 
 
