@@ -6,12 +6,24 @@ export const entityCreated = async (context: HookContext) => {
     const { user } = context.params
     const now = new Date().toISOString()
 
-    context.data = {
-      ...context.data,
-      createdAt: now,
-      updatedAt: now,
-      createdById: user?.id,
-      updatedById: user?.id
+    if (Array.isArray(context.data)) {
+      context.data = context.data.map((data) => {
+        return {
+          ...data,
+          createdAt: now,
+          updatedAt: now,
+          createdById: user?.id,
+          updatedById: user?.id
+        }
+      })
+    } else {
+      context.data = {
+        ...context.data,
+        createdAt: now,
+        updatedAt: now,
+        createdById: user?.id,
+        updatedById: user?.id
+      }
     }
   }
 }

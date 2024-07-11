@@ -82,6 +82,7 @@ const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const { api } = useFeathers();
 const service = api.service('building-material');
+const bmNrService = api.service('building-material-natural-resource');
 
 const columns = [
   {
@@ -174,8 +175,8 @@ function onAdd() {
   showEditDialog.value = true;
 }
 
-function onEdit(resource: BuildingMaterial) {
-  selected.value = { ...resource };
+function onEdit(bm: BuildingMaterial) {
+  selected.value = { ...bm };
   showEditDialog.value = true;
 }
 
@@ -183,17 +184,25 @@ function onSaved() {
   tableRef.value.requestServerInteraction();
 }
 
-function remove(resource: BuildingMaterial) {
-  service
-    .remove(resource.id)
-    .then(() => {
-      tableRef.value.requestServerInteraction();
+function remove(bm: BuildingMaterial) {
+  bmNrService
+    .remove(null, {
+      query: {
+        buildingMaterialId: bm.id,
+      },
     })
-    .catch((err) => {
-      $q.notify({
-        message: err.message,
-        type: 'negative',
-      });
+    .finally(() => {
+      service
+        .remove(bm.id)
+        .then(() => {
+          tableRef.value.requestServerInteraction();
+        })
+        .catch((err) => {
+          $q.notify({
+            message: err.message,
+            type: 'negative',
+          });
+        });
     });
 }
 </script>

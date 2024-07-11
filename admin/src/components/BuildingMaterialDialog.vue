@@ -34,6 +34,17 @@
               :label="$t('description') + '*'"
               class="q-mb-md"
             />
+            <q-select
+              filled
+              v-model="constituants"
+              :options="constituantsOptions"
+              multiple
+              map-options
+              emit-value
+              use-chips
+              :label="$t('constituants')"
+              class="q-mb-md"
+            />
           </q-tab-panel>
           <q-tab-panel name="structural" class="q-pl-none q-pr-none">
             <div class="row q-col-gutter-lg">
@@ -179,11 +190,15 @@ const emit = defineEmits(['update:modelValue', 'saved']);
 
 const { api } = useFeathers();
 const service = api.service('building-material');
+const nrService = api.service('natural-resource');
+const bmNrService = api.service('building-material-natural-resource');
 
 const showDialog = ref(props.modelValue);
 const selected = ref<BuildingMaterial>({ name: '' } as BuildingMaterial);
 const editMode = ref(false);
 const tab = ref('general');
+const constituants = ref([]);
+const constituantsOptions = ref<{ label: string; value: number }>([]);
 
 const isValid = computed(() => {
   return selected.value.name && selected.value.description;
@@ -196,6 +211,34 @@ watch(
       selected.value = { ...props.item };
       editMode.value = selected.value.id !== undefined;
       tab.value = 'general';
+      constituants.value = [];
+      nrService
+        .find({
+          query: {
+            $limit: 100,
+            $select: ['id', 'name'],
+          },
+        })
+        .then((res) => {
+          constituantsOptions.value = res.data.map((item) => ({
+            label: item.name,
+            value: item.id,
+          }));
+        });
+      if (editMode.value) {
+        bmNrService
+          .find({
+            query: {
+              buildingMaterialId: selected.value.id,
+              $limit: 100,
+            },
+          })
+          .then((res) => {
+            constituants.value = res.data.map((item) =>
+              parseInt(item.naturalResourceId),
+            );
+          });
+      }
     }
     showDialog.value = value;
   },
@@ -211,8 +254,19 @@ async function onSave() {
   if (selected.value.id) {
     service
       .patch(selected.value.id, selected.value)
-      .then(() => {
+      .then((res) => {
         emit('saved', selected.value);
+        bmNrService
+          .remove(null, {
+            query: {
+              buildingMaterialId: res.id,
+            },
+          })
+          .finally(() => {
+            saveConstituants(selected.value).then(() => {
+              onHide();
+            });
+          });
         onHide();
       })
       .catch((err) => {
@@ -223,13 +277,29 @@ async function onSave() {
     selected.value.images = [];
     service
       .create(selected.value)
-      .then(() => {
-        emit('saved', selected.value);
-        onHide();
+      .then((res) => {
+        emit('saved', res);
+        saveConstituants(res).then(() => {
+          onHide();
+        });
       })
       .catch((err) => {
         notifyError(err.message);
       });
   }
+}
+
+async function saveConstituants(bm: BuildingMaterial) {
+  if (constituants.value.length === 0) return Promise.resolve();
+  return bmNrService.create(
+    // {
+    //   buildingMaterialId: bm.id,
+    //   naturalResourceId: constituants.value[0],
+    // },
+    constituants.value.map((item) => ({
+      buildingMaterialId: bm.id,
+      naturalResourceId: item,
+    })),
+  );
 }
 </script>

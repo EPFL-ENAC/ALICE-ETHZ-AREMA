@@ -35,6 +35,7 @@ export const getOptions = (app: Application): KnexAdapterOptions => {
   return {
     paginate: app.get('paginate'),
     Model: app.get('postgresqlClient'),
-    name: 'building-material-natural-resource'
+    name: 'building-material-natural-resource',
+    multi: [ 'remove', 'create' ]
   }
 }

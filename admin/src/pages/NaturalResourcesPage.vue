@@ -62,7 +62,11 @@
         </template>
       </q-table>
 
-      <natural-resource-dialog v-model="showEditDialog" :item="selected" @saved="onSaved"></natural-resource-dialog>
+      <natural-resource-dialog
+        v-model="showEditDialog"
+        :item="selected"
+        @saved="onSaved"
+      ></natural-resource-dialog>
     </div>
   </q-page>
 </template>
@@ -138,7 +142,7 @@ function fetchFromServer(
   count: number,
   filter: string,
   sortBy: string,
-  descending: boolean
+  descending: boolean,
 ) {
   const query: Query = {
     $skip: startRow,
@@ -152,13 +156,15 @@ function fetchFromServer(
       $ilike: `%${filter}%`,
     };
   }
-  return service.find({
-    query,
-  }).then((result) => {
-    rows.value = result.data;
-    loading.value = false;
-    return result;    
-  });
+  return service
+    .find({
+      query,
+    })
+    .then((result) => {
+      rows.value = result.data;
+      loading.value = false;
+      return result;
+    });
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
