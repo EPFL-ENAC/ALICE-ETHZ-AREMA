@@ -1,7 +1,7 @@
 {
   "name": "@epfl-enac/arema",
   "description": "Backend for ALICE ETHZ AREMA regenerative map",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "homepage": "",
   "private": false,
   "keywords": [
@@ -52,10 +52,10 @@
     "bundle:client": "npm run compile && npm pack --pack-destination ./public",
     "migrate": "knex migrate:latest",
     "migrate:make": "knex migrate:make",
+    "migrate:down": "knex migrate:down",
     "seed": "knex seed:run",
     "seed:admin": "knex seed:run --specific 00_admin_user.ts",
     "seed:professional-types": "knex seed:run --specific 04_professional-type.ts",
-    "seed:building-element": "knex seed:run --specific 06_building-element.ts",
     "seed:make": "knex seed:make"
   },
   "dependencies": {

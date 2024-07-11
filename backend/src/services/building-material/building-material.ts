@@ -22,6 +22,11 @@ import type { Application } from '../../declarations'
 import { BuildingMaterialService, getOptions } from './building-material.class'
 import { buildingMaterialPath, buildingMaterialMethods } from './building-material.shared'
 import { createSwaggerServiceOptions } from 'feathers-swagger'
+import { allowAnonymous }  from '../../hooks/allow-anonymous'
+import { entityCreated } from '../../hooks/entity-created'
+import { timestampsStripping } from '../../hooks/timestamps-stripping'
+import { bmNrRelation } from '../../hooks/bm-nr-relation'
+import { tcBmRelation } from '../../hooks/tc-bm-relation'
 
 export * from './building-material.class'
 export * from './building-material.schema'
@@ -51,10 +56,15 @@ export const buildingMaterial = (app: Application) => {
   app.service(buildingMaterialPath).hooks({
     around: {
       all: [
-        authenticate('jwt'),
         schemaHooks.resolveExternal(buildingMaterialExternalResolver),
         schemaHooks.resolveResult(buildingMaterialResolver)
-      ]
+      ],
+      find: [allowAnonymous, authenticate('jwt', 'anonymous')],
+      get: [allowAnonymous, authenticate('jwt', 'anonymous')],
+      create: [authenticate('jwt'),],
+      update: [authenticate('jwt')],
+      patch: [authenticate('jwt')],
+      remove: [authenticate('jwt')]
     },
     before: {
       all: [
@@ -65,13 +75,18 @@ export const buildingMaterial = (app: Application) => {
       get: [],
       create: [
         schemaHooks.validateData(buildingMaterialDataValidator),
+        entityCreated,
         schemaHooks.resolveData(buildingMaterialDataResolver)
       ],
       patch: [
+        timestampsStripping,
         schemaHooks.validateData(buildingMaterialPatchValidator),
         schemaHooks.resolveData(buildingMaterialPatchResolver)
       ],
-      remove: []
+      remove: [
+        bmNrRelation,
+        tcBmRelation
+      ]
     },
     after: {
       all: []

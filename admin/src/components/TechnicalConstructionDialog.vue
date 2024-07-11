@@ -34,6 +34,20 @@
               :label="$t('description') + '*'"
               class="q-mb-md"
             />
+            <q-select
+              filled
+              v-model="buildingMaterials"
+              :options="buildingMaterialsOptions"
+              multiple
+              map-options
+              emit-value
+              use-chips
+              :label="$t('building_material_constituants')"
+              :hint="
+                $t('technical_construction_building_material_constituants_hint')
+              "
+              class="q-mb-md"
+            />
           </q-tab-panel>
           <q-tab-panel name="structural" class="q-pl-none q-pr-none">
             <div class="row q-col-gutter-lg">
@@ -161,29 +175,37 @@
 <script lang="ts">
 export default defineComponent({
   components: { PropertyFormItem },
-  name: 'NaturalResourceDialog',
+  name: 'TechnicalConstructionDialog',
 });
 </script>
 <script setup lang="ts">
-import { NaturalResource } from '@epfl-enac/arema';
+import { TechnicalConstruction } from '@epfl-enac/arema';
 import { notifyError } from '../utils/notify';
 import PropertyFormItem from './PropertyFormItem.vue';
 
 interface DialogProps {
   modelValue: boolean;
-  item: NaturalResource;
+  item: TechnicalConstruction;
 }
 
 const props = defineProps<DialogProps>();
 const emit = defineEmits(['update:modelValue', 'saved']);
 
 const { api } = useFeathers();
-const service = api.service('natural-resource');
+const service = api.service('technical-construction');
+const bmService = api.service('building-material');
+const tcBmService = api.service('technical-construction-building-material');
 
 const showDialog = ref(props.modelValue);
-const selected = ref<NaturalResource>({ name: '' } as NaturalResource);
+const selected = ref<TechnicalConstruction>({
+  name: '',
+} as TechnicalConstruction);
 const editMode = ref(false);
 const tab = ref('general');
+const buildingMaterials = ref([]);
+const buildingMaterialsOptions = ref<
+  { label: string | undefined; value: number | undefined }[]
+>([]);
 
 const isValid = computed(() => {
   return selected.value.name && selected.value.description;
@@ -196,6 +218,34 @@ watch(
       selected.value = { ...props.item };
       editMode.value = selected.value.id !== undefined;
       tab.value = 'general';
+      buildingMaterials.value = [];
+      bmService
+        .find({
+          query: {
+            $limit: 100,
+            $select: ['id', 'name'],
+          },
+        })
+        .then((res) => {
+          buildingMaterialsOptions.value = res.data.map((item) => ({
+            label: item.name,
+            value: item.id,
+          }));
+        });
+      if (editMode.value) {
+        tcBmService
+          .find({
+            query: {
+              technicalConstructionId: selected.value.id,
+              $limit: 100,
+            },
+          })
+          .then((res) => {
+            buildingMaterials.value = res.data.map((item) =>
+              parseInt(item.buildingMaterialId),
+            );
+          });
+      }
     }
     showDialog.value = value;
   },
@@ -209,11 +259,23 @@ function onHide() {
 async function onSave() {
   if (selected.value === undefined) return;
   if (selected.value.id) {
+    delete selected.value.buildingMaterialIds;
+    selected.value.images = [];
     service
       .patch(selected.value.id, selected.value)
-      .then(() => {
-        emit('saved', selected.value);
-        onHide();
+      .then((res) => {
+        tcBmService
+          .remove(null, {
+            query: {
+              technicalConstructionId: res.id,
+            },
+          })
+          .finally(() => {
+            saveConstituants(selected.value).then(() => {
+              onHide();
+              emit('saved', selected.value);
+            });
+          });
       })
       .catch((err) => {
         notifyError(err.message);
@@ -223,13 +285,25 @@ async function onSave() {
     selected.value.images = [];
     service
       .create(selected.value)
-      .then(() => {
-        emit('saved', selected.value);
-        onHide();
+      .then((res) => {
+        saveConstituants(res).then(() => {
+          onHide();
+          emit('saved', res);
+        });
       })
       .catch((err) => {
         notifyError(err.message);
       });
   }
+}
+
+async function saveConstituants(tc: TechnicalConstruction) {
+  if (buildingMaterials.value.length === 0) return Promise.resolve();
+  return tcBmService.create(
+    buildingMaterials.value.map((item) => ({
+      technicalConstructionId: tc.id,
+      buildingMaterialId: item,
+    })),
+  );
 }
 </script>

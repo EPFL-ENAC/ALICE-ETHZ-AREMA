@@ -34,6 +34,18 @@
               :label="$t('description') + '*'"
               class="q-mb-md"
             />
+            <q-select
+              filled
+              v-model="naturalResources"
+              :options="naturalResourcesOptions"
+              multiple
+              map-options
+              emit-value
+              use-chips
+              :label="$t('constituants')"
+              :hint="$t('building_material_constituants_hint')"
+              class="q-mb-md"
+            />
           </q-tab-panel>
           <q-tab-panel name="structural" class="q-pl-none q-pr-none">
             <div class="row q-col-gutter-lg">
@@ -161,29 +173,38 @@
 <script lang="ts">
 export default defineComponent({
   components: { PropertyFormItem },
-  name: 'NaturalResourceDialog',
+  name: 'BuildingMaterialDialog',
 });
 </script>
 <script setup lang="ts">
-import { NaturalResource } from '@epfl-enac/arema';
+import { BuildingMaterial } from '@epfl-enac/arema';
 import { notifyError } from '../utils/notify';
 import PropertyFormItem from './PropertyFormItem.vue';
 
 interface DialogProps {
   modelValue: boolean;
-  item: NaturalResource;
+  item: BuildingMaterial;
 }
 
 const props = defineProps<DialogProps>();
 const emit = defineEmits(['update:modelValue', 'saved']);
 
 const { api } = useFeathers();
-const service = api.service('natural-resource');
+const service = api.service('building-material');
+const nrService = api.service('natural-resource');
+const bmNrService = api.service('building-material-natural-resource');
 
 const showDialog = ref(props.modelValue);
-const selected = ref<NaturalResource>({ name: '' } as NaturalResource);
+const selected = ref<BuildingMaterial>({ name: '' } as BuildingMaterial);
 const editMode = ref(false);
 const tab = ref('general');
+const naturalResources = ref([]);
+const naturalResourcesOptions = ref<
+  {
+    label: string | undefined;
+    value: number | undefined;
+  }[]
+>([]);
 
 const isValid = computed(() => {
   return selected.value.name && selected.value.description;
@@ -196,6 +217,34 @@ watch(
       selected.value = { ...props.item };
       editMode.value = selected.value.id !== undefined;
       tab.value = 'general';
+      naturalResources.value = [];
+      nrService
+        .find({
+          query: {
+            $limit: 100,
+            $select: ['id', 'name'],
+          },
+        })
+        .then((res) => {
+          naturalResourcesOptions.value = res.data.map((item) => ({
+            label: item.name,
+            value: item.id,
+          }));
+        });
+      if (editMode.value) {
+        bmNrService
+          .find({
+            query: {
+              buildingMaterialId: selected.value.id,
+              $limit: 100,
+            },
+          })
+          .then((res) => {
+            naturalResources.value = res.data.map((item) =>
+              parseInt(item.naturalResourceId),
+            );
+          });
+      }
     }
     showDialog.value = value;
   },
@@ -209,11 +258,22 @@ function onHide() {
 async function onSave() {
   if (selected.value === undefined) return;
   if (selected.value.id) {
+    delete selected.value.naturalResourceIds;
     service
       .patch(selected.value.id, selected.value)
-      .then(() => {
-        emit('saved', selected.value);
-        onHide();
+      .then((res) => {
+        bmNrService
+          .remove(null, {
+            query: {
+              buildingMaterialId: res.id,
+            },
+          })
+          .finally(() => {
+            saveConstituants(selected.value).then(() => {
+              onHide();
+              emit('saved', selected.value);
+            });
+          });
       })
       .catch((err) => {
         notifyError(err.message);
@@ -223,13 +283,25 @@ async function onSave() {
     selected.value.images = [];
     service
       .create(selected.value)
-      .then(() => {
-        emit('saved', selected.value);
-        onHide();
+      .then((res) => {
+        saveConstituants(res).then(() => {
+          onHide();
+          emit('saved', res);
+        });
       })
       .catch((err) => {
         notifyError(err.message);
       });
   }
+}
+
+async function saveConstituants(bm: BuildingMaterial) {
+  if (naturalResources.value.length === 0) return Promise.resolve();
+  return bmNrService.create(
+    naturalResources.value.map((item) => ({
+      buildingMaterialId: bm.id,
+      naturalResourceId: item,
+    })),
+  );
 }
 </script>

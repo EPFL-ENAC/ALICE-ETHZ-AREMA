@@ -23,6 +23,10 @@ import type { Application } from '../../declarations'
 import { TechnicalConstructionService, getOptions } from './technical-construction.class'
 import { technicalConstructionPath, technicalConstructionMethods } from './technical-construction.shared'
 import { createSwaggerServiceOptions } from 'feathers-swagger'
+import { allowAnonymous }  from '../../hooks/allow-anonymous'
+import { entityCreated } from '../../hooks/entity-created'
+import { timestampsStripping } from '../../hooks/timestamps-stripping'
+import { tcBmRelation } from '../../hooks/tc-bm-relation'
 
 export * from './technical-construction.class'
 export * from './technical-construction.schema'
@@ -52,10 +56,15 @@ export const technicalConstruction = (app: Application) => {
   app.service(technicalConstructionPath).hooks({
     around: {
       all: [
-        authenticate('jwt'),
         schemaHooks.resolveExternal(technicalConstructionExternalResolver),
         schemaHooks.resolveResult(technicalConstructionResolver)
-      ]
+      ],
+      find: [allowAnonymous, authenticate('jwt', 'anonymous')],
+      get: [allowAnonymous, authenticate('jwt', 'anonymous')],
+      create: [authenticate('jwt'),],
+      update: [authenticate('jwt')],
+      patch: [authenticate('jwt')],
+      remove: [authenticate('jwt')]
     },
     before: {
       all: [
@@ -66,13 +75,17 @@ export const technicalConstruction = (app: Application) => {
       get: [],
       create: [
         schemaHooks.validateData(technicalConstructionDataValidator),
+        entityCreated,
         schemaHooks.resolveData(technicalConstructionDataResolver)
       ],
       patch: [
+        timestampsStripping,
         schemaHooks.validateData(technicalConstructionPatchValidator),
         schemaHooks.resolveData(technicalConstructionPatchResolver)
       ],
-      remove: []
+      remove: [
+        tcBmRelation
+      ]
     },
     after: {
       all: []

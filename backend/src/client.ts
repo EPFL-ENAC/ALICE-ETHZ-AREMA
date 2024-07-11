@@ -4,6 +4,22 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { technicalConstructionBuildingMaterialClient } from './services/technical-construction-building-material/technical-construction-building-material.shared'
+export type {
+  TechnicalConstructionBuildingMaterial,
+  TechnicalConstructionBuildingMaterialData,
+  TechnicalConstructionBuildingMaterialQuery,
+  TechnicalConstructionBuildingMaterialPatch
+} from './services/technical-construction-building-material/technical-construction-building-material.shared'
+
+import { buildingMaterialNaturalResourceClient } from './services/building-material-natural-resource/building-material-natural-resource.shared'
+export type {
+  BuildingMaterialNaturalResource,
+  BuildingMaterialNaturalResourceData,
+  BuildingMaterialNaturalResourceQuery,
+  BuildingMaterialNaturalResourcePatch
+} from './services/building-material-natural-resource/building-material-natural-resource.shared'
+
 import { buildingProfessionalClient } from './services/building-professional/building-professional.shared'
 export type {
   BuildingProfessional,
@@ -52,14 +68,6 @@ export type {
   BuildingMaterialPatch
 } from './services/building-material/building-material.shared'
 
-import { buildingElementClient } from './services/building-element/building-element.shared'
-export type {
-  BuildingElement,
-  BuildingElementData,
-  BuildingElementQuery,
-  BuildingElementPatch
-} from './services/building-element/building-element.shared'
-
 import { naturalResourceClient } from './services/natural-resource/natural-resource.shared'
 export type {
   NaturalResource,
@@ -87,7 +95,7 @@ export type ClientApplication = Application<ServiceTypes, Configuration>
  * @see https://dove.feathersjs.com/api/client.html
  * @returns The Feathers client application
  */
-export const createClient = <Configuration = any>(
+export const createClient = <Configuration = any,>(
   connection: TransportConnection<ServiceTypes>,
   authenticationOptions: Partial<AuthenticationClientOptions> = {}
 ) => {
@@ -99,12 +107,13 @@ export const createClient = <Configuration = any>(
 
   client.configure(userClient)
   client.configure(naturalResourceClient)
-  client.configure(buildingElementClient)
   client.configure(buildingMaterialClient)
   client.configure(professionalClient)
   client.configure(professionalTypeClient)
   client.configure(technicalConstructionClient)
   client.configure(buildingClient)
   client.configure(buildingProfessionalClient)
+  client.configure(buildingMaterialNaturalResourceClient)
+  client.configure(technicalConstructionBuildingMaterialClient)
   return client
 }

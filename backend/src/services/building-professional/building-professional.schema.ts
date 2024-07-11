@@ -8,32 +8,23 @@ import { dataValidator, queryValidator } from '../../validators'
 import { User } from '../users/users.schema'
 import { logger } from '../../logger'
 import { Building } from '../building/building.schema'
-import { BuildingElement } from '../building-element/building-element.schema'
 import { Professional } from '../professional/professional.schema'
 
 // Main data model schema
 export const buildingProfessionalSchema = Type.Object(
   {
     buildingId: Type.Number(),
-    buildingElementId: Type.Optional(Type.Number()),
-    professionalId: Type.Optional(Type.Number()),
-
-    updatedAt: Type.Optional(Type.String({ format: 'date-time' })),
-    createdAt: Type.Optional(Type.String({ format: 'date-time' })),
-    updatedById: Type.Optional(Type.Number()),
-    createdById: Type.Optional(Type.Number())
+    professionalId: Type.Optional(Type.Number())
   },
   { $id: 'BuildingProfessional', additionalProperties: false }
 )
 export type BuildingProfessional = Static<typeof buildingProfessionalSchema>
 
 // generate fake data
-export async function generateFake(user: User, building: Building, buildingElement: BuildingElement, professional: Professional) {
+export async function generateFake(user: User, building: Building, professional: Professional) {
   const result = {
     buildingId: building.id,
-    buildingElementId: buildingElement.id,
     professionalId: professional.id,
-    createdById: user.id
   }
   logger.debug(`fake data building professional generated: ${JSON.stringify(result)}`)
   return result
@@ -47,23 +38,14 @@ export const buildingProfessionalExternalResolver = resolve<BuildingProfessional
 // Schema for creating new entries
 export const buildingProfessionalDataSchema = Type.Pick(
   buildingProfessionalSchema,
-  ['buildingId', 'buildingElementId', 'professionalId', 'createdById'],
+  ['buildingId', 'professionalId'],
   {
     $id: 'BuildingProfessionalData'
   }
 )
 export type BuildingProfessionalData = Static<typeof buildingProfessionalDataSchema>
 export const buildingProfessionalDataValidator = getValidator(buildingProfessionalDataSchema, dataValidator)
-export const buildingProfessionalDataResolver = resolve<BuildingProfessional, HookContext>({
-  createdAt: async () => {
-    // Return the current date
-    return new Date().toISOString()
-  },
-  createdById: async (value, message, context) => {
-    // Associate the currently authenticated user
-    return context.params?.user?.id ?? message?.createdById
-  }
-})
+export const buildingProfessionalDataResolver = resolve<BuildingProfessional, HookContext>({})
 
 // Schema for updating existing entries
 export const buildingProfessionalPatchSchema = Type.Partial(buildingProfessionalSchema, {
@@ -71,23 +53,12 @@ export const buildingProfessionalPatchSchema = Type.Partial(buildingProfessional
 })
 export type BuildingProfessionalPatch = Static<typeof buildingProfessionalPatchSchema>
 export const buildingProfessionalPatchValidator = getValidator(buildingProfessionalPatchSchema, dataValidator)
-export const buildingProfessionalPatchResolver = resolve<BuildingProfessional, HookContext>({
-  updatedAt: async () => {
-    // Return the current date
-    return new Date().toISOString()
-  },
-  updatedById: async (value, message, context) => {
-    // Associate the currently authenticated user
-    return context.params?.user?.id ?? message?.updatedById
-  }
-})
+export const buildingProfessionalPatchResolver = resolve<BuildingProfessional, HookContext>({})
 
 // Schema for allowed query properties
 export const buildingProfessionalQueryProperties = Type.Pick(buildingProfessionalSchema, [
   'buildingId',
-  'buildingElementId',
   'professionalId',
-  'createdById'
 ])
 export const buildingProfessionalQuerySchema = Type.Intersect(
   [

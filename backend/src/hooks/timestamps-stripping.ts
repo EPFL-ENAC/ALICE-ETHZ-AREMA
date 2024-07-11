@@ -7,7 +7,6 @@ import type { HookContext } from '../declarations'
  * @param context 
  */
 export const timestampsStripping = async (context: HookContext) => {
-  console.log(`Running hook timestamps-stripping on ${context.path}.${context.method}`)
   if (context.params.provider !== undefined && context.data) {
     delete context.data.createdAt;
     delete context.data.createdById;

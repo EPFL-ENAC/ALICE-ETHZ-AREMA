@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="text-h5 q-pa-md">{{ $t('natural_resources') }}</div>
+    <div class="text-h5 q-pa-md">{{ $t('building_materials') }}</div>
     <q-separator />
     <div class="q-pa-md">
       <q-table
@@ -62,11 +62,11 @@
         </template>
       </q-table>
 
-      <natural-resource-dialog
+      <building-material-dialog
         v-model="showEditDialog"
         :item="selected"
         @saved="onSaved"
-      ></natural-resource-dialog>
+      ></building-material-dialog>
     </div>
   </q-page>
 </template>
@@ -74,14 +74,14 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { Query } from '@feathersjs/client';
-import { NaturalResource } from '@epfl-enac/arema';
-import NaturalResourceDialog from 'src/components/NaturalResourceDialog.vue';
+import { BuildingMaterial } from '@epfl-enac/arema';
+import BuildingMaterialDialog from 'src/components/BuildingMaterialDialog.vue';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const { api } = useFeathers();
-const service = api.service('natural-resource');
+const service = api.service('building-material');
 
 const columns = [
   {
@@ -101,11 +101,21 @@ const columns = [
     sortable: false,
   },
   {
+    name: 'constituants',
+    required: true,
+    label: t('constituants'),
+    align: 'left',
+    field: (row: BuildingMaterial) => {
+      return row.naturalResourceIds ? row.naturalResourceIds.length : 0;
+    },
+    sortable: false,
+  },
+  {
     name: 'lastModification',
     required: true,
     label: t('last_modification'),
     align: 'left',
-    field: (row: NaturalResource) => {
+    field: (row: BuildingMaterial) => {
       const date = new Date(row.updatedAt || row.createdAt);
       return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
     },
@@ -118,10 +128,10 @@ const columns = [
   },
 ];
 
-const selected = ref<NaturalResource>();
+const selected = ref<BuildingMaterial>();
 const showEditDialog = ref(false);
 const tableRef = ref();
-const rows = ref<NaturalResource[]>([]);
+const rows = ref<BuildingMaterial[]>([]);
 const filter = ref('');
 const loading = ref(false);
 const pagination = ref<PaginationOptions>({
@@ -174,8 +184,8 @@ function onAdd() {
   showEditDialog.value = true;
 }
 
-function onEdit(resource: NaturalResource) {
-  selected.value = { ...resource };
+function onEdit(item: BuildingMaterial) {
+  selected.value = { ...item };
   showEditDialog.value = true;
 }
 
@@ -183,9 +193,9 @@ function onSaved() {
   tableRef.value.requestServerInteraction();
 }
 
-function remove(resource: NaturalResource) {
+function remove(item: BuildingMaterial) {
   service
-    .remove(resource.id)
+    .remove(item.id)
     .then(() => {
       tableRef.value.requestServerInteraction();
     })
