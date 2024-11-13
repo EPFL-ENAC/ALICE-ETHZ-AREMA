@@ -72,7 +72,6 @@
     "useCssModule": true,
     "useCssVars": true,
     "useDataStore": true,
-    "useFeathers": true,
     "useI18n": true,
     "useInstanceDefaults": true,
     "useLink": true,
@@ -86,6 +85,21 @@
     "watchSyncEffect": true,
     "ExtractDefaultPropTypes": true,
     "ExtractPropTypes": true,
-    "ExtractPublicPropTypes": true
+    "ExtractPublicPropTypes": true,
+    "acceptHMRUpdate": true,
+    "createPinia": true,
+    "defineStore": true,
+    "getActivePinia": true,
+    "mapActions": true,
+    "mapGetters": true,
+    "mapState": true,
+    "mapStores": true,
+    "mapWritableState": true,
+    "setActivePinia": true,
+    "setMapStoreSuffix": true,
+    "storeToRefs": true,
+    "useFeathers": true,
+    "Service": true,
+    "useServices": true
   }
 }

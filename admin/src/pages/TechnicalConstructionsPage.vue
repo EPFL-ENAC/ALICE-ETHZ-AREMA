@@ -73,15 +73,15 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { Query } from '@feathersjs/client';
-import { TechnicalConstruction } from '@epfl-enac/arema';
+import { Query } from 'src/components/models';
+import { TechnicalConstruction } from 'src/models';
 import TechnicalConstructionDialog from 'src/components/TechnicalConstructionDialog.vue';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
-const { api } = useFeathers();
-const service = api.service('technical-construction');
+const services = useServices();
+const service = services.make('technical-construction');
 
 const columns = [
   {

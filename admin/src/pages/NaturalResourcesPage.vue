@@ -73,15 +73,15 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { Query } from '@feathersjs/client';
-import { NaturalResource } from '@epfl-enac/arema';
+import { Query } from 'src/components/models';
+import { NaturalResource } from 'src/models';
 import NaturalResourceDialog from 'src/components/NaturalResourceDialog.vue';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
-const { api } = useFeathers();
-const service = api.service('natural-resource');
+const services = useServices();
+const service = services.make('natural-resource');
 
 const columns = [
   {
@@ -152,19 +152,15 @@ function fetchFromServer(
     },
   };
   if (filter) {
-    query.name = {
-      $ilike: `%${filter}%`,
+    query.filter = {
+      name: { $ilike: `%${filter}%` },
     };
   }
-  return service
-    .find({
-      query,
-    })
-    .then((result) => {
-      rows.value = result.data;
-      loading.value = false;
-      return result;
-    });
+  return service.find(query).then((result) => {
+    rows.value = result.data;
+    loading.value = false;
+    return result;
+  });
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);

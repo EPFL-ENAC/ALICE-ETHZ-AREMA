@@ -122,7 +122,7 @@
                 <q-select
                   filled
                   clearable
-                  v-model="selected.professionalTypeId"
+                  v-model="selected.type"
                   :options="professionalTypeOptions"
                   :label="$t('type')"
                   class="on-right"
@@ -194,8 +194,8 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { Query } from '@feathersjs/client';
-import { Professional, ProfessionalType } from '@epfl-enac/arema';
+import { Query } from 'src/components/models';
+import { Professional, ProfessionalType } from 'src/models';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
 import CircleMapInput from '../components/CircleMapInput.vue';
@@ -203,9 +203,9 @@ import MapView from 'src/components/MapView.vue';
 import { onMounted, ref, computed } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
-const { api } = useFeathers();
-const service = api.service('professional');
-const serviceType = api.service('professional-type');
+const services = useServices();
+const service = services.make('professional');
+const serviceType = services.make('professional-type');
 
 const columns = [
   {
@@ -225,7 +225,7 @@ const columns = [
     sortable: false,
   },
   {
-    name: 'professionalTypeId',
+    name: 'type',
     required: true,
     label: t('type'),
     align: 'left',
@@ -263,7 +263,7 @@ const columns = [
     label: t('last_modification'),
     align: 'left',
     field: (row: Professional) => {
-      const date = new Date(row.updatedAt || row.createdAt);
+      const date = new Date(row.updated_at || row.created_at);
       return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
     },
     sortable: false,
@@ -341,8 +341,9 @@ const features = computed(() => {
 
 function disableSave() {
   return (
+    !selected.value ||
     !selected.value.name ||
-    !selected.value.professionalTypeId ||
+    !selected.value.type ||
     !selected.value.address
   );
 }
@@ -352,7 +353,7 @@ function fetchFromServer(
   count: number,
   filter: string,
   sortBy: string,
-  descending: boolean
+  descending: boolean,
 ) {
   const query: Query = {
     $skip: startRow,
@@ -362,7 +363,7 @@ function fetchFromServer(
     },
   };
   if (types.value) {
-    query.professionalTypeId = {
+    query.type = {
       $in: types.value.map((type) => parseInt(type)),
     };
   }
@@ -435,11 +436,6 @@ function onEdit(resource: Professional) {
 function saveSelected() {
   if (selected.value === undefined) return;
   if (selected.value.id) {
-    delete selected.value.professionalType;
-    // FIXME "find" returns a string whereas "create/patch" requires a number
-    selected.value.professionalTypeId = parseInt(
-      selected.value.professionalTypeId
-    );
     service
       .patch(selected.value.id, selected.value)
       .then(() => {
@@ -452,11 +448,7 @@ function saveSelected() {
         });
       });
   } else {
-    selected.value.images = [];
-    selected.value.links = [];
-    selected.value.professionalTypeId = parseInt(
-      selected.value.professionalTypeId
-    );
+    selected.value.files = [];
     service
       .create(selected.value)
       .then(() => {

@@ -79,7 +79,7 @@ export default defineComponent({
           showResultsWhileTyping: true,
           language: locale.value,
         }),
-        'top-left'
+        'top-left',
       );
       map.addControl(new ThemeSwitcherControl(themes, themes[0].id));
 
@@ -107,7 +107,7 @@ export default defineComponent({
         (feat) =>
           !feat.properties ||
           !feat.properties.circleRadius ||
-          feat.properties.circleRadius > 0.1
+          feat.properties.circleRadius > 0.1,
       );
       emit('update:selectedFeatures', selectedFeatures);
       // note: circle center and radius can be extracted using mapbox-gl-draw-geodesic API

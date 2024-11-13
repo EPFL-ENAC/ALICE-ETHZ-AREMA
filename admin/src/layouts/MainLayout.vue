@@ -114,29 +114,36 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-
-const router = useRouter();
 const authStore = useAuthStore();
 
 onMounted(() => {
-  if (!authStore.isAuthenticated) {
-    authStore.loginRedirect = router.currentRoute.value.fullPath;
-    router.push('/login');
-  }
+  authStore.init().then(() => {
+    if (!authStore.isAuthenticated) {
+      return authStore.login();
+    }
+  });
 });
+
+watch(
+  () => authStore.isAuthenticated,
+  () => {
+    if (authStore.isAuthenticated) {
+      console.log('Authenticated');
+    } else {
+      console.log('Not authenticated');
+    }
+  },
+);
 
 const leftDrawerOpen = ref(false);
 
-const username = computed(() => authStore.user?.email);
+const username = computed(() => authStore.profile?.email);
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
 
 function onLogout() {
-  authStore.logout().then(() => {
-    router.push('/login');
-  });
+  authStore.logout();
 }
 </script>

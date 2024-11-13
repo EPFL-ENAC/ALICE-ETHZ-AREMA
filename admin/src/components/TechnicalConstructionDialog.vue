@@ -179,7 +179,7 @@ export default defineComponent({
 });
 </script>
 <script setup lang="ts">
-import { TechnicalConstruction } from '@epfl-enac/arema';
+import { TechnicalConstruction } from 'src/models';
 import { notifyError } from '../utils/notify';
 import PropertyFormItem from './PropertyFormItem.vue';
 
@@ -191,10 +191,10 @@ interface DialogProps {
 const props = defineProps<DialogProps>();
 const emit = defineEmits(['update:modelValue', 'saved']);
 
-const { api } = useFeathers();
-const service = api.service('technical-construction');
-const bmService = api.service('building-material');
-const tcBmService = api.service('technical-construction-building-material');
+const services = useServices();
+const service = services.make('technical-construction');
+const bmService = services.make('building-material');
+const tcBmService = services.make('technical-construction-building-material');
 
 const showDialog = ref(props.modelValue);
 const selected = ref<TechnicalConstruction>({
@@ -221,10 +221,9 @@ watch(
       buildingMaterials.value = [];
       bmService
         .find({
-          query: {
-            $limit: 100,
-            $select: ['id', 'name'],
-          },
+          $limit: 100,
+          $select: ['id', 'name'],
+          filter: {},
         })
         .then((res) => {
           buildingMaterialsOptions.value = res.data.map((item) => ({
@@ -235,9 +234,9 @@ watch(
       if (editMode.value) {
         tcBmService
           .find({
-            query: {
-              technicalConstructionId: selected.value.id,
-              $limit: 100,
+            $limit: 100,
+            filter: {
+              technical_construction_id: selected.value.id,
             },
           })
           .then((res) => {
@@ -260,7 +259,7 @@ async function onSave() {
   if (selected.value === undefined) return;
   if (selected.value.id) {
     delete selected.value.buildingMaterialIds;
-    selected.value.images = [];
+    selected.value.files = [];
     service
       .patch(selected.value.id, selected.value)
       .then((res) => {
@@ -282,7 +281,7 @@ async function onSave() {
       });
   } else {
     // TODO
-    selected.value.images = [];
+    selected.value.files = [];
     service
       .create(selected.value)
       .then((res) => {

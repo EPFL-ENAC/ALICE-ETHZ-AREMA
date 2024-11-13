@@ -29,15 +29,7 @@ const routes: RouteRecordRaw[] = [
         path: 'technical-constructions',
         component: () => import('pages/TechnicalConstructionsPage.vue'),
       },
-      {
-        path: 'users',
-        component: () => import('pages/UsersPage.vue'),
-      },
     ],
-  },
-  {
-    path: '/login',
-    component: () => import('pages/LoginPage.vue'),
   },
 
   // Always leave this as last one,

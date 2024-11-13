@@ -177,7 +177,7 @@ export default defineComponent({
 });
 </script>
 <script setup lang="ts">
-import { BuildingMaterial } from '@epfl-enac/arema';
+import { BuildingMaterial } from 'src/models';
 import { notifyError } from '../utils/notify';
 import PropertyFormItem from './PropertyFormItem.vue';
 
@@ -189,10 +189,10 @@ interface DialogProps {
 const props = defineProps<DialogProps>();
 const emit = defineEmits(['update:modelValue', 'saved']);
 
-const { api } = useFeathers();
-const service = api.service('building-material');
-const nrService = api.service('natural-resource');
-const bmNrService = api.service('building-material-natural-resource');
+const services = useServices();
+const service = services.make('building-material');
+const nrService = service.make('natural-resource');
+const bmNrService = service.make('building-material-natural-resource');
 
 const showDialog = ref(props.modelValue);
 const selected = ref<BuildingMaterial>({ name: '' } as BuildingMaterial);
@@ -280,7 +280,7 @@ async function onSave() {
       });
   } else {
     // TODO
-    selected.value.images = [];
+    selected.value.files = [];
     service
       .create(selected.value)
       .then((res) => {

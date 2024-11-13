@@ -120,16 +120,16 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { Query } from '@feathersjs/client';
-import { Building } from '@epfl-enac/arema';
+import { Query } from 'src/components/models';
+import { Building } from 'src/models';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
 import PointMapInput from '../components/PointMapInput.vue';
 import MapView from 'src/components/MapView.vue';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
-const { api } = useFeathers();
-const service = api.service('building');
+const services = useServices();
+const service = services.make('building');
 
 const columns = [
   {
@@ -217,7 +217,7 @@ function fetchFromServer(
   count: number,
   filter: string,
   sortBy: string,
-  descending: boolean
+  descending: boolean,
 ) {
   loading.value = true;
   const query: Query = {
@@ -302,7 +302,7 @@ function saveSelected() {
         });
       });
   } else {
-    selected.value.images = [];
+    selected.value.files = [];
     service
       .create(selected.value)
       .then(() => {

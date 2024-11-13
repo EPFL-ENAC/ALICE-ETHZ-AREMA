@@ -1,22 +1,18 @@
-FROM node:lts-alpine as build-stage
+FROM python:3.11.7-bullseye
+ENV POETRY_VERSION=1.8.3
+RUN pip install "poetry==$POETRY_VERSION"
+ENV PYTHONPATH="$PYTHONPATH:/app"
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY package*.json ./
-COPY knexfile.ts ./
-RUN npm ci
+COPY poetry.lock pyproject.toml /app/
+RUN poetry config installer.max-workers 10
+RUN poetry config virtualenvs.create false
+RUN apt-get update && apt-get install -y g++ libpq-dev libgl1 gdal-bin libgdal-dev
+RUN poetry install --no-interaction --no-root
 
-COPY config ./config
-COPY helpers ./helpers
-COPY migrations ./migrations
-COPY seeds ./seeds
-COPY public ./public
-COPY src ./src
-COPY test ./test
+COPY alembic.ini start.sh /app/
+COPY migrations /app/migrations
+COPY api /app/api
 
-COPY tsconfig.json ./tsconfig.json
-
-EXPOSE 3030
-RUN npm run compile
-CMD ["npm", "run",  "start"]
-HEALTHCHECK --interval=90s --timeout=40s --start-period=10s --retries=4 CMD wget --no-verbose --tries=1 --spider http://localhost:3030/natural-resource || exit 1
+ENTRYPOINT sh start.sh

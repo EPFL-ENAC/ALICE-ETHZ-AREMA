@@ -165,7 +165,7 @@ export default defineComponent({
 });
 </script>
 <script setup lang="ts">
-import { NaturalResource } from '@epfl-enac/arema';
+import { NaturalResource } from 'src/models';
 import { notifyError } from '../utils/notify';
 import PropertyFormItem from './PropertyFormItem.vue';
 
@@ -177,8 +177,8 @@ interface DialogProps {
 const props = defineProps<DialogProps>();
 const emit = defineEmits(['update:modelValue', 'saved']);
 
-const { api } = useFeathers();
-const service = api.service('natural-resource');
+const services = useServices();
+const service = services.make('natural-resource');
 
 const showDialog = ref(props.modelValue);
 const selected = ref<NaturalResource>({ name: '' } as NaturalResource);
@@ -220,7 +220,7 @@ async function onSave() {
       });
   } else {
     // TODO
-    selected.value.images = [];
+    selected.value.files = [];
     service
       .create(selected.value)
       .then(() => {

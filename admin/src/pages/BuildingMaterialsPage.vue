@@ -73,15 +73,15 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { Query } from '@feathersjs/client';
-import { BuildingMaterial } from '@epfl-enac/arema';
+import { Query } from 'src/components/models';
+import { BuildingMaterial } from 'src/models';
 import BuildingMaterialDialog from 'src/components/BuildingMaterialDialog.vue';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
-const { api } = useFeathers();
-const service = api.service('building-material');
+const services = useServices();
+const service = services.make('building-material');
 
 const columns = [
   {
@@ -166,15 +166,11 @@ function fetchFromServer(
       $ilike: `%${filter}%`,
     };
   }
-  return service
-    .find({
-      query,
-    })
-    .then((result) => {
-      rows.value = result.data;
-      loading.value = false;
-      return result;
-    });
+  return service.find(query).then((result) => {
+    rows.value = result.data;
+    loading.value = false;
+    return result;
+  });
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
