@@ -5,5 +5,6 @@ export interface Filter {
 export interface Query {
   $skip?: number;
   $limit?: number;
+  $select?: string[];
   filter?: Filter;
 }

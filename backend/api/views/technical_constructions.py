@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from api.db import get_session, AsyncSession
 from api.auth import kc_service, User
 from api.models.domain import TechnicalConstruction
-from api.models.query import TechnicalConstructionResult
+from api.models.query import TechnicalConstructionResult, TechnicalConstructionDraft
 from api.services.technical_constructions import TechnicalConstructionService
 from enacit4r_sql.utils.query import paramAsArray, paramAsDict
 
@@ -31,14 +31,14 @@ async def delete(id: int, session: AsyncSession = Depends(get_session)) -> Techn
 
 @router.post("/", response_model=TechnicalConstruction)
 async def create(
-    natural_resource: TechnicalConstruction, session: AsyncSession = Depends(get_session)
+    payload: TechnicalConstructionDraft, session: AsyncSession = Depends(get_session)
 ) -> TechnicalConstruction:
     """Create a technical construction"""
-    return await TechnicalConstructionService(session).create(natural_resource)
+    return await TechnicalConstructionService(session).create(payload)
   
 @router.put("/{id}", response_model=TechnicalConstruction)
 async def update(
-    id: int, natural_resource: TechnicalConstruction, session: AsyncSession = Depends(get_session)
+    id: int, payload: TechnicalConstructionDraft, session: AsyncSession = Depends(get_session)
 ) -> TechnicalConstruction:
     """Update a technical construction by id"""
-    return await TechnicalConstructionService(session).update(id, natural_resource)    
+    return await TechnicalConstructionService(session).update(id, payload)    

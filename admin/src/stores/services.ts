@@ -35,6 +35,7 @@ export class Service<
     return api
       .get(`/${this.entityName}/`, {
         params: {
+          select: query?.$select ? JSON.stringify(query?.$select) : undefined,
           range: JSON.stringify(range),
           filter: JSON.stringify(query?.filter),
         },

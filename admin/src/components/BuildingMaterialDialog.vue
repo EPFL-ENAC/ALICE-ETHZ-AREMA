@@ -224,10 +224,12 @@ watch(
           filter: {},
         })
         .then((res) => {
-          naturalResourcesOptions.value = res.data.map((item) => ({
-            label: item.name,
-            value: item.id,
-          }));
+          naturalResourcesOptions.value = res.data.map(
+            (item: NaturalResource) => ({
+              label: item.name,
+              value: item.id,
+            }),
+          );
         });
       if (editMode.value) {
         naturalResources.value = selected.value.natural_resources
@@ -253,7 +255,7 @@ async function onSave() {
   if (selected.value.id) {
     service
       .update(selected.value.id, selected.value)
-      .then((res) => {
+      .then(() => {
         emit('saved', selected.value);
         onHide();
       })
@@ -265,7 +267,7 @@ async function onSave() {
     selected.value.files = [];
     service
       .create(selected.value)
-      .then((res) => {
+      .then(() => {
         emit('saved', selected.value);
         onHide();
       })

@@ -92,7 +92,7 @@ class BuildingMaterialService:
         entity.created_at = datetime.now()
         entity.updated_at = datetime.now()
         # handle natural resources relationship
-        new_nrs = await self.session.exec(select(NaturalResource).filter(NaturalResource.id.in_(payload.natural_resource_ids)))
+        new_nrs = await self._get_natural_resources(payload.natural_resource_ids)
         entity.natural_resources.clear()
         entity.natural_resources.extend(new_nrs)
         self.session.add(entity)
@@ -114,9 +114,12 @@ class BuildingMaterialService:
             if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "natural_resource_ids"]:
                 setattr(entity, key, value)
         # handle natural resources relationship
-        new_nrs = await self.session.exec(select(NaturalResource).filter(NaturalResource.id.in_(payload.natural_resource_ids)))
+        new_nrs = await self._get_natural_resources(payload.natural_resource_ids)
         entity.natural_resources.clear()
         entity.natural_resources.extend(new_nrs)
         entity.updated_at = datetime.now()
         await self.session.commit()
         return entity
+    
+    async def _get_natural_resources(self, ids: list[int]):
+        return await self.session.exec(select(NaturalResource).filter(NaturalResource.id.in_(ids)))

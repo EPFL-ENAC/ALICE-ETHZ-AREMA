@@ -31,15 +31,15 @@ async def delete(id: int, session: AsyncSession = Depends(get_session)) -> Build
 
 @router.post("/", response_model=BuildingMaterial)
 async def create(
-    natural_resource: BuildingMaterialDraft, session: AsyncSession = Depends(get_session)
+    payload: BuildingMaterialDraft, session: AsyncSession = Depends(get_session)
 ) -> BuildingMaterial:
     """Create a building material"""
-    return await BuildingMaterialService(session).create(natural_resource)
+    return await BuildingMaterialService(session).create(payload)
   
 @router.put("/{id}", response_model=BuildingMaterial)
 async def update(
-    id: int, natural_resource: BuildingMaterialDraft, session: AsyncSession = Depends(get_session)
+    id: int, payload: BuildingMaterialDraft, session: AsyncSession = Depends(get_session)
 ) -> BuildingMaterial:
     """Update a building material by id"""
     async with session:
-        return await BuildingMaterialService(session).update(id, natural_resource)    
+        return await BuildingMaterialService(session).update(id, payload)    

@@ -179,7 +179,7 @@ export default defineComponent({
 });
 </script>
 <script setup lang="ts">
-import { TechnicalConstruction } from 'src/models';
+import { BuildingMaterial, TechnicalConstruction } from 'src/models';
 import { notifyError } from '../utils/notify';
 import PropertyFormItem from './PropertyFormItem.vue';
 
@@ -194,7 +194,6 @@ const emit = defineEmits(['update:modelValue', 'saved']);
 const services = useServices();
 const service = services.make('technical-construction');
 const bmService = services.make('building-material');
-//const tcBmService = services.make('technical-construction-building-material');
 
 const showDialog = ref(props.modelValue);
 const selected = ref<TechnicalConstruction>({
@@ -226,24 +225,19 @@ watch(
           filter: {},
         })
         .then((res) => {
-          buildingMaterialsOptions.value = res.data.map((item) => ({
-            label: item.name,
-            value: item.id,
-          }));
+          buildingMaterialsOptions.value = res.data.map(
+            (item: BuildingMaterial) => ({
+              label: item.name,
+              value: item.id,
+            }),
+          );
         });
       if (editMode.value) {
-        tcBmService
-          .find({
-            $limit: 100,
-            filter: {
-              technical_construction_id: selected.value.id,
-            },
-          })
-          .then((res) => {
-            buildingMaterials.value = res.data.map((item) =>
-              parseInt(item.buildingMaterialId),
-            );
-          });
+        buildingMaterials.value = selected.value.building_materials
+          ? selected.value.building_materials.map(
+              (item: BuildingMaterial) => item.id,
+            )
+          : [];
       }
     }
     showDialog.value = value;
@@ -258,23 +252,14 @@ function onHide() {
 async function onSave() {
   if (selected.value === undefined) return;
   if (selected.value.id) {
-    delete selected.value.buildingMaterialIds;
+    delete selected.value.building_materials;
+    selected.value.building_material_ids = buildingMaterials.value;
     selected.value.files = [];
     service
       .update(selected.value.id, selected.value)
-      .then((res) => {
-        tcBmService
-          .remove(null, {
-            query: {
-              technicalConstructionId: res.id,
-            },
-          })
-          .finally(() => {
-            saveConstituants(selected.value).then(() => {
-              onHide();
-              emit('saved', selected.value);
-            });
-          });
+      .then(() => {
+        emit('saved', selected.value);
+        onHide();
       })
       .catch((err) => {
         notifyError(err.message);
@@ -284,25 +269,13 @@ async function onSave() {
     selected.value.files = [];
     service
       .create(selected.value)
-      .then((res) => {
-        saveConstituants(res).then(() => {
-          onHide();
-          emit('saved', res);
-        });
+      .then(() => {
+        emit('saved', selected.value);
+        onHide();
       })
       .catch((err) => {
         notifyError(err.message);
       });
   }
-}
-
-async function saveConstituants(tc: TechnicalConstruction) {
-  if (buildingMaterials.value.length === 0) return Promise.resolve();
-  return tcBmService.create(
-    buildingMaterials.value.map((item) => ({
-      technicalConstructionId: tc.id,
-      buildingMaterialId: item,
-    })),
-  );
 }
 </script>

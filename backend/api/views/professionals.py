@@ -31,14 +31,14 @@ async def delete(id: int, session: AsyncSession = Depends(get_session)) -> Profe
 
 @router.post("/", response_model=Professional)
 async def create(
-    natural_resource: Professional, session: AsyncSession = Depends(get_session)
+    payload: Professional, session: AsyncSession = Depends(get_session)
 ) -> Professional:
     """Create a professional"""
-    return await ProfessionalService(session).create(natural_resource)
+    return await ProfessionalService(session).create(payload)
   
 @router.put("/{id}", response_model=Professional)
 async def update(
-    id: int, natural_resource: Professional, session: AsyncSession = Depends(get_session)
+    id: int, payload: Professional, session: AsyncSession = Depends(get_session)
 ) -> Professional:
     """Update a professional by id"""
-    return await ProfessionalService(session).update(id, natural_resource)    
+    return await ProfessionalService(session).update(id, payload)    
