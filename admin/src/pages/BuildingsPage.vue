@@ -162,7 +162,7 @@ const columns = [
     label: t('last_modification'),
     align: 'left',
     field: (row: Building) => {
-      const date = new Date(row.updatedAt || row.createdAt);
+      const date = new Date(row.updated_at || row.created_at);
       return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
     },
     sortable: false,
@@ -291,7 +291,7 @@ function saveSelected() {
     delete selected.value.professionalIds;
     delete selected.value.professionals;
     service
-      .patch(selected.value.id, selected.value)
+      .update(selected.value.id, selected.value)
       .then(() => {
         tableRef.value.requestServerInteraction();
       })

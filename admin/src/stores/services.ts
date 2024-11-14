@@ -42,11 +42,15 @@ export class Service<
       .then((res) => res.data);
   }
 
-  async update(id: string, payload: Type) {
+  async update(id: string | number, payload: Type) {
+    delete payload.created_at;
+    delete payload.updated_at;
+    delete payload.created_by;
+    delete payload.updated_by;
     return api.put(`/${this.entityName}/${id}`, payload);
   }
 
-  async delete(id: string) {
+  async remove(id: string | number) {
     return api.delete(`/${this.entityName}/${id}`);
   }
 }

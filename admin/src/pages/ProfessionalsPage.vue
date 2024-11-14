@@ -205,7 +205,7 @@ const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const services = useServices();
 const service = services.make('professional');
-const serviceType = services.make('professional-type');
+//const serviceType = services.make('professional-type');
 
 const columns = [
   {
@@ -263,7 +263,7 @@ const columns = [
     label: t('last_modification'),
     align: 'left',
     field: (row: Professional) => {
-      const date = new Date(row.updated_at || row.created_at);
+      const date = new Date(row.updated_at || row.created_at || '');
       return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
     },
     sortable: false,
@@ -306,9 +306,9 @@ const pagination = ref<PaginationOptions>({
 });
 
 onMounted(() => {
-  serviceType.find({ query: { $limit: 50 } }).then((result) => {
-    professionalTypes.value = result.data;
-  });
+  // serviceType.find({ $limit: 50 }).then((result) => {
+  //   professionalTypes.value = result.data;
+  // });
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
 });
@@ -363,12 +363,15 @@ function fetchFromServer(
     },
   };
   if (types.value) {
-    query.type = {
-      $in: types.value.map((type) => parseInt(type)),
+    query.filter = {
+      type: {
+        $in: types.value.map((type) => parseInt(type)),
+      },
     };
   }
   if (filter) {
-    query.$or = [
+    if (!query.filter) query.filter = {};
+    query.filter.$or = [
       {
         name: {
           $ilike: `%${filter}%`,
@@ -381,15 +384,11 @@ function fetchFromServer(
       },
     ];
   }
-  return service
-    .find({
-      query,
-    })
-    .then((result) => {
-      rows.value = result.data;
-      loading.value = false;
-      return result;
-    });
+  return service.find(query).then((result) => {
+    rows.value = result.data;
+    loading.value = false;
+    return result;
+  });
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
@@ -437,7 +436,7 @@ function saveSelected() {
   if (selected.value === undefined) return;
   if (selected.value.id) {
     service
-      .patch(selected.value.id, selected.value)
+      .update(selected.value.id, selected.value)
       .then(() => {
         tableRef.value.requestServerInteraction();
       })

@@ -1,5 +1,6 @@
 from typing import List, Dict, Optional
-from sqlmodel import SQLModel, Field, Relationship, Column, JSON
+from sqlmodel import SQLModel, Field, Relationship, Column
+from sqlalchemy.dialects.postgresql import JSONB as JSON
 from sqlalchemy import TIMESTAMP
 from datetime import datetime
 
@@ -9,8 +10,8 @@ class Entity(SQLModel):
   name: str
   description: Optional[str] = Field(default=None)
   
-  created_at: datetime = Field(sa_column=TIMESTAMP(timezone=True), default=datetime.now)
-  updated_at: datetime = Field(sa_column=TIMESTAMP(timezone=True), default=datetime.now)
+  created_at: datetime = Field(sa_column=TIMESTAMP(timezone=True), default=None)
+  updated_at: datetime = Field(sa_column=TIMESTAMP(timezone=True), default=None)
   created_by: Optional[str] = Field(default=None)
   updated_by: Optional[str] = Field(default=None)
 

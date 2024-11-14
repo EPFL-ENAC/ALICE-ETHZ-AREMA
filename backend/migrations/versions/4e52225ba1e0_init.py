@@ -1,19 +1,19 @@
 """init
 
-Revision ID: 9ab552ec3da8
+Revision ID: 4e52225ba1e0
 Revises: 
-Create Date: 2024-11-13 11:33:15.788735
+Create Date: 2024-11-14 08:45:04.957238
 
 """
 from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 import sqlmodel
 
-
 # revision identifiers, used by Alembic.
-revision: str = '9ab552ec3da8'
+revision: str = '4e52225ba1e0'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -88,8 +88,8 @@ def upgrade() -> None:
     sa.Column('address', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('long', sa.Float(), nullable=True),
     sa.Column('lat', sa.Float(), nullable=True),
-    sa.Column('geom', sa.JSON(), nullable=True),
-    sa.Column('files', sa.JSON(), nullable=True),
+    sa.Column('geom', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+    sa.Column('files', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
@@ -158,7 +158,7 @@ def upgrade() -> None:
     sa.Column('building_material_class_high', sa.Float(), nullable=True),
     sa.Column('fire_resistance_class_high', sa.Float(), nullable=True),
     sa.Column('air_tightness_high', sa.Float(), nullable=True),
-    sa.Column('files', sa.JSON(), nullable=True),
+    sa.Column('files', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
@@ -227,7 +227,7 @@ def upgrade() -> None:
     sa.Column('building_material_class_high', sa.Float(), nullable=True),
     sa.Column('fire_resistance_class_high', sa.Float(), nullable=True),
     sa.Column('air_tightness_high', sa.Float(), nullable=True),
-    sa.Column('files', sa.JSON(), nullable=True),
+    sa.Column('files', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
@@ -246,8 +246,8 @@ def upgrade() -> None:
     sa.Column('email', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('long', sa.Float(), nullable=True),
     sa.Column('lat', sa.Float(), nullable=True),
-    sa.Column('geom', sa.JSON(), nullable=True),
-    sa.Column('files', sa.JSON(), nullable=True),
+    sa.Column('geom', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+    sa.Column('files', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
@@ -316,7 +316,7 @@ def upgrade() -> None:
     sa.Column('building_material_class_high', sa.Float(), nullable=True),
     sa.Column('fire_resistance_class_high', sa.Float(), nullable=True),
     sa.Column('air_tightness_high', sa.Float(), nullable=True),
-    sa.Column('files', sa.JSON(), nullable=True),
+    sa.Column('files', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )

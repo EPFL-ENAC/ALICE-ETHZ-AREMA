@@ -101,12 +101,12 @@ const columns = [
     sortable: false,
   },
   {
-    name: 'constituants',
+    name: 'natutal_resources',
     required: true,
     label: t('constituants'),
     align: 'left',
     field: (row: BuildingMaterial) => {
-      return row.naturalResourceIds ? row.naturalResourceIds.length : 0;
+      return row.natural_resources ? row.natural_resources.length : 0;
     },
     sortable: false,
   },
@@ -116,7 +116,7 @@ const columns = [
     label: t('last_modification'),
     align: 'left',
     field: (row: BuildingMaterial) => {
-      const date = new Date(row.updatedAt || row.createdAt);
+      const date = new Date(row.updated_at || row.created_at || '');
       return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
     },
     sortable: false,
@@ -162,8 +162,8 @@ function fetchFromServer(
     },
   };
   if (filter) {
-    query.name = {
-      $ilike: `%${filter}%`,
+    query.filter = {
+      name: { $ilike: `%${filter}%` },
     };
   }
   return service.find(query).then((result) => {
@@ -176,7 +176,7 @@ function fetchFromServer(
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
 
 function onAdd() {
-  selected.value = {};
+  selected.value = { name: '' };
   showEditDialog.value = true;
 }
 
@@ -190,6 +190,7 @@ function onSaved() {
 }
 
 function remove(item: BuildingMaterial) {
+  if (!item.id) return;
   service
     .remove(item.id)
     .then(() => {

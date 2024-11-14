@@ -8,6 +8,10 @@ from pydantic import BaseModel
 from sqlalchemy.sql import text
 from api.views.files import router as files_router
 from api.views.natural_resources import router as natural_resources_router
+from api.views.building_materials import router as building_materials_router
+from api.views.technical_constructions import router as technical_constructions_router
+from api.views.buildings import router as buildings_router
+from api.views.professionals import router as professionals_router
 
 basicConfig(level=INFO)
 
@@ -62,4 +66,28 @@ app.include_router(
     natural_resources_router,
     prefix="/natural-resource",
     tags=["Natural Resources"],
+)
+
+app.include_router(
+    building_materials_router,
+    prefix="/building-material",
+    tags=["Building Materials"],
+)
+
+app.include_router(
+    technical_constructions_router,
+    prefix="/technical-construction",
+    tags=["Technical Constructions"],
+)
+
+app.include_router(
+    buildings_router,
+    prefix="/building",
+    tags=["Buildings"],
+)
+
+app.include_router(
+    professionals_router,
+    prefix="/professional",
+    tags=["Professionals"],
 )

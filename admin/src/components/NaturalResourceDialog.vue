@@ -210,7 +210,7 @@ async function onSave() {
   if (selected.value === undefined) return;
   if (selected.value.id) {
     service
-      .patch(selected.value.id, selected.value)
+      .update(selected.value.id, selected.value)
       .then(() => {
         emit('saved', selected.value);
         onHide();

@@ -105,8 +105,8 @@ const columns = [
     required: true,
     label: t('constituants'),
     align: 'left',
-    field: (row: BuildingMaterial) => {
-      return row.buildingMaterialIds ? row.buildingMaterialIds.length : 0;
+    field: (row: TechnicalConstruction) => {
+      return row.building_materials ? row.building_materials.length : 0;
     },
     sortable: false,
   },
@@ -116,7 +116,7 @@ const columns = [
     label: t('last_modification'),
     align: 'left',
     field: (row: TechnicalConstruction) => {
-      const date = new Date(row.updatedAt || row.createdAt);
+      const date = new Date(row.updated_at || row.created_at || '');
       return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
     },
     sortable: false,
@@ -162,19 +162,15 @@ function fetchFromServer(
     },
   };
   if (filter) {
-    query.name = {
-      $ilike: `%${filter}%`,
+    query.filter = {
+      name: { $ilike: `%${filter}%` },
     };
   }
-  return service
-    .find({
-      query,
-    })
-    .then((result) => {
-      rows.value = result.data;
-      loading.value = false;
-      return result;
-    });
+  return service.find(query).then((result) => {
+    rows.value = result.data;
+    loading.value = false;
+    return result;
+  });
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);

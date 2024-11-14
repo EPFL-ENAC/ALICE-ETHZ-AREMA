@@ -106,7 +106,7 @@ const columns = [
     label: t('last_modification'),
     align: 'left',
     field: (row: NaturalResource) => {
-      const date = new Date(row.updatedAt || row.createdAt);
+      const date = new Date(row.updated_at || row.created_at || '');
       return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
     },
     sortable: false,
@@ -166,12 +166,12 @@ function fetchFromServer(
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
 
 function onAdd() {
-  selected.value = {};
+  selected.value = { name: '' };
   showEditDialog.value = true;
 }
 
-function onEdit(resource: NaturalResource) {
-  selected.value = { ...resource };
+function onEdit(item: NaturalResource) {
+  selected.value = { ...item };
   showEditDialog.value = true;
 }
 
@@ -179,9 +179,10 @@ function onSaved() {
   tableRef.value.requestServerInteraction();
 }
 
-function remove(resource: NaturalResource) {
+function remove(item: NaturalResource) {
+  if (!item.id) return;
   service
-    .remove(resource.id)
+    .remove(item.id)
     .then(() => {
       tableRef.value.requestServerInteraction();
     })

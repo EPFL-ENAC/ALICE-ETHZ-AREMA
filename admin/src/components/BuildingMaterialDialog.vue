@@ -191,8 +191,8 @@ const emit = defineEmits(['update:modelValue', 'saved']);
 
 const services = useServices();
 const service = services.make('building-material');
-const nrService = service.make('natural-resource');
-const bmNrService = service.make('building-material-natural-resource');
+const nrService = services.make('natural-resource');
+//const bmNrService = services.make('building-material-natural-resource');
 
 const showDialog = ref(props.modelValue);
 const selected = ref<BuildingMaterial>({ name: '' } as BuildingMaterial);
@@ -220,10 +220,9 @@ watch(
       naturalResources.value = [];
       nrService
         .find({
-          query: {
-            $limit: 100,
-            $select: ['id', 'name'],
-          },
+          $limit: 100,
+          $select: ['id', 'name'],
+          filter: {},
         })
         .then((res) => {
           naturalResourcesOptions.value = res.data.map((item) => ({
@@ -232,18 +231,18 @@ watch(
           }));
         });
       if (editMode.value) {
-        bmNrService
-          .find({
-            query: {
-              buildingMaterialId: selected.value.id,
-              $limit: 100,
-            },
-          })
-          .then((res) => {
-            naturalResources.value = res.data.map((item) =>
-              parseInt(item.naturalResourceId),
-            );
-          });
+        // bmNrService
+        //   .find({
+        //     query: {
+        //       buildingMaterialId: selected.value.id,
+        //       $limit: 100,
+        //     },
+        //   })
+        //   .then((res) => {
+        //     naturalResources.value = res.data.map((item) =>
+        //       parseInt(item.naturalResourceId),
+        //     );
+        //   });
       }
     }
     showDialog.value = value;
@@ -258,22 +257,24 @@ function onHide() {
 async function onSave() {
   if (selected.value === undefined) return;
   if (selected.value.id) {
-    delete selected.value.naturalResourceIds;
+    //delete selected.value.natural_resources;
     service
-      .patch(selected.value.id, selected.value)
+      .update(selected.value.id, selected.value)
       .then((res) => {
-        bmNrService
-          .remove(null, {
-            query: {
-              buildingMaterialId: res.id,
-            },
-          })
-          .finally(() => {
-            saveConstituants(selected.value).then(() => {
-              onHide();
-              emit('saved', selected.value);
-            });
-          });
+        emit('saved', selected.value);
+        onHide();
+        // bmNrService
+        //   .remove(null, {
+        //     filter: {
+        //       buildingMaterialId: res.id,
+        //     },
+        //   })
+        //   .finally(() => {
+        //     saveConstituants(selected.value).then(() => {
+        //       onHide();
+        //       emit('saved', selected.value);
+        //     });
+        //   });
       })
       .catch((err) => {
         notifyError(err.message);
@@ -284,10 +285,12 @@ async function onSave() {
     service
       .create(selected.value)
       .then((res) => {
-        saveConstituants(res).then(() => {
-          onHide();
-          emit('saved', res);
-        });
+        emit('saved', selected.value);
+        onHide();
+        // saveConstituants(res).then(() => {
+        //   onHide();
+        //   emit('saved', res);
+        // });
       })
       .catch((err) => {
         notifyError(err.message);
@@ -295,13 +298,13 @@ async function onSave() {
   }
 }
 
-async function saveConstituants(bm: BuildingMaterial) {
-  if (naturalResources.value.length === 0) return Promise.resolve();
-  return bmNrService.create(
-    naturalResources.value.map((item) => ({
-      buildingMaterialId: bm.id,
-      naturalResourceId: item,
-    })),
-  );
-}
+// async function saveConstituants(bm: BuildingMaterial) {
+//   if (naturalResources.value.length === 0) return Promise.resolve();
+//   return bmNrService.create(
+//     naturalResources.value.map((item) => ({
+//       buildingMaterialId: bm.id,
+//       naturalResourceId: item,
+//     })),
+//   );
+// }
 </script>

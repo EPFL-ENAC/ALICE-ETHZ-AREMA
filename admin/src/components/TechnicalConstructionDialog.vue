@@ -194,7 +194,7 @@ const emit = defineEmits(['update:modelValue', 'saved']);
 const services = useServices();
 const service = services.make('technical-construction');
 const bmService = services.make('building-material');
-const tcBmService = services.make('technical-construction-building-material');
+//const tcBmService = services.make('technical-construction-building-material');
 
 const showDialog = ref(props.modelValue);
 const selected = ref<TechnicalConstruction>({
@@ -261,7 +261,7 @@ async function onSave() {
     delete selected.value.buildingMaterialIds;
     selected.value.files = [];
     service
-      .patch(selected.value.id, selected.value)
+      .update(selected.value.id, selected.value)
       .then((res) => {
         tcBmService
           .remove(null, {
