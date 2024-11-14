@@ -157,7 +157,7 @@ class TechnicalConstruction(TechnicalConstructionBase, table=True):
 
 ## Buildings
 
-class BuildingBase(PhysicalEntity):
+class BuildingBase(Entity):
   address: Optional[str] = Field(default=None)
   long: Optional[float] = Field(default=None)
   lat: Optional[float] = Field(default=None)
@@ -185,6 +185,7 @@ class ProfessionalBase(Entity):
   email: Optional[str] = Field(default=None)
   long: Optional[float] = Field(default=None)
   lat: Optional[float] = Field(default=None)
+  radius: Optional[int] = Field(default=None)
   geom: Optional[Dict] = Field(default=None, sa_column=Column(JSON))
   files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
 

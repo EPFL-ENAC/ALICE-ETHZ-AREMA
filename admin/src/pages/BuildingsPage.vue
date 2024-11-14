@@ -162,7 +162,7 @@ const columns = [
     label: t('last_modification'),
     align: 'left',
     field: (row: Building) => {
-      const date = new Date(row.updated_at || row.created_at);
+      const date = new Date(row.updated_at || row.created_at || '');
       return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
     },
     sortable: false,
@@ -206,7 +206,7 @@ const features = computed(() => {
       },
       geometry: {
         type: 'Point',
-        coordinates: row.coordinates.point,
+        coordinates: [row.long, row.lat],
       },
     };
   });
@@ -228,7 +228,8 @@ function fetchFromServer(
     },
   };
   if (filter) {
-    query.$or = [
+    if (!query.filter) query.filter = {};
+    query.filter.$or = [
       {
         name: {
           $ilike: `%${filter}%`,
@@ -255,17 +256,18 @@ function fetchFromServer(
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
 
 function onPointInputUpdated(newValue) {
+  if (!selected.value) return;
   if (newValue && newValue.properties && newValue.geometry) {
     selected.value.address = newValue.properties.display_name;
-    selected.value.coordinates = { point: newValue.geometry.coordinates };
+    selected.value.geom = { point: newValue.geometry.coordinates };
   } else {
-    selected.value.address = null;
-    selected.value.coordinates = null;
+    selected.value.address = undefined;
+    selected.value.geom = undefined;
   }
 }
 
 function onAdd() {
-  selected.value = {};
+  selected.value = { name: '' };
   location.value = {};
   showEditDialog.value = true;
 }
@@ -279,7 +281,7 @@ function onEdit(resource: Building) {
     },
     geometry: {
       type: 'Point',
-      coordinates: selected.value.coordinates.point,
+      coordinates: [selected.value.long, selected.value.lat],
     },
   };
   showEditDialog.value = true;
@@ -288,7 +290,6 @@ function onEdit(resource: Building) {
 function saveSelected() {
   if (selected.value === undefined) return;
   if (selected.value.id) {
-    delete selected.value.professionalIds;
     delete selected.value.professionals;
     service
       .update(selected.value.id, selected.value)

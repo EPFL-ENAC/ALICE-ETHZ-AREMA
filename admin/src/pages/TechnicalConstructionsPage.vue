@@ -106,7 +106,9 @@ const columns = [
     label: t('constituants'),
     align: 'left',
     field: (row: TechnicalConstruction) => {
-      return row.building_materials ? row.building_materials.length : 0;
+      return row.building_materials
+        ? row.building_materials.map((bm) => bm.name).join(', ')
+        : 0;
     },
     sortable: false,
   },

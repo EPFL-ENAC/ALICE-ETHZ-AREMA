@@ -106,10 +106,11 @@ export interface TechnicalConstruction extends PhysicalEntity {
   building_material_ids?: number[];
 }
 
-export interface Building extends PhysicalEntity {
+export interface Building extends Entity {
   address?: string;
   long?: number;
   lat?: number;
+  radius?: number;
   geom?: any;
   files?: FileRef[];
 

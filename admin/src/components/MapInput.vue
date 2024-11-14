@@ -3,12 +3,12 @@ import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import '@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import 'maplibregl-theme-switcher/styles.css';
-import { geocoderApi } from '../utils/geocoder';
+// import { geocoderApi } from '../utils/geocoder';
 import { style, themes } from '../utils/maps';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import * as MapboxDrawGeodesic from 'mapbox-gl-draw-geodesic';
 import * as MapboxDrawWaypoint from 'mapbox-gl-draw-waypoint';
-import MaplibreGeocoder from '@maplibre/maplibre-gl-geocoder';
+// import MaplibreGeocoder from '@maplibre/maplibre-gl-geocoder';
 import { ThemeSwitcherControl } from 'maplibregl-theme-switcher';
 import {
   type Feature,
@@ -20,7 +20,7 @@ import {
   FullscreenControl,
   GeolocateControl,
   Map,
-  Marker,
+  // Marker,
   NavigationControl,
   ScaleControl,
   type IControl,
@@ -55,7 +55,7 @@ export default defineComponent({
   },
   emits: ['update:selectedFeatures'],
   setup(props, { emit }) {
-    const { locale } = useI18n({ useScope: 'global' });
+    // const { locale } = useI18n({ useScope: 'global' });
 
     const containerId = 'map-input-' + Math.random().toString(36).slice(2);
     let map: Map | undefined = undefined;
@@ -73,14 +73,14 @@ export default defineComponent({
       map.addControl(new GeolocateControl({}));
       map.addControl(new ScaleControl({}));
       map.addControl(new FullscreenControl({}));
-      map.addControl(
-        new MaplibreGeocoder(geocoderApi, {
-          maplibregl: { Marker },
-          showResultsWhileTyping: true,
-          language: locale.value,
-        }),
-        'top-left',
-      );
+      // map.addControl(
+      //   new MaplibreGeocoder(geocoderApi, {
+      //     maplibregl: { Marker },
+      //     showResultsWhileTyping: true,
+      //     language: locale.value,
+      //   }),
+      //   'top-left',
+      // );
       map.addControl(new ThemeSwitcherControl(themes, themes[0].id));
 
       let modes = MapboxDraw.modes;

@@ -106,7 +106,9 @@ const columns = [
     label: t('constituants'),
     align: 'left',
     field: (row: BuildingMaterial) => {
-      return row.natural_resources ? row.natural_resources.length : 0;
+      return row.natural_resources
+        ? row.natural_resources.map((nr) => nr.name).join(', ')
+        : 0;
     },
     sortable: false,
   },

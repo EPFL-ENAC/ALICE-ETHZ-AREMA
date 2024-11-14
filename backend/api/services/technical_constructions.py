@@ -91,9 +91,9 @@ class TechnicalConstructionService:
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
         entity.building_materials.extend(new_bms)
-        self.session.add(payload)
+        self.session.add(entity)
         await self.session.commit()
-        return payload
+        return entity
     
     async def update(self, id: int, payload: TechnicalConstructionDraft) -> TechnicalConstruction:
         """Update a technical construction"""

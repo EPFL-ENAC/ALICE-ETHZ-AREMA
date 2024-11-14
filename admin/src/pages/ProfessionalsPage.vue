@@ -326,18 +326,15 @@ const features = computed(() => {
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [
-          [
-            row.coordinates.point,
-            row.coordinates.point,
-            row.coordinates.point,
-            row.coordinates.point,
-          ],
-        ],
+        coordinates: [[asPoint(row), asPoint(row), asPoint(row), asPoint(row)]],
       },
     };
   });
 });
+
+function asPoint(professional: Professional) {
+  return [professional.long, professional.lat];
+}
 
 function disableSave() {
   return (
@@ -398,26 +395,30 @@ function onTypeSelection() {
 }
 
 function onCircleInputUpdated(newValue) {
+  if (!selected.value) return;
+
   if (newValue && newValue.properties && newValue.geometry) {
     selected.value.address = newValue.properties.display_name;
     selected.value.radius = newValue.properties.circleRadius;
-    selected.value.coordinates = { point: newValue.geometry.coordinates[0][0] };
+    selected.value.long = newValue.geometry.coordinates[0][0][0];
+    selected.value.lat = newValue.geometry.coordinates[0][0][1];
   } else {
-    selected.value.address = null;
-    selected.value.radius = null;
-    selected.value.coordinates = null;
+    selected.value.address = undefined;
+    selected.value.radius = undefined;
+    selected.value.long = undefined;
+    selected.value.lat = undefined;
   }
 }
 
 function onAdd() {
-  selected.value = {};
+  selected.value = { name: '' };
   circle.value = {};
   showEditDialog.value = true;
 }
 
 function onEdit(resource: Professional) {
   selected.value = { ...resource };
-  const center = unref(selected.value.coordinates.point);
+  const center = unref([selected.value.long, selected.value.lat]);
   circle.value = {
     type: 'Feature',
     properties: {
@@ -463,6 +464,7 @@ function saveSelected() {
 }
 
 function remove(resource: Professional) {
+  if (!resource.id) return;
   service
     .remove(resource.id)
     .then(() => {
