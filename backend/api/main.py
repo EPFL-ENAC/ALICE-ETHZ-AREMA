@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends, status, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from api.config import config
 from api.db import get_session, AsyncSession
-from logging import basicConfig, INFO
+from logging import basicConfig, INFO, DEBUG
 from pydantic import BaseModel
 from sqlalchemy.sql import text
 from api.views.files import router as files_router
@@ -13,7 +13,7 @@ from api.views.technical_constructions import router as technical_constructions_
 from api.views.buildings import router as buildings_router
 from api.views.professionals import router as professionals_router
 
-basicConfig(level=INFO)
+basicConfig(level=DEBUG)
 
 app = FastAPI(root_path=config.PATH_PREFIX)
 

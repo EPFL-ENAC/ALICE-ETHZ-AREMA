@@ -111,7 +111,7 @@ class ProfessionalTechnicalConstruction(SQLModel, table=True):
 ## Natural resources
 
 class NaturalResourceBase(PhysicalEntity):
-  files: Optional[Dict] = Field(default=None, sa_column=Column(JSON))
+  files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
 
 class NaturalResource(NaturalResourceBase, table=True):
   id: Optional[int] = Field(
@@ -125,7 +125,7 @@ class NaturalResource(NaturalResourceBase, table=True):
 ## Building materials
 
 class BuildingMaterialBase(PhysicalEntity):
-  files: Optional[Dict] = Field(default=None, sa_column=Column(JSON))
+  files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
 
 class BuildingMaterial(BuildingMaterialBase, table=True):
   id: Optional[int] = Field(
@@ -142,7 +142,7 @@ class BuildingMaterial(BuildingMaterialBase, table=True):
 ## Technical constructions
 
 class TechnicalConstructionBase(PhysicalEntity):
-  files: Optional[Dict] = Field(default=None, sa_column=Column(JSON))
+  files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
 
 class TechnicalConstruction(TechnicalConstructionBase, table=True):
   id: Optional[int] = Field(
@@ -162,7 +162,7 @@ class BuildingBase(PhysicalEntity):
   long: Optional[float] = Field(default=None)
   lat: Optional[float] = Field(default=None)
   geom: Optional[Dict] = Field(default=None, sa_column=Column(JSON))
-  files: Optional[Dict] = Field(default=None, sa_column=Column(JSON))
+  files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
 
 class Building(BuildingBase, table=True):
   id: Optional[int] = Field(
@@ -186,7 +186,7 @@ class ProfessionalBase(Entity):
   long: Optional[float] = Field(default=None)
   lat: Optional[float] = Field(default=None)
   geom: Optional[Dict] = Field(default=None, sa_column=Column(JSON))
-  files: Optional[Dict] = Field(default=None, sa_column=Column(JSON))
+  files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
 
 class Professional(ProfessionalBase, table=True):
   id: Optional[int] = Field(

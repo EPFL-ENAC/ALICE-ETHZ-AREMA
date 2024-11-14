@@ -91,6 +91,9 @@ export interface BuildingMaterial extends PhysicalEntity {
   technical_constructions?: TechnicalConstruction[];
   buildings?: Building[];
   professionals?: Professional[];
+
+  // draft
+  natural_resource_ids?: number[];
 }
 
 export interface TechnicalConstruction extends PhysicalEntity {

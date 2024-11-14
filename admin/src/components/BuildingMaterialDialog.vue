@@ -177,7 +177,7 @@ export default defineComponent({
 });
 </script>
 <script setup lang="ts">
-import { BuildingMaterial } from 'src/models';
+import { BuildingMaterial, NaturalResource } from 'src/models';
 import { notifyError } from '../utils/notify';
 import PropertyFormItem from './PropertyFormItem.vue';
 
@@ -192,7 +192,6 @@ const emit = defineEmits(['update:modelValue', 'saved']);
 const services = useServices();
 const service = services.make('building-material');
 const nrService = services.make('natural-resource');
-//const bmNrService = services.make('building-material-natural-resource');
 
 const showDialog = ref(props.modelValue);
 const selected = ref<BuildingMaterial>({ name: '' } as BuildingMaterial);
@@ -231,18 +230,11 @@ watch(
           }));
         });
       if (editMode.value) {
-        // bmNrService
-        //   .find({
-        //     query: {
-        //       buildingMaterialId: selected.value.id,
-        //       $limit: 100,
-        //     },
-        //   })
-        //   .then((res) => {
-        //     naturalResources.value = res.data.map((item) =>
-        //       parseInt(item.naturalResourceId),
-        //     );
-        //   });
+        naturalResources.value = selected.value.natural_resources
+          ? selected.value.natural_resources.map(
+              (item: NaturalResource) => item.id,
+            )
+          : [];
       }
     }
     showDialog.value = value;
@@ -256,25 +248,14 @@ function onHide() {
 
 async function onSave() {
   if (selected.value === undefined) return;
+  delete selected.value.natural_resources;
+  selected.value.natural_resource_ids = naturalResources.value;
   if (selected.value.id) {
-    //delete selected.value.natural_resources;
     service
       .update(selected.value.id, selected.value)
       .then((res) => {
         emit('saved', selected.value);
         onHide();
-        // bmNrService
-        //   .remove(null, {
-        //     filter: {
-        //       buildingMaterialId: res.id,
-        //     },
-        //   })
-        //   .finally(() => {
-        //     saveConstituants(selected.value).then(() => {
-        //       onHide();
-        //       emit('saved', selected.value);
-        //     });
-        //   });
       })
       .catch((err) => {
         notifyError(err.message);
@@ -287,24 +268,10 @@ async function onSave() {
       .then((res) => {
         emit('saved', selected.value);
         onHide();
-        // saveConstituants(res).then(() => {
-        //   onHide();
-        //   emit('saved', res);
-        // });
       })
       .catch((err) => {
         notifyError(err.message);
       });
   }
 }
-
-// async function saveConstituants(bm: BuildingMaterial) {
-//   if (naturalResources.value.length === 0) return Promise.resolve();
-//   return bmNrService.create(
-//     naturalResources.value.map((item) => ({
-//       buildingMaterialId: bm.id,
-//       naturalResourceId: item,
-//     })),
-//   );
-// }
 </script>

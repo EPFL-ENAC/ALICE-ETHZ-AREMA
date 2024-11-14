@@ -4,7 +4,7 @@ from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from fastapi import HTTPException
 from api.models.domain import Building, BuildingMaterial, TechnicalConstruction
-from api.models.results import BuildingResult
+from api.models.query import BuildingResult
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
 

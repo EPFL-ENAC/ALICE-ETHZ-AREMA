@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from api.db import get_session, AsyncSession
 from api.auth import kc_service, User
 from api.models.domain import Building
-from api.models.results import BuildingResult
+from api.models.query import BuildingResult
 from api.services.buildings import BuildingService
 from enacit4r_sql.utils.query import paramAsArray, paramAsDict
 

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from api.db import get_session, AsyncSession
 from api.auth import kc_service, User
 from api.models.domain import NaturalResource
-from api.models.results import NaturalResourceResult
+from api.models.query import NaturalResourceResult
 from api.services.natural_resources import NaturalResourceService
 from enacit4r_sql.utils.query import paramAsArray, paramAsDict
 

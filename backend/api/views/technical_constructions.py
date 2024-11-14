@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from api.db import get_session, AsyncSession
 from api.auth import kc_service, User
 from api.models.domain import TechnicalConstruction
-from api.models.results import TechnicalConstructionResult
+from api.models.query import TechnicalConstructionResult
 from api.services.technical_constructions import TechnicalConstructionService
 from enacit4r_sql.utils.query import paramAsArray, paramAsDict
 

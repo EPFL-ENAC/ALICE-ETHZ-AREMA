@@ -1,10 +1,11 @@
+from logging import debug
 from api.db import AsyncSession
 from sqlalchemy.sql import text
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from fastapi import HTTPException
-from api.models.domain import BuildingMaterial, BuildingMaterial
-from api.models.results import BuildingMaterialResult
+from api.models.domain import BuildingMaterial, BuildingMaterial, NaturalResource
+from api.models.query import BuildingMaterialResult, BuildingMaterialDraft
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
 
@@ -18,6 +19,7 @@ class BuildingMaterialQueryBuilder(QueryBuilder):
     def build_query_with_joins(self, total_count, filter):
         start, end, query = self.build_query(total_count)
         query = self._apply_joins(query, filter)
+        query = query.options(selectinload(BuildingMaterial.natural_resources))
         return start, end, query
 
     def _apply_joins(self, query, filter):
@@ -53,6 +55,10 @@ class BuildingMaterialService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Building material not found")
+        entity.natural_resources.clear()
+        entity.buildings.clear()
+        entity.technical_constructions.clear()
+        entity.professionals.clear()
         await self.session.delete(entity)
         await self.session.commit()
         return entity
@@ -80,27 +86,37 @@ class BuildingMaterialService:
             data=entities
         )
     
-    async def create(self, payload: BuildingMaterial) -> BuildingMaterial:
+    async def create(self, payload: BuildingMaterialDraft) -> BuildingMaterial:
         """Create a new building material"""
-        payload.created_at = datetime.now()
-        payload.updated_at = datetime.now()
-        self.session.add(payload)
+        entity = BuildingMaterial(**payload.model_dump())
+        entity.created_at = datetime.now()
+        entity.updated_at = datetime.now()
+        # handle natural resources relationship
+        new_nrs = await self.session.exec(select(NaturalResource).filter(NaturalResource.id.in_(payload.natural_resource_ids)))
+        entity.natural_resources.clear()
+        entity.natural_resources.extend(new_nrs)
+        self.session.add(entity)
         await self.session.commit()
-        return payload
+        return entity
     
-    async def update(self, id: int, payload: BuildingMaterial) -> BuildingMaterial:
+    async def update(self, id: int, payload: BuildingMaterialDraft) -> BuildingMaterial:
         """Update a building material"""
         res = await self.session.exec(
-            select(BuildingMaterial).where(BuildingMaterial.id == id)
-        )
+            select(BuildingMaterial)
+            .where(BuildingMaterial.id == id)
+            .options(selectinload(BuildingMaterial.natural_resources)))
         entity = res.one_or_none()
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Building material not found")
         for key, value in payload.model_dump().items():
-            print(key, value)
-            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by"]:
+            debug(f"{key}: {value}")
+            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "natural_resource_ids"]:
                 setattr(entity, key, value)
+        # handle natural resources relationship
+        new_nrs = await self.session.exec(select(NaturalResource).filter(NaturalResource.id.in_(payload.natural_resource_ids)))
+        entity.natural_resources.clear()
+        entity.natural_resources.extend(new_nrs)
         entity.updated_at = datetime.now()
         await self.session.commit()
         return entity
