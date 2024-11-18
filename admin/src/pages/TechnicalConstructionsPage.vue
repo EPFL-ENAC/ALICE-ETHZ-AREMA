@@ -101,14 +101,14 @@ const columns = [
     sortable: false,
   },
   {
-    name: 'constituants',
+    name: 'building_materials',
     required: true,
-    label: t('constituants'),
+    label: t('building_materials'),
     align: 'left',
     field: (row: TechnicalConstruction) => {
       return row.building_materials
         ? row.building_materials.map((bm) => bm.name).join(', ')
-        : 0;
+        : '-';
     },
     sortable: false,
   },

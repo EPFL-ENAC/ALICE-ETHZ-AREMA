@@ -42,7 +42,7 @@
               map-options
               emit-value
               use-chips
-              :label="$t('building_material_constituants')"
+              :label="$t('building_materials')"
               :hint="
                 $t('technical_construction_building_material_constituants_hint')
               "

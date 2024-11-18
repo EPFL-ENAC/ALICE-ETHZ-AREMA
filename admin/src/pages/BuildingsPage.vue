@@ -157,6 +157,30 @@ const columns = [
     sortable: false,
   },
   {
+    name: 'building_materials',
+    required: true,
+    label: t('building_materials'),
+    align: 'left',
+    field: (row: Building) => {
+      return row.building_materials
+        ? row.building_materials.map((bm) => bm.name).join(', ')
+        : '-';
+    },
+    sortable: false,
+  },
+  {
+    name: 'professionals',
+    required: true,
+    label: t('professionals'),
+    align: 'left',
+    field: (row: Building) => {
+      return row.professionals
+        ? row.professionals.map((bm) => bm.name).join(', ')
+        : '-';
+    },
+    sortable: false,
+  },
+  {
     name: 'lastModification',
     required: true,
     label: t('last_modification'),

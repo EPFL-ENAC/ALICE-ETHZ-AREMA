@@ -74,4 +74,8 @@ export default {
   users: 'Utilisateurs',
   website: 'Site web',
   zone: 'Zone',
+  professional_building_material_expertise_hint:
+    'Expertise en matériaux de construction',
+  professional_technical_construction_expertise_hint:
+    'Expertise en techniques de construction',
 };

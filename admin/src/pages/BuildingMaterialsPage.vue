@@ -101,14 +101,14 @@ const columns = [
     sortable: false,
   },
   {
-    name: 'natutal_resources',
+    name: 'natural_resources',
     required: true,
-    label: t('constituants'),
+    label: t('natural_resources'),
     align: 'left',
     field: (row: BuildingMaterial) => {
       return row.natural_resources
         ? row.natural_resources.map((nr) => nr.name).join(', ')
-        : 0;
+        : '-';
     },
     sortable: false,
   },

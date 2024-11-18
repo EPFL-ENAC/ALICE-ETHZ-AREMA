@@ -27,9 +27,10 @@
           <q-space />
           <q-select
             filled
+            dense
             clearable
             v-model="types"
-            :options="professionalTypeOptions"
+            :options="DefaultProfessionalTypes"
             :label="$t('type')"
             class="q-mr-md"
             style="min-width: 200px"
@@ -100,94 +101,11 @@
         </template>
       </q-table>
 
-      <q-dialog
+      <professional-dialog
         v-model="showEditDialog"
-        persistent
-        transition-show="scale"
-        transition-hide="scale"
-        full-width
-      >
-        <q-card>
-          <q-card-section>
-            <div class="row q-mb-md">
-              <div class="col-12 col-sm-6">
-                <q-input
-                  filled
-                  v-model="selected.name"
-                  :label="$t('name')"
-                  style="min-width: 200px"
-                />
-              </div>
-              <div class="col-12 col-sm-6">
-                <q-select
-                  filled
-                  clearable
-                  v-model="selected.type"
-                  :options="professionalTypeOptions"
-                  :label="$t('type')"
-                  class="on-right"
-                  style="min-width: 200px"
-                  emit-value
-                  map-options
-                />
-              </div>
-            </div>
-            <q-input
-              filled
-              v-model="selected.description"
-              autogrow
-              :label="$t('description')"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
-            <div class="row q-mb-md">
-              <div class="col-12 col-sm-4">
-                <q-input
-                  filled
-                  v-model="selected.tel"
-                  :label="$t('phone')"
-                  style="min-width: 200px"
-                />
-              </div>
-              <div class="col-12 col-sm-4">
-                <q-input
-                  filled
-                  v-model="selected.email"
-                  type="email"
-                  :label="$t('email')"
-                  class="on-right"
-                  style="min-width: 200px"
-                />
-              </div>
-              <div class="col-12 col-sm-4">
-                <q-input
-                  filled
-                  v-model="selected.web"
-                  :label="$t('website')"
-                  class="on-right"
-                  style="min-width: 200px"
-                />
-              </div>
-            </div>
-            <circle-map-input
-              v-model="circle"
-              height="600px"
-              @update:model-value="onCircleInputUpdated"
-            ></circle-map-input>
-          </q-card-section>
-
-          <q-card-actions align="right">
-            <q-btn flat :label="$t('cancel')" v-close-popup />
-            <q-btn
-              color="primary"
-              :label="$t('save')"
-              v-close-popup
-              @click="saveSelected"
-              :disabled="disableSave()"
-            />
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
+        :item="selected"
+        @saved="onSaved"
+      />
     </div>
   </q-page>
 </template>
@@ -195,11 +113,12 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { Query } from 'src/components/models';
-import { Professional, ProfessionalType } from 'src/models';
-import { makePaginationRequestHandler } from '../utils/pagination';
-import type { PaginationOptions } from '../utils/pagination';
-import CircleMapInput from '../components/CircleMapInput.vue';
+import { Professional } from 'src/models';
+import { DefaultProfessionalTypes } from 'src/utils/options';
+import { makePaginationRequestHandler } from 'src/utils/pagination';
+import type { PaginationOptions } from 'src/utils/pagination';
 import MapView from 'src/components/MapView.vue';
+import ProfessionalDialog from 'src/components/ProfessionalDialog.vue';
 import { onMounted, ref, computed } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
@@ -230,7 +149,7 @@ const columns = [
     label: t('type'),
     align: 'left',
     field: 'professionalType',
-    format: (val: ProfessionalType) => (val ? t(val.text) : undefined),
+    format: (val: string) => (val ? t(val) : undefined),
     sortable: true,
   },
   {
@@ -258,6 +177,30 @@ const columns = [
     sortable: false,
   },
   {
+    name: 'building_materials',
+    required: true,
+    label: t('building_materials'),
+    align: 'left',
+    field: (row: Professional) => {
+      return row.building_materials
+        ? row.building_materials.map((bm) => bm.name).join(', ')
+        : '-';
+    },
+    sortable: false,
+  },
+  {
+    name: 'technical_constructions',
+    required: true,
+    label: t('technical_constructions'),
+    align: 'left',
+    field: (row: Professional) => {
+      return row.technical_constructions
+        ? row.technical_constructions.map((bm) => bm.name).join(', ')
+        : '-';
+    },
+    sortable: false,
+  },
+  {
     name: 'lastModification',
     required: true,
     label: t('last_modification'),
@@ -275,22 +218,7 @@ const columns = [
   },
 ];
 
-const professionalTypes = ref<ProfessionalType[]>([]);
-const professionalTypeOptions = computed(() => {
-  return professionalTypes.value
-    .map((type) => {
-      return {
-        value: type.id + '',
-        label: t(type.text),
-      };
-    })
-    .sort((a, b) => {
-      return a.label.localeCompare(b.label);
-    });
-});
-
 const selected = ref<Professional>();
-const circle = ref({});
 const showEditDialog = ref(false);
 const tableRef = ref();
 const rows = ref<Professional[]>([]);
@@ -306,10 +234,6 @@ const pagination = ref<PaginationOptions>({
 });
 
 onMounted(() => {
-  // serviceType.find({ $limit: 50 }).then((result) => {
-  //   professionalTypes.value = result.data;
-  // });
-  // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
 });
 
@@ -336,15 +260,6 @@ function asPoint(professional: Professional) {
   return [professional.long, professional.lat];
 }
 
-function disableSave() {
-  return (
-    !selected.value ||
-    !selected.value.name ||
-    !selected.value.type ||
-    !selected.value.address
-  );
-}
-
 function fetchFromServer(
   startRow: number,
   count: number,
@@ -362,7 +277,7 @@ function fetchFromServer(
   if (types.value) {
     query.filter = {
       type: {
-        $in: types.value.map((type) => parseInt(type)),
+        $in: types.value,
       },
     };
   }
@@ -394,73 +309,18 @@ function onTypeSelection() {
   tableRef.value.requestServerInteraction();
 }
 
-function onCircleInputUpdated(newValue) {
-  if (!selected.value) return;
-
-  if (newValue && newValue.properties && newValue.geometry) {
-    selected.value.address = newValue.properties.display_name;
-    selected.value.radius = newValue.properties.circleRadius;
-    selected.value.long = newValue.geometry.coordinates[0][0][0];
-    selected.value.lat = newValue.geometry.coordinates[0][0][1];
-  } else {
-    selected.value.address = undefined;
-    selected.value.radius = undefined;
-    selected.value.long = undefined;
-    selected.value.lat = undefined;
-  }
-}
-
 function onAdd() {
   selected.value = { name: '' };
-  circle.value = {};
   showEditDialog.value = true;
 }
 
 function onEdit(resource: Professional) {
   selected.value = { ...resource };
-  const center = unref([selected.value.long, selected.value.lat]);
-  circle.value = {
-    type: 'Feature',
-    properties: {
-      display_name: selected.value.address,
-      circleRadius: selected.value.radius,
-    },
-    geometry: {
-      type: 'Polygon',
-      coordinates: [[center, center, center, center]],
-    },
-  };
   showEditDialog.value = true;
 }
 
-function saveSelected() {
-  if (selected.value === undefined) return;
-  if (selected.value.id) {
-    service
-      .update(selected.value.id, selected.value)
-      .then(() => {
-        tableRef.value.requestServerInteraction();
-      })
-      .catch((err) => {
-        $q.notify({
-          message: err.message,
-          type: 'negative',
-        });
-      });
-  } else {
-    selected.value.files = [];
-    service
-      .create(selected.value)
-      .then(() => {
-        tableRef.value.requestServerInteraction();
-      })
-      .catch((err) => {
-        $q.notify({
-          message: err.message,
-          type: 'negative',
-        });
-      });
-  }
+function onSaved() {
+  tableRef.value.requestServerInteraction();
 }
 
 function remove(resource: Professional) {

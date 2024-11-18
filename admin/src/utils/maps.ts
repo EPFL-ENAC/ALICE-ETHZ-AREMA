@@ -31,7 +31,7 @@ export const style: StyleSpecification = {
       source: 'osm',
       paint: {
         'raster-saturation': -0.9,
-        'raster-brightness-min': 0.7,
+        'raster-brightness-min': 0.2,
       },
       layout: { visibility: 'none' },
     },
@@ -41,7 +41,7 @@ export const style: StyleSpecification = {
       source: 'osm',
       paint: {
         'raster-saturation': -1,
-        'raster-brightness-max': 0.2,
+        'raster-brightness-max': 0.5,
       },
       layout: { visibility: 'none' },
     },

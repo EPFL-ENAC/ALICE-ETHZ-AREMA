@@ -42,7 +42,7 @@
               map-options
               emit-value
               use-chips
-              :label="$t('constituants')"
+              :label="$t('natural_resources')"
               :hint="$t('building_material_constituants_hint')"
               class="q-mb-md"
             />

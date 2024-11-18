@@ -1,6 +1,6 @@
 from typing import List, Optional
 from sqlmodel import Field
-from api.models.domain import NaturalResource, BuildingMaterial, BuildingMaterialBase, TechnicalConstructionBase, Building, Professional
+from api.models.domain import NaturalResource, BuildingMaterial, BuildingMaterialBase, TechnicalConstruction, TechnicalConstructionBase, Building, Professional, ProfessionalBase
 from enacit4r_sql.models.query import ListResult
 
 # Natural resources
@@ -35,5 +35,16 @@ class TechnicalConstructionResult(ListResult):
 class BuildingResult(ListResult):
     data: List[Building] = []
 
+# professionals
+class ProfessionalDraft(ProfessionalBase):
+    id: Optional[int] = Field(default=None)
+    building_material_ids: List[int] = []
+    technical_construction_ids: List[int] = []
+
+class ProfessionalRead(ProfessionalBase):
+    id: Optional[int] = Field(default=None)
+    building_materials: List[BuildingMaterial] = []
+    technical_constructions: List[TechnicalConstruction] = []
+
 class ProfessionalResult(ListResult):
-    data: List[Professional] = []
+    data: List[ProfessionalRead] = []

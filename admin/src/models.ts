@@ -127,15 +127,15 @@ export interface Professional extends Entity {
   email?: string;
   long?: number;
   lat?: number;
+  radius?: number;
   geom?: any;
   files?: FileRef[];
 
   buildings?: Building[];
   building_materials?: BuildingMaterial[];
   technical_constructions?: TechnicalConstruction[];
-}
 
-export interface ProfessionalType {
-  id: string;
-  text: string;
+  // draft
+  building_material_ids?: number[];
+  technical_construction_ids?: number[];
 }

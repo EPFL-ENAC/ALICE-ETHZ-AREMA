@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from api.db import get_session, AsyncSession
 from api.auth import kc_service, User
 from api.models.domain import Professional
-from api.models.query import ProfessionalResult
+from api.models.query import ProfessionalDraft, ProfessionalResult
 from api.services.professionals import ProfessionalService
 from enacit4r_sql.utils.query import paramAsArray, paramAsDict
 
@@ -31,14 +31,14 @@ async def delete(id: int, session: AsyncSession = Depends(get_session)) -> Profe
 
 @router.post("/", response_model=Professional)
 async def create(
-    payload: Professional, session: AsyncSession = Depends(get_session)
+    payload: ProfessionalDraft, session: AsyncSession = Depends(get_session)
 ) -> Professional:
     """Create a professional"""
     return await ProfessionalService(session).create(payload)
   
 @router.put("/{id}", response_model=Professional)
 async def update(
-    id: int, payload: Professional, session: AsyncSession = Depends(get_session)
+    id: int, payload: ProfessionalDraft, session: AsyncSession = Depends(get_session)
 ) -> Professional:
     """Update a professional by id"""
     return await ProfessionalService(session).update(id, payload)    

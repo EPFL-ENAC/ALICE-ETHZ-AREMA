@@ -1,10 +1,11 @@
+from logging import debug
 from api.db import AsyncSession
 from sqlalchemy.sql import text
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from fastapi import HTTPException
 from api.models.domain import Professional, Building, BuildingMaterial, TechnicalConstruction
-from api.models.query import ProfessionalResult
+from api.models.query import ProfessionalDraft, ProfessionalResult
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
 
@@ -18,6 +19,7 @@ class ProfessionalQueryBuilder(QueryBuilder):
     def build_query_with_joins(self, total_count, filter):
         start, end, query = self.build_query(total_count)
         query = self._apply_joins(query, filter)
+        query = query.options(selectinload(Professional.building_materials), selectinload(Professional.technical_constructions))
         return start, end, query
 
     def _apply_joins(self, query, filter):
@@ -84,27 +86,49 @@ class ProfessionalService:
             data=entities
         )
     
-    async def create(self, payload: Professional) -> Professional:
+    async def create(self, payload: ProfessionalDraft) -> Professional:
         """Create a new professional"""
-        payload.created_at = datetime.now()
-        payload.updated_at = datetime.now()
-        self.session.add(payload)
+        entity = Professional(**payload.model_dump())
+        entity.created_at = datetime.now()
+        entity.updated_at = datetime.now()
+        # handle building materials relationship
+        new_bms = await self._get_building_materials(payload.building_material_ids)
+        entity.building_materials.clear()
+        entity.building_materials.extend(new_bms)
+        new_tcs = await self._get_technical_constructions(payload.technical_construction_ids)
+        entity.technical_constructions.clear()
+        entity.technical_constructions.extend(new_tcs)
+        self.session.add(entity)
         await self.session.commit()
-        return payload
+        return entity
     
-    async def update(self, id: int, payload: Professional) -> Professional:
+    async def update(self, id: int, payload: ProfessionalDraft) -> Professional:
         """Update a professional"""
         res = await self.session.exec(
-            select(Professional).where(Professional.id == id)
-        )
+            select(Professional)
+            .where(Professional.id == id)
+            .options(selectinload(Professional.building_materials), selectinload(Professional.technical_constructions)))
         entity = res.one_or_none()
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Professional not found")
         for key, value in payload.model_dump().items():
-            print(key, value)
-            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by"]:
+            debug(key, value)
+            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "building_material_ids", "technical_construction_ids"]:
                 setattr(entity, key, value)
         entity.updated_at = datetime.now()
+        # handle building materials relationship
+        new_bms = await self._get_building_materials(payload.building_material_ids)
+        entity.building_materials.clear()
+        entity.building_materials.extend(new_bms)
+        new_tcs = await self._get_technical_constructions(payload.technical_construction_ids)
+        entity.technical_constructions.clear()
+        entity.technical_constructions.extend(new_tcs)
         await self.session.commit()
         return entity
+    
+    async def _get_building_materials(self, ids: list[int]):
+        return await self.session.exec(select(BuildingMaterial).filter(BuildingMaterial.id.in_(ids)))
+    
+    async def _get_technical_constructions(self, ids: list[int]):
+        return await self.session.exec(select(TechnicalConstruction).filter(TechnicalConstruction.id.in_(ids)))
