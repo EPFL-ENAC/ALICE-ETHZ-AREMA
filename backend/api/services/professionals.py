@@ -19,7 +19,8 @@ class ProfessionalQueryBuilder(QueryBuilder):
     def build_query_with_joins(self, total_count, filter):
         start, end, query = self.build_query(total_count)
         query = self._apply_joins(query, filter)
-        query = query.options(selectinload(Professional.building_materials), selectinload(Professional.technical_constructions))
+        query = query.options(selectinload(Professional.building_materials),
+                              selectinload(Professional.technical_constructions))
         return start, end, query
 
     def _apply_joins(self, query, filter):
@@ -91,7 +92,7 @@ class ProfessionalService:
         entity = Professional(**payload.model_dump())
         entity.created_at = datetime.now()
         entity.updated_at = datetime.now()
-        # handle building materials relationship
+        # handle relationships
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
         entity.building_materials.extend(new_bms)
@@ -107,7 +108,8 @@ class ProfessionalService:
         res = await self.session.exec(
             select(Professional)
             .where(Professional.id == id)
-            .options(selectinload(Professional.building_materials), selectinload(Professional.technical_constructions)))
+            .options(selectinload(Professional.building_materials),
+                     selectinload(Professional.technical_constructions)))
         entity = res.one_or_none()
         if not entity:
             raise HTTPException(
@@ -117,7 +119,7 @@ class ProfessionalService:
             if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "building_material_ids", "technical_construction_ids"]:
                 setattr(entity, key, value)
         entity.updated_at = datetime.now()
-        # handle building materials relationship
+        # handle relationships
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
         entity.building_materials.extend(new_bms)

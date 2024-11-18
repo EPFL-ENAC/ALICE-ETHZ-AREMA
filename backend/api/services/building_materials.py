@@ -91,7 +91,7 @@ class BuildingMaterialService:
         entity = BuildingMaterial(**payload.model_dump())
         entity.created_at = datetime.now()
         entity.updated_at = datetime.now()
-        # handle natural resources relationship
+        # handle relationships
         new_nrs = await self._get_natural_resources(payload.natural_resource_ids)
         entity.natural_resources.clear()
         entity.natural_resources.extend(new_nrs)
@@ -113,7 +113,7 @@ class BuildingMaterialService:
             debug(f"{key}: {value}")
             if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "natural_resource_ids"]:
                 setattr(entity, key, value)
-        # handle natural resources relationship
+        # handle relationships
         new_nrs = await self._get_natural_resources(payload.natural_resource_ids)
         entity.natural_resources.clear()
         entity.natural_resources.extend(new_nrs)

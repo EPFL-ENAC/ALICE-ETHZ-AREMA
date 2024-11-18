@@ -72,48 +72,11 @@
         </template>
       </q-table>
 
-      <q-dialog
+      <building-dialog
         v-model="showEditDialog"
-        persistent
-        transition-show="scale"
-        transition-hide="scale"
-        full-width
-      >
-        <q-card style="width: 300px">
-          <q-card-section>
-            <q-input
-              filled
-              v-model="selected.name"
-              :label="$t('name')"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
-            <q-input
-              filled
-              v-model="selected.description"
-              autogrow
-              :label="$t('description')"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
-            <point-map-input
-              v-model="location"
-              height="600px"
-              @update:model-value="onPointInputUpdated"
-            ></point-map-input>
-          </q-card-section>
-
-          <q-card-actions align="right">
-            <q-btn flat :label="$t('cancel')" v-close-popup />
-            <q-btn
-              color="primary"
-              :label="$t('save')"
-              v-close-popup
-              @click="saveSelected"
-            />
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
+        :item="selected"
+        @saved="onSaved"
+      />
     </div>
   </q-page>
 </template>
@@ -124,8 +87,8 @@ import { Query } from 'src/components/models';
 import { Building } from 'src/models';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
-import PointMapInput from '../components/PointMapInput.vue';
 import MapView from 'src/components/MapView.vue';
+import BuildingDialog from 'src/components/BuildingDialog.vue';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const services = useServices();
@@ -169,13 +132,25 @@ const columns = [
     sortable: false,
   },
   {
+    name: 'technical_constructions',
+    required: true,
+    label: t('technical_constructions'),
+    align: 'left',
+    field: (row: Building) => {
+      return row.technical_constructions
+        ? row.technical_constructions.map((tc) => tc.name).join(', ')
+        : '-';
+    },
+    sortable: false,
+  },
+  {
     name: 'professionals',
     required: true,
     label: t('professionals'),
     align: 'left',
     field: (row: Building) => {
       return row.professionals
-        ? row.professionals.map((bm) => bm.name).join(', ')
+        ? row.professionals.map((pro) => pro.name).join(', ')
         : '-';
     },
     sortable: false,
@@ -199,7 +174,6 @@ const columns = [
 ];
 
 const selected = ref<Building>();
-const location = ref({});
 const showEditDialog = ref(false);
 const tableRef = ref();
 const rows = ref<Building[]>([]);
@@ -279,70 +253,22 @@ function fetchFromServer(
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
 
-function onPointInputUpdated(newValue) {
-  if (!selected.value) return;
-  if (newValue && newValue.properties && newValue.geometry) {
-    selected.value.address = newValue.properties.display_name;
-    selected.value.geom = { point: newValue.geometry.coordinates };
-  } else {
-    selected.value.address = undefined;
-    selected.value.geom = undefined;
-  }
-}
-
 function onAdd() {
   selected.value = { name: '' };
-  location.value = {};
   showEditDialog.value = true;
 }
 
 function onEdit(resource: Building) {
   selected.value = { ...resource };
-  location.value = {
-    type: 'Feature',
-    properties: {
-      display_name: selected.value.address,
-    },
-    geometry: {
-      type: 'Point',
-      coordinates: [selected.value.long, selected.value.lat],
-    },
-  };
   showEditDialog.value = true;
 }
 
-function saveSelected() {
-  if (selected.value === undefined) return;
-  if (selected.value.id) {
-    delete selected.value.professionals;
-    service
-      .update(selected.value.id, selected.value)
-      .then(() => {
-        tableRef.value.requestServerInteraction();
-      })
-      .catch((err) => {
-        $q.notify({
-          message: err.message,
-          type: 'negative',
-        });
-      });
-  } else {
-    selected.value.files = [];
-    service
-      .create(selected.value)
-      .then(() => {
-        tableRef.value.requestServerInteraction();
-      })
-      .catch((err) => {
-        $q.notify({
-          message: err.message,
-          type: 'negative',
-        });
-      });
-  }
+function onSaved() {
+  tableRef.value.requestServerInteraction();
 }
 
 function remove(resource: Building) {
+  if (!resource.id) return;
   service
     .remove(resource.id)
     .then(() => {

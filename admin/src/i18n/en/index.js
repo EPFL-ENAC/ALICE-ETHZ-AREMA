@@ -124,7 +124,10 @@ export default {
   building_material_class_hint: 'DIN EN ISO 11925-2',
   fire_resistance_class_hint: 'DIN 4102-2:1977-09',
   air_tightness_hint: 'δ',
-  professional_building_material_expertise_hint: 'Building material expertise',
+  professional_building_material_expertise_hint: 'Building material expertise.',
   professional_technical_construction_expertise_hint:
-    'Technical construction expertise',
+    'Technical construction expertise.',
+  building_building_material_used_hint: 'Building material used.',
+  building_technical_construction_used_hint: 'Technical construction used.',
+  building_professionals_hint: 'Professionals involved.',
 };

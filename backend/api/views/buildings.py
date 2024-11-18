@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from api.db import get_session, AsyncSession
 from api.auth import kc_service, User
 from api.models.domain import Building
-from api.models.query import BuildingResult
+from api.models.query import BuildingDraft, BuildingResult
 from api.services.buildings import BuildingService
 from enacit4r_sql.utils.query import paramAsArray, paramAsDict
 
@@ -31,14 +31,14 @@ async def delete(id: int, session: AsyncSession = Depends(get_session)) -> Build
 
 @router.post("/", response_model=Building)
 async def create(
-    payload: Building, session: AsyncSession = Depends(get_session)
+    payload: BuildingDraft, session: AsyncSession = Depends(get_session)
 ) -> Building:
     """Create a building"""
     return await BuildingService(session).create(payload)
   
 @router.put("/{id}", response_model=Building)
 async def update(
-    id: int, payload: Building, session: AsyncSession = Depends(get_session)
+    id: int, payload: BuildingDraft, session: AsyncSession = Depends(get_session)
 ) -> Building:
     """Update a building by id"""
     return await BuildingService(session).update(id, payload)    

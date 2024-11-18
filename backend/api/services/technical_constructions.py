@@ -87,7 +87,7 @@ class TechnicalConstructionService:
         entity = TechnicalConstruction(**payload.model_dump())
         entity.created_at = datetime.now()
         entity.updated_at = datetime.now()
-        # handle building materials relationship
+        # handle relationships
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
         entity.building_materials.extend(new_bms)
@@ -109,7 +109,7 @@ class TechnicalConstructionService:
             debug(key, value)
             if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "building_material_ids"]:
                 setattr(entity, key, value)
-        # handle building materials relationship
+        # handle relationships
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
         entity.building_materials.extend(new_bms)

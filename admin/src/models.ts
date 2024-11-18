@@ -117,6 +117,11 @@ export interface Building extends Entity {
   building_materials?: BuildingMaterial[];
   professionals?: Professional[];
   technical_constructions?: TechnicalConstruction[];
+
+  // draft
+  building_material_ids?: number[];
+  technical_construction_ids?: number[];
+  professional_ids?: number[];
 }
 
 export interface Professional extends Entity {
