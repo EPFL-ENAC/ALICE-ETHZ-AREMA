@@ -18,6 +18,7 @@
       >
         <template v-slot:top>
           <q-btn
+            v-if="authStore.isAdmin"
             color="primary"
             :disable="loading"
             :label="$t('add')"
@@ -78,57 +79,66 @@ import { BuildingMaterial } from 'src/models';
 import BuildingMaterialDialog from 'src/components/BuildingMaterialDialog.vue';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
+
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
+const authStore = useAuthStore();
 const services = useServices();
 const service = services.make('building-material');
 
-const columns = [
-  {
-    name: 'name',
-    required: true,
-    label: t('name'),
-    align: 'left',
-    field: 'name',
-    sortable: true,
-  },
-  {
-    name: 'description',
-    required: true,
-    label: t('description'),
-    align: 'left',
-    field: 'description',
-    sortable: false,
-  },
-  {
-    name: 'natural_resources',
-    required: true,
-    label: t('natural_resources'),
-    align: 'left',
-    field: (row: BuildingMaterial) => {
-      return row.natural_resources
-        ? row.natural_resources.map((nr) => nr.name).join(', ')
-        : '-';
+const columns = computed(() => {
+  const cols = [
+    {
+      name: 'name',
+      required: true,
+      label: t('name'),
+      align: 'left',
+      field: 'name',
+      sortable: true,
     },
-    sortable: false,
-  },
-  {
-    name: 'lastModification',
-    required: true,
-    label: t('last_modification'),
-    align: 'left',
-    field: (row: BuildingMaterial) => {
-      const date = new Date(row.updated_at || row.created_at || '');
-      return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+    {
+      name: 'description',
+      required: true,
+      label: t('description'),
+      align: 'left',
+      field: 'description',
+      sortable: false,
     },
-    sortable: false,
-  },
-  {
-    name: 'action',
-    align: 'left',
-    label: t('action'),
-  },
-];
+    {
+      name: 'natural_resources',
+      required: true,
+      label: t('natural_resources'),
+      align: 'left',
+      field: (row: BuildingMaterial) => {
+        return row.natural_resources
+          ? row.natural_resources.map((nr) => nr.name).join(', ')
+          : '-';
+      },
+      sortable: false,
+    },
+    {
+      name: 'lastModification',
+      required: true,
+      label: t('last_modification'),
+      align: 'left',
+      field: (row: BuildingMaterial) => {
+        const date = new Date(row.updated_at || row.created_at || '');
+        return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+      },
+      sortable: false,
+    },
+  ];
+
+  if (authStore.isAdmin) {
+    cols.push({
+      name: 'action',
+      align: 'left',
+      label: t('action'),
+    });
+  }
+
+  return cols;
+});
 
 const selected = ref<BuildingMaterial>();
 const showEditDialog = ref(false);

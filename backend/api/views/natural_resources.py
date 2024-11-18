@@ -25,20 +25,29 @@ async def get(id: int, session: AsyncSession = Depends(get_session)) -> NaturalR
     return await NaturalResourceService(session).get(id)
   
 @router.delete("/{id}", response_model=NaturalResource)
-async def delete(id: int, session: AsyncSession = Depends(get_session)) -> NaturalResource:
+async def delete(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
+) -> NaturalResource:
     """Delete a natural resource by id"""
     return await NaturalResourceService(session).delete(id)
 
 @router.post("/", response_model=NaturalResource)
 async def create(
-    natural_resource: NaturalResource, session: AsyncSession = Depends(get_session)
+    natural_resource: NaturalResource,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
 ) -> NaturalResource:
     """Create a natural resource"""
     return await NaturalResourceService(session).create(natural_resource)
   
 @router.put("/{id}", response_model=NaturalResource)
 async def update(
-    id: int, natural_resource: NaturalResource, session: AsyncSession = Depends(get_session)
+    id: int,
+    natural_resource: NaturalResource,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
 ) -> NaturalResource:
     """Update a natural resource by id"""
     return await NaturalResourceService(session).update(id, natural_resource)    

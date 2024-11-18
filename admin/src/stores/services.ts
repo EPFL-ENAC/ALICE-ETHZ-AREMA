@@ -9,6 +9,8 @@ import {
 } from 'src/models';
 import { Query } from 'src/components/models';
 
+const authStore = useAuthStore();
+
 export class Service<
   Type extends
     | NaturalResource
@@ -23,7 +25,15 @@ export class Service<
   ) {}
 
   async create(payload: Type) {
-    return api.post(`/${this.entityName}`, payload);
+    if (!authStore.isAuthenticated) return Promise.reject('Not authenticated');
+    return authStore.updateToken().then(() => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${authStore.accessToken}`,
+        },
+      };
+      return api.post(`/${this.entityName}`, payload, config);
+    });
   }
 
   async get(id: string): Promise<Type> {
@@ -44,15 +54,31 @@ export class Service<
   }
 
   async update(id: string | number, payload: Type) {
+    if (!authStore.isAuthenticated) return Promise.reject('Not authenticated');
     delete payload.created_at;
     delete payload.updated_at;
     delete payload.created_by;
     delete payload.updated_by;
-    return api.put(`/${this.entityName}/${id}`, payload);
+    return authStore.updateToken().then(() => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${authStore.accessToken}`,
+        },
+      };
+      return api.put(`/${this.entityName}/${id}`, payload, config);
+    });
   }
 
   async remove(id: string | number) {
-    return api.delete(`/${this.entityName}/${id}`);
+    if (!authStore.isAuthenticated) return Promise.reject('Not authenticated');
+    return authStore.updateToken().then(() => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${authStore.accessToken}`,
+        },
+      };
+      return api.delete(`/${this.entityName}/${id}`, config);
+    });
   }
 }
 

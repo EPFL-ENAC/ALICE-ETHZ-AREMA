@@ -25,20 +25,27 @@ async def get(id: int, session: AsyncSession = Depends(get_session)) -> Building
     return await BuildingService(session).get(id)
   
 @router.delete("/{id}", response_model=Building)
-async def delete(id: int, session: AsyncSession = Depends(get_session)) -> Building:
+async def delete(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())) -> Building:
     """Delete a building by id"""
     return await BuildingService(session).delete(id)
 
 @router.post("/", response_model=Building)
 async def create(
-    payload: BuildingDraft, session: AsyncSession = Depends(get_session)
+    payload: BuildingDraft,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
 ) -> Building:
     """Create a building"""
     return await BuildingService(session).create(payload)
   
 @router.put("/{id}", response_model=Building)
 async def update(
-    id: int, payload: BuildingDraft, session: AsyncSession = Depends(get_session)
+    id: int, payload: BuildingDraft,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
 ) -> Building:
     """Update a building by id"""
     return await BuildingService(session).update(id, payload)    

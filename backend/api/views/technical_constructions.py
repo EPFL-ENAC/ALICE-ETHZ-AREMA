@@ -25,20 +25,29 @@ async def get(id: int, session: AsyncSession = Depends(get_session)) -> Technica
     return await TechnicalConstructionService(session).get(id)
   
 @router.delete("/{id}", response_model=TechnicalConstruction)
-async def delete(id: int, session: AsyncSession = Depends(get_session)) -> TechnicalConstruction:
+async def delete(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
+) -> TechnicalConstruction:
     """Delete a technical construction by id"""
     return await TechnicalConstructionService(session).delete(id)
 
 @router.post("/", response_model=TechnicalConstruction)
 async def create(
-    payload: TechnicalConstructionDraft, session: AsyncSession = Depends(get_session)
+    payload: TechnicalConstructionDraft,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
 ) -> TechnicalConstruction:
     """Create a technical construction"""
     return await TechnicalConstructionService(session).create(payload)
   
 @router.put("/{id}", response_model=TechnicalConstruction)
 async def update(
-    id: int, payload: TechnicalConstructionDraft, session: AsyncSession = Depends(get_session)
+    id: int,
+    payload: TechnicalConstructionDraft,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
 ) -> TechnicalConstruction:
     """Update a technical construction by id"""
     return await TechnicalConstructionService(session).update(id, payload)    
