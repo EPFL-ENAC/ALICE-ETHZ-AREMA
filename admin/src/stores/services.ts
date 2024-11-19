@@ -42,11 +42,15 @@ export class Service<
 
   async find(query: Query | undefined) {
     const range = [query?.$skip || 0, query?.$limit || 10];
+    const sort = query?.$sort
+      ? [query?.$sort[0], query?.$sort[1] ? 'DESC' : 'ASC']
+      : ['id', true];
     return api
       .get(`/${this.entityName}/`, {
         params: {
           select: query?.$select ? JSON.stringify(query?.$select) : undefined,
           range: JSON.stringify(range),
+          sort: JSON.stringify(sort),
           filter: JSON.stringify(query?.filter),
         },
       })

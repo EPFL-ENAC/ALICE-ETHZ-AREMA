@@ -134,6 +134,15 @@ const service = services.make('professional');
 const columns = computed(() => {
   const cols = [
     {
+      name: 'id',
+      required: true,
+      label: 'ID',
+      align: 'left',
+      field: 'id',
+      style: 'width: 20px',
+      sortable: true,
+    },
+    {
       name: 'name',
       required: true,
       label: t('name'),
@@ -282,9 +291,7 @@ function fetchFromServer(
   const query: Query = {
     $skip: startRow,
     $limit: count,
-    $sort: {
-      [sortBy]: descending ? -1 : 1,
-    },
+    $sort: [sortBy, descending],
   };
   if (types.value) {
     query.filter = {
