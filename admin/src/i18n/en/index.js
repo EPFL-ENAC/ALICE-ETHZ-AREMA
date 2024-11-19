@@ -136,7 +136,6 @@ export default {
   article_bottom: 'Article (bottom)',
   multimedia: 'Multimedia',
   legend: 'Legend',
-  technical_element: 'Technical element',
   side_note: 'Side note',
   external_links: 'External links',
   relations: 'Relations',

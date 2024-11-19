@@ -13,7 +13,7 @@
                 <div class="col-2">
                   <q-skeleton
                     height="100px"
-                    class="q-mb-md q-pa-md bg-teal-1"
+                    class="q-pa-md bg-teal-1"
                     style="margin-top: 650px"
                   >
                     {{ $t('external_links') }}
@@ -60,29 +60,19 @@
                     </q-skeleton>
                   </div>
 
-                  <q-skeleton height="150px" class="q-mb-md q-pa-md bg-teal-1">
+                  <q-skeleton height="150px" class="q-pa-md bg-teal-1">
                     {{ $t('article_bottom') }}
                   </q-skeleton>
                 </div>
                 <div class="col-2">
                   <q-skeleton
                     height="100px"
-                    class="q-mb-md q-pa-md bg-teal-1"
+                    class="q-pa-md bg-teal-1"
                     style="margin-top: 300px"
                   >
                     {{ $t('side_note') }}
                   </q-skeleton>
                 </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <template v-for="i in 3" :key="i">
-                  <div class="col-4">
-                    <q-skeleton height="100px" class="q-pa-md bg-teal-1">
-                      {{ `${$t('technical_element')} #${i}` }}
-                    </q-skeleton>
-                  </div>
-                </template>
               </div>
             </q-card-section>
             <div></div>
