@@ -32,7 +32,7 @@ export class Service<
           Authorization: `Bearer ${authStore.accessToken}`,
         },
       };
-      return api.post(`/${this.entityName}`, payload, config);
+      return api.post(`/${this.entityName}/`, payload, config);
     });
   }
 

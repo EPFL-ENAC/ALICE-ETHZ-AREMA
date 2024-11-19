@@ -45,7 +45,7 @@ async def get_file(file_path: str,
              description="Upload any assets to S3 in the /tmp folder",
              dependencies=[Depends(file_checker.check_size)])
 async def upload_temp_files(
-        files: list[UploadFile] = File(description="multiple file upload"),
+        files: list[UploadFile] = File(description="Multiple file upload"),
         user: User = Depends(kc_service.require_admin())
 ):
     current_time = datetime.datetime.now()
@@ -53,13 +53,7 @@ async def upload_temp_files(
     folder_name = str(current_time.timestamp()).replace('.', '')
     folder_path = f"tmp/{folder_name}"
     children = [await s3_client.upload_file(file, s3_folder=folder_path) for file in files]
-    parent_path = s3_client.to_s3_path(folder_path)
-    return {
-        "name": folder_name,
-        "path": parent_path,
-        "is_file": False,
-        "children": children
-    }
+    return children
 
 
 @router.delete("/{file_path:path}",

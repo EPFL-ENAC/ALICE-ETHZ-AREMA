@@ -3,8 +3,14 @@ from sqlmodel import SQLModel, Field, Relationship, Column
 from sqlalchemy.dialects.postgresql import JSONB as JSON
 from sqlalchemy import TIMESTAMP
 from datetime import datetime
+from pydantic import BaseModel
+from enacit4r_files.models.files import FileRef
 
 # Base classes
+
+class FileItem(BaseModel):
+  ref: FileRef
+  legend: Optional[str] = Field(default=None)
 
 class Entity(SQLModel):
   name: str

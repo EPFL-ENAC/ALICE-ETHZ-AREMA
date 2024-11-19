@@ -92,4 +92,6 @@ export default {
   external_links: 'Liens externes',
   relations: 'Relations',
   location: 'Emplacement',
+  upload_file: 'Téléverser un fichier',
+  upload_file_hint: 'Téléverser une image, une vidéo ou un fichier PDF.',
 };

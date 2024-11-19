@@ -2,9 +2,16 @@ export interface FileRef {
   name: string;
   path: string;
   size: number;
+  mime_type: string;
   alt_name?: string;
   alt_path?: string;
   alt_size?: number;
+  alt_mime_type?: string;
+}
+
+export interface FileItem {
+  ref: FileRef;
+  legend?: string;
 }
 
 export interface Entity {
@@ -85,12 +92,12 @@ export interface PhysicalEntity extends Entity {
 }
 
 export interface NaturalResource extends PhysicalEntity {
-  files?: FileRef[];
+  files?: FileItem[];
   building_materials?: BuildingMaterial[];
 }
 
 export interface BuildingMaterial extends PhysicalEntity {
-  files?: FileRef[];
+  files?: FileItem[];
   natural_resources?: NaturalResource[];
   technical_constructions?: TechnicalConstruction[];
   buildings?: Building[];
@@ -101,7 +108,7 @@ export interface BuildingMaterial extends PhysicalEntity {
 }
 
 export interface TechnicalConstruction extends PhysicalEntity {
-  files?: FileRef[];
+  files?: FileItem[];
   building_materials?: BuildingMaterial[];
   professionals?: Professional[];
   buildings?: Building[];
@@ -116,7 +123,7 @@ export interface Building extends Entity {
   lat?: number;
   radius?: number;
   geom?: any;
-  files?: FileRef[];
+  files?: FileItem[];
 
   building_materials?: BuildingMaterial[];
   professionals?: Professional[];
@@ -138,7 +145,7 @@ export interface Professional extends Entity {
   lat?: number;
   radius?: number;
   geom?: any;
-  files?: FileRef[];
+  files?: FileItem[];
 
   buildings?: Building[];
   building_materials?: BuildingMaterial[];

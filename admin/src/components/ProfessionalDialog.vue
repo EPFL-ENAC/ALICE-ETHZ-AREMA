@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="showDialog" @hide="onHide">
+  <q-dialog v-model="showDialog" persistent @hide="onHide">
     <q-card class="dialog-lg">
       <q-card-section>
         <div class="text-h6">{{ $t(editMode ? 'edit' : 'add') }}</div>
@@ -112,6 +112,7 @@
             ></circle-map-input>
           </q-tab-panel>
           <q-tab-panel name="multimedia" class="q-pl-none q-pr-none">
+            <files-input v-model="selected.files" />
           </q-tab-panel>
           <q-tab-panel name="relations" class="q-pl-none q-pr-none">
             <q-select
@@ -145,7 +146,13 @@
       <q-separator />
 
       <q-card-actions align="right" class="bg-grey-3">
-        <q-btn flat :label="$t('cancel')" color="secondary" v-close-popup />
+        <q-btn
+          flat
+          :label="$t('cancel')"
+          color="secondary"
+          @click="onCancel"
+          v-close-popup
+        />
         <q-btn
           :label="$t('save')"
           color="primary"
@@ -171,6 +178,7 @@ import {
 import { DefaultProfessionalTypes } from 'src/utils/options';
 import { notifyError } from '../utils/notify';
 import CircleMapInput from 'src/components/CircleMapInput.vue';
+import FilesInput from 'src/components/FilesInput.vue';
 
 interface DialogProps {
   modelValue: boolean;
@@ -180,6 +188,7 @@ interface DialogProps {
 const props = defineProps<DialogProps>();
 const emit = defineEmits(['update:modelValue', 'saved']);
 
+const filesStore = useFilesStore();
 const services = useServices();
 const service = services.make('professional');
 const bmService = services.make('building-material');
@@ -188,6 +197,7 @@ const tcService = services.make('technical-construction');
 const showDialog = ref(props.modelValue);
 const selected = ref<Professional>({
   name: '',
+  files: [],
 } as Professional);
 const circle = ref({});
 const editMode = ref(false);
@@ -210,7 +220,8 @@ watch(
   (value) => {
     tab.value = 'general';
     if (value) {
-      selected.value = { ...props.item };
+      // deep copy
+      selected.value = JSON.parse(JSON.stringify(props.item));
       editMode.value = selected.value.id !== undefined;
       circle.value = {};
       if (editMode.value) {
@@ -274,6 +285,9 @@ watch(
           : [];
       }
     }
+    if (selected.value.files === undefined) {
+      selected.value.files = [];
+    }
     showDialog.value = value;
   },
 );
@@ -281,6 +295,10 @@ watch(
 function onHide() {
   showDialog.value = false;
   emit('update:modelValue', false);
+}
+
+function onCancel() {
+  filesStore.clearFilesToDelete();
 }
 
 async function onSave() {
@@ -293,6 +311,7 @@ async function onSave() {
     service
       .update(selected.value.id, selected.value)
       .then(() => {
+        filesStore.deleteFiles();
         emit('saved', selected.value);
         onHide();
       })
@@ -300,11 +319,10 @@ async function onSave() {
         notifyError(err.message);
       });
   } else {
-    // TODO
-    selected.value.files = [];
     service
       .create(selected.value)
       .then(() => {
+        filesStore.deleteFiles();
         emit('saved', selected.value);
         onHide();
       })

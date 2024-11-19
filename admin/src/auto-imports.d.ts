@@ -83,6 +83,7 @@ declare global {
   const useCssVars: typeof import('vue')['useCssVars']
   const useDataStore: typeof import('feathers-pinia')['useDataStore']
   const useFeathers: typeof import('./composables/feathers')['useFeathers']
+  const useFilesStore: typeof import('./stores/files')['useFilesStore']
   const useI18n: typeof import('vue-i18n')['useI18n']
   const useInstanceDefaults: typeof import('feathers-pinia')['useInstanceDefaults']
   const useLink: typeof import('vue-router')['useLink']
@@ -178,6 +179,7 @@ declare module 'vue' {
     readonly useAuthStore: UnwrapRef<typeof import('./stores/auth')['useAuthStore']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
+    readonly useFilesStore: UnwrapRef<typeof import('./stores/files')['useFilesStore']>
     readonly useI18n: UnwrapRef<typeof import('vue-i18n')['useI18n']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
@@ -264,6 +266,7 @@ declare module '@vue/runtime-core' {
     readonly useAuthStore: UnwrapRef<typeof import('./stores/auth')['useAuthStore']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
+    readonly useFilesStore: UnwrapRef<typeof import('./stores/files')['useFilesStore']>
     readonly useI18n: UnwrapRef<typeof import('vue-i18n')['useI18n']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
