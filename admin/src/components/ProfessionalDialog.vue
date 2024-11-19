@@ -340,7 +340,11 @@ function onCircleInputUpdated(newValue) {
     selected.value.radius = newValue.properties.circleRadius;
     selected.value.long = newValue.geometry.coordinates[0][0][0];
     selected.value.lat = newValue.geometry.coordinates[0][0][1];
-    selected.value.geom = { point: [selected.value.long, selected.value.lat] };
+    if (selected.value.long && selected.value.lat)
+      selected.value.geom = {
+        point: [selected.value.long, selected.value.lat],
+      };
+    else selected.value.geom = undefined;
   } else {
     selected.value.address = undefined;
     selected.value.radius = undefined;

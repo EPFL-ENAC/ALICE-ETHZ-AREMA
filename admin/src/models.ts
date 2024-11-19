@@ -14,6 +14,10 @@ export interface FileItem {
   legend?: string;
 }
 
+export interface Geometry {
+  point?: [number, number];
+}
+
 export interface Entity {
   id?: number;
   name: string;
@@ -122,7 +126,7 @@ export interface Building extends Entity {
   long?: number;
   lat?: number;
   radius?: number;
-  geom?: any;
+  geom?: Geometry;
   files?: FileItem[];
 
   building_materials?: BuildingMaterial[];
@@ -144,7 +148,7 @@ export interface Professional extends Entity {
   long?: number;
   lat?: number;
   radius?: number;
-  geom?: any;
+  geom?: Geometry;
   files?: FileItem[];
 
   buildings?: Building[];
