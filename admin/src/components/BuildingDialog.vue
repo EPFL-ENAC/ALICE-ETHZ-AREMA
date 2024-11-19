@@ -313,9 +313,13 @@ function onPointInputUpdated(newValue) {
   if (newValue && newValue.properties && newValue.geometry) {
     selected.value.address = newValue.properties.display_name;
     selected.value.geom = { point: newValue.geometry.coordinates };
+    selected.value.lat = newValue.geometry.coordinates[1];
+    selected.value.long = newValue.geometry.coordinates[0];
   } else {
     selected.value.address = undefined;
     selected.value.geom = undefined;
+    selected.value.lat = undefined;
+    selected.value.long = undefined;
   }
 }
 </script>
