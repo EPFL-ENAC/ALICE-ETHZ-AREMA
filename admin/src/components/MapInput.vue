@@ -81,7 +81,7 @@ export default defineComponent({
       //   }),
       //   'top-left',
       // );
-      map.addControl(new ThemeSwitcherControl(themes, themes[1].id));
+      map.addControl(new ThemeSwitcherControl(themes, themes[0].id));
 
       let modes = MapboxDraw.modes;
       modes = MapboxDrawGeodesic.enable(modes);
