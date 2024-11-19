@@ -45,7 +45,9 @@ async def get_file(file_path: str,
              description="Upload any assets to S3 in the /tmp folder",
              dependencies=[Depends(file_checker.check_size)])
 async def upload_temp_files(
-        files: list[UploadFile] = File(description="multiple file upload")):
+        files: list[UploadFile] = File(description="multiple file upload"),
+        user: User = Depends(kc_service.require_admin())
+):
     current_time = datetime.datetime.now()
     # generate unique name for the files' base folder in S3
     folder_name = str(current_time.timestamp()).replace('.', '')
@@ -64,7 +66,10 @@ async def upload_temp_files(
                status_code=204,
                description="Delete asset present in S3 if it is in /tmp/ folder",
                )
-async def delete_temp_files(file_path: str, user: User = Depends(kc_service.require_admin())):
+async def delete_temp_files(
+    file_path: str,
+    user: User = Depends(kc_service.require_admin())
+):
     # delete path if it contains /tmp/
     if "/tmp/" in file_path:
         await s3_client.delete_file(file_path)
