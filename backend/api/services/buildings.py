@@ -51,12 +51,18 @@ class BuildingService:
     async def delete(self, id: int) -> Building:
         """Delete a building by id"""
         res = await self.session.exec(
-            select(Building).where(Building.id == id)
-        )
+            select(Building)
+            .where(Building.id == id)
+            .options(selectinload(Building.building_materials),
+                     selectinload(Building.technical_constructions),
+                     selectinload(Building.professionals)))
         entity = res.one_or_none()
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Building not found")
+        entity.building_materials.clear()
+        entity.technical_constructions.clear()
+        entity.professionals.clear()
         await self.session.delete(entity)
         await self.session.commit()
         return entity

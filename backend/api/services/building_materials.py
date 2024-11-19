@@ -49,16 +49,14 @@ class BuildingMaterialService:
     async def delete(self, id: int) -> BuildingMaterial:
         """Delete a building material by id"""
         res = await self.session.exec(
-            select(BuildingMaterial).where(BuildingMaterial.id == id)
-        )
+            select(BuildingMaterial)
+            .where(BuildingMaterial.id == id)
+            .options(selectinload(BuildingMaterial.natural_resources)))
         entity = res.one_or_none()
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Building material not found")
         entity.natural_resources.clear()
-        entity.buildings.clear()
-        entity.technical_constructions.clear()
-        entity.professionals.clear()
         await self.session.delete(entity)
         await self.session.commit()
         return entity

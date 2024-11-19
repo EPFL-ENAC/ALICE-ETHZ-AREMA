@@ -50,12 +50,16 @@ class ProfessionalService:
     async def delete(self, id: int) -> Professional:
         """Delete a professional by id"""
         res = await self.session.exec(
-            select(Professional).where(Professional.id == id)
-        )
+            select(Professional)
+            .where(Professional.id == id)
+            .options(selectinload(Professional.building_materials),
+                     selectinload(Professional.technical_constructions)))
         entity = res.one_or_none()
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Professional not found")
+        entity.building_materials.clear()
+        entity.technical_constructions.clear()
         await self.session.delete(entity)
         await self.session.commit()
         return entity
