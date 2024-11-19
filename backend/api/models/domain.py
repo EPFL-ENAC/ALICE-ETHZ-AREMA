@@ -9,6 +9,10 @@ from datetime import datetime
 class Entity(SQLModel):
   name: str
   description: Optional[str] = Field(default=None)
+  article_top: Optional[str] = Field(default=None)
+  article_bottom: Optional[str] = Field(default=None)
+  side_note: Optional[str] = Field(default=None)
+  external_links: Optional[str] = Field(default=None)
   
   created_at: datetime = Field(sa_column=TIMESTAMP(timezone=True), default=None)
   updated_at: datetime = Field(sa_column=TIMESTAMP(timezone=True), default=None)

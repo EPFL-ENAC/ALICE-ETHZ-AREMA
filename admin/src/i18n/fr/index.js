@@ -82,4 +82,15 @@ export default {
   building_technical_construction_used_hint:
     'Techniques de construction utilisées.',
   building_professionals_hint: 'Professionnels impliqués dans la construction.',
+  layout: 'Disposition',
+  physical_characteristics: 'Caractéristiques physiques',
+  article_top: 'Article (haut)',
+  article_bottom: 'Article (bas)',
+  multimedia: 'Multimedia',
+  legend: 'Légende',
+  technical_element: 'Élément technique',
+  side_note: 'Note de page',
+  external_links: 'Liens externes',
+  relations: 'Relations',
+  location: 'Emplacement',
 };

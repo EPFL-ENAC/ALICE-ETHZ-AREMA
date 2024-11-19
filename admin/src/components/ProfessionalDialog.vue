@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model="showDialog" @hide="onHide">
-    <q-card class="dialog-md">
+    <q-card class="dialog-lg">
       <q-card-section>
         <div class="text-h6">{{ $t(editMode ? 'edit' : 'add') }}</div>
       </q-card-section>
@@ -8,72 +8,112 @@
       <q-separator />
 
       <q-card-section>
-        <div class="row q-mb-md q-col-gutter-md">
-          <div class="col-12 col-sm-6">
+        <q-tabs v-model="tab" dense align="left" no-caps>
+          <q-tab name="general" :label="$t('general')" />
+          <q-tab name="location" :label="$t('location')" />
+          <q-tab name="multimedia" :label="$t('multimedia')" />
+          <q-tab name="relations" :label="$t('relations')" />
+        </q-tabs>
+        <q-separator />
+
+        <q-tab-panels v-model="tab">
+          <q-tab-panel name="general" class="q-pl-none q-pr-none">
+            <div class="row q-mb-md q-col-gutter-md">
+              <div class="col-12 col-sm-6">
+                <q-input
+                  filled
+                  v-model="selected.name"
+                  :label="$t('name')"
+                  style="min-width: 200px"
+                />
+              </div>
+              <div class="col-12 col-sm-6">
+                <q-select
+                  filled
+                  clearable
+                  v-model="selected.type"
+                  :options="DefaultProfessionalTypes"
+                  :label="$t('type')"
+                  style="min-width: 200px"
+                  emit-value
+                  map-options
+                />
+              </div>
+            </div>
             <q-input
               filled
-              v-model="selected.name"
-              :label="$t('name')"
+              v-model="selected.description"
+              autogrow
+              :label="$t('description')"
+              class="q-mb-md"
               style="min-width: 200px"
             />
-          </div>
-          <div class="col-12 col-sm-6">
-            <q-select
-              filled
-              clearable
-              v-model="selected.type"
-              :options="DefaultProfessionalTypes"
-              :label="$t('type')"
-              style="min-width: 200px"
-              emit-value
-              map-options
-            />
-          </div>
-        </div>
-        <q-input
-          filled
-          v-model="selected.description"
-          autogrow
-          :label="$t('description')"
-          class="q-mb-md"
-          style="min-width: 200px"
-        />
-        <div class="row q-mb-md q-col-gutter-md">
-          <div class="col-12 col-sm-4">
+            <div class="row q-mb-md q-col-gutter-md">
+              <div class="col-12 col-sm-4">
+                <q-input
+                  filled
+                  v-model="selected.tel"
+                  :label="$t('phone')"
+                  style="min-width: 200px"
+                />
+              </div>
+              <div class="col-12 col-sm-4">
+                <q-input
+                  filled
+                  v-model="selected.email"
+                  type="email"
+                  :label="$t('email')"
+                  style="min-width: 200px"
+                />
+              </div>
+              <div class="col-12 col-sm-4">
+                <q-input
+                  filled
+                  v-model="selected.web"
+                  :label="$t('website')"
+                  style="min-width: 200px"
+                />
+              </div>
+            </div>
             <q-input
               filled
-              v-model="selected.tel"
-              :label="$t('phone')"
-              style="min-width: 200px"
+              v-model="selected.article_top"
+              type="textarea"
+              :label="$t('article_top')"
+              class="q-mb-md"
             />
-          </div>
-          <div class="col-12 col-sm-4">
             <q-input
               filled
-              v-model="selected.email"
-              type="email"
-              :label="$t('email')"
-              style="min-width: 200px"
+              v-model="selected.article_bottom"
+              type="textarea"
+              :label="$t('article_bottom')"
+              class="q-mb-md"
             />
-          </div>
-          <div class="col-12 col-sm-4">
             <q-input
               filled
-              v-model="selected.web"
-              :label="$t('website')"
-              style="min-width: 200px"
+              v-model="selected.side_note"
+              type="textarea"
+              :label="$t('side_note')"
+              class="q-mb-md"
             />
-          </div>
-        </div>
-        <div class="q-mb-md">
-          <circle-map-input
-            v-model="circle"
-            height="200px"
-            @update:model-value="onCircleInputUpdated"
-          ></circle-map-input>
-        </div>
-        <div class="row q-mb-md q-col-gutter-md">
-          <div class="col-12 col-sm-6">
+            <q-input
+              filled
+              v-model="selected.external_links"
+              type="textarea"
+              :label="$t('external_links')"
+              class="q-mb-md"
+            />
+          </q-tab-panel>
+          <q-tab-panel name="location" class="q-pl-none q-pr-none">
+            <circle-map-input
+              v-model="circle"
+              height="400px"
+              @update:model-value="onCircleInputUpdated"
+            ></circle-map-input>
+          </q-tab-panel>
+          <q-tab-panel name="multimedia" class="q-pl-none q-pr-none">
+          </q-tab-panel>
+          <q-tab-panel name="relations" class="q-pl-none q-pr-none">
             <q-select
               filled
               v-model="buildingMaterials"
@@ -86,8 +126,6 @@
               :hint="$t('professional_building_material_expertise_hint')"
               class="q-mb-md"
             />
-          </div>
-          <div class="col-12 col-sm-6">
             <q-select
               filled
               v-model="technicalConstructions"
@@ -100,8 +138,8 @@
               :hint="$t('professional_technical_construction_expertise_hint')"
               class="q-mb-md"
             />
-          </div>
-        </div>
+          </q-tab-panel>
+        </q-tab-panels>
       </q-card-section>
 
       <q-separator />
@@ -153,6 +191,7 @@ const selected = ref<Professional>({
 } as Professional);
 const circle = ref({});
 const editMode = ref(false);
+const tab = ref('general');
 const buildingMaterials = ref([]);
 const buildingMaterialsOptions = ref<
   { label: string | undefined; value: number | undefined }[]
@@ -169,6 +208,7 @@ const isValid = computed(() => {
 watch(
   () => props.modelValue,
   (value) => {
+    tab.value = 'general';
     if (value) {
       selected.value = { ...props.item };
       editMode.value = selected.value.id !== undefined;

@@ -7,10 +7,14 @@ export interface FileRef {
   alt_size?: number;
 }
 
-interface Entity {
+export interface Entity {
   id?: number;
   name: string;
   description?: string;
+  article_top?: string;
+  article_bottom?: string;
+  side_note?: string;
+  external_links?: string;
 
   created_at?: string;
   updated_at?: string;
@@ -18,7 +22,7 @@ interface Entity {
   updated_by?: string;
 }
 
-interface PhysicalEntity extends Entity {
+export interface PhysicalEntity extends Entity {
   density?: number;
   compressive_strength?: number;
   tensile_strength?: number;

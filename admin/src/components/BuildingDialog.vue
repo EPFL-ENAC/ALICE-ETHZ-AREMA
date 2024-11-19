@@ -8,30 +8,70 @@
       <q-separator />
 
       <q-card-section>
-        <q-input
-          filled
-          v-model="selected.name"
-          :label="$t('name')"
-          class="q-mb-md"
-          style="min-width: 200px"
-        />
-        <q-input
-          filled
-          v-model="selected.description"
-          autogrow
-          :label="$t('description')"
-          class="q-mb-md"
-          style="min-width: 200px"
-        />
-        <div class="q-mb-md">
-          <point-map-input
-            v-model="location"
-            height="200px"
-            @update:model-value="onPointInputUpdated"
-          ></point-map-input>
-        </div>
-        <div class="row q-mb-md q-col-gutter-md">
-          <div class="col-12 col-sm-4">
+        <q-tabs v-model="tab" dense align="left" no-caps>
+          <q-tab name="general" :label="$t('general')" />
+          <q-tab name="location" :label="$t('location')" />
+          <q-tab name="multimedia" :label="$t('multimedia')" />
+          <q-tab name="relations" :label="$t('relations')" />
+        </q-tabs>
+        <q-separator />
+
+        <q-tab-panels v-model="tab">
+          <q-tab-panel name="general" class="q-pl-none q-pr-none">
+            <q-input
+              filled
+              v-model="selected.name"
+              :label="$t('name') + ' *'"
+              class="q-mb-md"
+              style="min-width: 200px"
+            />
+            <q-input
+              filled
+              v-model="selected.description"
+              autogrow
+              :label="$t('description')"
+              class="q-mb-md"
+              style="min-width: 200px"
+            />
+            <q-input
+              filled
+              v-model="selected.article_top"
+              type="textarea"
+              :label="$t('article_top')"
+              class="q-mb-md"
+            />
+            <q-input
+              filled
+              v-model="selected.article_bottom"
+              type="textarea"
+              :label="$t('article_bottom')"
+              class="q-mb-md"
+            />
+            <q-input
+              filled
+              v-model="selected.side_note"
+              type="textarea"
+              :label="$t('side_note')"
+              class="q-mb-md"
+            />
+            <q-input
+              filled
+              v-model="selected.external_links"
+              type="textarea"
+              :label="$t('external_links')"
+              class="q-mb-md"
+            />
+          </q-tab-panel>
+          <q-tab-panel name="location" class="q-pl-none q-pr-none">
+            <point-map-input
+              v-model="location"
+              height="400px"
+              @update:model-value="onPointInputUpdated"
+            ></point-map-input>
+          </q-tab-panel>
+          <q-tab-panel name="multimedia" class="q-pl-none q-pr-none">
+          </q-tab-panel>
+          <q-tab-panel name="relations" class="q-pl-none q-pr-none">
             <q-select
               filled
               v-model="buildingMaterials"
@@ -44,8 +84,6 @@
               :hint="$t('building_building_material_used_hint')"
               class="q-mb-md"
             />
-          </div>
-          <div class="col-12 col-sm-4">
             <q-select
               filled
               v-model="technicalConstructions"
@@ -58,8 +96,6 @@
               :hint="$t('building_technical_construction_used_hint')"
               class="q-mb-md"
             />
-          </div>
-          <div class="col-12 col-sm-4">
             <q-select
               filled
               v-model="professionals"
@@ -72,8 +108,8 @@
               :hint="$t('building_professionals_hint')"
               class="q-mb-md"
             />
-          </div>
-        </div>
+          </q-tab-panel>
+        </q-tab-panels>
       </q-card-section>
 
       <q-separator />
@@ -126,6 +162,7 @@ const selected = ref<Building>({
 } as Building);
 const location = ref({});
 const editMode = ref(false);
+const tab = ref('general');
 const buildingMaterials = ref([]);
 const buildingMaterialsOptions = ref<
   { label: string | undefined; value: number | undefined }[]
@@ -146,6 +183,7 @@ const isValid = computed(() => {
 watch(
   () => props.modelValue,
   (value) => {
+    tab.value = 'general';
     if (value) {
       selected.value = { ...props.item };
       editMode.value = selected.value.id !== undefined;
