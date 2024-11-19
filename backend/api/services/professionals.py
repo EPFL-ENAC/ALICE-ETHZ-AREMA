@@ -33,6 +33,7 @@ class ProfessionalService:
     
     def __init__(self, session: AsyncSession):
         self.session = session
+        self.folder = "professionals"
     
     async def count(self) -> int:
         """Count all professionals"""
@@ -60,7 +61,7 @@ class ProfessionalService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Professional not found")
-        s3_client.delete_files(f"professionals/{entity.id}")
+        s3_client.delete_files(f"{self.folder}/{entity.id}")
         entity.building_materials.clear()
         entity.technical_constructions.clear()
         await self.session.delete(entity)
@@ -111,7 +112,7 @@ class ProfessionalService:
         
         # handle tmp files
         if entity.files:
-            s3_folder = f"professionals/{entity.id}"
+            s3_folder = f"{self.folder}/{entity.id}"
             new_files = []
             for i, item_dict in enumerate(entity.files):
                 item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
@@ -139,7 +140,7 @@ class ProfessionalService:
         entity.updated_at = datetime.now()
         # handle tmp files
         if entity.files:
-            s3_folder = f"professionals/{entity.id}"
+            s3_folder = f"{self.folder}/{entity.id}"
             new_files = []
             for i, item_dict in enumerate(entity.files):
                 item = await moveTempFile(FileItem(**item_dict), i, s3_folder)

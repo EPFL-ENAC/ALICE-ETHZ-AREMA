@@ -14,7 +14,7 @@
             </a>
             <q-input filled v-model="file.legend" :label="$t('legend')" />
           </q-item-section>
-          <q-item-section avatar>
+          <q-item-section avatar v-if="isImage(file.ref)">
             <q-img
               :src="`${baseUrl}/files/${file.ref.path}`"
               width="200px"
@@ -76,6 +76,12 @@ watch(
     files.value = val;
   },
 );
+
+function isImage(file: FileRef) {
+  return ['.png', '.jpg', '.jpeg', '.webp'].find((suffix) =>
+    file.name.toLowerCase().endsWith(suffix),
+  );
+}
 
 function onDeleteFile(file: FileItem, idx: number) {
   filesStore.addFileToDelete(file.ref);

@@ -3,10 +3,12 @@ from sqlalchemy.sql import text
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from fastapi import HTTPException
-from api.models.domain import NaturalResource, BuildingMaterial
+from api.models.domain import FileItem, NaturalResource, BuildingMaterial
 from api.models.query import NaturalResourceResult
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
+from api.services.s3 import s3_client
+from api.utils.files import moveTempFile
 
 class NaturalResourceQueryBuilder(QueryBuilder):
 
@@ -31,6 +33,7 @@ class NaturalResourceService:
     
     def __init__(self, session: AsyncSession):
         self.session = session
+        self.folder = "natural-resources"
     
     async def count(self) -> int:
         """Count all natural resources"""
@@ -56,6 +59,7 @@ class NaturalResourceService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Natural resource not found")
+        s3_client.delete_files(f"{self.folder}/{entity.id}")
         await self.session.delete(entity)
         await self.session.commit()
         return entity
@@ -85,11 +89,23 @@ class NaturalResourceService:
     
     async def create(self, payload: NaturalResource) -> NaturalResource:
         """Create a new natural resource"""
-        payload.created_at = datetime.now()
-        payload.updated_at = datetime.now()
-        self.session.add(payload)
+        entity = NaturalResource(**payload.model_dump())
+        entity.created_at = datetime.now()
+        entity.updated_at = datetime.now()
+        self.session.add(entity)
         await self.session.commit()
-        return payload
+        
+        # handle tmp files
+        if entity.files:
+            s3_folder = f"{self.folder}/{entity.id}"
+            new_files = []
+            for i, item_dict in enumerate(entity.files):
+                item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
+                new_files.append(item.model_dump())
+            entity.files = new_files
+            await self.session.commit()
+        
+        return entity
     
     async def update(self, id: int, payload: NaturalResource) -> NaturalResource:
         """Update a natural resource"""
@@ -105,5 +121,13 @@ class NaturalResourceService:
             if key not in ["id", "created_at", "updated_at", "created_by", "updated_by"]:
                 setattr(entity, key, value)
         entity.updated_at = datetime.now()
+        # handle tmp files
+        if entity.files:
+            s3_folder = f"{self.folder}/{entity.id}"
+            new_files = []
+            for i, item_dict in enumerate(entity.files):
+                item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
+                new_files.append(item.model_dump())
+            entity.files = new_files
         await self.session.commit()
         return entity

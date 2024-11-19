@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="showDialog" @hide="onHide">
+  <q-dialog v-model="showDialog" persistent @hide="onHide">
     <q-card class="dialog-lg">
       <q-card-section>
         <div class="text-h6">{{ $t(editMode ? 'edit' : 'add') }}</div>
@@ -69,13 +69,22 @@
           >
             <physical-entity-form v-model="selected" />
           </q-tab-panel>
+          <q-tab-panel name="multimedia" class="q-pl-none q-pr-none">
+            <files-input v-model="selected.files" />
+          </q-tab-panel>
         </q-tab-panels>
       </q-card-section>
 
       <q-separator />
 
       <q-card-actions align="right" class="bg-grey-3">
-        <q-btn flat :label="$t('cancel')" color="secondary" v-close-popup />
+        <q-btn
+          flat
+          :label="$t('cancel')"
+          color="secondary"
+          @click="onCancel"
+          v-close-popup
+        />
         <q-btn
           :label="$t('save')"
           color="primary"
@@ -96,6 +105,7 @@ export default defineComponent({
 import { NaturalResource } from 'src/models';
 import { notifyError } from 'src/utils/notify';
 import PhysicalEntityForm from 'src/components/PhysicalEntityForm.vue';
+import FilesInput from 'src/components/FilesInput.vue';
 
 interface DialogProps {
   modelValue: boolean;
@@ -105,11 +115,15 @@ interface DialogProps {
 const props = defineProps<DialogProps>();
 const emit = defineEmits(['update:modelValue', 'saved']);
 
+const filesStore = useFilesStore();
 const services = useServices();
 const service = services.make('natural-resource');
 
 const showDialog = ref(props.modelValue);
-const selected = ref<NaturalResource>({ name: '' } as NaturalResource);
+const selected = ref<NaturalResource>({
+  name: '',
+  files: [],
+} as NaturalResource);
 const editMode = ref(false);
 const tab = ref('general');
 
@@ -122,9 +136,13 @@ watch(
   (value) => {
     tab.value = 'general';
     if (value) {
-      selected.value = { ...props.item };
+      // deep copy
+      selected.value = JSON.parse(JSON.stringify(props.item));
       editMode.value = selected.value.id !== undefined;
       tab.value = 'general';
+    }
+    if (selected.value.files === undefined) {
+      selected.value.files = [];
     }
     showDialog.value = value;
   },
@@ -135,12 +153,17 @@ function onHide() {
   emit('update:modelValue', false);
 }
 
+function onCancel() {
+  filesStore.clearFilesToDelete();
+}
+
 async function onSave() {
   if (selected.value === undefined) return;
   if (selected.value.id) {
     service
       .update(selected.value.id, selected.value)
       .then(() => {
+        filesStore.deleteFiles();
         emit('saved', selected.value);
         onHide();
       })
@@ -148,11 +171,10 @@ async function onSave() {
         notifyError(err.message);
       });
   } else {
-    // TODO
-    selected.value.files = [];
     service
       .create(selected.value)
       .then(() => {
+        filesStore.deleteFiles();
         emit('saved', selected.value);
         onHide();
       })

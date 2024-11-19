@@ -4,10 +4,12 @@ from sqlalchemy.sql import text
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from fastapi import HTTPException
-from api.models.domain import Building, BuildingMaterial, TechnicalConstruction, Professional
+from api.models.domain import FileItem, Building, BuildingMaterial, TechnicalConstruction, Professional
 from api.models.query import BuildingDraft, BuildingResult
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
+from api.services.s3 import s3_client
+from api.utils.files import moveTempFile
 
 class BuildingQueryBuilder(QueryBuilder):
 
@@ -32,6 +34,7 @@ class BuildingService:
     
     def __init__(self, session: AsyncSession):
         self.session = session
+        self.folder = "buildings"
     
     async def count(self) -> int:
         """Count all buildings"""
@@ -60,6 +63,7 @@ class BuildingService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Building not found")
+        s3_client.delete_files(f"{self.folder}/{entity.id}")
         entity.building_materials.clear()
         entity.technical_constructions.clear()
         entity.professionals.clear()
@@ -107,6 +111,17 @@ class BuildingService:
         entity.professionals.extend(new_pros)
         self.session.add(entity)
         await self.session.commit()
+        
+        # handle tmp files
+        if entity.files:
+            s3_folder = f"{self.folder}/{entity.id}"
+            new_files = []
+            for i, item_dict in enumerate(entity.files):
+                item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
+                new_files.append(item.model_dump())
+            entity.files = new_files
+            await self.session.commit()
+        
         return entity
     
     async def update(self, id: int, payload: BuildingDraft) -> Building:
@@ -126,6 +141,14 @@ class BuildingService:
             if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "building_material_ids", "technical_construction_ids", "professional_ids"]:
                 setattr(entity, key, value)
         entity.updated_at = datetime.now()
+        # handle tmp files
+        if entity.files:
+            s3_folder = f"{self.folder}/{entity.id}"
+            new_files = []
+            for i, item_dict in enumerate(entity.files):
+                item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
+                new_files.append(item.model_dump())
+            entity.files = new_files
         # handle relationships
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()

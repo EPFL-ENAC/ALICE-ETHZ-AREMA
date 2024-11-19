@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="showDialog" @hide="onHide">
+  <q-dialog v-model="showDialog" persistent @hide="onHide">
     <q-card class="dialog-lg">
       <q-card-section>
         <div class="text-h6">{{ $t(editMode ? 'edit' : 'add') }}</div>
@@ -64,6 +64,15 @@
               class="q-mb-md"
             />
           </q-tab-panel>
+          <q-tab-panel
+            name="physical_characteristics"
+            class="q-pl-none q-pr-none"
+          >
+            <physical-entity-form v-model="selected" />
+          </q-tab-panel>
+          <q-tab-panel name="multimedia" class="q-pl-none q-pr-none">
+            <files-input v-model="selected.files" />
+          </q-tab-panel>
           <q-tab-panel name="relations" class="q-pl-none q-pr-none">
             <q-select
               filled
@@ -78,19 +87,19 @@
               class="q-mb-md"
             />
           </q-tab-panel>
-          <q-tab-panel
-            name="physical_characteristics"
-            class="q-pl-none q-pr-none"
-          >
-            <physical-entity-form v-model="selected" />
-          </q-tab-panel>
         </q-tab-panels>
       </q-card-section>
 
       <q-separator />
 
       <q-card-actions align="right" class="bg-grey-3">
-        <q-btn flat :label="$t('cancel')" color="secondary" v-close-popup />
+        <q-btn
+          flat
+          :label="$t('cancel')"
+          color="secondary"
+          @click="onCancel"
+          v-close-popup
+        />
         <q-btn
           :label="$t('save')"
           color="primary"
@@ -111,6 +120,7 @@ export default defineComponent({
 import { BuildingMaterial, NaturalResource } from 'src/models';
 import { notifyError } from 'src/utils/notify';
 import PhysicalEntityForm from 'src/components/PhysicalEntityForm.vue';
+import FilesInput from 'src/components/FilesInput.vue';
 
 interface DialogProps {
   modelValue: boolean;
@@ -120,12 +130,16 @@ interface DialogProps {
 const props = defineProps<DialogProps>();
 const emit = defineEmits(['update:modelValue', 'saved']);
 
+const filesStore = useFilesStore();
 const services = useServices();
 const service = services.make('building-material');
 const nrService = services.make('natural-resource');
 
 const showDialog = ref(props.modelValue);
-const selected = ref<BuildingMaterial>({ name: '' } as BuildingMaterial);
+const selected = ref<BuildingMaterial>({
+  name: '',
+  files: [],
+} as BuildingMaterial);
 const editMode = ref(false);
 const tab = ref('general');
 const naturalResources = ref([]);
@@ -145,7 +159,8 @@ watch(
   (value) => {
     tab.value = 'general';
     if (value) {
-      selected.value = { ...props.item };
+      // deep copy
+      selected.value = JSON.parse(JSON.stringify(props.item));
       editMode.value = selected.value.id !== undefined;
       tab.value = 'general';
       naturalResources.value = [];
@@ -171,6 +186,9 @@ watch(
           : [];
       }
     }
+    if (selected.value.files === undefined) {
+      selected.value.files = [];
+    }
     showDialog.value = value;
   },
 );
@@ -178,6 +196,10 @@ watch(
 function onHide() {
   showDialog.value = false;
   emit('update:modelValue', false);
+}
+
+function onCancel() {
+  filesStore.clearFilesToDelete();
 }
 
 async function onSave() {
@@ -188,6 +210,7 @@ async function onSave() {
     service
       .update(selected.value.id, selected.value)
       .then(() => {
+        filesStore.deleteFiles();
         emit('saved', selected.value);
         onHide();
       })
@@ -195,11 +218,10 @@ async function onSave() {
         notifyError(err.message);
       });
   } else {
-    // TODO
-    selected.value.files = [];
     service
       .create(selected.value)
       .then(() => {
+        filesStore.deleteFiles();
         emit('saved', selected.value);
         onHide();
       })
