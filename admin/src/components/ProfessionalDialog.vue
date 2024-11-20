@@ -226,7 +226,7 @@ onMounted(() => {
         (node: TaxonomyNode) => {
           return {
             value: node.id,
-            label: node.name,
+            label: taxonomyStore.getLabel(node.name) || node.id,
           };
         },
       );

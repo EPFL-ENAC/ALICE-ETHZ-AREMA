@@ -1,5 +1,12 @@
 taxonomy:
   - id: building
-    name: Buildings
-    description: "Buildings / Gebäude / Bâtiments"
+    name:
+      - locale: en
+        label: Buildings
+      - locale: de
+        label: Gebäude
+      - locale: fr
+        label: Bâtiments
+      - locale: it
+        label: Edifici
     

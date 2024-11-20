@@ -1,5 +1,12 @@
 taxonomy:
   - id: building-material
-    name: Building materials
-    description: "Building materials / Baustoffe / Matériaux de construction"
+    name:
+      - locale: en
+        label: Building materials
+      - locale: de
+        label: Baustoffe
+      - locale: fr
+        label: Matériaux de construction
+      - locale: it
+        label: Materiali da costruzione
     
