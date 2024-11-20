@@ -1,0 +1,90 @@
+taxonomy:
+  - id: natural-resource
+    name: Natural resources
+    description: "Natural resources / Natürliche Ressourcen / Ressources naturelles"
+    children:
+      - id: earth
+        name: Earth
+        description: "Earth / Erde / Terre"
+        children:
+          - id: raming
+            name: Ramming
+            description: "Ramming / Stampfen / Pisé"
+          - id: adobe-cob
+            name: Adobe
+            description: "Adobe, cob / Lehmsteine, Wellerlehm, Ausfachung / Adobe, torchis"
+          - id: industrial
+            name: "Industrial production"
+            description: "Industrial production /Für industrielle Produktion/ Pour production industrielle"
+      - id: rock
+        name: Rock
+        description: "Rock / Gestein / Roche"
+        children:
+          - id: limestones
+            name: Limestones
+            description: "Limestone, Dolomit, Marble / Kalkstein, Dolomit, Marmor / Calcaire, Dolomite, Marbre"
+          - id: granites
+            name: "Granite, gneiss"
+            description: "Granite, gneiss / Granit, Gneis / Granit, gneiss"
+          - id: sandstone
+            name: Sandstone
+            description: "Sandstone / Sandstein / Grès"
+          - id: molasse
+            name: Molasse
+            description: "Molasse, Breccia, Conglomerate / Molasse, Brekzie, Konglomerat / Molasse, Brèche, Conglomérat"
+          - id: volcanic
+            name: Volcanic
+            description: "Volcanic / Vulkanisch / Volcanique"
+      - id: straw
+        name: Straw
+        description: "Straw / Stroh / Paille"
+      - id: hemp
+        name: Hemp
+        description: "Hemp / Hanf / Chanvre"
+      - id: wood
+        name: Wood
+        description: "Wood / Holz / Bois"
+        children:
+          - id: soft-wood
+            name: "Soft wood"
+            description: "Soft Wood / Weichholz / Bois tendre"
+          - id: hard-wood
+            name: "Hard wood"
+            description: "Hard Wood / Hartholz / Bois dur"
+      - id: other-fibres
+        name: "Other fibres"
+        description: "Other Fibres / Andere Fasern / Autres Fibres"
+        children:
+          - id: flax
+            name: Flax
+            description: "Flax / Flachs / Lin"
+          - id: bamboo
+            name: Bamboo
+            description: "Bamboo / Bambus / Bambou"
+          - id: hay
+            name: Hay
+            description: "Hay / Heu / Foin"
+          - id: sheep-wool
+            name: "Sheep wool"
+            description: "Sheep Wool / Schafwolle / Laine de mouton"
+          - id: husks
+            name: Husks
+            description: "Husks / Schalen / Balle"
+          - id: jute
+            name: Jute
+            description: "Jute / Jute / Jute"
+          - id: kenaf
+            name: Kenaf
+            description: "Kenaf / Kenaf / Kenaf"
+          - id: corncobs
+            name: Corncobs
+            description: "Corncobs / Maiskolben / Épis de maïs"
+          - id: sisal
+            name: Sisal
+            description: "Sisal / Sisal / Sisal"
+          - id: miscanthus
+            name: Miscanthus
+            description: "Miscanthus / Miscanthus / Miscanthus"
+          - id: reed-typha
+            name: "Reed/Typha"
+            description: "Reed/Typha / Schilf / Roseau"

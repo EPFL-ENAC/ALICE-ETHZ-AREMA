@@ -9,7 +9,7 @@ from enacit4r_sql.utils.query import paramAsArray, paramAsDict
 router = APIRouter()
 
 
-@router.get("/", response_model=ProfessionalResult)
+@router.get("/", response_model=ProfessionalResult, response_model_exclude_none=True)
 async def find(
     filter: str = Query(None),
     sort: str = Query(None),
@@ -18,12 +18,14 @@ async def find(
 ) -> ProfessionalResult:
     """Search for professionals"""
     return await ProfessionalService(session).find(paramAsDict(filter), paramAsArray(sort), paramAsArray(range))
-  
+
+
 @router.get("/{id}", response_model=Professional)
 async def get(id: int, session: AsyncSession = Depends(get_session)) -> Professional:
     """Get a professional by id"""
     return await ProfessionalService(session).get(id)
-  
+
+
 @router.delete("/{id}", response_model=Professional)
 async def delete(
     id: int,
@@ -33,6 +35,7 @@ async def delete(
     """Delete a professional by id"""
     return await ProfessionalService(session).delete(id)
 
+
 @router.post("/", response_model=Professional)
 async def create(
     payload: ProfessionalDraft,
@@ -41,7 +44,8 @@ async def create(
 ) -> Professional:
     """Create a professional"""
     return await ProfessionalService(session).create(payload)
-  
+
+
 @router.put("/{id}", response_model=Professional)
 async def update(
     id: int,
@@ -50,4 +54,4 @@ async def update(
     user: User = Depends(kc_service.require_admin())
 ) -> Professional:
     """Update a professional by id"""
-    return await ProfessionalService(session).update(id, payload)    
+    return await ProfessionalService(session).update(id, payload)

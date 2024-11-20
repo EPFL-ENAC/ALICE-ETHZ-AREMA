@@ -12,6 +12,7 @@ from api.views.building_materials import router as building_materials_router
 from api.views.technical_constructions import router as technical_constructions_router
 from api.views.buildings import router as buildings_router
 from api.views.professionals import router as professionals_router
+from api.views.taxonomy import router as taxonomy_router
 
 basicConfig(level=DEBUG)
 
@@ -90,4 +91,10 @@ app.include_router(
     professionals_router,
     prefix="/professional",
     tags=["Professionals"],
+)
+
+app.include_router(
+    taxonomy_router,
+    prefix="/taxonomy",
+    tags=["Taxonomies"],
 )

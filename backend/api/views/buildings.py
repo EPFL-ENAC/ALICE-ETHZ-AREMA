@@ -9,7 +9,7 @@ from enacit4r_sql.utils.query import paramAsArray, paramAsDict
 router = APIRouter()
 
 
-@router.get("/", response_model=BuildingResult)
+@router.get("/", response_model=BuildingResult, response_model_exclude_none=True)
 async def find(
     filter: str = Query(None),
     sort: str = Query(None),
@@ -18,19 +18,22 @@ async def find(
 ) -> BuildingResult:
     """Search for buildings"""
     return await BuildingService(session).find(paramAsDict(filter), paramAsArray(sort), paramAsArray(range))
-  
+
+
 @router.get("/{id}", response_model=Building)
 async def get(id: int, session: AsyncSession = Depends(get_session)) -> Building:
     """Get a building by id"""
     return await BuildingService(session).get(id)
-  
+
+
 @router.delete("/{id}", response_model=Building)
 async def delete(
-    id: int,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())) -> Building:
+        id: int,
+        session: AsyncSession = Depends(get_session),
+        user: User = Depends(kc_service.require_admin())) -> Building:
     """Delete a building by id"""
     return await BuildingService(session).delete(id)
+
 
 @router.post("/", response_model=Building)
 async def create(
@@ -40,7 +43,8 @@ async def create(
 ) -> Building:
     """Create a building"""
     return await BuildingService(session).create(payload)
-  
+
+
 @router.put("/{id}", response_model=Building)
 async def update(
     id: int, payload: BuildingDraft,
@@ -48,4 +52,4 @@ async def update(
     user: User = Depends(kc_service.require_admin())
 ) -> Building:
     """Update a building by id"""
-    return await BuildingService(session).update(id, payload)    
+    return await BuildingService(session).update(id, payload)

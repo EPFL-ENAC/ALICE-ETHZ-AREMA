@@ -9,7 +9,7 @@ from enacit4r_sql.utils.query import paramAsArray, paramAsDict
 router = APIRouter()
 
 
-@router.get("/", response_model=BuildingMaterialResult)
+@router.get("/", response_model=BuildingMaterialResult, response_model_exclude_none=True)
 async def find(
     filter: str = Query(None),
     sort: str = Query(None),
@@ -18,19 +18,22 @@ async def find(
 ) -> BuildingMaterialResult:
     """Search for building materials"""
     return await BuildingMaterialService(session).find(paramAsDict(filter), paramAsArray(sort), paramAsArray(range))
-  
+
+
 @router.get("/{id}", response_model=BuildingMaterial)
 async def get(id: int, session: AsyncSession = Depends(get_session)) -> BuildingMaterial:
     """Get a building material by id"""
     return await BuildingMaterialService(session).get(id)
-  
+
+
 @router.delete("/{id}", response_model=BuildingMaterial)
 async def delete(
-    id: int,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())) -> BuildingMaterial:
+        id: int,
+        session: AsyncSession = Depends(get_session),
+        user: User = Depends(kc_service.require_admin())) -> BuildingMaterial:
     """Delete a building material by id"""
     return await BuildingMaterialService(session).delete(id)
+
 
 @router.post("/", response_model=BuildingMaterial)
 async def create(
@@ -40,7 +43,8 @@ async def create(
 ) -> BuildingMaterial:
     """Create a building material"""
     return await BuildingMaterialService(session).create(payload)
-  
+
+
 @router.put("/{id}", response_model=BuildingMaterial)
 async def update(
     id: int, payload: BuildingMaterialDraft,
@@ -49,4 +53,4 @@ async def update(
 ) -> BuildingMaterial:
     """Update a building material by id"""
     async with session:
-        return await BuildingMaterialService(session).update(id, payload)    
+        return await BuildingMaterialService(session).update(id, payload)

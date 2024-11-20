@@ -9,7 +9,7 @@ from enacit4r_sql.utils.query import paramAsArray, paramAsDict
 router = APIRouter()
 
 
-@router.get("/", response_model=NaturalResourceResult)
+@router.get("/", response_model=NaturalResourceResult, response_model_exclude_none=True)
 async def find(
     filter: str = Query(None),
     sort: str = Query(None),
@@ -18,12 +18,14 @@ async def find(
 ) -> NaturalResourceResult:
     """Search for natural resources"""
     return await NaturalResourceService(session).find(paramAsDict(filter), paramAsArray(sort), paramAsArray(range))
-  
+
+
 @router.get("/{id}", response_model=NaturalResource)
 async def get(id: int, session: AsyncSession = Depends(get_session)) -> NaturalResource:
     """Get a natural resource by id"""
     return await NaturalResourceService(session).get(id)
-  
+
+
 @router.delete("/{id}", response_model=NaturalResource)
 async def delete(
     id: int,
@@ -33,6 +35,7 @@ async def delete(
     """Delete a natural resource by id"""
     return await NaturalResourceService(session).delete(id)
 
+
 @router.post("/", response_model=NaturalResource)
 async def create(
     natural_resource: NaturalResource,
@@ -41,7 +44,8 @@ async def create(
 ) -> NaturalResource:
     """Create a natural resource"""
     return await NaturalResourceService(session).create(natural_resource)
-  
+
+
 @router.put("/{id}", response_model=NaturalResource)
 async def update(
     id: int,
@@ -50,4 +54,4 @@ async def update(
     user: User = Depends(kc_service.require_admin())
 ) -> NaturalResource:
     """Update a natural resource by id"""
-    return await NaturalResourceService(session).update(id, natural_resource)    
+    return await NaturalResourceService(session).update(id, natural_resource)

@@ -9,7 +9,7 @@ from enacit4r_sql.utils.query import paramAsArray, paramAsDict
 router = APIRouter()
 
 
-@router.get("/", response_model=TechnicalConstructionResult)
+@router.get("/", response_model=TechnicalConstructionResult, response_model_exclude_none=True)
 async def find(
     filter: str = Query(None),
     sort: str = Query(None),
@@ -18,12 +18,14 @@ async def find(
 ) -> TechnicalConstructionResult:
     """Search for technical constructions"""
     return await TechnicalConstructionService(session).find(paramAsDict(filter), paramAsArray(sort), paramAsArray(range))
-  
+
+
 @router.get("/{id}", response_model=TechnicalConstruction)
 async def get(id: int, session: AsyncSession = Depends(get_session)) -> TechnicalConstruction:
     """Get a technical construction by id"""
     return await TechnicalConstructionService(session).get(id)
-  
+
+
 @router.delete("/{id}", response_model=TechnicalConstruction)
 async def delete(
     id: int,
@@ -33,6 +35,7 @@ async def delete(
     """Delete a technical construction by id"""
     return await TechnicalConstructionService(session).delete(id)
 
+
 @router.post("/", response_model=TechnicalConstruction)
 async def create(
     payload: TechnicalConstructionDraft,
@@ -41,7 +44,8 @@ async def create(
 ) -> TechnicalConstruction:
     """Create a technical construction"""
     return await TechnicalConstructionService(session).create(payload)
-  
+
+
 @router.put("/{id}", response_model=TechnicalConstruction)
 async def update(
     id: int,
@@ -50,4 +54,4 @@ async def update(
     user: User = Depends(kc_service.require_admin())
 ) -> TechnicalConstruction:
     """Update a technical construction by id"""
-    return await TechnicalConstructionService(session).update(id, payload)    
+    return await TechnicalConstructionService(session).update(id, payload)
