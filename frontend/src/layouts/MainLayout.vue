@@ -73,9 +73,6 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 import { useQuasar } from 'quasar';
-import { useCookies } from 'vue3-cookies';
-
-const { cookies } = useCookies();
 
 const $q = useQuasar();
 const route = useRoute();
@@ -86,6 +83,5 @@ const locales = ['en', 'de', 'fr'];
 
 function onLocaleSelection(lang: string) {
   locale.value = lang;
-  cookies.set('locale', lang);
 }
 </script>

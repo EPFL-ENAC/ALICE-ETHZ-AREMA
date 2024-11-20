@@ -362,11 +362,8 @@
 </template>
 
 <script setup lang="ts">
-import { Query } from '@feathersjs/client';
-import { Building, Professional, ProfessionalType } from '@epfl-enac/arema';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
-import { useCookies } from 'vue3-cookies';
 import MapView from '../components/MapView.vue';
 import { useQuasar } from 'quasar';
 import { useRoute } from 'vue-router';
@@ -374,7 +371,6 @@ import { useRoute } from 'vue-router';
 const $q = useQuasar();
 const route = useRoute();
 
-const { cookies } = useCookies();
 const { api } = useFeathers();
 const { t, locale } = useI18n({ useScope: 'global' });
 
@@ -640,7 +636,7 @@ onMounted(() => {
           return a.text.localeCompare(b.text);
         });
       professionalTypesTicked.value = professionalTypes.value[0].children.map(
-        (pt) => pt.id
+        (pt) => pt.id,
       );
       if (tab.value === 'professionals') {
         if (route.query.type) {
@@ -660,7 +656,6 @@ onMounted(() => {
 
 function onLocaleSelection(lang: string) {
   locale.value = lang;
-  cookies.set('locale', lang);
   window.location.reload();
 }
 
@@ -669,7 +664,7 @@ function fetchProfessionalsFromServer(
   count: number,
   filter: string,
   sortBy: string,
-  descending: boolean
+  descending: boolean,
 ) {
   const query: Query = {
     $skip: startRow,
@@ -716,7 +711,7 @@ function fetchProfessionalsFromServer(
 
 const onProfessionalsRequest = makePaginationRequestHandler(
   fetchProfessionalsFromServer,
-  professionalsPagination
+  professionalsPagination,
 );
 
 function fetchBuildingsFromServer(
@@ -724,7 +719,7 @@ function fetchBuildingsFromServer(
   count: number,
   filter: string,
   sortBy: string,
-  descending: boolean
+  descending: boolean,
 ) {
   const query: Query = {
     $skip: startRow,
@@ -762,7 +757,7 @@ function fetchBuildingsFromServer(
 
 const onBuildingsRequest = makePaginationRequestHandler(
   fetchBuildingsFromServer,
-  buildingsPagination
+  buildingsPagination,
 );
 
 function onTabChange() {
