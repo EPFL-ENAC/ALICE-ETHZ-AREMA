@@ -31,12 +31,13 @@
                 <q-select
                   filled
                   clearable
-                  v-model="selected.type"
+                  v-model="selected.types"
                   :options="professionalTypes"
-                  :label="$t('type')"
+                  :label="$t('types')"
                   style="min-width: 200px"
                   emit-value
                   map-options
+                  multiple
                 />
               </div>
             </div>
@@ -215,7 +216,7 @@ const technicalConstructionsOptions = ref<
 const professionalTypes = ref<Option[]>([]);
 
 const isValid = computed(() => {
-  return selected.value.name && selected.value.type && selected.value.address;
+  return selected.value.name && selected.value.types && selected.value.address;
 });
 
 watch(

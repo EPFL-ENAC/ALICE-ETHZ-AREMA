@@ -32,7 +32,7 @@
             clearable
             v-model="types"
             :options="professionalTypes"
-            :label="$t('type')"
+            :label="$t('types')"
             class="q-mr-md"
             style="min-width: 200px"
             @update:model-value="onTypeSelection"
@@ -158,12 +158,13 @@ const columns = computed(() => {
       sortable: false,
     },
     {
-      name: 'type',
+      name: 'types',
       required: true,
-      label: t('type'),
+      label: t('types'),
       align: 'left',
-      field: 'type',
-      format: getProfessionalTypeLabel,
+      field: 'types',
+      format: (val: string[] | undefined) =>
+        val ? val.map(getProfessionalTypeLabel).join(', ') : '',
       sortable: true,
     },
     {
@@ -307,8 +308,8 @@ function fetchFromServer(
   };
   if (types.value) {
     query.filter = {
-      type: {
-        $in: types.value,
+      types: {
+        $contains: types.value,
       },
     };
   }

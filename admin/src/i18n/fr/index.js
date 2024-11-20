@@ -63,6 +63,7 @@ export default {
   save: 'Sauvegarder',
   technical_constructions: 'Constructions techniques',
   type: 'Type',
+  types: 'Types',
   user: 'Utilisateur',
   users: 'Utilisateurs',
   website: 'Site web',

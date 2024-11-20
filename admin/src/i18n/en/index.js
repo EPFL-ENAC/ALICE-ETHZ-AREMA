@@ -69,6 +69,7 @@ export default {
   save: 'Save',
   technical_constructions: 'Technical constructions',
   type: 'Type',
+  types: 'Types',
   user: 'User',
   users: 'Users',
   website: 'Website',

@@ -156,7 +156,7 @@ export interface Building extends Entity {
 }
 
 export interface Professional extends Entity {
-  type?: string;
+  types?: string[];
   address?: string;
   web?: string;
   tel?: string;
