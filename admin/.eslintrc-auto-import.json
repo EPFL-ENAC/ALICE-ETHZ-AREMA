@@ -101,6 +101,8 @@
     "useFeathers": true,
     "Service": true,
     "useServices": true,
-    "useFilesStore": true
+    "useFilesStore": true,
+    "useTaxonomy": true,
+    "useTaxonomyStore": true
   }
 }

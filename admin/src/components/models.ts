@@ -16,3 +16,8 @@ export interface FileObject extends Blob {
   readonly path: string;
   readonly type: string;
 }
+
+export interface Option {
+  value: string;
+  label: string;
+}

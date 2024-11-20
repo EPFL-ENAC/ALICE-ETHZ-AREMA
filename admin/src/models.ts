@@ -18,6 +18,17 @@ export interface Geometry {
   point?: [number, number];
 }
 
+export interface TaxonomyNode {
+  id: string;
+  name: string;
+  description?: string;
+  children?: TaxonomyNode[];
+}
+
+export interface Taxonomy {
+  taxonomy: TaxonomyNode[];
+}
+
 export interface Entity {
   id?: number;
   name: string;

@@ -1,0 +1,29 @@
+taxonomy:
+  - id: professional
+    name: Professionals
+    description: "Professionals / Fachleute / Professionnels"
+    children:
+      - id: architect
+        name: Architect
+        description: "Architect / Architekt / Architecte"
+      - id: civil-engineer
+        name: Civil engineer
+        description: "Civil engineer / Bauingenieur / Ingénieur civil"
+      - id: craftsman
+        name: Craftsman
+        description: "Craftsman / Handwerker / Artisan"      
+      - id: material-producer
+        name: Material Producer
+        description: "Material Producer / Materialhersteller / Producteur de matériaux"
+      - id: building-physics
+        name: Building Physics
+        description: "Building Physics / Bauphysik / Physique du bâtiment"
+      - id: association
+        name: Association
+        description: "Association / Verband / Association"
+      - id: construction-firm
+        name: Construction Firm
+        description: "Construction Firm / Bauunternehmen / Entreprise de construction"
+      - id: other
+        name: Other
+        description: "Other / Andere / Autre"

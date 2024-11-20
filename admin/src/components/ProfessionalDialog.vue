@@ -32,7 +32,7 @@
                   filled
                   clearable
                   v-model="selected.type"
-                  :options="DefaultProfessionalTypes"
+                  :options="professionalTypes"
                   :label="$t('type')"
                   style="min-width: 200px"
                   emit-value
@@ -174,11 +174,13 @@ import {
   BuildingMaterial,
   Professional,
   TechnicalConstruction,
+  Taxonomy,
+  TaxonomyNode,
 } from 'src/models';
-import { DefaultProfessionalTypes } from 'src/utils/options';
-import { notifyError } from '../utils/notify';
+import { notifyError } from 'src/utils/notify';
 import CircleMapInput from 'src/components/CircleMapInput.vue';
 import FilesInput from 'src/components/FilesInput.vue';
+import { Option } from 'src/components/models';
 
 interface DialogProps {
   modelValue: boolean;
@@ -189,6 +191,7 @@ const props = defineProps<DialogProps>();
 const emit = defineEmits(['update:modelValue', 'saved']);
 
 const filesStore = useFilesStore();
+const taxonomyStore = useTaxonomyStore();
 const services = useServices();
 const service = services.make('professional');
 const bmService = services.make('building-material');
@@ -210,9 +213,27 @@ const technicalConstructions = ref([]);
 const technicalConstructionsOptions = ref<
   { label: string | undefined; value: number | undefined }[]
 >([]);
+const professionalTypes = ref<Option[]>([]);
 
 const isValid = computed(() => {
   return selected.value.name && selected.value.type && selected.value.address;
+});
+
+onMounted(() => {
+  taxonomyStore.getTaxonomy('professional').then((taxo: Taxonomy) => {
+    if (taxo.taxonomy[0].children) {
+      professionalTypes.value = taxo.taxonomy[0].children.map(
+        (node: TaxonomyNode) => {
+          return {
+            value: node.id,
+            label: node.name,
+          };
+        },
+      );
+    } else {
+      professionalTypes.value = [];
+    }
+  });
 });
 
 watch(

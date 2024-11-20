@@ -31,7 +31,7 @@
             dense
             clearable
             v-model="types"
-            :options="DefaultProfessionalTypes"
+            :options="professionalTypes"
             :label="$t('type')"
             class="q-mr-md"
             style="min-width: 200px"
@@ -116,8 +116,7 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { Query } from 'src/components/models';
-import { Professional } from 'src/models';
-import { DefaultProfessionalTypes } from 'src/utils/options';
+import { Professional, Taxonomy, TaxonomyNode } from 'src/models';
 import { makePaginationRequestHandler } from 'src/utils/pagination';
 import type { PaginationOptions } from 'src/utils/pagination';
 import MapView from 'src/components/MapView.vue';
@@ -127,6 +126,7 @@ import { onMounted, ref, computed } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const authStore = useAuthStore();
+const taxonomyStore = useTaxonomyStore();
 const services = useServices();
 const service = services.make('professional');
 //const serviceType = services.make('professional-type');
@@ -253,9 +253,24 @@ const pagination = ref<PaginationOptions>({
   rowsPerPage: 10,
   rowsNumber: 10,
 });
+const professionalTypes = ref<{ value: string; label: string }[]>([]);
 
 onMounted(() => {
   tableRef.value.requestServerInteraction();
+  taxonomyStore.getTaxonomy('professional').then((taxo: Taxonomy) => {
+    if (taxo.taxonomy[0].children) {
+      professionalTypes.value = taxo.taxonomy[0].children.map(
+        (node: TaxonomyNode) => {
+          return {
+            value: node.id,
+            label: node.name,
+          };
+        },
+      );
+    } else {
+      professionalTypes.value = [];
+    }
+  });
 });
 
 const features = computed(() => {

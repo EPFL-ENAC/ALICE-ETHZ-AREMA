@@ -77,10 +77,10 @@ export default {
   professional_building_material_expertise_hint:
     'Expertise en matériaux de construction.',
   professional_technical_construction_expertise_hint:
-    'Expertise en techniques de construction.',
+    'Expertise en constructions techniques.',
   building_building_material_used_hint: 'Matériaux de construction utilisés.',
   building_technical_construction_used_hint:
-    'Techniques de construction utilisées.',
+    'Constructions techniques utilisées.',
   building_professionals_hint: 'Professionnels impliqués dans la construction.',
   layout: 'Disposition',
   physical_characteristics: 'Caractéristiques physiques',
