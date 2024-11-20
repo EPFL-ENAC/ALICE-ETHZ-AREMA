@@ -16,7 +16,9 @@ export const useAuthStore = defineStore('auth', () => {
   const isAdmin = computed(() =>
     realmRoles.value.includes('app-administrator'),
   );
-  const accessToken = computed(() => keycloak.token);
+
+  // const accessToken = computed(() => keycloak.token);
+  const accessToken = ref<string>();
 
   async function init() {
     if (isAuthenticated.value) return Promise.resolve(true);
@@ -29,6 +31,7 @@ export const useAuthStore = defineStore('auth', () => {
       .then((authenticated: boolean) => {
         if (authenticated) {
           realmRoles.value = keycloak.tokenParsed.realm_access.roles;
+          accessToken.value = keycloak.token;
           return keycloak.loadUserProfile().then((prof: Profile) => {
             profile.value = prof;
             return authenticated;
@@ -58,10 +61,11 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function updateToken() {
-    return keycloak.updateToken(30).catch(() => {
-      console.error('Failed to refresh token');
-      return logout().finally(() => Promise.reject('Failed to refresh token'));
-    });
+    return Promise.resolve(true);
+    // return keycloak.updateToken(30).catch(() => {
+    //   console.error('Failed to refresh token');
+    //   return logout().finally(() => Promise.reject('Failed to refresh token'));
+    // });
   }
 
   return {
@@ -70,6 +74,7 @@ export const useAuthStore = defineStore('auth', () => {
     profile,
     realmRoles,
     accessToken,
+    keycloak,
     init,
     login,
     logout,
