@@ -1,4 +1,4 @@
-name: Docker UI
+name: Docker Admin UI
 
 on:
   push:
