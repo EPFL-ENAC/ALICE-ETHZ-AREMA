@@ -103,6 +103,7 @@
     "useServices": true,
     "useFilesStore": true,
     "useTaxonomy": true,
-    "useTaxonomyStore": true
+    "useTaxonomyStore": true,
+    "URN_PREFIX": true
   }
 }

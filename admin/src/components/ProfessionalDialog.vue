@@ -219,26 +219,22 @@ const isValid = computed(() => {
   return selected.value.name && selected.value.type && selected.value.address;
 });
 
-onMounted(() => {
-  taxonomyStore.getTaxonomy('professional').then((taxo: Taxonomy) => {
-    if (taxo.taxonomy[0].children) {
-      professionalTypes.value = taxo.taxonomy[0].children.map(
-        (node: TaxonomyNode) => {
-          return {
-            value: node.id,
-            label: taxonomyStore.getLabel(node.name) || node.id,
-          };
-        },
-      );
-    } else {
-      professionalTypes.value = [];
-    }
-  });
-});
-
 watch(
   () => props.modelValue,
   (value) => {
+    taxonomyStore.getTaxonomy('professional').then((taxo: Taxonomy) => {
+      const types = taxonomyStore.getNode(
+        taxo,
+        taxonomyStore.toUrn('professional', 'type'),
+      );
+      professionalTypes.value =
+        types?.children?.map((node: TaxonomyNode) => {
+          return {
+            value: taxonomyStore.toUrn('professional', ['type', node.id]),
+            label: taxonomyStore.getLabel(node.name) || node.id,
+          };
+        }) || [];
+    });
     tab.value = 'general';
     if (value) {
       // deep copy

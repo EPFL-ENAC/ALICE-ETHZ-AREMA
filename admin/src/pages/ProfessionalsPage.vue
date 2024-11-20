@@ -121,7 +121,6 @@ import { makePaginationRequestHandler } from 'src/utils/pagination';
 import type { PaginationOptions } from 'src/utils/pagination';
 import MapView from 'src/components/MapView.vue';
 import ProfessionalDialog from 'src/components/ProfessionalDialog.vue';
-import { onMounted, ref, computed } from 'vue';
 
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
@@ -164,7 +163,7 @@ const columns = computed(() => {
       label: t('type'),
       align: 'left',
       field: 'type',
-      format: (val: string) => (val ? t(val) : undefined),
+      format: getProfessionalTypeLabel,
       sortable: true,
     },
     {
@@ -258,18 +257,17 @@ const professionalTypes = ref<{ value: string; label: string }[]>([]);
 onMounted(() => {
   tableRef.value.requestServerInteraction();
   taxonomyStore.getTaxonomy('professional').then((taxo: Taxonomy) => {
-    if (taxo.taxonomy[0].children) {
-      professionalTypes.value = taxo.taxonomy[0].children.map(
-        (node: TaxonomyNode) => {
-          return {
-            value: node.id,
-            label: taxonomyStore.getLabel(node.name) || node.id,
-          };
-        },
-      );
-    } else {
-      professionalTypes.value = [];
-    }
+    const types = taxonomyStore.getNode(
+      taxo,
+      taxonomyStore.toUrn('professional', 'type'),
+    );
+    professionalTypes.value =
+      types?.children?.map((node: TaxonomyNode) => {
+        return {
+          value: taxonomyStore.toUrn('professional', ['type', node.id]),
+          label: taxonomyStore.getLabel(node.name) || node.id,
+        };
+      }) || [];
   });
 });
 
@@ -370,5 +368,9 @@ function remove(resource: Professional) {
         type: 'negative',
       });
     });
+}
+
+function getProfessionalTypeLabel(val: string): string {
+  return professionalTypes.value.find((opt) => opt.value === val)?.label || val;
 }
 </script>
