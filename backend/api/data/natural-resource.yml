@@ -52,8 +52,15 @@ taxonomy:
               - locale: it
                 label: "Per produzione industriale"
       - id: rock
-        name: Rock
-        description: "Rock / Gestein / Roche"
+        name:
+          - locale: en
+            label: Rock
+          - locale: de
+            label: Gestein
+          - locale: fr
+            label: Roche
+          - locale: it
+            label: Rocce
         children:
           - id: limestones
             name:
@@ -135,7 +142,6 @@ taxonomy:
             label: Bois
           - locale: it
             label: Legno
-        description: "Wood / Holz / Bois"
         children:
           - id: soft-wood
             name:

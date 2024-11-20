@@ -7,20 +7,27 @@ const URN_PREFIX = 'urn:arema';
 export const useTaxonomyStore = defineStore('taxonomies', () => {
   const { locale } = useI18n({ useScope: 'global' });
 
-  async function getTaxonomy(entityType: string): Promise<Taxonomy> {
-    return api.get(`/taxonomy/${entityType}`).then((resp) => resp.data);
+  const taxonomies = ref<Taxonomy>();
+
+  async function init() {
+    if (taxonomies.value) {
+      return Promise.resolve();
+    }
+    return api.get('/taxonomy/').then((resp) => {
+      taxonomies.value = resp.data;
+    });
   }
 
   function toUrn(entityType: string, path: string | string[]) {
     return `${URN_PREFIX}:${entityType}:${Array.isArray(path) ? path.join('.') : path}`;
   }
 
-  function getNode(taxonomy: Taxonomy, urn: string): TaxonomyNode | undefined {
+  function getNode(urn: string): TaxonomyNode | undefined {
     const tokens = urn.replace(`${URN_PREFIX}:`, '').split(':');
     if (!tokens || tokens.length === 0) return undefined;
 
     const entityType = tokens[0];
-    const root = taxonomy.taxonomy.find((tx) => tx.id === entityType);
+    const root = taxonomies.value?.taxonomy.find((tx) => tx.id === entityType);
     if (!root || tokens.length === 1) return root;
     return getNodeFromPath(root, tokens[1]);
   }
@@ -49,7 +56,7 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
   }
 
   return {
-    getTaxonomy,
+    init,
     getNode,
     getLabel,
     toUrn,

@@ -174,7 +174,6 @@ import {
   BuildingMaterial,
   Professional,
   TechnicalConstruction,
-  Taxonomy,
   TaxonomyNode,
 } from 'src/models';
 import { notifyError } from 'src/utils/notify';
@@ -222,9 +221,8 @@ const isValid = computed(() => {
 watch(
   () => props.modelValue,
   (value) => {
-    taxonomyStore.getTaxonomy('professional').then((taxo: Taxonomy) => {
+    taxonomyStore.init().then(() => {
       const types = taxonomyStore.getNode(
-        taxo,
         taxonomyStore.toUrn('professional', 'type'),
       );
       professionalTypes.value =

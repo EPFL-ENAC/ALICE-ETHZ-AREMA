@@ -116,7 +116,7 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { Query } from 'src/components/models';
-import { Professional, Taxonomy, TaxonomyNode } from 'src/models';
+import { Professional, TaxonomyNode } from 'src/models';
 import { makePaginationRequestHandler } from 'src/utils/pagination';
 import type { PaginationOptions } from 'src/utils/pagination';
 import MapView from 'src/components/MapView.vue';
@@ -256,9 +256,8 @@ const professionalTypes = ref<{ value: string; label: string }[]>([]);
 
 onMounted(() => {
   tableRef.value.requestServerInteraction();
-  taxonomyStore.getTaxonomy('professional').then((taxo: Taxonomy) => {
+  taxonomyStore.init().then(() => {
     const types = taxonomyStore.getNode(
-      taxo,
       taxonomyStore.toUrn('professional', 'type'),
     );
     professionalTypes.value =
