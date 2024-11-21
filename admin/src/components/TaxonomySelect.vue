@@ -37,6 +37,7 @@ import { Option } from 'src/components/models';
 interface Props {
   modelValue: string | string[] | null | undefined;
   entityType: string;
+  path: string;
   label: string;
   multiple?: boolean;
   dense?: boolean;
@@ -54,8 +55,8 @@ const selected = ref(props.modelValue);
 const options = ref<Option[]>([]);
 
 onMounted(() => {
-  taxonomyStore.getTaxonomy(props.entityType).then((types) => {
-    options.value = taxonomyStore.asOptions(props.entityType, types);
+  taxonomyStore.getTaxonomyNode(props.entityType, props.path).then((node) => {
+    options.value = taxonomyStore.asOptions(props.entityType, node, props.path);
   });
 });
 

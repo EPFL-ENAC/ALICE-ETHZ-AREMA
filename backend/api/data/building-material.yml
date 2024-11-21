@@ -5,4 +5,41 @@ taxonomy:
       de: Baustoffe
       fr: Matériaux de construction
       it: Materiali da costruzione
+    children:
+      - id: type
+        names:
+          en: Type
+          de: Typ
+          fr: Type
+          it: Tipo
+        children:
+          - id: massive
+            names:
+              en: Massive
+              de: Massivlehmbau
+              fr: Massif
+              it: Massiccio
+          - id: bricks
+            names:
+              en: Bricks
+              de: Baustein
+              fr: Briques
+              it: Mattoni
+          - id: panels
+            names:
+              en: Panels, Boards
+              de: Platten
+              fr: Plaques
+              it: Pannelli
+          - id: bulk
+            names:
+              en: Bulk
+              de: Schüttgut
+              fr: Vrac
+          - id: mortar
+            names:
+              en: Mortar, Plaster
+              de: Mörtel, Putz
+              fr: Mortier, Crépis
+              it: Malta, Intonaco
     

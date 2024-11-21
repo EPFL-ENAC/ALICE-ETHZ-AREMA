@@ -29,6 +29,7 @@
           <taxonomy-select
             v-model="types"
             entity-type="professional"
+            path="type"
             :label="$t('types')"
             multiple
             dense
@@ -264,8 +265,12 @@ const professionalTypes = ref<Option[]>([]);
 
 onMounted(() => {
   tableRef.value.requestServerInteraction();
-  taxonomyStore.getTaxonomy('professional').then((types) => {
-    professionalTypes.value = taxonomyStore.asOptions('professional', types);
+  taxonomyStore.getTaxonomyNode('professional', 'type').then((types) => {
+    professionalTypes.value = taxonomyStore.asOptions(
+      'professional',
+      types,
+      'type',
+    );
   });
 });
 

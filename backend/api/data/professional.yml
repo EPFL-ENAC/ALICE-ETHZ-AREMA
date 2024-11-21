@@ -6,51 +6,58 @@ taxonomy:
       fr: Professionnels
       it: Professionisti
     children:
-      - id: architect
+      - id: type
         names:
-          en: Architect
-          de: Architekt
-          fr: Architecte
-          it: Architetto
-      - id: civil-engineer
-        names:
-          en: Civil engineer
-          de: Bauingenieur
-          fr: Ingénieur civil
-          it: Ingegnere civile
-      - id: craftsman
-        names:
-          en: Craftsman
-          de: Handwerker
-          fr: Artisan
-          it: Artigiano      
-      - id: material-producer
-        names:
-          en: Material Producer
-          de: Materialhersteller
-          fr: Producteur de matériaux
-          it: Produttore di materiali
-      - id: building-physics
-        names:
-          en: Building Physics
-          de: Bauphysik
-          fr: Physique du bâtiment
-          it: Fisica dell'edificio
-      - id: association
-        names:
-          en: Association
-          de: Verband
-          fr: Association
-          it: Associazione
-      - id: construction-firm
-        names: 
-          en: Construction Firm
-          de: Bauunternehmen
-          fr: Entreprise de construction
-          it: Impresa di costruzioni
-      - id: other
-        names:
-          en: Other
-          de: Andere
-          fr: Autre
-          it: Altro
+          en: Type
+        de: Typ
+        fr: Type
+        it: Tipo
+        children:
+          - id: architect
+            names:
+              en: Architect
+              de: Architekt
+              fr: Architecte
+              it: Architetto
+          - id: civil-engineer
+            names:
+              en: Civil engineer
+              de: Bauingenieur
+              fr: Ingénieur civil
+              it: Ingegnere civile
+          - id: craftsman
+            names:
+              en: Craftsman
+              de: Handwerker
+              fr: Artisan
+              it: Artigiano      
+          - id: material-producer
+            names:
+              en: Material Producer
+              de: Materialhersteller
+              fr: Producteur de matériaux
+              it: Produttore di materiali
+          - id: building-physics
+            names:
+              en: Building Physics
+              de: Bauphysik
+              fr: Physique du bâtiment
+              it: Fisica dell'edificio
+          - id: association
+            names:
+              en: Association
+              de: Verband
+              fr: Association
+              it: Associazione
+          - id: construction-firm
+            names: 
+              en: Construction Firm
+              de: Bauunternehmen
+              fr: Entreprise de construction
+              it: Impresa di costruzioni
+          - id: other
+            names:
+              en: Other
+              de: Andere
+              fr: Autre
+              it: Altro

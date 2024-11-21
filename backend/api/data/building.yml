@@ -5,4 +5,62 @@ taxonomy:
       de: Gebäude
       fr: Bâtiments
       it: Edifici
+    children:
+      - id: status
+        names:
+          en: Status
+          de: Status
+          fr: Statut
+          it: Stato
+        children:
+          - id: new
+            names:
+              en: New
+              de: Neu
+              fr: Nouveau
+              it: Nuovo
+          - id: renovation
+            names:
+              en: Renovation
+              de: Renovierung
+              fr: Rénovation
+              it: Ristrutturazione
+      - id: type
+        names:
+          en: Type
+          de: Typ
+          fr: Type
+          it: Tipo
+        children:
+          - id: apartment-building
+            names:
+              en: Apartment Building
+              de: Mehrfamilienhaus
+              fr: Immeuble d'habitation
+              it: Palazzo
+          - id: single-family-house
+            names:
+              en: Single Family House
+              de: Einfamilienhaus
+              fr: Maison individuelle
+              it: Casa unifamiliare
+          - id: office-building
+            names:
+              en: Office Building
+              de: Bürogebäude
+              fr: Immeuble de bureaux
+              it: Edificio per uffici
+          - id: public-building
+            names:
+              en: Public Building
+              de: Öffentliches Gebäude
+              fr: Bâtiment public
+              it: Edificio pubblico
+          - id: simple-structure
+            names:
+              en: Simple Structure
+              de: Einfache Struktur
+              fr: Structure simple
+              it: Struttura semplice
+
     

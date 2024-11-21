@@ -21,13 +21,23 @@
 
         <q-tab-panels v-model="tab">
           <q-tab-panel name="general" class="q-pl-none q-pr-none">
-            <q-input
-              ref="nameRef"
-              filled
-              v-model="selected.name"
-              :label="$t('name') + ' *'"
-              class="q-mb-md"
-            />
+            <div class="row q-mb-md q-col-gutter-md">
+              <div class="col-12 col-sm-6">
+                <q-input
+                  filled
+                  v-model="selected.name"
+                  :label="$t('name') + ' *'"
+                />
+              </div>
+              <div class="col-12 col-sm-6">
+                <taxonomy-select
+                  v-model="selected.type"
+                  entity-type="technical-construction"
+                  path="type"
+                  :label="$t('type') + ' *'"
+                />
+              </div>
+            </div>
             <q-input
               filled
               v-model="selected.description"
@@ -123,6 +133,7 @@ import { BuildingMaterial, TechnicalConstruction } from 'src/models';
 import { notifyError } from 'src/utils/notify';
 import PhysicalEntityForm from 'src/components/PhysicalEntityForm.vue';
 import FilesInput from 'src/components/FilesInput.vue';
+import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 
 interface DialogProps {
   modelValue: boolean;
@@ -141,6 +152,7 @@ const showDialog = ref(props.modelValue);
 const selected = ref<TechnicalConstruction>({
   name: '',
   files: [],
+  type: '',
 } as TechnicalConstruction);
 const editMode = ref(false);
 const tab = ref('general');
@@ -150,7 +162,7 @@ const buildingMaterialsOptions = ref<
 >([]);
 
 const isValid = computed(() => {
-  return selected.value.name;
+  return selected.value.name && selected.value.type;
 });
 
 watch(

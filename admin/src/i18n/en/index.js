@@ -136,4 +136,5 @@ export default {
   location: 'Location',
   upload_file: 'Upload file',
   upload_file_hint: 'Upload an image, a video or a document.',
+  status: 'Status',
 };

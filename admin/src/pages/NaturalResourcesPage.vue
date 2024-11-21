@@ -29,6 +29,7 @@
           <taxonomy-select
             v-model="types"
             entity-type="natural-resource"
+            path="type"
             :label="$t('types')"
             multiple
             dense

@@ -22,13 +22,18 @@
           <q-tab-panel name="general" class="q-pl-none q-pr-none">
             <div class="row q-mb-md q-col-gutter-md">
               <div class="col-12 col-sm-6">
-                <q-input filled v-model="selected.name" :label="$t('name')" />
+                <q-input
+                  filled
+                  v-model="selected.name"
+                  :label="$t('name') + ' *'"
+                />
               </div>
               <div class="col-12 col-sm-6">
                 <taxonomy-select
                   v-model="selected.type"
                   entity-type="natural-resource"
-                  :label="$t('type')"
+                  path="type"
+                  :label="$t('type') + ' *'"
                 />
               </div>
             </div>

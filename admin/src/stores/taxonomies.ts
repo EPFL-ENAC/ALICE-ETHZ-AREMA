@@ -37,6 +37,15 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     );
   }
 
+  async function getTaxonomyNode(
+    entityType: string,
+    path: string | string[] = [],
+  ): Promise<TaxonomyNode | undefined> {
+    const tx = await getTaxonomy(entityType);
+    if (!tx) return Promise.resolve(undefined);
+    return Promise.resolve(getNodeFromPath(tx, path));
+  }
+
   function getNode(urn: string): TaxonomyNode | undefined {
     const tokens = urn.replace(`${URN_PREFIX}:`, '').split(':');
     if (!tokens || tokens.length === 0) return undefined;
@@ -49,9 +58,9 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
 
   function getNodeFromPath(
     node: TaxonomyNode,
-    path: string,
+    path: string | string[] = [],
   ): TaxonomyNode | undefined {
-    const elements = path.split('.');
+    const elements = Array.isArray(path) ? path : path.split('.');
     if (!elements || elements.length === 0) return node;
     if (!node.children || node.children.length === 0) return node;
     const child = node.children.find((n) => n.id === elements[0]);
@@ -72,21 +81,28 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
   function asOptions(
     entityType: string,
     node: TaxonomyNode | undefined,
-    prefix: string[] = [],
+    path: string | string[] = [],
+    level: number = 0,
   ): Option[] {
     if (!node?.children?.length) return [];
 
     const options = [];
+    const prefix = Array.isArray(path) ? path : path.split('.');
 
     for (const child of node?.children) {
       const opt = {
         value: toUrn(entityType, [...prefix, child.id]),
         label: getLabel(child.names) || child.id,
-        level: prefix.length,
+        level: level,
       };
       options.push(opt);
       if (child.children?.length) {
-        const opts = asOptions(entityType, child, [...prefix, child.id]);
+        const opts = asOptions(
+          entityType,
+          child,
+          [...prefix, child.id],
+          level + 1,
+        );
         options.push(...opts);
       }
     }
@@ -96,6 +112,7 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
 
   return {
     getTaxonomy,
+    getTaxonomyNode,
     getNode,
     getLabel,
     toUrn,

@@ -18,20 +18,33 @@
 
         <q-tab-panels v-model="tab">
           <q-tab-panel name="general" class="q-pl-none q-pr-none">
-            <q-input
-              filled
-              v-model="selected.name"
-              :label="$t('name') + ' *'"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
+            <div class="row q-mb-md q-col-gutter-md">
+              <div class="col-12 col-sm-4">
+                <q-input filled v-model="selected.name" :label="$t('name')" />
+              </div>
+              <div class="col-12 col-sm-4">
+                <taxonomy-select
+                  v-model="selected.type"
+                  entity-type="building"
+                  path="type"
+                  :label="$t('type')"
+                />
+              </div>
+              <div class="col-12 col-sm-4">
+                <taxonomy-select
+                  v-model="selected.status"
+                  entity-type="building"
+                  path="status"
+                  :label="$t('status')"
+                />
+              </div>
+            </div>
             <q-input
               filled
               v-model="selected.description"
               autogrow
               :label="$t('description')"
               class="q-mb-md"
-              style="min-width: 200px"
             />
             <q-input
               filled
@@ -149,6 +162,7 @@ import {
 import { notifyError } from '../utils/notify';
 import PointMapInput from 'src/components/PointMapInput.vue';
 import FilesInput from 'src/components/FilesInput.vue';
+import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 
 interface DialogProps {
   modelValue: boolean;
@@ -169,6 +183,7 @@ const showDialog = ref(props.modelValue);
 const selected = ref<Building>({
   name: '',
   files: [],
+  type: '',
 } as Building);
 const location = ref({});
 const editMode = ref(false);
@@ -187,7 +202,7 @@ const professionalsOptions = ref<
 >([]);
 
 const isValid = computed(() => {
-  return selected.value.name && selected.value.address;
+  return selected.value.name && selected.value.type && selected.value.address;
 });
 
 watch(

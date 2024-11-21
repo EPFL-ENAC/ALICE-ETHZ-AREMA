@@ -6,169 +6,176 @@ taxonomy:
       fr: Ressources naturelles
       it: Risorse naturali
     children:
-      - id: earth
-        names: 
-          en: Earth
-          de: Erde
-          fr: Terre
-          it: Terra
+      - id: type
+        names:
+          en: Type
+          de: Typ
+          fr: Type
+          it: Tipo
         children:
-          - id: raming
+          - id: earth
             names: 
-              en: Ramming
-              de: Stampfen
-              fr: Pisé
-              it: Pisé
-          - id: adobe-cob
+              en: Earth
+              de: Erde
+              fr: Terre
+              it: Terra
+            children:
+              - id: raming
+                names: 
+                  en: Ramming
+                  de: Stampfen
+                  fr: Pisé
+                  it: Pisé
+              - id: adobe-cob
+                names:
+                  en: "Adobe, cob"
+                  de: "Lehmsteine, Wellerlehm, Ausfachung"
+                  fr: "Briques de terre crue, torchis"
+                  it: "Mattoni di terra cruda, paglia, torchis"
+              - id: industrial
+                names:
+                  en: "Industrial production"
+                  de: "Für industrielle Produktion"
+                  fr: "Pour production industrielle"
+                  it: "Per produzione industriale"
+          - id: rock
             names:
-              en: "Adobe, cob"
-              de: "Lehmsteine, Wellerlehm, Ausfachung"
-              fr: "Briques de terre crue, torchis"
-              it: "Mattoni di terra cruda, paglia, torchis"
-          - id: industrial
+              en: Rock
+              de: Gestein
+              fr: Roche
+              it: Rocce
+            children:
+              - id: limestones
+                names:
+                  en: "Limestone, Dolomit, Marble"
+                  de: "Kalkstein, Dolomit, Marmor"
+                  fr: "Calcaire, Dolomite, Marbre"
+                  it: "Calcari, Dolomiti, Marmo"
+              - id: granites
+                names:
+                  en: "Granite, gneiss"
+                  de: "Granit, Gneis"
+                  fr: "Granit, gneiss"
+                  it: "Granito, gneiss"
+              - id: sandstone
+                names:
+                  en: "Sandstone"
+                  de: "Sandstein"
+                  fr: "Grès"
+                  it: "Arenaria"
+              - id: molasse
+                names:
+                  en: "Molasse, Breccia, Conglomerate"
+                  de: "Molasse, Brekzie, Konglomerat"
+                  fr: "Molasse, Brèche, Conglomérat"
+                  it: "Molasse, Breccia, Conglomerato"
+              - id: volcanic
+                names:
+                  en: "Volcanic"
+                  de: "Vulkanisch"
+                  fr: "Volcanique"
+                  it: "Vulcanico"
+          - id: straw
             names:
-              en: "Industrial production"
-              de: "Für industrielle Produktion"
-              fr: "Pour production industrielle"
-              it: "Per produzione industriale"
-      - id: rock
-        names:
-          en: Rock
-          de: Gestein
-          fr: Roche
-          it: Rocce
-        children:
-          - id: limestones
+              en: Straw
+              de: Stroh
+              fr: Paille
+              it: Paglia
+          - id: hemp
             names:
-              en: "Limestone, Dolomit, Marble"
-              de: "Kalkstein, Dolomit, Marmor"
-              fr: "Calcaire, Dolomite, Marbre"
-              it: "Calcari, Dolomiti, Marmo"
-          - id: granites
+              en: Hemp
+              de: Hanf
+              fr: Chanvre
+              it: Canapa
+          - id: wood
             names:
-              en: "Granite, gneiss"
-              de: "Granit, Gneis"
-              fr: "Granit, gneiss"
-              it: "Granito, gneiss"
-          - id: sandstone
+              en: Wood
+              de: Holz
+              fr: Bois
+              it: Legno
+            children:
+              - id: soft-wood
+                names:
+                  en: "Soft wood"
+                  de: "Weichholz"
+                  fr: "Bois tendre"
+                  it: "Legno tenero"
+              - id: hard-wood
+                names:
+                  en: "Hard wood"
+                  de: "Hartholz"
+                  fr: "Bois dur"
+                  it: "Legno duro"
+          - id: other-fibres
             names:
-              en: "Sandstone"
-              de: "Sandstein"
-              fr: "Grès"
-              it: "Arenaria"
-          - id: molasse
-            names:
-              en: "Molasse, Breccia, Conglomerate"
-              de: "Molasse, Brekzie, Konglomerat"
-              fr: "Molasse, Brèche, Conglomérat"
-              it: "Molasse, Breccia, Conglomerato"
-          - id: volcanic
-            names:
-              en: "Volcanic"
-              de: "Vulkanisch"
-              fr: "Volcanique"
-              it: "Vulcanico"
-      - id: straw
-        names:
-          en: Straw
-          de: Stroh
-          fr: Paille
-          it: Paglia
-      - id: hemp
-        names:
-          en: Hemp
-          de: Hanf
-          fr: Chanvre
-          it: Canapa
-      - id: wood
-        names:
-          en: Wood
-          de: Holz
-          fr: Bois
-          it: Legno
-        children:
-          - id: soft-wood
-            names:
-              en: "Soft wood"
-              de: "Weichholz"
-              fr: "Bois tendre"
-              it: "Legno tenero"
-          - id: hard-wood
-            names:
-              en: "Hard wood"
-              de: "Hartholz"
-              fr: "Bois dur"
-              it: "Legno duro"
-      - id: other-fibres
-        names:
-          en: "Other Fibres"
-          de: "Andere Fasern"
-          fr: "Autres Fibres"
-          it: "Altre Fibre"
-        children:
-          - id: flax
-            names:
-              en: Flax
-              de: Flachs
-              fr: Lin
-              it: Lino
-          - id: bamboo
-            names:
-              en: Bamboo
-              de: Bambus
-              fr: Bambou
-              it: Bambù
-          - id: hay
-            names:
-              en: Hay
-              de: Heu
-              fr: Foin
-              it: Fieno
-          - id: sheep-wool
-            names:
-              en: "Sheep Wool"
-              de: "Schafwolle"
-              fr: "Laine de mouton"
-              it: "Lana di pecora"
-          - id: husks
-            names:
-              en: Husks
-              de: Schalen
-              fr: Balle
-              it: Balle
-          - id: jute
-            names:
-              en: Jute
-              de: Jute
-              fr: Jute
-              it: Juta
-          - id: kenaf
-            names:
-              en: Kenaf
-              de: Kenaf
-              fr: Kenaf
-              it: Kenaf
-          - id: corncobs
-            names:
-              en: Corncobs
-              de: Maiskolben
-              fr: Épis de maïs
-              it: Pannocchie di mais
-          - id: sisal
-            names:
-              en: Sisal
-              de: Sisal
-              fr: Sisal
-              it: Sisal
-          - id: miscanthus
-            names:
-              en: Miscanthus
-              de: Miscanthus
-              fr: Miscanthus
-              it: Miscanthus
-          - id: reed-typha
-            names:
-              en: Reed/Typha
-              de: Schilf
-              fr: Roseau
-              it: Canne
+              en: "Other Fibres"
+              de: "Andere Fasern"
+              fr: "Autres Fibres"
+              it: "Altre Fibre"
+            children:
+              - id: flax
+                names:
+                  en: Flax
+                  de: Flachs
+                  fr: Lin
+                  it: Lino
+              - id: bamboo
+                names:
+                  en: Bamboo
+                  de: Bambus
+                  fr: Bambou
+                  it: Bambù
+              - id: hay
+                names:
+                  en: Hay
+                  de: Heu
+                  fr: Foin
+                  it: Fieno
+              - id: sheep-wool
+                names:
+                  en: "Sheep Wool"
+                  de: "Schafwolle"
+                  fr: "Laine de mouton"
+                  it: "Lana di pecora"
+              - id: husks
+                names:
+                  en: Husks
+                  de: Schalen
+                  fr: Balle
+                  it: Balle
+              - id: jute
+                names:
+                  en: Jute
+                  de: Jute
+                  fr: Jute
+                  it: Juta
+              - id: kenaf
+                names:
+                  en: Kenaf
+                  de: Kenaf
+                  fr: Kenaf
+                  it: Kenaf
+              - id: corncobs
+                names:
+                  en: Corncobs
+                  de: Maiskolben
+                  fr: Épis de maïs
+                  it: Pannocchie di mais
+              - id: sisal
+                names:
+                  en: Sisal
+                  de: Sisal
+                  fr: Sisal
+                  it: Sisal
+              - id: miscanthus
+                names:
+                  en: Miscanthus
+                  de: Miscanthus
+                  fr: Miscanthus
+                  it: Miscanthus
+              - id: reed-typha
+                names:
+                  en: Reed/Typha
+                  de: Schilf
+                  fr: Roseau
+                  it: Canne
