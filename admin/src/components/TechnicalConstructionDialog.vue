@@ -22,19 +22,29 @@
         <q-tab-panels v-model="tab">
           <q-tab-panel name="general" class="q-pl-none q-pr-none">
             <div class="row q-mb-md q-col-gutter-md">
-              <div class="col-12 col-sm-6">
+              <div class="col-12 col-sm-4">
                 <q-input
                   filled
                   v-model="selected.name"
                   :label="$t('name') + ' *'"
                 />
               </div>
-              <div class="col-12 col-sm-6">
+              <div class="col-12 col-sm-4">
                 <taxonomy-select
-                  v-model="selected.type"
+                  v-model="selected.types"
                   entity-type="technical-construction"
                   path="type"
-                  :label="$t('type') + ' *'"
+                  multiple
+                  :label="$t('types') + ' *'"
+                />
+              </div>
+              <div class="col-12 col-sm-4">
+                <taxonomy-select
+                  v-model="selected.materials"
+                  entity-type="technical-construction"
+                  path="material"
+                  multiple
+                  :label="$t('materials')"
                 />
               </div>
             </div>
@@ -162,7 +172,7 @@ const buildingMaterialsOptions = ref<
 >([]);
 
 const isValid = computed(() => {
-  return selected.value.name && selected.value.type;
+  return selected.value.name && selected.value.types;
 });
 
 watch(
@@ -215,10 +225,9 @@ function onCancel() {
 
 async function onSave() {
   if (selected.value === undefined) return;
+  delete selected.value.building_materials;
+  selected.value.building_material_ids = buildingMaterials.value;
   if (selected.value.id) {
-    delete selected.value.building_materials;
-    selected.value.building_material_ids = buildingMaterials.value;
-    selected.value.files = [];
     service
       .update(selected.value.id, selected.value)
       .then(() => {

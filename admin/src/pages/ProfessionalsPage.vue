@@ -53,11 +53,6 @@
             />
           </div>
         </template>
-        <template v-slot:body-cell-description="props">
-          <q-td :props="props" class="ellipsis" style="max-width: 200px">
-            {{ props.value }}
-          </q-td>
-        </template>
         <template v-slot:body-cell-types="props">
           <q-td :props="props">
             <q-badge
@@ -157,14 +152,6 @@ const columns = computed(() => {
       align: 'left',
       field: 'name',
       sortable: true,
-    },
-    {
-      name: 'description',
-      required: true,
-      label: t('description'),
-      align: 'left',
-      field: 'description',
-      sortable: false,
     },
     {
       name: 'types',

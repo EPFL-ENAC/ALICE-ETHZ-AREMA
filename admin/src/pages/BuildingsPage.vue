@@ -42,9 +42,9 @@
             />
           </div>
         </template>
-        <template v-slot:body-cell-description="props">
-          <q-td :props="props" class="ellipsis" style="max-width: 200px">
-            {{ props.value }}
+        <template v-slot:body-cell-type="props">
+          <q-td :props="props">
+            <q-badge color="accent" :label="props.value" />
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -84,7 +84,7 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { Query } from 'src/components/models';
+import { Option, Query } from 'src/components/models';
 import { Building } from 'src/models';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
@@ -94,6 +94,7 @@ import BuildingDialog from 'src/components/BuildingDialog.vue';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const authStore = useAuthStore();
+const taxonomyStore = useTaxonomyStore();
 const services = useServices();
 const service = services.make('building');
 
@@ -117,12 +118,13 @@ const columns = computed(() => {
       sortable: true,
     },
     {
-      name: 'description',
+      name: 'type',
       required: true,
-      label: t('description'),
+      label: t('type'),
       align: 'left',
-      field: 'description',
-      sortable: false,
+      field: 'type',
+      format: getTypeLabel,
+      sortable: true,
     },
     {
       name: 'address',
@@ -205,10 +207,13 @@ const pagination = ref<PaginationOptions>({
   rowsPerPage: 10,
   rowsNumber: 10,
 });
+const bldTypes = ref<Option[]>([]);
 
 onMounted(() => {
-  // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
+  taxonomyStore.getTaxonomyNode('building', 'type').then((types) => {
+    bldTypes.value = taxonomyStore.asOptions('building', types, 'type');
+  });
 });
 
 const features = computed(() => {
@@ -293,5 +298,9 @@ function remove(resource: Building) {
         type: 'negative',
       });
     });
+}
+
+function getTypeLabel(val: string): string {
+  return bldTypes.value.find((opt) => opt.value === val)?.label || val;
 }
 </script>

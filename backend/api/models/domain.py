@@ -167,6 +167,8 @@ class NaturalResource(NaturalResourceBase, table=True):
 
 class BuildingMaterialBase(PhysicalEntity):
     type: str
+    materials: Optional[List[str]] = Field(
+        default=None, sa_column=Column(JSON))
     files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
 
 
@@ -190,7 +192,9 @@ class BuildingMaterial(BuildingMaterialBase, table=True):
 
 
 class TechnicalConstructionBase(PhysicalEntity):
-    type: str
+    types: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
+    materials: Optional[List[str]] = Field(
+        default=None, sa_column=Column(JSON))
     files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
 
 
@@ -214,6 +218,8 @@ class TechnicalConstruction(TechnicalConstructionBase, table=True):
 class BuildingBase(Entity):
     type: str
     status: Optional[str] = Field(default=None)
+    materials: Optional[List[str]] = Field(
+        default=None, sa_column=Column(JSON))
     address: Optional[str] = Field(default=None)
     long: Optional[float] = Field(default=None)
     lat: Optional[float] = Field(default=None)
@@ -240,6 +246,8 @@ class Building(BuildingBase, table=True):
 
 class ProfessionalBase(Entity):
     types: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
+    materials: Optional[List[str]] = Field(
+        default=None, sa_column=Column(JSON))
     address: Optional[str] = Field(default=None)
     web: Optional[str] = Field(default=None)
     tel: Optional[str] = Field(default=None)

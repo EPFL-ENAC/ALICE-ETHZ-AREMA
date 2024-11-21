@@ -54,20 +54,18 @@ const taxonomyStore = useTaxonomyStore();
 const selected = ref(props.modelValue);
 const options = ref<Option[]>([]);
 
-onMounted(() => {
+onMounted(loadOptions);
+
+watch(() => props.modelValue, loadOptions);
+
+function loadOptions() {
+  if (options.value.length > 0) {
+    return;
+  }
   taxonomyStore.getTaxonomyNode(props.entityType, props.path).then((node) => {
     options.value = taxonomyStore.asOptions(props.entityType, node, props.path);
   });
-});
-
-watch(
-  () => props.modelValue,
-  () => {
-    taxonomyStore.getTaxonomy(props.entityType).then((types) => {
-      options.value = taxonomyStore.asOptions(props.entityType, types);
-    });
-  },
-);
+}
 
 function onSelection() {
   emit('update:modelValue', selected.value);

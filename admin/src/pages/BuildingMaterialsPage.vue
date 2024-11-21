@@ -32,9 +32,9 @@
             </template>
           </q-input>
         </template>
-        <template v-slot:body-cell-description="props">
-          <q-td :props="props" class="ellipsis" style="max-width: 200px">
-            {{ props.value }}
+        <template v-slot:body-cell-type="props">
+          <q-td :props="props">
+            <q-badge color="accent" :label="props.value" />
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -74,7 +74,7 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { Query } from 'src/components/models';
+import { Option, Query } from 'src/components/models';
 import { BuildingMaterial } from 'src/models';
 import BuildingMaterialDialog from 'src/components/BuildingMaterialDialog.vue';
 import { makePaginationRequestHandler } from '../utils/pagination';
@@ -83,6 +83,7 @@ import type { PaginationOptions } from '../utils/pagination';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const authStore = useAuthStore();
+const taxonomyStore = useTaxonomyStore();
 const services = useServices();
 const service = services.make('building-material');
 
@@ -106,12 +107,13 @@ const columns = computed(() => {
       sortable: true,
     },
     {
-      name: 'description',
+      name: 'type',
       required: true,
-      label: t('description'),
+      label: t('type'),
       align: 'left',
-      field: 'description',
-      sortable: false,
+      field: 'type',
+      format: getTypeLabel,
+      sortable: true,
     },
     {
       name: 'natural_resources',
@@ -162,10 +164,14 @@ const pagination = ref<PaginationOptions>({
   rowsPerPage: 10,
   rowsNumber: 10,
 });
+const bmTypes = ref<Option[]>([]);
 
 onMounted(() => {
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
+  taxonomyStore.getTaxonomyNode('building-material', 'type').then((types) => {
+    bmTypes.value = taxonomyStore.asOptions('building-material', types, 'type');
+  });
 });
 
 function fetchFromServer(
@@ -221,5 +227,9 @@ function remove(item: BuildingMaterial) {
         type: 'negative',
       });
     });
+}
+
+function getTypeLabel(val: string): string {
+  return bmTypes.value.find((opt) => opt.value === val)?.label || val;
 }
 </script>

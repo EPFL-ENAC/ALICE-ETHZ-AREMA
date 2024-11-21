@@ -43,11 +43,6 @@
             </template>
           </q-input>
         </template>
-        <template v-slot:body-cell-description="props">
-          <q-td :props="props" class="ellipsis" style="max-width: 200px">
-            {{ props.value }}
-          </q-td>
-        </template>
         <template v-slot:body-cell-type="props">
           <q-td :props="props">
             <q-badge color="accent" :label="props.value" />
@@ -124,14 +119,6 @@ const columns = computed(() => {
       sortable: true,
     },
     {
-      name: 'description',
-      required: true,
-      label: t('description'),
-      align: 'left',
-      field: 'description',
-      sortable: false,
-    },
-    {
       name: 'type',
       required: true,
       label: t('type'),
@@ -182,10 +169,11 @@ const naturalResourcesTypes = ref<Option[]>([]);
 
 onMounted(() => {
   tableRef.value.requestServerInteraction();
-  taxonomyStore.getTaxonomy('natural-resource').then((types) => {
+  taxonomyStore.getTaxonomyNode('natural-resource', 'type').then((types) => {
     naturalResourcesTypes.value = taxonomyStore.asOptions(
       'natural-resource',
       types,
+      'type',
     );
   });
 });

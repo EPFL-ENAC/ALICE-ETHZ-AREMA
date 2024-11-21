@@ -89,4 +89,5 @@ export default {
   upload_file: 'Téléverser un fichier',
   upload_file_hint: 'Téléverser une image, une vidéo ou un fichier PDF.',
   status: 'Etat',
+  materials: 'Matériaux',
 };

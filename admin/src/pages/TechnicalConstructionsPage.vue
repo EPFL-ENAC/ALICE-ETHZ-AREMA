@@ -32,9 +32,15 @@
             </template>
           </q-input>
         </template>
-        <template v-slot:body-cell-description="props">
-          <q-td :props="props" class="ellipsis" style="max-width: 200px">
-            {{ props.value }}
+        <template v-slot:body-cell-types="props">
+          <q-td :props="props">
+            <q-badge
+              color="accent"
+              v-for="type in props.value"
+              :key="type"
+              :label="type"
+              class="q-mr-sm"
+            />
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -74,7 +80,7 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { Query } from 'src/components/models';
+import { Option, Query } from 'src/components/models';
 import { TechnicalConstruction } from 'src/models';
 import TechnicalConstructionDialog from 'src/components/TechnicalConstructionDialog.vue';
 import { makePaginationRequestHandler } from '../utils/pagination';
@@ -83,6 +89,7 @@ import type { PaginationOptions } from '../utils/pagination';
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const authStore = useAuthStore();
+const taxonomyStore = useTaxonomyStore();
 const services = useServices();
 const service = services.make('technical-construction');
 
@@ -106,12 +113,13 @@ const columns = computed(() => {
       sortable: true,
     },
     {
-      name: 'description',
+      name: 'types',
       required: true,
-      label: t('description'),
+      label: t('types'),
       align: 'left',
-      field: 'description',
-      sortable: false,
+      field: 'types',
+      format: (val: string[] | undefined) => (val ? val.map(getTypeLabel) : []),
+      sortable: true,
     },
     {
       name: 'building_materials',
@@ -162,10 +170,20 @@ const pagination = ref<PaginationOptions>({
   rowsPerPage: 10,
   rowsNumber: 10,
 });
+const tcTypes = ref<Option[]>([]);
 
 onMounted(() => {
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
+  taxonomyStore
+    .getTaxonomyNode('technical-construction', 'type')
+    .then((types) => {
+      tcTypes.value = taxonomyStore.asOptions(
+        'technical-construction',
+        types,
+        'type',
+      );
+    });
 });
 
 function fetchFromServer(
@@ -220,5 +238,9 @@ function remove(item: TechnicalConstruction) {
         type: 'negative',
       });
     });
+}
+
+function getTypeLabel(val: string): string {
+  return tcTypes.value.find((opt) => opt.value === val)?.label || val;
 }
 </script>
