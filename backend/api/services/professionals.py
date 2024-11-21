@@ -11,6 +11,7 @@ from datetime import datetime
 from api.services.s3 import s3_client
 from api.utils.files import moveTempFile
 
+
 class ProfessionalQueryBuilder(QueryBuilder):
 
     def build_count_query_with_joins(self, filter):
@@ -29,17 +30,18 @@ class ProfessionalQueryBuilder(QueryBuilder):
         query = query.distinct()
         return query
 
+
 class ProfessionalService:
-    
+
     def __init__(self, session: AsyncSession):
         self.session = session
         self.folder = "professionals"
-    
+
     async def count(self) -> int:
         """Count all professionals"""
         count = (await self.session.exec(text("select count(id) from Professional"))).scalar()
         return count
-    
+
     async def get(self, id: int) -> Professional:
         """Get a professional by id"""
         res = await self.session.exec(
@@ -49,7 +51,7 @@ class ProfessionalService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Professional not found")
-    
+
     async def delete(self, id: int) -> Professional:
         """Delete a professional by id"""
         res = await self.session.exec(
@@ -67,12 +69,12 @@ class ProfessionalService:
         await self.session.delete(entity)
         await self.session.commit()
         return entity
-    
+
     async def find(self, filter: dict, sort: list, range: list) -> ProfessionalResult:
         """Get all professionals matching filter and range"""
         builder = ProfessionalQueryBuilder(Professional, filter, sort, range, {
-            "$buildings": Building, 
-            "$building_materials": BuildingMaterial, 
+            "$buildings": Building,
+            "$building_materials": BuildingMaterial,
             "$technical_constructions": TechnicalConstruction
         })
 
@@ -94,7 +96,7 @@ class ProfessionalService:
             limit=end - start + 1,
             data=entities
         )
-    
+
     async def create(self, payload: ProfessionalDraft) -> Professional:
         """Create a new professional"""
         entity = Professional(**payload.model_dump())
@@ -109,7 +111,7 @@ class ProfessionalService:
         entity.technical_constructions.extend(new_tcs)
         self.session.add(entity)
         await self.session.commit()
-        
+
         # handle tmp files
         if entity.files:
             s3_folder = f"{self.folder}/{entity.id}"
@@ -119,9 +121,9 @@ class ProfessionalService:
                 new_files.append(item.model_dump())
             entity.files = new_files
             await self.session.commit()
-        
+
         return entity
-    
+
     async def update(self, id: int, payload: ProfessionalDraft) -> Professional:
         """Update a professional"""
         res = await self.session.exec(
@@ -146,7 +148,7 @@ class ProfessionalService:
                 item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
                 new_files.append(item.model_dump())
             entity.files = new_files
-                
+
         # handle relationships
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
@@ -156,9 +158,9 @@ class ProfessionalService:
         entity.technical_constructions.extend(new_tcs)
         await self.session.commit()
         return entity
-    
+
     async def _get_building_materials(self, ids: list[int]):
         return await self.session.exec(select(BuildingMaterial).filter(BuildingMaterial.id.in_(ids)))
-    
+
     async def _get_technical_constructions(self, ids: list[int]):
         return await self.session.exec(select(TechnicalConstruction).filter(TechnicalConstruction.id.in_(ids)))

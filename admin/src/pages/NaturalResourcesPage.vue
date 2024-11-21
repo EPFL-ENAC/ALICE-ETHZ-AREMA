@@ -19,6 +19,7 @@
         <template v-slot:top>
           <q-btn
             v-if="authStore.isAdmin"
+            size="sm"
             color="primary"
             :disable="loading"
             :label="$t('add')"
@@ -204,8 +205,11 @@ function fetchFromServer(
     const criterion = {
       name: { $ilike: `%${filter}%` },
     };
-    if (query.filter.$or) query.filter.$or.push(criterion);
-    else query.filter = criterion;
+    if (query.filter.$or) {
+      const typesClause = query.filter.$or;
+      delete query.filter.$or;
+      query.filter.$and = [{ $or: typesClause }, criterion];
+    } else query.filter = criterion;
   }
   return service.find(query).then((result) => {
     rows.value = result.data;

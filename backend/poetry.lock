@@ -707,7 +707,7 @@ resolved_reference = "d0f743aae6d3726b1639426162c90bbe816ab72e"
 
 [[package]]
 name = "enacit4r-sql"
-version = "0.1.0"
+version = "0.2.0"
 description = "Python SQL utils for EPFL ENAC IT4R developments"
 optional = false
 python-versions = "^3.10"
@@ -720,8 +720,8 @@ sqlmodel = "^0.0.22"
 [package.source]
 type = "git"
 url = "https://github.com/EPFL-ENAC/enacit4r-sql"
-reference = "0.1.0"
-resolved_reference = "9916fbaeb2d85b3325d6380dc26af065710ea1b1"
+reference = "0.2.0"
+resolved_reference = "8d0e1a6a4a704d45db024c9bbc80dc894a6a4e14"
 
 [[package]]
 name = "exceptiongroup"
@@ -2149,4 +2149,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "bb6ce2c005ca01fd5c9f8fc8c563039baa02c81d54a9324ea043943f53919cc1"
+content-hash = "16edd6de4e736f5ff856fba0ef6e301580558959d4dbd339223fc5e8137c0c76"

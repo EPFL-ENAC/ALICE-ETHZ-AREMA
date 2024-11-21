@@ -19,6 +19,7 @@
         <template v-slot:top>
           <q-btn
             v-if="authStore.isAdmin"
+            size="sm"
             color="primary"
             :disable="loading"
             :label="$t('add')"
@@ -307,8 +308,8 @@ function fetchFromServer(
     // OR
     query.filter.$or = types.value.map((val) => {
       return {
-        type: {
-          $like: val,
+        types: {
+          $contains: [val],
         },
       };
     });
@@ -326,8 +327,13 @@ function fetchFromServer(
         },
       },
     ];
-    if (query.filter.$or) query.filter.$or.push(...criteria);
-    else query.filter.$or = criteria;
+    if (query.filter.$or) {
+      const typesClause = query.filter.$or;
+      delete query.filter.$or;
+      query.filter.$and = [{ $or: typesClause }, { $or: criteria }];
+    } else {
+      query.filter.$or = criteria;
+    }
   }
   return service.find(query).then((result) => {
     rows.value = result.data;
