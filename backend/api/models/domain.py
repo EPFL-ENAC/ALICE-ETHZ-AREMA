@@ -148,6 +148,7 @@ class ProfessionalTechnicalConstruction(SQLModel, table=True):
 
 
 class NaturalResourceBase(PhysicalEntity):
+    type: str
     files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
 
 

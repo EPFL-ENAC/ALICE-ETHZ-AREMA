@@ -26,19 +26,15 @@
             @click="onAdd"
           />
           <q-space />
-          <q-select
-            filled
-            dense
-            clearable
+          <taxonomy-select
             v-model="types"
-            :options="professionalTypes"
+            entity-type="professional"
             :label="$t('types')"
-            class="q-mr-md"
-            style="min-width: 200px"
-            @update:model-value="onTypeSelection"
             multiple
-            emit-value
-            map-options
+            dense
+            style="min-width: 200px"
+            class="q-mr-md"
+            @update:model-value="onTypeSelection"
           />
           <q-input dense debounce="300" v-model="filter" clearable>
             <template v-slot:append>
@@ -59,6 +55,17 @@
         <template v-slot:body-cell-description="props">
           <q-td :props="props" class="ellipsis" style="max-width: 200px">
             {{ props.value }}
+          </q-td>
+        </template>
+        <template v-slot:body-cell-types="props">
+          <q-td :props="props">
+            <q-badge
+              color="accent"
+              v-for="type in props.value"
+              :key="type"
+              :label="type"
+              class="q-mr-sm"
+            />
           </q-td>
         </template>
         <template v-slot:body-cell-web="props">
@@ -115,12 +122,13 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { Query } from 'src/components/models';
-import { Professional, TaxonomyNode } from 'src/models';
+import { Option, Query } from 'src/components/models';
+import { Professional } from 'src/models';
 import { makePaginationRequestHandler } from 'src/utils/pagination';
 import type { PaginationOptions } from 'src/utils/pagination';
 import MapView from 'src/components/MapView.vue';
 import ProfessionalDialog from 'src/components/ProfessionalDialog.vue';
+import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
@@ -163,8 +171,7 @@ const columns = computed(() => {
       label: t('types'),
       align: 'left',
       field: 'types',
-      format: (val: string[] | undefined) =>
-        val ? val.map(getProfessionalTypeLabel).join(', ') : '',
+      format: (val: string[] | undefined) => (val ? val.map(getTypeLabel) : []),
       sortable: true,
     },
     {
@@ -253,18 +260,12 @@ const pagination = ref<PaginationOptions>({
   rowsPerPage: 10,
   rowsNumber: 10,
 });
-const professionalTypes = ref<{ value: string; label: string }[]>([]);
+const professionalTypes = ref<Option[]>([]);
 
 onMounted(() => {
   tableRef.value.requestServerInteraction();
   taxonomyStore.getTaxonomy('professional').then((types) => {
-    professionalTypes.value =
-      types?.children?.map((node: TaxonomyNode) => {
-        return {
-          value: taxonomyStore.toUrn('professional', node.id),
-          label: taxonomyStore.getLabel(node.names) || node.id,
-        };
-      }) || [];
+    professionalTypes.value = taxonomyStore.asOptions('professional', types);
   });
 });
 
@@ -303,16 +304,25 @@ function fetchFromServer(
     $limit: count,
     $sort: [sortBy, descending],
   };
-  if (types.value) {
-    query.filter = {
-      types: {
-        $contains: types.value,
-      },
-    };
+  query.filter = {};
+  if (types.value?.length) {
+    // AND
+    // query.filter = {
+    //   types: {
+    //     $contains: types.value,
+    //   },
+    // };
+    // OR
+    query.filter.$or = types.value.map((val) => {
+      return {
+        type: {
+          $like: val,
+        },
+      };
+    });
   }
   if (filter) {
-    if (!query.filter) query.filter = {};
-    query.filter.$or = [
+    const criteria = [
       {
         name: {
           $ilike: `%${filter}%`,
@@ -324,6 +334,8 @@ function fetchFromServer(
         },
       },
     ];
+    if (query.filter.$or) query.filter.$or.push(...criteria);
+    else query.filter.$or = criteria;
   }
   return service.find(query).then((result) => {
     rows.value = result.data;
@@ -367,7 +379,7 @@ function remove(resource: Professional) {
     });
 }
 
-function getProfessionalTypeLabel(val: string): string {
+function getTypeLabel(val: string): string {
   return professionalTypes.value.find((opt) => opt.value === val)?.label || val;
 }
 </script>

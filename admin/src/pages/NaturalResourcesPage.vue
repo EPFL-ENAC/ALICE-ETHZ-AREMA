@@ -26,6 +26,16 @@
             @click="onAdd"
           />
           <q-space />
+          <taxonomy-select
+            v-model="types"
+            entity-type="natural-resource"
+            :label="$t('types')"
+            multiple
+            dense
+            style="min-width: 200px"
+            class="q-mr-md"
+            @update:model-value="onTypeSelection"
+          />
           <q-input dense debounce="300" v-model="filter" clearable>
             <template v-slot:append>
               <q-icon name="search" />
@@ -35,6 +45,11 @@
         <template v-slot:body-cell-description="props">
           <q-td :props="props" class="ellipsis" style="max-width: 200px">
             {{ props.value }}
+          </q-td>
+        </template>
+        <template v-slot:body-cell-type="props">
+          <q-td :props="props">
+            <q-badge color="accent" :label="props.value" />
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -74,15 +89,17 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { Query } from 'src/components/models';
+import { Option, Query } from 'src/components/models';
 import { NaturalResource } from 'src/models';
 import NaturalResourceDialog from 'src/components/NaturalResourceDialog.vue';
-import { makePaginationRequestHandler } from '../utils/pagination';
-import type { PaginationOptions } from '../utils/pagination';
+import TaxonomySelect from 'src/components/TaxonomySelect.vue';
+import { makePaginationRequestHandler } from 'src/utils/pagination';
+import type { PaginationOptions } from 'src/utils/pagination';
 
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 const authStore = useAuthStore();
+const taxonomyStore = useTaxonomyStore();
 const services = useServices();
 const service = services.make('natural-resource');
 
@@ -114,6 +131,15 @@ const columns = computed(() => {
       sortable: false,
     },
     {
+      name: 'type',
+      required: true,
+      label: t('type'),
+      align: 'left',
+      field: 'type',
+      format: getTypeLabel,
+      sortable: true,
+    },
+    {
       name: 'lastModification',
       required: true,
       label: t('last_modification'),
@@ -141,6 +167,7 @@ const selected = ref<NaturalResource>();
 const showEditDialog = ref(false);
 const tableRef = ref();
 const rows = ref<NaturalResource[]>([]);
+const types = ref<string[] | null>(null);
 const filter = ref('');
 const loading = ref(false);
 const pagination = ref<PaginationOptions>({
@@ -150,10 +177,16 @@ const pagination = ref<PaginationOptions>({
   rowsPerPage: 10,
   rowsNumber: 10,
 });
+const naturalResourcesTypes = ref<Option[]>([]);
 
 onMounted(() => {
-  // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
+  taxonomyStore.getTaxonomy('natural-resource').then((types) => {
+    naturalResourcesTypes.value = taxonomyStore.asOptions(
+      'natural-resource',
+      types,
+    );
+  });
 });
 
 function fetchFromServer(
@@ -168,10 +201,22 @@ function fetchFromServer(
     $limit: count,
     $sort: [sortBy, descending],
   };
+  query.filter = {};
+  if (types.value?.length) {
+    query.filter.$or = types.value.map((val) => {
+      return {
+        type: {
+          $like: val,
+        },
+      };
+    });
+  }
   if (filter) {
-    query.filter = {
+    const criterion = {
       name: { $ilike: `%${filter}%` },
     };
+    if (query.filter.$or) query.filter.$or.push(criterion);
+    else query.filter = criterion;
   }
   return service.find(query).then((result) => {
     rows.value = result.data;
@@ -181,6 +226,10 @@ function fetchFromServer(
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
+
+function onTypeSelection() {
+  tableRef.value.requestServerInteraction();
+}
 
 function onAdd() {
   selected.value = { name: '' };
@@ -209,5 +258,11 @@ function remove(item: NaturalResource) {
         type: 'negative',
       });
     });
+}
+
+function getTypeLabel(val: string): string {
+  return (
+    naturalResourcesTypes.value.find((opt) => opt.value === val)?.label || val
+  );
 }
 </script>

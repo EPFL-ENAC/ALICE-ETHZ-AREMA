@@ -167,6 +167,8 @@ def upgrade() -> None:
                     'buildingmaterial', ['id'], unique=False)
     op.create_table('naturalresource',
                     sa.Column(
+                        'type', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
+                    sa.Column(
                         'name', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
                     sa.Column(
                         'description', sqlmodel.sql.sqltypes.AutoString(), nullable=True),

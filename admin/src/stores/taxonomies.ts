@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { api } from 'src/boot/api';
+import { Option } from 'src/components/models';
 import { Taxonomy, TaxonomyNode } from 'src/models';
 
 const URN_PREFIX = 'urn:arema';
@@ -68,10 +69,36 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return labels['en'];
   }
 
+  function asOptions(
+    entityType: string,
+    node: TaxonomyNode | undefined,
+    prefix: string[] = [],
+  ): Option[] {
+    if (!node?.children?.length) return [];
+
+    const options = [];
+
+    for (const child of node?.children) {
+      const opt = {
+        value: toUrn(entityType, [...prefix, child.id]),
+        label: getLabel(child.names) || child.id,
+        level: prefix.length,
+      };
+      options.push(opt);
+      if (child.children?.length) {
+        const opts = asOptions(entityType, child, [...prefix, child.id]);
+        options.push(...opts);
+      }
+    }
+
+    return options;
+  }
+
   return {
     getTaxonomy,
     getNode,
     getLabel,
     toUrn,
+    asOptions,
   };
 });

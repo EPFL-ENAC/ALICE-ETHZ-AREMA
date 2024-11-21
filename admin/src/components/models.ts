@@ -20,4 +20,5 @@ export interface FileObject extends Blob {
 export interface Option {
   value: string;
   label: string;
+  level?: number;
 }

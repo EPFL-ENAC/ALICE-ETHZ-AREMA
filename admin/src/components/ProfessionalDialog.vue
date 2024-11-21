@@ -20,23 +20,13 @@
           <q-tab-panel name="general" class="q-pl-none q-pr-none">
             <div class="row q-mb-md q-col-gutter-md">
               <div class="col-12 col-sm-6">
-                <q-input
-                  filled
-                  v-model="selected.name"
-                  :label="$t('name')"
-                  style="min-width: 200px"
-                />
+                <q-input filled v-model="selected.name" :label="$t('name')" />
               </div>
               <div class="col-12 col-sm-6">
-                <q-select
-                  filled
-                  clearable
+                <taxonomy-select
                   v-model="selected.types"
-                  :options="professionalTypes"
-                  :label="$t('types')"
-                  style="min-width: 200px"
-                  emit-value
-                  map-options
+                  entity-type="professional"
+                  :label="$t('type')"
                   multiple
                 />
               </div>
@@ -47,16 +37,10 @@
               autogrow
               :label="$t('description')"
               class="q-mb-md"
-              style="min-width: 200px"
             />
             <div class="row q-mb-md q-col-gutter-md">
               <div class="col-12 col-sm-4">
-                <q-input
-                  filled
-                  v-model="selected.tel"
-                  :label="$t('phone')"
-                  style="min-width: 200px"
-                />
+                <q-input filled v-model="selected.tel" :label="$t('phone')" />
               </div>
               <div class="col-12 col-sm-4">
                 <q-input
@@ -64,16 +48,10 @@
                   v-model="selected.email"
                   type="email"
                   :label="$t('email')"
-                  style="min-width: 200px"
                 />
               </div>
               <div class="col-12 col-sm-4">
-                <q-input
-                  filled
-                  v-model="selected.web"
-                  :label="$t('website')"
-                  style="min-width: 200px"
-                />
+                <q-input filled v-model="selected.web" :label="$t('website')" />
               </div>
             </div>
             <q-input
@@ -175,12 +153,11 @@ import {
   BuildingMaterial,
   Professional,
   TechnicalConstruction,
-  TaxonomyNode,
 } from 'src/models';
 import { notifyError } from 'src/utils/notify';
 import CircleMapInput from 'src/components/CircleMapInput.vue';
 import FilesInput from 'src/components/FilesInput.vue';
-import { Option } from 'src/components/models';
+import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 
 interface DialogProps {
   modelValue: boolean;
@@ -191,7 +168,6 @@ const props = defineProps<DialogProps>();
 const emit = defineEmits(['update:modelValue', 'saved']);
 
 const filesStore = useFilesStore();
-const taxonomyStore = useTaxonomyStore();
 const services = useServices();
 const service = services.make('professional');
 const bmService = services.make('building-material');
@@ -213,7 +189,6 @@ const technicalConstructions = ref([]);
 const technicalConstructionsOptions = ref<
   { label: string | undefined; value: number | undefined }[]
 >([]);
-const professionalTypes = ref<Option[]>([]);
 
 const isValid = computed(() => {
   return selected.value.name && selected.value.types && selected.value.address;
@@ -222,15 +197,6 @@ const isValid = computed(() => {
 watch(
   () => props.modelValue,
   (value) => {
-    taxonomyStore.getTaxonomy('professional').then((types) => {
-      professionalTypes.value =
-        types?.children?.map((node: TaxonomyNode) => {
-          return {
-            value: taxonomyStore.toUrn('professional', node.id),
-            label: taxonomyStore.getLabel(node.names) || node.id,
-          };
-        }) || [];
-    });
     tab.value = 'general';
     if (value) {
       // deep copy
