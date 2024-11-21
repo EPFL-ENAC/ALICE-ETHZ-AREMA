@@ -1,286 +1,174 @@
 taxonomy:
   - id: natural-resource
-    name:
-      - locale: en
-        label: Natural resources
-      - locale: de
-        label: Natürliche Ressourcen
-      - locale: fr
-        label: Ressources naturelles
-      - locale: it
-        label: Risorse naturali
+    names:
+      en: Natural resources
+      de: Natürliche Ressourcen
+      fr: Ressources naturelles
+      it: Risorse naturali
     children:
       - id: earth
-        name: 
-          - locale: en
-            label: Earth
-          - locale: de
-            label: Erde
-          - locale: fr
-            label: Terre
-          - locale: it
-            label: Terra
+        names: 
+          en: Earth
+          de: Erde
+          fr: Terre
+          it: Terra
         children:
           - id: raming
-            name: 
-              - locale: en
-                label: Ramming
-              - locale: de
-                label: Stampfen
-              - locale: fr
-                label: Pisé
-              - locale: it
-                label: Pisé
+            names: 
+              en: Ramming
+              de: Stampfen
+              fr: Pisé
+              it: Pisé
           - id: adobe-cob
-            name:
-              - locale: en
-                label: "Adobe, cob"
-              - locale: de
-                label: "Lehmsteine, Wellerlehm, Ausfachung"
-              - locale: fr
-                label: "Briques de terre crue, torchis"
-              - locale: it
-                label: "Mattoni di terra cruda, paglia, torchis"
+            names:
+              en: "Adobe, cob"
+              de: "Lehmsteine, Wellerlehm, Ausfachung"
+              fr: "Briques de terre crue, torchis"
+              it: "Mattoni di terra cruda, paglia, torchis"
           - id: industrial
-            name:
-              - locale: en
-                label: "Industrial production"
-              - locale: de
-                label: "Für industrielle Produktion"
-              - locale: fr
-                label: "Pour production industrielle"
-              - locale: it
-                label: "Per produzione industriale"
+            names:
+              en: "Industrial production"
+              de: "Für industrielle Produktion"
+              fr: "Pour production industrielle"
+              it: "Per produzione industriale"
       - id: rock
-        name:
-          - locale: en
-            label: Rock
-          - locale: de
-            label: Gestein
-          - locale: fr
-            label: Roche
-          - locale: it
-            label: Rocce
+        names:
+          en: Rock
+          de: Gestein
+          fr: Roche
+          it: Rocce
         children:
           - id: limestones
-            name:
-              - locale: en
-                label: "Limestone, Dolomit, Marble"
-              - locale: de
-                label: "Kalkstein, Dolomit, Marmor"
-              - locale: fr
-                label: "Calcaire, Dolomite, Marbre"
-              - locale: it
-                label: "Calcari, Dolomiti, Marmo"
+            names:
+              en: "Limestone, Dolomit, Marble"
+              de: "Kalkstein, Dolomit, Marmor"
+              fr: "Calcaire, Dolomite, Marbre"
+              it: "Calcari, Dolomiti, Marmo"
           - id: granites
-            name:
-              - locale: en
-                label: "Granite, gneiss"
-              - locale: de
-                label: "Granit, Gneis"
-              - locale: fr
-                label: "Granit, gneiss"
-              - locale: it
-                label: "Granito, gneiss"
+            names:
+              en: "Granite, gneiss"
+              de: "Granit, Gneis"
+              fr: "Granit, gneiss"
+              it: "Granito, gneiss"
           - id: sandstone
-            name:
-              - locale: en
-                label: "Sandstone"
-              - locale: de
-                label: "Sandstein"
-              - locale: fr
-                label: "Grès"
-              - locale: it
-                label: "Arenaria"
+            names:
+              en: "Sandstone"
+              de: "Sandstein"
+              fr: "Grès"
+              it: "Arenaria"
           - id: molasse
-            name:
-              - locale: en
-                label: "Molasse, Breccia, Conglomerate"
-              - locale: de
-                label: "Molasse, Brekzie, Konglomerat"
-              - locale: fr
-                label: "Molasse, Brèche, Conglomérat"
-              - locale: it
-                label: "Molasse, Breccia, Conglomerato"
+            names:
+              en: "Molasse, Breccia, Conglomerate"
+              de: "Molasse, Brekzie, Konglomerat"
+              fr: "Molasse, Brèche, Conglomérat"
+              it: "Molasse, Breccia, Conglomerato"
           - id: volcanic
-            name:
-              - locale: en
-                label: "Volcanic"
-              - locale: de
-                label: "Vulkanisch"
-              - locale: fr
-                label: "Volcanique"
-              - locale: it
-                label: "Vulcanico"
+            names:
+              en: "Volcanic"
+              de: "Vulkanisch"
+              fr: "Volcanique"
+              it: "Vulcanico"
       - id: straw
-        name:
-          - locale: en
-            label: Straw
-          - locale: de
-            label: Stroh
-          - locale: fr
-            label: Paille
-          - locale: it
-            label: Paglia
+        names:
+          en: Straw
+          de: Stroh
+          fr: Paille
+          it: Paglia
       - id: hemp
-        name:
-          - locale: en
-            label: Hemp
-          - locale: de
-            label: Hanf
-          - locale: fr
-            label: Chanvre
-          - locale: it
-            label: Canapa
+        names:
+          en: Hemp
+          de: Hanf
+          fr: Chanvre
+          it: Canapa
       - id: wood
-        name:
-          - locale: en
-            label: Wood
-          - locale: de
-            label: Holz
-          - locale: fr
-            label: Bois
-          - locale: it
-            label: Legno
+        names:
+          en: Wood
+          de: Holz
+          fr: Bois
+          it: Legno
         children:
           - id: soft-wood
-            name:
-              - locale: en
-                label: "Soft wood"
-              - locale: de
-                label: "Weichholz"
-              - locale: fr
-                label: "Bois tendre"
-              - locale: it
-                label: "Legno tenero"
+            names:
+              en: "Soft wood"
+              de: "Weichholz"
+              fr: "Bois tendre"
+              it: "Legno tenero"
           - id: hard-wood
-            name:
-              - locale: en
-                label: "Hard wood"
-              - locale: de
-                label: "Hartholz"
-              - locale: fr
-                label: "Bois dur"
-              - locale: it
-                label: "Legno duro"
+            names:
+              en: "Hard wood"
+              de: "Hartholz"
+              fr: "Bois dur"
+              it: "Legno duro"
       - id: other-fibres
-        name:
-          - locale: en
-            label: "Other Fibres"
-          - locale: de
-            label: "Andere Fasern"
-          - locale: fr
-            label: "Autres Fibres"
-          - locale: it
-            label: "Altre Fibre"
+        names:
+          en: "Other Fibres"
+          de: "Andere Fasern"
+          fr: "Autres Fibres"
+          it: "Altre Fibre"
         children:
           - id: flax
-            name:
-              - locale: en
-                label: Flax
-              - locale: de
-                label: Flachs
-              - locale: fr
-                label: Lin
-              - locale: it
-                label: Lino
+            names:
+              en: Flax
+              de: Flachs
+              fr: Lin
+              it: Lino
           - id: bamboo
-            name:
-              - locale: en
-                label: Bamboo
-              - locale: de
-                label: Bambus
-              - locale: fr
-                label: Bambou
-              - locale: it
-                label: Bambù
+            names:
+              en: Bamboo
+              de: Bambus
+              fr: Bambou
+              it: Bambù
           - id: hay
-            name:
-              - locale: en
-                label: Hay
-              - locale: de
-                label: Heu
-              - locale: fr
-                label: Foin
-              - locale: it
-                label: Fieno
+            names:
+              en: Hay
+              de: Heu
+              fr: Foin
+              it: Fieno
           - id: sheep-wool
-            name:
-              - locale: en
-                label: "Sheep Wool"
-              - locale: de
-                label: "Schafwolle"
-              - locale: fr
-                label: "Laine de mouton"
-              - locale: it
-                label: "Lana di pecora"
+            names:
+              en: "Sheep Wool"
+              de: "Schafwolle"
+              fr: "Laine de mouton"
+              it: "Lana di pecora"
           - id: husks
-            name:
-              - locale: en
-                label: Husks
-              - locale: de
-                label: Schalen
-              - locale: fr
-                label: Balle
-              - locale: it
-                label: Balle
+            names:
+              en: Husks
+              de: Schalen
+              fr: Balle
+              it: Balle
           - id: jute
-            name:
-              - locale: en
-                label: Jute
-              - locale: de
-                label: Jute
-              - locale: fr
-                label: Jute
-              - locale: it
-                label: Juta
+            names:
+              en: Jute
+              de: Jute
+              fr: Jute
+              it: Juta
           - id: kenaf
-            name:
-              - locale: en
-                label: Kenaf
-              - locale: de
-                label: Kenaf
-              - locale: fr
-                label: Kenaf
-              - locale: it
-                label: Kenaf
+            names:
+              en: Kenaf
+              de: Kenaf
+              fr: Kenaf
+              it: Kenaf
           - id: corncobs
-            name:
-              - locale: en
-                label: Corncobs
-              - locale: de
-                label: Maiskolben
-              - locale: fr
-                label: Épis de maïs
-              - locale: it
-                label: Pannocchie di mais
+            names:
+              en: Corncobs
+              de: Maiskolben
+              fr: Épis de maïs
+              it: Pannocchie di mais
           - id: sisal
-            name:
-              - locale: en
-                label: Sisal
-              - locale: de
-                label: Sisal
-              - locale: fr
-                label: Sisal
-              - locale: it
-                label: Sisal
+            names:
+              en: Sisal
+              de: Sisal
+              fr: Sisal
+              it: Sisal
           - id: miscanthus
-            name:
-              - locale: en
-                label: Miscanthus
-              - locale: de
-                label: Miscanthus
-              - locale: fr
-                label: Miscanthus
-              - locale: it
-                label: Miscanthus
+            names:
+              en: Miscanthus
+              de: Miscanthus
+              fr: Miscanthus
+              it: Miscanthus
           - id: reed-typha
-            name:
-              - locale: en
-                label: Reed/Typha
-              - locale: de
-                label: Schilf
-              - locale: fr
-                label: Roseau
-              - locale: it
-                label: Canne
+            names:
+              en: Reed/Typha
+              de: Schilf
+              fr: Roseau
+              it: Canne

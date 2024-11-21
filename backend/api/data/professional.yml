@@ -1,103 +1,56 @@
 taxonomy:
   - id: professional
-    name:
-      - locale: en
-        label: Professionals
-      - locale: de
-        label: Fachleute
-      - locale: fr
-        label: Professionnels
-      - locale: it
-        label: Professionisti
+    names:
+      en: Professionals
+      de: Fachleute
+      fr: Professionnels
+      it: Professionisti
     children:
-      - id: type
-        name:
-          - locale: en
-            label: Type
-          - locale: de
-            label: Typ
-          - locale: fr
-            label: Type
-          - locale: it
-            label: Tipo
-        children:
-          - id: architect
-            name:
-              - locale: en
-                label: Architect
-              - locale: de
-                label: Architekt
-              - locale: fr
-                label: Architecte
-              - locale: it
-                label: Architetto
-          - id: civil-engineer
-            name:
-              - locale: en
-                label: Civil engineer
-              - locale: de
-                label: Bauingenieur
-              - locale: fr
-                label: Ingénieur civil
-              - locale: it
-                label: Ingegnere civile
-          - id: craftsman
-            name:
-              - locale: en
-                label: Craftsman
-              - locale: de
-                label: Handwerker
-              - locale: fr
-                label: Artisan
-              - locale: it
-                label: Artigiano      
-          - id: material-producer
-            name:
-              - locale: en
-                label: Material Producer
-              - locale: de
-                label: Materialhersteller
-              - locale: fr
-                label: Producteur de matériaux
-              - locale: it
-                label: Produttore di materiali
-          - id: building-physics
-            name:
-              - locale: en
-                label: Building Physics
-              - locale: de
-                label: Bauphysik
-              - locale: fr
-                label: Physique du bâtiment
-              - locale: it
-                label: Fisica dell'edificio
-          - id: association
-            name:
-              - locale: en
-                label: Association
-              - locale: de
-                label: Verband
-              - locale: fr
-                label: Association
-              - locale: it
-                label: Associazione
-          - id: construction-firm
-            name: 
-              - locale: en
-                label: Construction Firm
-              - locale: de
-                label: Bauunternehmen
-              - locale: fr
-                label: Entreprise de construction
-              - locale: it
-                label: Impresa di costruzioni
-          - id: other
-            name:
-              - locale: en
-                label: Other
-              - locale: de
-                label: Andere
-              - locale: fr
-                label: Autre
-              - locale: it
-                label: Altro
+      - id: architect
+        names:
+          en: Architect
+          de: Architekt
+          fr: Architecte
+          it: Architetto
+      - id: civil-engineer
+        names:
+          en: Civil engineer
+          de: Bauingenieur
+          fr: Ingénieur civil
+          it: Ingegnere civile
+      - id: craftsman
+        names:
+          en: Craftsman
+          de: Handwerker
+          fr: Artisan
+          it: Artigiano      
+      - id: material-producer
+        names:
+          en: Material Producer
+          de: Materialhersteller
+          fr: Producteur de matériaux
+          it: Produttore di materiali
+      - id: building-physics
+        names:
+          en: Building Physics
+          de: Bauphysik
+          fr: Physique du bâtiment
+          it: Fisica dell'edificio
+      - id: association
+        names:
+          en: Association
+          de: Verband
+          fr: Association
+          it: Associazione
+      - id: construction-firm
+        names: 
+          en: Construction Firm
+          de: Bauunternehmen
+          fr: Entreprise de construction
+          it: Impresa di costruzioni
+      - id: other
+        names:
+          en: Other
+          de: Andere
+          fr: Autre
+          it: Altro

@@ -1,12 +1,8 @@
 taxonomy:
   - id: technical-construction
-    name:
-      - locale: en
-        label: Technical constructions
-      - locale: de
-        label: Technische Konstruktionen
-      - locale: fr
-        label: Constructions techniques
-      - locale: it
-        label: Costruzioni tecniche
+    names:
+      en: Technical constructions
+      de: Technische Konstruktionen
+      fr: Constructions techniques
+      it: Costruzioni tecniche
     

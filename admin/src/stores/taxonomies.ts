@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { api } from 'src/boot/api';
-import { Taxonomy, TaxonomyLabel, TaxonomyNode } from 'src/models';
+import { Taxonomy, TaxonomyNode } from 'src/models';
 
 const URN_PREFIX = 'urn:arema';
 
@@ -20,6 +20,20 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
 
   function toUrn(entityType: string, path: string | string[]) {
     return `${URN_PREFIX}:${entityType}:${Array.isArray(path) ? path.join('.') : path}`;
+  }
+
+  async function getTaxonomy(
+    entityType: string,
+  ): Promise<TaxonomyNode | undefined> {
+    if (!taxonomies.value) {
+      return init().then(() => {
+        if (!taxonomies.value) return undefined;
+        else return getTaxonomy(entityType);
+      });
+    }
+    return Promise.resolve(
+      taxonomies.value?.taxonomy.find((tx) => tx.id === entityType),
+    );
   }
 
   function getNode(urn: string): TaxonomyNode | undefined {
@@ -46,17 +60,16 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return child;
   }
 
-  function getLabel(labels: TaxonomyLabel[] | undefined): string | undefined {
+  function getLabel(
+    labels: Record<string, string> | undefined,
+  ): string | undefined {
     if (labels === undefined) return undefined;
-    const label = labels.find((lbl) => lbl.locale === locale.value)?.label;
-    if (label === undefined) {
-      return labels.find((lbl) => lbl.locale === 'en')?.label;
-    }
-    return label;
+    if (labels[locale.value]) return labels[locale.value];
+    return labels['en'];
   }
 
   return {
-    init,
+    getTaxonomy,
     getNode,
     getLabel,
     toUrn,

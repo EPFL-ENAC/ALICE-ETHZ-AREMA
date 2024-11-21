@@ -257,15 +257,12 @@ const professionalTypes = ref<{ value: string; label: string }[]>([]);
 
 onMounted(() => {
   tableRef.value.requestServerInteraction();
-  taxonomyStore.init().then(() => {
-    const types = taxonomyStore.getNode(
-      taxonomyStore.toUrn('professional', 'type'),
-    );
+  taxonomyStore.getTaxonomy('professional').then((types) => {
     professionalTypes.value =
       types?.children?.map((node: TaxonomyNode) => {
         return {
-          value: taxonomyStore.toUrn('professional', ['type', node.id]),
-          label: taxonomyStore.getLabel(node.name) || node.id,
+          value: taxonomyStore.toUrn('professional', node.id),
+          label: taxonomyStore.getLabel(node.names) || node.id,
         };
       }) || [];
   });

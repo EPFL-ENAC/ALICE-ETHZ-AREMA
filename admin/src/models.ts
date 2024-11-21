@@ -18,15 +18,10 @@ export interface Geometry {
   point?: [number, number];
 }
 
-export interface TaxonomyLabel {
-  locale: string;
-  label: string;
-}
-
 export interface TaxonomyNode {
   id: string;
-  name: TaxonomyLabel[];
-  description?: TaxonomyLabel[];
+  names: Record<string, string>;
+  descriptions?: Record<string, string>;
   children?: TaxonomyNode[];
 }
 
