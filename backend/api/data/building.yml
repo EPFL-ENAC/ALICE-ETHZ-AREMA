@@ -62,5 +62,47 @@ taxonomy:
               de: Einfache Struktur
               fr: Structure simple
               it: Struttura semplice
-
-    
+      - id: material
+        names:
+          en: Material
+          de: Material
+          fr: Matériau
+          it: Materiale
+        children:
+          - id: earth
+            names:
+              en: Earth
+              de: Erde
+              fr: Terre
+              it: Terra
+            children:
+          - id: rock
+            names:
+              en: Rock
+              de: Gestein
+              fr: Roche
+              it: Roccia
+          - id: straw
+            names:
+              en: Straw
+              de: Stroh
+              fr: Paille
+              it: Paglia
+          - id: hemp
+            names:
+              en: Hemp
+              de: Hanf
+              fr: Chanvre
+              it: Canapa
+          - id: wood
+            names:
+              en: Wood
+              de: Holz
+              fr: Bois
+              it: Legno
+          - id: other-fibres
+            names:
+              en: Other Fibres
+              de: Andere Fasern
+              fr: Autres Fibres
+              it: Altre fibre
