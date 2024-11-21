@@ -9,8 +9,8 @@ taxonomy:
       - id: status
         names:
           en: Status
-          de: Status
-          fr: Statut
+          de: Zustand
+          fr: Etat
           it: Stato
         children:
           - id: new
@@ -37,7 +37,7 @@ taxonomy:
               en: Apartment Building
               de: Mehrfamilienhaus
               fr: Immeuble d'habitation
-              it: Palazzo
+              it: Edificio residenziale
           - id: single-family-house
             names:
               en: Single Family House

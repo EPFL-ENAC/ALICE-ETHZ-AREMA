@@ -94,7 +94,7 @@ taxonomy:
           - id: be14
             names:
               en: Exterior wall finishing
-              de: Äussere Beschichtung u Terrain
+              de: Äussere Beschichtung unter Terrain
               fr: Finition mur extérieur sous-sol
               it: Rivestimento parete esterna seminterrato
           - id: be15
@@ -106,7 +106,7 @@ taxonomy:
           - id: be16
             names:
               en: Sun & weather protection
-              de: Sonnen-  & Wetterschutz
+              de: Sonnen & Wetterschutz
               fr: Protection solaire et contre les intempéries
               it: Protezione solare e contro le intemperie
           - id: be17
@@ -145,3 +145,47 @@ taxonomy:
               de: Technik
               fr: Équipement technique
               it: Attrezzatura tecnica
+      - id: material
+        names:
+          en: Material
+          de: Material
+          fr: Matériau
+          it: Materiale
+        children:
+          - id: earth
+            names:
+              en: Earth
+              de: Erde
+              fr: Terre
+              it: Terra
+            children:
+          - id: rock
+            names:
+              en: Rock
+              de: Gestein
+              fr: Roche
+              it: Roccia
+          - id: straw
+            names:
+              en: Straw
+              de: Stroh
+              fr: Paille
+              it: Paglia
+          - id: hemp
+            names:
+              en: Hemp
+              de: Hanf
+              fr: Chanvre
+              it: Canapa
+          - id: wood
+            names:
+              en: Wood
+              de: Holz
+              fr: Bois
+              it: Legno
+          - id: other-fibres
+            names:
+              en: Other Fibres
+              de: Andere Fasern
+              fr: Autres Fibres
+              it: Altre fibre
