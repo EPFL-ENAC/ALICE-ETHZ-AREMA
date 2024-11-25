@@ -1,6 +1,7 @@
 services:
   postgres:
-    image: postgis/postgis:15-3.5-alpine
+    #image: postgis/postgis:15-3.5-alpine
+    image: postgres:15.5-alpine
     expose:
       - 5432
     ports:
