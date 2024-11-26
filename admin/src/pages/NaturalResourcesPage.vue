@@ -18,6 +18,8 @@
       >
         <template v-slot:top>
           <q-btn
+            v-if="authStore.isAdmin"
+            size="sm"
             color="primary"
             :disable="loading"
             :label="$t('add')"
@@ -25,15 +27,26 @@
             @click="onAdd"
           />
           <q-space />
+          <taxonomy-select
+            v-model="types"
+            entity-type="natural-resource"
+            path="type"
+            :label="$t('types')"
+            multiple
+            dense
+            style="min-width: 200px"
+            class="q-mr-md"
+            @update:model-value="onTypeSelection"
+          />
           <q-input dense debounce="300" v-model="filter" clearable>
             <template v-slot:append>
               <q-icon name="search" />
             </template>
           </q-input>
         </template>
-        <template v-slot:body-cell-description="props">
-          <q-td :props="props" class="ellipsis" style="max-width: 200px">
-            {{ props.value }}
+        <template v-slot:body-cell-type="props">
+          <q-td :props="props">
+            <q-badge color="accent" :label="props.value" />
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -73,55 +86,77 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { Query } from '@feathersjs/client';
-import { NaturalResource } from '@epfl-enac/arema';
+import { Option, Query } from 'src/components/models';
+import { NaturalResource } from 'src/models';
 import NaturalResourceDialog from 'src/components/NaturalResourceDialog.vue';
-import { makePaginationRequestHandler } from '../utils/pagination';
-import type { PaginationOptions } from '../utils/pagination';
+import TaxonomySelect from 'src/components/TaxonomySelect.vue';
+import { makePaginationRequestHandler } from 'src/utils/pagination';
+import type { PaginationOptions } from 'src/utils/pagination';
+
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
-const { api } = useFeathers();
-const service = api.service('natural-resource');
+const authStore = useAuthStore();
+const taxonomyStore = useTaxonomyStore();
+const services = useServices();
+const service = services.make('natural-resource');
 
-const columns = [
-  {
-    name: 'name',
-    required: true,
-    label: t('name'),
-    align: 'left',
-    field: 'name',
-    sortable: true,
-  },
-  {
-    name: 'description',
-    required: true,
-    label: t('description'),
-    align: 'left',
-    field: 'description',
-    sortable: false,
-  },
-  {
-    name: 'lastModification',
-    required: true,
-    label: t('last_modification'),
-    align: 'left',
-    field: (row: NaturalResource) => {
-      const date = new Date(row.updatedAt || row.createdAt);
-      return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+const columns = computed(() => {
+  const cols = [
+    {
+      name: 'id',
+      required: true,
+      label: 'ID',
+      align: 'left',
+      field: 'id',
+      style: 'width: 20px',
+      sortable: true,
     },
-    sortable: false,
-  },
-  {
-    name: 'action',
-    align: 'left',
-    label: t('action'),
-  },
-];
+    {
+      name: 'name',
+      required: true,
+      label: t('name'),
+      align: 'left',
+      field: 'name',
+      sortable: true,
+    },
+    {
+      name: 'type',
+      required: true,
+      label: t('type'),
+      align: 'left',
+      field: 'type',
+      format: getTypeLabel,
+      sortable: true,
+    },
+    {
+      name: 'lastModification',
+      required: true,
+      label: t('last_modification'),
+      align: 'left',
+      field: (row: NaturalResource) => {
+        const date = new Date(row.updated_at || row.created_at || '');
+        return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+      },
+      sortable: false,
+    },
+  ];
+
+  if (authStore.isAdmin) {
+    cols.push({
+      name: 'action',
+      align: 'left',
+      label: t('action'),
+    });
+  }
+
+  return cols;
+});
 
 const selected = ref<NaturalResource>();
 const showEditDialog = ref(false);
 const tableRef = ref();
 const rows = ref<NaturalResource[]>([]);
+const types = ref<string[] | null>(null);
 const filter = ref('');
 const loading = ref(false);
 const pagination = ref<PaginationOptions>({
@@ -131,10 +166,17 @@ const pagination = ref<PaginationOptions>({
   rowsPerPage: 10,
   rowsNumber: 10,
 });
+const naturalResourcesTypes = ref<Option[]>([]);
 
 onMounted(() => {
-  // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
+  taxonomyStore.getTaxonomyNode('natural-resource', 'type').then((types) => {
+    naturalResourcesTypes.value = taxonomyStore.asOptions(
+      'natural-resource',
+      types,
+      'type',
+    );
+  });
 });
 
 function fetchFromServer(
@@ -147,35 +189,48 @@ function fetchFromServer(
   const query: Query = {
     $skip: startRow,
     $limit: count,
-    $sort: {
-      [sortBy]: descending ? -1 : 1,
-    },
+    $sort: [sortBy, descending],
   };
-  if (filter) {
-    query.name = {
-      $ilike: `%${filter}%`,
-    };
-  }
-  return service
-    .find({
-      query,
-    })
-    .then((result) => {
-      rows.value = result.data;
-      loading.value = false;
-      return result;
+  query.filter = {};
+  if (types.value?.length) {
+    query.filter.$or = types.value.map((val) => {
+      return {
+        type: {
+          $like: val,
+        },
+      };
     });
+  }
+  if (filter) {
+    const criterion = {
+      name: { $ilike: `%${filter}%` },
+    };
+    if (query.filter.$or) {
+      const typesClause = query.filter.$or;
+      delete query.filter.$or;
+      query.filter.$and = [{ $or: typesClause }, criterion];
+    } else query.filter = criterion;
+  }
+  return service.find(query).then((result) => {
+    rows.value = result.data;
+    loading.value = false;
+    return result;
+  });
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
 
+function onTypeSelection() {
+  tableRef.value.requestServerInteraction();
+}
+
 function onAdd() {
-  selected.value = {};
+  selected.value = { name: '' };
   showEditDialog.value = true;
 }
 
-function onEdit(resource: NaturalResource) {
-  selected.value = { ...resource };
+function onEdit(item: NaturalResource) {
+  selected.value = { ...item };
   showEditDialog.value = true;
 }
 
@@ -183,9 +238,10 @@ function onSaved() {
   tableRef.value.requestServerInteraction();
 }
 
-function remove(resource: NaturalResource) {
+function remove(item: NaturalResource) {
+  if (!item.id) return;
   service
-    .remove(resource.id)
+    .remove(item.id)
     .then(() => {
       tableRef.value.requestServerInteraction();
     })
@@ -195,5 +251,11 @@ function remove(resource: NaturalResource) {
         type: 'negative',
       });
     });
+}
+
+function getTypeLabel(val: string): string {
+  return (
+    naturalResourcesTypes.value.find((opt) => opt.value === val)?.label || val
+  );
 }
 </script>

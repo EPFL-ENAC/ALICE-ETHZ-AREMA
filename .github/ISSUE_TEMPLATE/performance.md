@@ -3,7 +3,7 @@ name: Performance
 about: "Runtime, memory, speed, or storage inefficiency"
 title: ""
 labels: "topic: performance"
-assignees: guilbep
+assignees: ymarcon
 ---
 
 ## Prework

@@ -1,0 +1,89 @@
+taxonomy:
+  - id: building-material
+    names:
+      en: Building materials
+      de: Baustoffe
+      fr: Matériaux de construction
+      it: Materiali da costruzione
+    children:
+      - id: type
+        names:
+          en: Type
+          de: Typ
+          fr: Type
+          it: Tipo
+        children:
+          - id: massive
+            names:
+              en: Massive
+              de: Massivlehmbau
+              fr: Massif
+              it: Massiccio
+          - id: bricks
+            names:
+              en: Bricks
+              de: Baustein
+              fr: Briques
+              it: Mattoni
+          - id: panels
+            names:
+              en: Panels, Boards
+              de: Platten
+              fr: Plaques
+              it: Pannelli
+          - id: bulk
+            names:
+              en: Bulk
+              de: Schüttgut
+              fr: Vrac
+              it: Massa
+          - id: mortar
+            names:
+              en: Mortar, Plaster
+              de: Mörtel, Putz
+              fr: Mortier, Crépis
+              it: Malta, Intonaco
+      - id: material
+        names:
+          en: Material
+          de: Material
+          fr: Matériau
+          it: Materiale
+        children:
+          - id: earth
+            names:
+              en: Earth
+              de: Erde
+              fr: Terre
+              it: Terra
+            children:
+          - id: rock
+            names:
+              en: Rock
+              de: Gestein
+              fr: Roche
+              it: Roccia
+          - id: straw
+            names:
+              en: Straw
+              de: Stroh
+              fr: Paille
+              it: Paglia
+          - id: hemp
+            names:
+              en: Hemp
+              de: Hanf
+              fr: Chanvre
+              it: Canapa
+          - id: wood
+            names:
+              en: Wood
+              de: Holz
+              fr: Bois
+              it: Legno
+          - id: other-fibres
+            names:
+              en: Other Fibres
+              de: Andere Fasern
+              fr: Autres Fibres
+              it: Altre fibre

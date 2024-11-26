@@ -3,10 +3,10 @@ import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import '@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import 'maplibregl-theme-switcher/styles.css';
-import { geocoderApi } from '../utils/geocoder';
-import { style, themes } from '../utils/maps';
+// import { geocoderApi } from 'src/utils/geocoder';
+import { style, themes } from 'src/utils/maps';
 import * as MapboxDrawGeodesic from 'mapbox-gl-draw-geodesic';
-import MaplibreGeocoder from '@maplibre/maplibre-gl-geocoder';
+// import MaplibreGeocoder from '@maplibre/maplibre-gl-geocoder';
 import { ThemeSwitcherControl } from 'maplibregl-theme-switcher';
 import {
   type Feature,
@@ -28,12 +28,12 @@ import {
   Popup,
 } from 'maplibre-gl';
 import { shallowRef, onMounted, markRaw, watch, unref } from 'vue';
-const { t, locale } = useI18n({ useScope: 'global' });
+const { t /*locale*/ } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(
   defineProps<{
     features: [
-      Feature<Polygon | MultiPolygon>[] | Feature<Polygon | MultiPolygon>
+      Feature<Polygon | MultiPolygon>[] | Feature<Polygon | MultiPolygon>,
     ];
     centre?: [number, number];
     zoom?: number;
@@ -51,7 +51,7 @@ const props = withDefaults(
     maxZoom: undefined,
     width: '100%',
     height: '800px',
-  }
+  },
 );
 const map = shallowRef<Map | undefined>(undefined);
 
@@ -69,20 +69,20 @@ onMounted(() => {
       style: style,
       trackResize: true,
       zoom: props.zoom,
-    })
+    }),
   );
   map.value.addControl(new NavigationControl({}));
   map.value.addControl(new GeolocateControl({}));
   map.value.addControl(new ScaleControl({}));
   map.value.addControl(new FullscreenControl({}));
-  map.value.addControl(
-    new MaplibreGeocoder(geocoderApi, {
-      maplibregl: { Marker },
-      showResultsWhileTyping: true,
-      language: locale.value,
-    }),
-    'top-left'
-  );
+  // map.value.addControl(
+  //   new MaplibreGeocoder(geocoderApi, {
+  //     maplibregl: { Marker },
+  //     showResultsWhileTyping: true,
+  //     language: locale.value,
+  //   }),
+  //   'top-left'
+  // );
   map.value.addControl(new ThemeSwitcherControl(themes, themes[0].id));
 
   map.value.on('load', function () {
@@ -95,7 +95,7 @@ watch(
   () => {
     displayFeatures();
   },
-  { immediate: true, deep: true }
+  { immediate: true, deep: true },
 );
 
 function displayFeatures() {
@@ -146,7 +146,7 @@ function displayCircle(feature: Feature<Polygon>) {
       new Marker({ color: '#FF0000' })
         .setLngLat(center)
         .setPopup(popup)
-        .addTo(map.value)
+        .addTo(map.value),
     );
 
     // Generate a polygon using turf.circle.
@@ -190,7 +190,7 @@ function displayPoint(feature: Feature<Point>) {
       new Marker({ color: '#FF0000' })
         .setLngLat(center)
         .setPopup(popup)
-        .addTo(map.value)
+        .addTo(map.value),
     );
   }
 }
@@ -205,7 +205,7 @@ function displayPolygons(featureCollection: Feature<FeatureCollection>) {
     new Marker({ color: '#FF0000' })
       .setLngLat(ct.geometry.coordinates)
       .setPopup(popup)
-      .addTo(map.value)
+      .addTo(map.value),
   );
 
   const color = randomColor();

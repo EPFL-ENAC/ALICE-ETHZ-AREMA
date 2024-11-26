@@ -38,14 +38,13 @@
   </div>
 </template>
 
-
 <script lang="ts">
 export default defineComponent({
   name: 'PropertyFormItem',
 });
 </script>
 <script setup lang="ts">
-import { NaturalResource } from '@epfl-enac/arema';
+import { NaturalResource } from 'src/models';
 
 interface Props {
   modelValue: NaturalResource;

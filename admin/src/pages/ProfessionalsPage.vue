@@ -18,6 +18,8 @@
       >
         <template v-slot:top>
           <q-btn
+            v-if="authStore.isAdmin"
+            size="sm"
             color="primary"
             :disable="loading"
             :label="$t('add')"
@@ -25,18 +27,16 @@
             @click="onAdd"
           />
           <q-space />
-          <q-select
-            filled
-            clearable
+          <taxonomy-select
             v-model="types"
-            :options="professionalTypeOptions"
-            :label="$t('type')"
-            class="q-mr-md"
-            style="min-width: 200px"
-            @update:model-value="onTypeSelection"
+            entity-type="professional"
+            path="type"
+            :label="$t('types')"
             multiple
-            emit-value
-            map-options
+            dense
+            style="min-width: 200px"
+            class="q-mr-md"
+            @update:model-value="onTypeSelection"
           />
           <q-input dense debounce="300" v-model="filter" clearable>
             <template v-slot:append>
@@ -54,14 +54,22 @@
             />
           </div>
         </template>
-        <template v-slot:body-cell-description="props">
-          <q-td :props="props" class="ellipsis" style="max-width: 200px">
-            {{ props.value }}
+        <template v-slot:body-cell-types="props">
+          <q-td :props="props">
+            <q-badge
+              color="accent"
+              v-for="type in props.value"
+              :key="type"
+              :label="type"
+              class="q-mr-sm"
+            />
           </q-td>
         </template>
         <template v-slot:body-cell-web="props">
           <q-td :props="props">
-            <a :href="props.value" target="_blank">{{ props.value }}</a>
+            <a :href="props.value" target="_blank" class="epfl">{{
+              props.value
+            }}</a>
           </q-td>
         </template>
         <template v-slot:body-cell-address="props">
@@ -71,7 +79,7 @@
         </template>
         <template v-slot:body-cell-radius="props">
           <q-td :props="props">
-            <q-chip>{{ props.value }} km</q-chip>
+            <q-chip size="sm">{{ props.value }} km</q-chip>
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -100,197 +108,134 @@
         </template>
       </q-table>
 
-      <q-dialog
+      <professional-dialog
         v-model="showEditDialog"
-        persistent
-        transition-show="scale"
-        transition-hide="scale"
-        full-width
-      >
-        <q-card>
-          <q-card-section>
-            <div class="row q-mb-md">
-              <div class="col-12 col-sm-6">
-                <q-input
-                  filled
-                  v-model="selected.name"
-                  :label="$t('name')"
-                  style="min-width: 200px"
-                />
-              </div>
-              <div class="col-12 col-sm-6">
-                <q-select
-                  filled
-                  clearable
-                  v-model="selected.professionalTypeId"
-                  :options="professionalTypeOptions"
-                  :label="$t('type')"
-                  class="on-right"
-                  style="min-width: 200px"
-                  emit-value
-                  map-options
-                />
-              </div>
-            </div>
-            <q-input
-              filled
-              v-model="selected.description"
-              autogrow
-              :label="$t('description')"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
-            <div class="row q-mb-md">
-              <div class="col-12 col-sm-4">
-                <q-input
-                  filled
-                  v-model="selected.tel"
-                  :label="$t('phone')"
-                  style="min-width: 200px"
-                />
-              </div>
-              <div class="col-12 col-sm-4">
-                <q-input
-                  filled
-                  v-model="selected.email"
-                  type="email"
-                  :label="$t('email')"
-                  class="on-right"
-                  style="min-width: 200px"
-                />
-              </div>
-              <div class="col-12 col-sm-4">
-                <q-input
-                  filled
-                  v-model="selected.web"
-                  :label="$t('website')"
-                  class="on-right"
-                  style="min-width: 200px"
-                />
-              </div>
-            </div>
-            <circle-map-input
-              v-model="circle"
-              height="600px"
-              @update:model-value="onCircleInputUpdated"
-            ></circle-map-input>
-          </q-card-section>
-
-          <q-card-actions align="right">
-            <q-btn flat :label="$t('cancel')" v-close-popup />
-            <q-btn
-              color="primary"
-              :label="$t('save')"
-              v-close-popup
-              @click="saveSelected"
-              :disabled="disableSave()"
-            />
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
+        :item="selected"
+        @saved="onSaved"
+      />
     </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { Query } from '@feathersjs/client';
-import { Professional, ProfessionalType } from '@epfl-enac/arema';
-import { makePaginationRequestHandler } from '../utils/pagination';
-import type { PaginationOptions } from '../utils/pagination';
-import CircleMapInput from '../components/CircleMapInput.vue';
+import { Option, Query } from 'src/components/models';
+import { Professional } from 'src/models';
+import { makePaginationRequestHandler } from 'src/utils/pagination';
+import type { PaginationOptions } from 'src/utils/pagination';
 import MapView from 'src/components/MapView.vue';
-import { onMounted, ref, computed } from 'vue';
+import ProfessionalDialog from 'src/components/ProfessionalDialog.vue';
+import TaxonomySelect from 'src/components/TaxonomySelect.vue';
+
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
-const { api } = useFeathers();
-const service = api.service('professional');
-const serviceType = api.service('professional-type');
+const authStore = useAuthStore();
+const taxonomyStore = useTaxonomyStore();
+const services = useServices();
+const service = services.make('professional');
+//const serviceType = services.make('professional-type');
 
-const columns = [
-  {
-    name: 'name',
-    required: true,
-    label: t('name'),
-    align: 'left',
-    field: 'name',
-    sortable: true,
-  },
-  {
-    name: 'description',
-    required: true,
-    label: t('description'),
-    align: 'left',
-    field: 'description',
-    sortable: false,
-  },
-  {
-    name: 'professionalTypeId',
-    required: true,
-    label: t('type'),
-    align: 'left',
-    field: 'professionalType',
-    format: (val: ProfessionalType) => (val ? t(val.text) : undefined),
-    sortable: true,
-  },
-  {
-    name: 'web',
-    required: true,
-    label: t('website'),
-    align: 'left',
-    field: 'web',
-    sortable: true,
-  },
-  {
-    name: 'address',
-    required: true,
-    label: t('address'),
-    align: 'left',
-    field: 'address',
-    sortable: true,
-  },
-  {
-    name: 'radius',
-    required: true,
-    label: t('areaDelivery'),
-    align: 'left',
-    field: 'radius',
-    sortable: false,
-  },
-  {
-    name: 'lastModification',
-    required: true,
-    label: t('last_modification'),
-    align: 'left',
-    field: (row: Professional) => {
-      const date = new Date(row.updatedAt || row.createdAt);
-      return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+const columns = computed(() => {
+  const cols = [
+    {
+      name: 'id',
+      required: true,
+      label: 'ID',
+      align: 'left',
+      field: 'id',
+      style: 'width: 20px',
+      sortable: true,
     },
-    sortable: false,
-  },
-  {
-    name: 'action',
-    align: 'left',
-    label: t('action'),
-  },
-];
+    {
+      name: 'name',
+      required: true,
+      label: t('name'),
+      align: 'left',
+      field: 'name',
+      sortable: true,
+    },
+    {
+      name: 'types',
+      required: true,
+      label: t('types'),
+      align: 'left',
+      field: 'types',
+      format: (val: string[] | undefined) => (val ? val.map(getTypeLabel) : []),
+      sortable: true,
+    },
+    {
+      name: 'web',
+      required: true,
+      label: t('website'),
+      align: 'left',
+      field: 'web',
+      sortable: true,
+    },
+    {
+      name: 'address',
+      required: true,
+      label: t('address'),
+      align: 'left',
+      field: 'address',
+      sortable: true,
+    },
+    {
+      name: 'radius',
+      required: true,
+      label: t('areaDelivery'),
+      align: 'left',
+      field: 'radius',
+      sortable: false,
+    },
+    {
+      name: 'building_materials',
+      required: true,
+      label: t('building_materials'),
+      align: 'left',
+      field: (row: Professional) => {
+        return row.building_materials
+          ? row.building_materials.map((bm) => bm.name).join(', ')
+          : '-';
+      },
+      sortable: false,
+    },
+    {
+      name: 'technical_constructions',
+      required: true,
+      label: t('technical_constructions'),
+      align: 'left',
+      field: (row: Professional) => {
+        return row.technical_constructions
+          ? row.technical_constructions.map((bm) => bm.name).join(', ')
+          : '-';
+      },
+      sortable: false,
+    },
+    {
+      name: 'lastModification',
+      required: true,
+      label: t('last_modification'),
+      align: 'left',
+      field: (row: Professional) => {
+        const date = new Date(row.updated_at || row.created_at || '');
+        return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+      },
+      sortable: false,
+    },
+  ];
 
-const professionalTypes = ref<ProfessionalType[]>([]);
-const professionalTypeOptions = computed(() => {
-  return professionalTypes.value
-    .map((type) => {
-      return {
-        value: type.id + '',
-        label: t(type.text),
-      };
-    })
-    .sort((a, b) => {
-      return a.label.localeCompare(b.label);
+  if (authStore.isAdmin) {
+    cols.push({
+      name: 'action',
+      align: 'left',
+      label: t('action'),
     });
+  }
+
+  return cols;
 });
 
 const selected = ref<Professional>();
-const circle = ref({});
 const showEditDialog = ref(false);
 const tableRef = ref();
 const rows = ref<Professional[]>([]);
@@ -304,13 +249,17 @@ const pagination = ref<PaginationOptions>({
   rowsPerPage: 10,
   rowsNumber: 10,
 });
+const professionalTypes = ref<Option[]>([]);
 
 onMounted(() => {
-  serviceType.find({ query: { $limit: 50 } }).then((result) => {
-    professionalTypes.value = result.data;
-  });
-  // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
+  taxonomyStore.getTaxonomyNode('professional', 'type').then((types) => {
+    professionalTypes.value = taxonomyStore.asOptions(
+      'professional',
+      types,
+      'type',
+    );
+  });
 });
 
 const features = computed(() => {
@@ -326,25 +275,14 @@ const features = computed(() => {
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [
-          [
-            row.coordinates.point,
-            row.coordinates.point,
-            row.coordinates.point,
-            row.coordinates.point,
-          ],
-        ],
+        coordinates: [[asPoint(row), asPoint(row), asPoint(row), asPoint(row)]],
       },
     };
   });
 });
 
-function disableSave() {
-  return (
-    !selected.value.name ||
-    !selected.value.professionalTypeId ||
-    !selected.value.address
-  );
+function asPoint(professional: Professional) {
+  return [professional.long, professional.lat];
 }
 
 function fetchFromServer(
@@ -352,22 +290,32 @@ function fetchFromServer(
   count: number,
   filter: string,
   sortBy: string,
-  descending: boolean
+  descending: boolean,
 ) {
   const query: Query = {
     $skip: startRow,
     $limit: count,
-    $sort: {
-      [sortBy]: descending ? -1 : 1,
-    },
+    $sort: [sortBy, descending],
   };
-  if (types.value) {
-    query.professionalTypeId = {
-      $in: types.value.map((type) => parseInt(type)),
-    };
+  query.filter = {};
+  if (types.value?.length) {
+    // AND
+    // query.filter = {
+    //   types: {
+    //     $contains: types.value,
+    //   },
+    // };
+    // OR
+    query.filter.$or = types.value.map((val) => {
+      return {
+        types: {
+          $contains: [val],
+        },
+      };
+    });
   }
   if (filter) {
-    query.$or = [
+    const criteria = [
       {
         name: {
           $ilike: `%${filter}%`,
@@ -379,16 +327,19 @@ function fetchFromServer(
         },
       },
     ];
+    if (query.filter.$or) {
+      const typesClause = query.filter.$or;
+      delete query.filter.$or;
+      query.filter.$and = [{ $or: typesClause }, { $or: criteria }];
+    } else {
+      query.filter.$or = criteria;
+    }
   }
-  return service
-    .find({
-      query,
-    })
-    .then((result) => {
-      rows.value = result.data;
-      loading.value = false;
-      return result;
-    });
+  return service.find(query).then((result) => {
+    rows.value = result.data;
+    loading.value = false;
+    return result;
+  });
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
@@ -397,81 +348,22 @@ function onTypeSelection() {
   tableRef.value.requestServerInteraction();
 }
 
-function onCircleInputUpdated(newValue) {
-  if (newValue && newValue.properties && newValue.geometry) {
-    selected.value.address = newValue.properties.display_name;
-    selected.value.radius = newValue.properties.circleRadius;
-    selected.value.coordinates = { point: newValue.geometry.coordinates[0][0] };
-  } else {
-    selected.value.address = null;
-    selected.value.radius = null;
-    selected.value.coordinates = null;
-  }
-}
-
 function onAdd() {
-  selected.value = {};
-  circle.value = {};
+  selected.value = { name: '' };
   showEditDialog.value = true;
 }
 
 function onEdit(resource: Professional) {
   selected.value = { ...resource };
-  const center = unref(selected.value.coordinates.point);
-  circle.value = {
-    type: 'Feature',
-    properties: {
-      display_name: selected.value.address,
-      circleRadius: selected.value.radius,
-    },
-    geometry: {
-      type: 'Polygon',
-      coordinates: [[center, center, center, center]],
-    },
-  };
   showEditDialog.value = true;
 }
 
-function saveSelected() {
-  if (selected.value === undefined) return;
-  if (selected.value.id) {
-    delete selected.value.professionalType;
-    // FIXME "find" returns a string whereas "create/patch" requires a number
-    selected.value.professionalTypeId = parseInt(
-      selected.value.professionalTypeId
-    );
-    service
-      .patch(selected.value.id, selected.value)
-      .then(() => {
-        tableRef.value.requestServerInteraction();
-      })
-      .catch((err) => {
-        $q.notify({
-          message: err.message,
-          type: 'negative',
-        });
-      });
-  } else {
-    selected.value.images = [];
-    selected.value.links = [];
-    selected.value.professionalTypeId = parseInt(
-      selected.value.professionalTypeId
-    );
-    service
-      .create(selected.value)
-      .then(() => {
-        tableRef.value.requestServerInteraction();
-      })
-      .catch((err) => {
-        $q.notify({
-          message: err.message,
-          type: 'negative',
-        });
-      });
-  }
+function onSaved() {
+  tableRef.value.requestServerInteraction();
 }
 
 function remove(resource: Professional) {
+  if (!resource.id) return;
   service
     .remove(resource.id)
     .then(() => {
@@ -483,5 +375,9 @@ function remove(resource: Professional) {
         type: 'negative',
       });
     });
+}
+
+function getTypeLabel(val: string): string {
+  return professionalTypes.value.find((opt) => opt.value === val)?.label || val;
 }
 </script>

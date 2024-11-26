@@ -18,6 +18,8 @@
       >
         <template v-slot:top>
           <q-btn
+            v-if="authStore.isAdmin"
+            size="sm"
             color="primary"
             :disable="loading"
             :label="$t('add')"
@@ -41,9 +43,9 @@
             />
           </div>
         </template>
-        <template v-slot:body-cell-description="props">
-          <q-td :props="props" class="ellipsis" style="max-width: 200px">
-            {{ props.value }}
+        <template v-slot:body-cell-type="props">
+          <q-td :props="props">
+            <q-badge color="accent" :label="props.value" />
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -72,110 +74,128 @@
         </template>
       </q-table>
 
-      <q-dialog
+      <building-dialog
         v-model="showEditDialog"
-        persistent
-        transition-show="scale"
-        transition-hide="scale"
-        full-width
-      >
-        <q-card style="width: 300px">
-          <q-card-section>
-            <q-input
-              filled
-              v-model="selected.name"
-              :label="$t('name')"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
-            <q-input
-              filled
-              v-model="selected.description"
-              autogrow
-              :label="$t('description')"
-              class="q-mb-md"
-              style="min-width: 200px"
-            />
-            <point-map-input
-              v-model="location"
-              height="600px"
-              @update:model-value="onPointInputUpdated"
-            ></point-map-input>
-          </q-card-section>
-
-          <q-card-actions align="right">
-            <q-btn flat :label="$t('cancel')" v-close-popup />
-            <q-btn
-              color="primary"
-              :label="$t('save')"
-              v-close-popup
-              @click="saveSelected"
-            />
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
+        :item="selected"
+        @saved="onSaved"
+      />
     </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { Query } from '@feathersjs/client';
-import { Building } from '@epfl-enac/arema';
+import { Option, Query } from 'src/components/models';
+import { Building } from 'src/models';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
-import PointMapInput from '../components/PointMapInput.vue';
 import MapView from 'src/components/MapView.vue';
+import BuildingDialog from 'src/components/BuildingDialog.vue';
+
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
-const { api } = useFeathers();
-const service = api.service('building');
+const authStore = useAuthStore();
+const taxonomyStore = useTaxonomyStore();
+const services = useServices();
+const service = services.make('building');
 
-const columns = [
-  {
-    name: 'name',
-    required: true,
-    label: t('name'),
-    align: 'left',
-    field: 'name',
-    sortable: true,
-  },
-  {
-    name: 'description',
-    required: true,
-    label: t('description'),
-    align: 'left',
-    field: 'description',
-    sortable: false,
-  },
-  {
-    name: 'address',
-    required: true,
-    label: t('address'),
-    align: 'left',
-    field: 'address',
-    sortable: false,
-  },
-  {
-    name: 'lastModification',
-    required: true,
-    label: t('last_modification'),
-    align: 'left',
-    field: (row: Building) => {
-      const date = new Date(row.updatedAt || row.createdAt);
-      return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+const columns = computed(() => {
+  const cols = [
+    {
+      name: 'id',
+      required: true,
+      label: 'ID',
+      align: 'left',
+      field: 'id',
+      style: 'width: 20px',
+      sortable: true,
     },
-    sortable: false,
-  },
-  {
-    name: 'action',
-    align: 'left',
-    label: t('action'),
-  },
-];
+    {
+      name: 'name',
+      required: true,
+      label: t('name'),
+      align: 'left',
+      field: 'name',
+      sortable: true,
+    },
+    {
+      name: 'type',
+      required: true,
+      label: t('type'),
+      align: 'left',
+      field: 'type',
+      format: getTypeLabel,
+      sortable: true,
+    },
+    {
+      name: 'address',
+      required: true,
+      label: t('address'),
+      align: 'left',
+      field: 'address',
+      sortable: false,
+    },
+    {
+      name: 'building_materials',
+      required: true,
+      label: t('building_materials'),
+      align: 'left',
+      field: (row: Building) => {
+        return row.building_materials
+          ? row.building_materials.map((bm) => bm.name).join(', ')
+          : '-';
+      },
+      sortable: false,
+    },
+    {
+      name: 'technical_constructions',
+      required: true,
+      label: t('technical_constructions'),
+      align: 'left',
+      field: (row: Building) => {
+        return row.technical_constructions
+          ? row.technical_constructions.map((tc) => tc.name).join(', ')
+          : '-';
+      },
+      sortable: false,
+    },
+    {
+      name: 'professionals',
+      required: true,
+      label: t('professionals'),
+      align: 'left',
+      field: (row: Building) => {
+        return row.professionals
+          ? row.professionals.map((pro) => pro.name).join(', ')
+          : '-';
+      },
+      sortable: false,
+    },
+    {
+      name: 'lastModification',
+      required: true,
+      label: t('last_modification'),
+      align: 'left',
+      field: (row: Building) => {
+        const date = new Date(row.updated_at || row.created_at || '');
+        return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+      },
+      sortable: false,
+    },
+  ];
+
+  if (authStore.isAdmin) {
+    cols.push({
+      name: 'action',
+      align: 'left',
+      label: t('action'),
+    });
+  }
+
+  return cols;
+});
 
 const selected = ref<Building>();
-const location = ref({});
 const showEditDialog = ref(false);
 const tableRef = ref();
 const rows = ref<Building[]>([]);
@@ -188,10 +208,13 @@ const pagination = ref<PaginationOptions>({
   rowsPerPage: 10,
   rowsNumber: 10,
 });
+const bldTypes = ref<Option[]>([]);
 
 onMounted(() => {
-  // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
+  taxonomyStore.getTaxonomyNode('building', 'type').then((types) => {
+    bldTypes.value = taxonomyStore.asOptions('building', types, 'type');
+  });
 });
 
 const features = computed(() => {
@@ -206,7 +229,7 @@ const features = computed(() => {
       },
       geometry: {
         type: 'Point',
-        coordinates: row.coordinates.point,
+        coordinates: [row.long, row.lat],
       },
     };
   });
@@ -217,18 +240,17 @@ function fetchFromServer(
   count: number,
   filter: string,
   sortBy: string,
-  descending: boolean
+  descending: boolean,
 ) {
   loading.value = true;
   const query: Query = {
     $skip: startRow,
     $limit: count,
-    $sort: {
-      [sortBy]: descending ? -1 : 1,
-    },
+    $sort: [sortBy, descending],
   };
   if (filter) {
-    query.$or = [
+    if (!query.filter) query.filter = {};
+    query.filter.$or = [
       {
         name: {
           $ilike: `%${filter}%`,
@@ -241,83 +263,31 @@ function fetchFromServer(
       },
     ];
   }
-  return service
-    .find({
-      query,
-    })
-    .then((result) => {
-      rows.value = result.data;
-      loading.value = false;
-      return result;
-    });
+  return service.find(query).then((result) => {
+    rows.value = result.data;
+    loading.value = false;
+    return result;
+  });
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
 
-function onPointInputUpdated(newValue) {
-  if (newValue && newValue.properties && newValue.geometry) {
-    selected.value.address = newValue.properties.display_name;
-    selected.value.coordinates = { point: newValue.geometry.coordinates };
-  } else {
-    selected.value.address = null;
-    selected.value.coordinates = null;
-  }
-}
-
 function onAdd() {
-  selected.value = {};
-  location.value = {};
+  selected.value = { name: '' };
   showEditDialog.value = true;
 }
 
 function onEdit(resource: Building) {
   selected.value = { ...resource };
-  location.value = {
-    type: 'Feature',
-    properties: {
-      display_name: selected.value.address,
-    },
-    geometry: {
-      type: 'Point',
-      coordinates: selected.value.coordinates.point,
-    },
-  };
   showEditDialog.value = true;
 }
 
-function saveSelected() {
-  if (selected.value === undefined) return;
-  if (selected.value.id) {
-    delete selected.value.professionalIds;
-    delete selected.value.professionals;
-    service
-      .patch(selected.value.id, selected.value)
-      .then(() => {
-        tableRef.value.requestServerInteraction();
-      })
-      .catch((err) => {
-        $q.notify({
-          message: err.message,
-          type: 'negative',
-        });
-      });
-  } else {
-    selected.value.images = [];
-    service
-      .create(selected.value)
-      .then(() => {
-        tableRef.value.requestServerInteraction();
-      })
-      .catch((err) => {
-        $q.notify({
-          message: err.message,
-          type: 'negative',
-        });
-      });
-  }
+function onSaved() {
+  tableRef.value.requestServerInteraction();
 }
 
 function remove(resource: Building) {
+  if (!resource.id) return;
   service
     .remove(resource.id)
     .then(() => {
@@ -329,5 +299,9 @@ function remove(resource: Building) {
         type: 'negative',
       });
     });
+}
+
+function getTypeLabel(val: string): string {
+  return bldTypes.value.find((opt) => opt.value === val)?.label || val;
 }
 </script>

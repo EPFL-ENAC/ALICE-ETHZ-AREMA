@@ -10,7 +10,6 @@
 
 const { configure } = require('quasar/wrappers');
 const path = require('path');
-const { feathersPiniaAutoImport } = require('feathers-pinia');
 
 module.exports = configure(function (ctx) {
   return {
@@ -29,7 +28,7 @@ module.exports = configure(function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ['i18n', 'feathers-pinia'],
+    boot: ['i18n', 'api'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: ['app.scss'],
@@ -65,8 +64,9 @@ module.exports = configure(function (ctx) {
       publicPath: '/admin',
       // analyze: true,
       env: {
-        API_URL: ctx.dev ? 'http://localhost:3030' : process.env.API_URL,
+        API_URL: ctx.dev ? 'http://localhost:8000' : process.env.API_URL,
         API_PATH: ctx.dev ? '' : process.env.API_PATH,
+        AUTH_CLIENT_ID: ctx.dev ? 'local-admin' : process.env.AUTH_CLIENT_ID,
       },
       // rawDefine: {}
       // ignorePublicFolder: true,
@@ -81,15 +81,9 @@ module.exports = configure(function (ctx) {
         [
           'unplugin-auto-import/vite',
           {
-            imports: [
-              'vue',
-              'vue-router',
-              'vue-i18n',
-              'vue/macros',
-              feathersPiniaAutoImport,
-            ],
+            imports: ['vue', 'vue-router', 'vue-i18n', 'pinia', 'vue/macros'],
             dts: 'src/auto-imports.d.ts',
-            dirs: ['src/composables', 'src/models', 'src/stores'],
+            dirs: ['src/models', 'src/stores'],
             vueTemplate: true,
             eslintrc: {
               enabled: true, // Default `false`
@@ -223,7 +217,7 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'admin',
+        appId: 'arema-admin',
       },
     },
 

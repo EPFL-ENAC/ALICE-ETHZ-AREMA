@@ -20,20 +20,20 @@ export const style: StyleSpecification = {
     },
   },
   layers: [
-    {
-      id: 'classic',
-      type: 'raster',
-      source: 'osm',
-    },
+    // {
+    //   id: 'classic',
+    //   type: 'raster',
+    //   source: 'osm',
+    // },
     {
       id: 'light',
       type: 'raster',
       source: 'osm',
       paint: {
         'raster-saturation': -0.9,
-        'raster-brightness-min': 0.7,
+        'raster-brightness-min': 0.2,
       },
-      layout: { visibility: 'none' },
+      // layout: { visibility: 'none' },
     },
     {
       id: 'dark',
@@ -41,24 +41,24 @@ export const style: StyleSpecification = {
       source: 'osm',
       paint: {
         'raster-saturation': -1,
-        'raster-brightness-max': 0.2,
+        'raster-brightness-max': 0.5,
       },
       layout: { visibility: 'none' },
     },
-    {
-      id: 'swissimage',
-      type: 'raster',
-      source: 'swissimage',
-      layout: { visibility: 'none' },
-    },
+    // {
+    //   id: 'swissimage',
+    //   type: 'raster',
+    //   source: 'swissimage',
+    //   layout: { visibility: 'none' },
+    // },
   ],
 };
 
 export const themes: ThemeDefinition[] = [
-  {
-    id: 'classic',
-    label: t('classic'),
-  },
+  // {
+  //   id: 'classic',
+  //   label: t('classic'),
+  // },
   {
     id: 'light',
     label: t('light'),
@@ -67,8 +67,8 @@ export const themes: ThemeDefinition[] = [
     id: 'dark',
     label: t('dark'),
   },
-  {
-    id: 'swissimage',
-    label: t('aerial'),
-  },
+  // {
+  //   id: 'swissimage',
+  //   label: t('aerial'),
+  // },
 ];

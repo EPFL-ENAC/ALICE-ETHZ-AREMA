@@ -18,6 +18,8 @@
       >
         <template v-slot:top>
           <q-btn
+            v-if="authStore.isAdmin"
+            size="sm"
             color="primary"
             :disable="loading"
             :label="$t('add')"
@@ -31,9 +33,15 @@
             </template>
           </q-input>
         </template>
-        <template v-slot:body-cell-description="props">
-          <q-td :props="props" class="ellipsis" style="max-width: 200px">
-            {{ props.value }}
+        <template v-slot:body-cell-types="props">
+          <q-td :props="props">
+            <q-badge
+              color="accent"
+              v-for="type in props.value"
+              :key="type"
+              :label="type"
+              class="q-mr-sm"
+            />
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -73,60 +81,82 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { Query } from '@feathersjs/client';
-import { TechnicalConstruction } from '@epfl-enac/arema';
+import { Option, Query } from 'src/components/models';
+import { TechnicalConstruction } from 'src/models';
 import TechnicalConstructionDialog from 'src/components/TechnicalConstructionDialog.vue';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
+
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
-const { api } = useFeathers();
-const service = api.service('technical-construction');
+const authStore = useAuthStore();
+const taxonomyStore = useTaxonomyStore();
+const services = useServices();
+const service = services.make('technical-construction');
 
-const columns = [
-  {
-    name: 'name',
-    required: true,
-    label: t('name'),
-    align: 'left',
-    field: 'name',
-    sortable: true,
-  },
-  {
-    name: 'description',
-    required: true,
-    label: t('description'),
-    align: 'left',
-    field: 'description',
-    sortable: false,
-  },
-  {
-    name: 'constituants',
-    required: true,
-    label: t('constituants'),
-    align: 'left',
-    field: (row: BuildingMaterial) => {
-      return row.buildingMaterialIds ? row.buildingMaterialIds.length : 0;
+const columns = computed(() => {
+  const cols = [
+    {
+      name: 'id',
+      required: true,
+      label: 'ID',
+      align: 'left',
+      field: 'id',
+      style: 'width: 20px',
+      sortable: true,
     },
-    sortable: false,
-  },
-  {
-    name: 'lastModification',
-    required: true,
-    label: t('last_modification'),
-    align: 'left',
-    field: (row: TechnicalConstruction) => {
-      const date = new Date(row.updatedAt || row.createdAt);
-      return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+    {
+      name: 'name',
+      required: true,
+      label: t('name'),
+      align: 'left',
+      field: 'name',
+      sortable: true,
     },
-    sortable: false,
-  },
-  {
-    name: 'action',
-    align: 'left',
-    label: t('action'),
-  },
-];
+    {
+      name: 'types',
+      required: true,
+      label: t('types'),
+      align: 'left',
+      field: 'types',
+      format: (val: string[] | undefined) => (val ? val.map(getTypeLabel) : []),
+      sortable: true,
+    },
+    {
+      name: 'building_materials',
+      required: true,
+      label: t('building_materials'),
+      align: 'left',
+      field: (row: TechnicalConstruction) => {
+        return row.building_materials
+          ? row.building_materials.map((bm) => bm.name).join(', ')
+          : '-';
+      },
+      sortable: false,
+    },
+    {
+      name: 'lastModification',
+      required: true,
+      label: t('last_modification'),
+      align: 'left',
+      field: (row: TechnicalConstruction) => {
+        const date = new Date(row.updated_at || row.created_at || '');
+        return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+      },
+      sortable: false,
+    },
+  ];
+
+  if (authStore.isAdmin) {
+    cols.push({
+      name: 'action',
+      align: 'left',
+      label: t('action'),
+    });
+  }
+
+  return cols;
+});
 
 const selected = ref<TechnicalConstruction>();
 const showEditDialog = ref(false);
@@ -141,10 +171,20 @@ const pagination = ref<PaginationOptions>({
   rowsPerPage: 10,
   rowsNumber: 10,
 });
+const tcTypes = ref<Option[]>([]);
 
 onMounted(() => {
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
+  taxonomyStore
+    .getTaxonomyNode('technical-construction', 'type')
+    .then((types) => {
+      tcTypes.value = taxonomyStore.asOptions(
+        'technical-construction',
+        types,
+        'type',
+      );
+    });
 });
 
 function fetchFromServer(
@@ -157,24 +197,18 @@ function fetchFromServer(
   const query: Query = {
     $skip: startRow,
     $limit: count,
-    $sort: {
-      [sortBy]: descending ? -1 : 1,
-    },
+    $sort: [sortBy, descending],
   };
   if (filter) {
-    query.name = {
-      $ilike: `%${filter}%`,
+    query.filter = {
+      name: { $ilike: `%${filter}%` },
     };
   }
-  return service
-    .find({
-      query,
-    })
-    .then((result) => {
-      rows.value = result.data;
-      loading.value = false;
-      return result;
-    });
+  return service.find(query).then((result) => {
+    rows.value = result.data;
+    loading.value = false;
+    return result;
+  });
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
@@ -205,5 +239,9 @@ function remove(item: TechnicalConstruction) {
         type: 'negative',
       });
     });
+}
+
+function getTypeLabel(val: string): string {
+  return tcTypes.value.find((opt) => opt.value === val)?.label || val;
 }
 </script>

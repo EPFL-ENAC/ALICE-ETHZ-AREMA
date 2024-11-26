@@ -68,3 +68,17 @@ li + li {
   width: 900px !important;
   max-width: 80vw !important;
 }
+
+.option-0 {
+  padding-left: 0px;
+  //font-weight: bold;
+}
+
+.option-1 {
+  padding-left: 10px;
+}
+
+.option-2 {
+  padding-left: 20px;
+  font-size: smaller;
+}

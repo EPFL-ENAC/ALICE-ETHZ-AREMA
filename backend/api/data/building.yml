@@ -1,0 +1,108 @@
+taxonomy:
+  - id: building
+    names:
+      en: Buildings
+      de: Gebäude
+      fr: Bâtiments
+      it: Edifici
+    children:
+      - id: status
+        names:
+          en: Status
+          de: Zustand
+          fr: Etat
+          it: Stato
+        children:
+          - id: new
+            names:
+              en: New
+              de: Neu
+              fr: Nouveau
+              it: Nuovo
+          - id: renovation
+            names:
+              en: Renovation
+              de: Renovierung
+              fr: Rénovation
+              it: Ristrutturazione
+      - id: type
+        names:
+          en: Type
+          de: Typ
+          fr: Type
+          it: Tipo
+        children:
+          - id: apartment-building
+            names:
+              en: Apartment Building
+              de: Mehrfamilienhaus
+              fr: Immeuble d'habitation
+              it: Edificio residenziale
+          - id: single-family-house
+            names:
+              en: Single Family House
+              de: Einfamilienhaus
+              fr: Maison individuelle
+              it: Casa unifamiliare
+          - id: office-building
+            names:
+              en: Office Building
+              de: Bürogebäude
+              fr: Immeuble de bureaux
+              it: Edificio per uffici
+          - id: public-building
+            names:
+              en: Public Building
+              de: Öffentliches Gebäude
+              fr: Bâtiment public
+              it: Edificio pubblico
+          - id: simple-structure
+            names:
+              en: Simple Structure
+              de: Einfache Struktur
+              fr: Structure simple
+              it: Struttura semplice
+      - id: material
+        names:
+          en: Material
+          de: Material
+          fr: Matériau
+          it: Materiale
+        children:
+          - id: earth
+            names:
+              en: Earth
+              de: Erde
+              fr: Terre
+              it: Terra
+            children:
+          - id: rock
+            names:
+              en: Rock
+              de: Gestein
+              fr: Roche
+              it: Roccia
+          - id: straw
+            names:
+              en: Straw
+              de: Stroh
+              fr: Paille
+              it: Paglia
+          - id: hemp
+            names:
+              en: Hemp
+              de: Hanf
+              fr: Chanvre
+              it: Canapa
+          - id: wood
+            names:
+              en: Wood
+              de: Holz
+              fr: Bois
+              it: Legno
+          - id: other-fibres
+            names:
+              en: Other Fibres
+              de: Andere Fasern
+              fr: Autres Fibres
+              it: Altre fibre

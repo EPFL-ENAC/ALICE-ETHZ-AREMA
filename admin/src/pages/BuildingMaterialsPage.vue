@@ -18,6 +18,8 @@
       >
         <template v-slot:top>
           <q-btn
+            v-if="authStore.isAdmin"
+            size="sm"
             color="primary"
             :disable="loading"
             :label="$t('add')"
@@ -31,9 +33,9 @@
             </template>
           </q-input>
         </template>
-        <template v-slot:body-cell-description="props">
-          <q-td :props="props" class="ellipsis" style="max-width: 200px">
-            {{ props.value }}
+        <template v-slot:body-cell-type="props">
+          <q-td :props="props">
+            <q-badge color="accent" :label="props.value" />
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -73,60 +75,82 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { Query } from '@feathersjs/client';
-import { BuildingMaterial } from '@epfl-enac/arema';
+import { Option, Query } from 'src/components/models';
+import { BuildingMaterial } from 'src/models';
 import BuildingMaterialDialog from 'src/components/BuildingMaterialDialog.vue';
 import { makePaginationRequestHandler } from '../utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
+
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
-const { api } = useFeathers();
-const service = api.service('building-material');
+const authStore = useAuthStore();
+const taxonomyStore = useTaxonomyStore();
+const services = useServices();
+const service = services.make('building-material');
 
-const columns = [
-  {
-    name: 'name',
-    required: true,
-    label: t('name'),
-    align: 'left',
-    field: 'name',
-    sortable: true,
-  },
-  {
-    name: 'description',
-    required: true,
-    label: t('description'),
-    align: 'left',
-    field: 'description',
-    sortable: false,
-  },
-  {
-    name: 'constituants',
-    required: true,
-    label: t('constituants'),
-    align: 'left',
-    field: (row: BuildingMaterial) => {
-      return row.naturalResourceIds ? row.naturalResourceIds.length : 0;
+const columns = computed(() => {
+  const cols = [
+    {
+      name: 'id',
+      required: true,
+      label: 'ID',
+      align: 'left',
+      field: 'id',
+      style: 'width: 20px',
+      sortable: true,
     },
-    sortable: false,
-  },
-  {
-    name: 'lastModification',
-    required: true,
-    label: t('last_modification'),
-    align: 'left',
-    field: (row: BuildingMaterial) => {
-      const date = new Date(row.updatedAt || row.createdAt);
-      return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+    {
+      name: 'name',
+      required: true,
+      label: t('name'),
+      align: 'left',
+      field: 'name',
+      sortable: true,
     },
-    sortable: false,
-  },
-  {
-    name: 'action',
-    align: 'left',
-    label: t('action'),
-  },
-];
+    {
+      name: 'type',
+      required: true,
+      label: t('type'),
+      align: 'left',
+      field: 'type',
+      format: getTypeLabel,
+      sortable: true,
+    },
+    {
+      name: 'natural_resources',
+      required: true,
+      label: t('natural_resources'),
+      align: 'left',
+      field: (row: BuildingMaterial) => {
+        return row.natural_resources
+          ? row.natural_resources.map((nr) => nr.name).join(', ')
+          : '-';
+      },
+      sortable: false,
+    },
+    {
+      name: 'lastModification',
+      required: true,
+      label: t('last_modification'),
+      align: 'left',
+      field: (row: BuildingMaterial) => {
+        const date = new Date(row.updated_at || row.created_at || '');
+        return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+      },
+      sortable: false,
+    },
+  ];
+
+  if (authStore.isAdmin) {
+    cols.push({
+      name: 'action',
+      align: 'left',
+      label: t('action'),
+    });
+  }
+
+  return cols;
+});
 
 const selected = ref<BuildingMaterial>();
 const showEditDialog = ref(false);
@@ -141,10 +165,14 @@ const pagination = ref<PaginationOptions>({
   rowsPerPage: 10,
   rowsNumber: 10,
 });
+const bmTypes = ref<Option[]>([]);
 
 onMounted(() => {
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
+  taxonomyStore.getTaxonomyNode('building-material', 'type').then((types) => {
+    bmTypes.value = taxonomyStore.asOptions('building-material', types, 'type');
+  });
 });
 
 function fetchFromServer(
@@ -157,30 +185,24 @@ function fetchFromServer(
   const query: Query = {
     $skip: startRow,
     $limit: count,
-    $sort: {
-      [sortBy]: descending ? -1 : 1,
-    },
+    $sort: [sortBy, descending],
   };
   if (filter) {
-    query.name = {
-      $ilike: `%${filter}%`,
+    query.filter = {
+      name: { $ilike: `%${filter}%` },
     };
   }
-  return service
-    .find({
-      query,
-    })
-    .then((result) => {
-      rows.value = result.data;
-      loading.value = false;
-      return result;
-    });
+  return service.find(query).then((result) => {
+    rows.value = result.data;
+    loading.value = false;
+    return result;
+  });
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
 
 function onAdd() {
-  selected.value = {};
+  selected.value = { name: '' };
   showEditDialog.value = true;
 }
 
@@ -194,6 +216,7 @@ function onSaved() {
 }
 
 function remove(item: BuildingMaterial) {
+  if (!item.id) return;
   service
     .remove(item.id)
     .then(() => {
@@ -205,5 +228,9 @@ function remove(item: BuildingMaterial) {
         type: 'negative',
       });
     });
+}
+
+function getTypeLabel(val: string): string {
+  return bmTypes.value.find((opt) => opt.value === val)?.label || val;
 }
 </script>
