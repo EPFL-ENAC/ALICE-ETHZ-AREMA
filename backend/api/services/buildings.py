@@ -10,6 +10,8 @@ from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
 from api.services.s3 import s3_client
 from api.utils.files import moveTempFile
+from api.auth import User
+
 
 class BuildingQueryBuilder(QueryBuilder):
 
@@ -30,17 +32,18 @@ class BuildingQueryBuilder(QueryBuilder):
         query = query.distinct()
         return query
 
+
 class BuildingService:
-    
+
     def __init__(self, session: AsyncSession):
         self.session = session
         self.folder = "buildings"
-    
+
     async def count(self) -> int:
         """Count all buildings"""
         count = (await self.session.exec(text("select count(id) from Building"))).scalar()
         return count
-    
+
     async def get(self, id: int) -> Building:
         """Get a building by id"""
         res = await self.session.exec(
@@ -50,7 +53,7 @@ class BuildingService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Building not found")
-    
+
     async def delete(self, id: int) -> Building:
         """Delete a building by id"""
         res = await self.session.exec(
@@ -70,10 +73,11 @@ class BuildingService:
         await self.session.delete(entity)
         await self.session.commit()
         return entity
-    
+
     async def find(self, filter: dict, sort: list, range: list) -> BuildingResult:
         """Get all buildings matching filter and range"""
-        builder = BuildingQueryBuilder(Building, filter, sort, range, {"$building_materials": BuildingMaterial, "$technical_constructions": TechnicalConstruction})
+        builder = BuildingQueryBuilder(Building, filter, sort, range, {
+                                       "$building_materials": BuildingMaterial, "$technical_constructions": TechnicalConstruction})
 
         # Do a query to satisfy total count
         count_query = builder.build_count_query_with_joins(filter)
@@ -93,12 +97,15 @@ class BuildingService:
             limit=end - start + 1,
             data=entities
         )
-    
-    async def create(self, payload: BuildingDraft) -> Building:
+
+    async def create(self, payload: BuildingDraft, user: User = None) -> Building:
         """Create a new building"""
         entity = Building(**payload.model_dump())
         entity.created_at = datetime.now()
         entity.updated_at = datetime.now()
+        if user:
+            entity.created_by = user.username
+            entity.updated_by = user.username
         # handle relationships
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
@@ -111,7 +118,7 @@ class BuildingService:
         entity.professionals.extend(new_pros)
         self.session.add(entity)
         await self.session.commit()
-        
+
         # handle tmp files
         if entity.files:
             s3_folder = f"{self.folder}/{entity.id}"
@@ -121,10 +128,10 @@ class BuildingService:
                 new_files.append(item.model_dump())
             entity.files = new_files
             await self.session.commit()
-        
+
         return entity
-    
-    async def update(self, id: int, payload: BuildingDraft) -> Building:
+
+    async def update(self, id: int, payload: BuildingDraft, user: User = None) -> Building:
         """Update a building"""
         res = await self.session.exec(
             select(Building)
@@ -141,6 +148,8 @@ class BuildingService:
             if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "building_material_ids", "technical_construction_ids", "professional_ids"]:
                 setattr(entity, key, value)
         entity.updated_at = datetime.now()
+        if user:
+            entity.updated_by = user.username
         # handle tmp files
         if entity.files:
             s3_folder = f"{self.folder}/{entity.id}"
@@ -161,12 +170,12 @@ class BuildingService:
         entity.professionals.extend(new_pros)
         await self.session.commit()
         return entity
-    
+
     async def _get_building_materials(self, ids: list[int]):
         return await self.session.exec(select(BuildingMaterial).filter(BuildingMaterial.id.in_(ids)))
-    
+
     async def _get_technical_constructions(self, ids: list[int]):
         return await self.session.exec(select(TechnicalConstruction).filter(TechnicalConstruction.id.in_(ids)))
-    
+
     async def _get_professionals(self, ids: list[int]):
         return await self.session.exec(select(Professional).filter(Professional.id.in_(ids)))

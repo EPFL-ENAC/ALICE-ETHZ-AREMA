@@ -42,7 +42,7 @@ async def create(
     user: User = Depends(kc_service.require_admin())
 ) -> BuildingMaterial:
     """Create a building material"""
-    return await BuildingMaterialService(session).create(payload)
+    return await BuildingMaterialService(session).create(payload, user)
 
 
 @router.put("/{id}", response_model=BuildingMaterial)
@@ -53,4 +53,4 @@ async def update(
 ) -> BuildingMaterial:
     """Update a building material by id"""
     async with session:
-        return await BuildingMaterialService(session).update(id, payload)
+        return await BuildingMaterialService(session).update(id, payload, user)

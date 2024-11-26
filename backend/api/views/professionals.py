@@ -43,7 +43,7 @@ async def create(
     user: User = Depends(kc_service.require_admin())
 ) -> Professional:
     """Create a professional"""
-    return await ProfessionalService(session).create(payload)
+    return await ProfessionalService(session).create(payload, user)
 
 
 @router.put("/{id}", response_model=Professional)
@@ -54,4 +54,4 @@ async def update(
     user: User = Depends(kc_service.require_admin())
 ) -> Professional:
     """Update a professional by id"""
-    return await ProfessionalService(session).update(id, payload)
+    return await ProfessionalService(session).update(id, payload, user)

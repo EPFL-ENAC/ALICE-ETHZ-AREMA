@@ -10,6 +10,8 @@ from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
 from api.services.s3 import s3_client
 from api.utils.files import moveTempFile
+from api.auth import User
+
 
 class BuildingMaterialQueryBuilder(QueryBuilder):
 
@@ -28,17 +30,18 @@ class BuildingMaterialQueryBuilder(QueryBuilder):
         query = query.distinct()
         return query
 
+
 class BuildingMaterialService:
-    
+
     def __init__(self, session: AsyncSession):
         self.session = session
         self.folder = "building-materials"
-    
+
     async def count(self) -> int:
         """Count all building materials"""
         count = (await self.session.exec(text("select count(id) from BuildingMaterial"))).scalar()
         return count
-    
+
     async def get(self, id: int) -> BuildingMaterial:
         """Get a building material by id"""
         res = await self.session.exec(
@@ -48,7 +51,7 @@ class BuildingMaterialService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Building material not found")
-    
+
     async def delete(self, id: int) -> BuildingMaterial:
         """Delete a building material by id"""
         res = await self.session.exec(
@@ -64,10 +67,11 @@ class BuildingMaterialService:
         await self.session.delete(entity)
         await self.session.commit()
         return entity
-    
+
     async def find(self, filter: dict, sort: list, range: list) -> BuildingMaterialResult:
         """Get all buildings matching filter and range"""
-        builder = BuildingMaterialQueryBuilder(BuildingMaterial, filter, sort, range, {"$building_materials": BuildingMaterial})
+        builder = BuildingMaterialQueryBuilder(BuildingMaterial, filter, sort, range, {
+                                               "$building_materials": BuildingMaterial})
 
         # Do a query to satisfy total count
         count_query = builder.build_count_query_with_joins(filter)
@@ -87,19 +91,22 @@ class BuildingMaterialService:
             limit=end - start + 1,
             data=entities
         )
-    
-    async def create(self, payload: BuildingMaterialDraft) -> BuildingMaterial:
+
+    async def create(self, payload: BuildingMaterialDraft, user: User = None) -> BuildingMaterial:
         """Create a new building material"""
         entity = BuildingMaterial(**payload.model_dump())
         entity.created_at = datetime.now()
         entity.updated_at = datetime.now()
+        if user:
+            entity.created_by = user.username
+            entity.updated_by = user.username
         # handle relationships
         new_nrs = await self._get_natural_resources(payload.natural_resource_ids)
         entity.natural_resources.clear()
         entity.natural_resources.extend(new_nrs)
         self.session.add(entity)
         await self.session.commit()
-        
+
         # handle tmp files
         if entity.files:
             s3_folder = f"{self.folder}/{entity.id}"
@@ -109,10 +116,10 @@ class BuildingMaterialService:
                 new_files.append(item.model_dump())
             entity.files = new_files
             await self.session.commit()
-        
+
         return entity
-    
-    async def update(self, id: int, payload: BuildingMaterialDraft) -> BuildingMaterial:
+
+    async def update(self, id: int, payload: BuildingMaterialDraft, user: User = None) -> BuildingMaterial:
         """Update a building material"""
         res = await self.session.exec(
             select(BuildingMaterial)
@@ -127,6 +134,8 @@ class BuildingMaterialService:
             if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "natural_resource_ids"]:
                 setattr(entity, key, value)
         entity.updated_at = datetime.now()
+        if user:
+            entity.updated_by = user.username
         # handle tmp files
         if entity.files:
             s3_folder = f"{self.folder}/{entity.id}"
@@ -141,6 +150,6 @@ class BuildingMaterialService:
         entity.natural_resources.extend(new_nrs)
         await self.session.commit()
         return entity
-    
+
     async def _get_natural_resources(self, ids: list[int]):
         return await self.session.exec(select(NaturalResource).filter(NaturalResource.id.in_(ids)))

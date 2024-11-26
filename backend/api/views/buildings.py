@@ -42,7 +42,7 @@ async def create(
     user: User = Depends(kc_service.require_admin())
 ) -> Building:
     """Create a building"""
-    return await BuildingService(session).create(payload)
+    return await BuildingService(session).create(payload, user)
 
 
 @router.put("/{id}", response_model=Building)
@@ -52,4 +52,4 @@ async def update(
     user: User = Depends(kc_service.require_admin())
 ) -> Building:
     """Update a building by id"""
-    return await BuildingService(session).update(id, payload)
+    return await BuildingService(session).update(id, payload, user)

@@ -43,7 +43,7 @@ async def create(
     user: User = Depends(kc_service.require_admin())
 ) -> NaturalResource:
     """Create a natural resource"""
-    return await NaturalResourceService(session).create(natural_resource)
+    return await NaturalResourceService(session).create(natural_resource, user)
 
 
 @router.put("/{id}", response_model=NaturalResource)
@@ -54,4 +54,4 @@ async def update(
     user: User = Depends(kc_service.require_admin())
 ) -> NaturalResource:
     """Update a natural resource by id"""
-    return await NaturalResourceService(session).update(id, natural_resource)
+    return await NaturalResourceService(session).update(id, natural_resource, user)

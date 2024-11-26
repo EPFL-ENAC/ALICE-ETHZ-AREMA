@@ -10,6 +10,7 @@ from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
 from api.services.s3 import s3_client
 from api.utils.files import moveTempFile
+from api.auth import User
 
 
 class ProfessionalQueryBuilder(QueryBuilder):
@@ -97,11 +98,14 @@ class ProfessionalService:
             data=entities
         )
 
-    async def create(self, payload: ProfessionalDraft) -> Professional:
+    async def create(self, payload: ProfessionalDraft, user: User = None) -> Professional:
         """Create a new professional"""
         entity = Professional(**payload.model_dump())
         entity.created_at = datetime.now()
         entity.updated_at = datetime.now()
+        if user:
+            entity.created_by = user.username
+            entity.updated_by = user.username
         # handle relationships
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
@@ -124,7 +128,7 @@ class ProfessionalService:
 
         return entity
 
-    async def update(self, id: int, payload: ProfessionalDraft) -> Professional:
+    async def update(self, id: int, payload: ProfessionalDraft, user: User = None) -> Professional:
         """Update a professional"""
         res = await self.session.exec(
             select(Professional)
@@ -140,6 +144,8 @@ class ProfessionalService:
             if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "building_material_ids", "technical_construction_ids"]:
                 setattr(entity, key, value)
         entity.updated_at = datetime.now()
+        if user:
+            entity.updated_by = user.username
         # handle tmp files
         if entity.files:
             s3_folder = f"{self.folder}/{entity.id}"

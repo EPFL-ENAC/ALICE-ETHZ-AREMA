@@ -666,7 +666,7 @@ yaml = ["ruamel.yaml"]
 
 [[package]]
 name = "enacit4r-auth"
-version = "0.1.0"
+version = "0.2.0"
 description = "Python authz utils for EPFL ENAC IT4R developments"
 optional = false
 python-versions = "^3.10"
@@ -681,12 +681,12 @@ python-keycloak = "^4.7.0"
 [package.source]
 type = "git"
 url = "https://github.com/EPFL-ENAC/enacit4r-auth"
-reference = "0.1.0"
-resolved_reference = "ad7073e34f25cd9ab773ed02296b80adc627ad44"
+reference = "0.2.0"
+resolved_reference = "a75fc35748074eb80cd3c74a70d0e4e2fb38c495"
 
 [[package]]
 name = "enacit4r-files"
-version = "0.4.0"
+version = "0.5.0"
 description = "Python file utils for EPFL ENAC IT4R developments"
 optional = false
 python-versions = "^3.10"
@@ -702,8 +702,8 @@ pydantic = "^2.9.2"
 [package.source]
 type = "git"
 url = "https://github.com/EPFL-ENAC/enacit4r-files"
-reference = "0.4.0"
-resolved_reference = "d0f743aae6d3726b1639426162c90bbe816ab72e"
+reference = "0.5.0"
+resolved_reference = "6b63e0bd48a47d936578e009065eb1703be5a471"
 
 [[package]]
 name = "enacit4r-sql"
@@ -2149,4 +2149,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "16edd6de4e736f5ff856fba0ef6e301580558959d4dbd339223fc5e8137c0c76"
+content-hash = "e4fda158cb050b2fcd17078e5eadd3c9d40b8b9a5d4b483e238d626f99da5da0"

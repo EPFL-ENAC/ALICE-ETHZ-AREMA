@@ -9,6 +9,8 @@ from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
 from api.services.s3 import s3_client
 from api.utils.files import moveTempFile
+from api.auth import User
+
 
 class NaturalResourceQueryBuilder(QueryBuilder):
 
@@ -20,7 +22,7 @@ class NaturalResourceQueryBuilder(QueryBuilder):
     def build_query_with_joins(self, total_count, filter):
         start, end, query = self.build_query(total_count)
         query = self._apply_joins(query, filter)
-        #query = query.options(selectinload(NaturalResource.building_materials))
+        # query = query.options(selectinload(NaturalResource.building_materials))
         return start, end, query
 
     def _apply_joins(self, query, filter):
@@ -29,17 +31,18 @@ class NaturalResourceQueryBuilder(QueryBuilder):
         query = query.distinct()
         return query
 
+
 class NaturalResourceService:
-    
+
     def __init__(self, session: AsyncSession):
         self.session = session
         self.folder = "natural-resources"
-    
+
     async def count(self) -> int:
         """Count all natural resources"""
         count = (await self.session.exec(text("select count(id) from naturalresource"))).scalar()
         return count
-    
+
     async def get(self, id: int) -> NaturalResource:
         """Get a natural resource by id"""
         res = await self.session.exec(
@@ -49,7 +52,7 @@ class NaturalResourceService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Natural resource not found")
-    
+
     async def delete(self, id: int) -> NaturalResource:
         """Delete a natural resource by id"""
         res = await self.session.exec(
@@ -63,10 +66,11 @@ class NaturalResourceService:
         await self.session.delete(entity)
         await self.session.commit()
         return entity
-    
+
     async def find(self, filter: dict, sort: list, range: list) -> NaturalResourceResult:
         """Get all buildings matching filter and range"""
-        builder = NaturalResourceQueryBuilder(NaturalResource, filter, sort, range, {"$building_materials": BuildingMaterial})
+        builder = NaturalResourceQueryBuilder(NaturalResource, filter, sort, range, {
+                                              "$building_materials": BuildingMaterial})
 
         # Do a query to satisfy total count
         count_query = builder.build_count_query_with_joins(filter)
@@ -86,15 +90,18 @@ class NaturalResourceService:
             limit=end - start + 1,
             data=entities
         )
-    
-    async def create(self, payload: NaturalResource) -> NaturalResource:
+
+    async def create(self, payload: NaturalResource, user: User = None) -> NaturalResource:
         """Create a new natural resource"""
         entity = NaturalResource(**payload.model_dump())
         entity.created_at = datetime.now()
         entity.updated_at = datetime.now()
+        if user:
+            entity.created_by = user.username
+            entity.updated_by = user.username
         self.session.add(entity)
         await self.session.commit()
-        
+
         # handle tmp files
         if entity.files:
             s3_folder = f"{self.folder}/{entity.id}"
@@ -104,10 +111,10 @@ class NaturalResourceService:
                 new_files.append(item.model_dump())
             entity.files = new_files
             await self.session.commit()
-        
+
         return entity
-    
-    async def update(self, id: int, payload: NaturalResource) -> NaturalResource:
+
+    async def update(self, id: int, payload: NaturalResource, user: User = None) -> NaturalResource:
         """Update a natural resource"""
         res = await self.session.exec(
             select(NaturalResource).where(NaturalResource.id == id)
@@ -121,6 +128,8 @@ class NaturalResourceService:
             if key not in ["id", "created_at", "updated_at", "created_by", "updated_by"]:
                 setattr(entity, key, value)
         entity.updated_at = datetime.now()
+        if user:
+            entity.updated_by = user.username
         # handle tmp files
         if entity.files:
             s3_folder = f"{self.folder}/{entity.id}"
