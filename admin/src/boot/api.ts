@@ -2,12 +2,6 @@ import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
 import Keycloak from 'keycloak-js';
 
-const keycloak = new Keycloak({
-  url: 'https://enac-it-sso.epfl.ch/',
-  realm: 'AREMA',
-  clientId: process.env.AUTH_CLIENT_ID,
-});
-
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $axios: AxiosInstance;
@@ -15,10 +9,15 @@ declare module '@vue/runtime-core' {
   }
 }
 
+const appEnv = window.env;
+
+const keycloak = new Keycloak({
+  realm: 'enacit4r',
+  url: 'https://auth.epfl.ch/auth',
+  clientId: appEnv.AUTH_CLIENT_ID,
+});
 const cdnUrl = 'https://enacit4r-cdn.epfl.ch/';
-
-const baseUrl = `${process.env.API_URL}${process.env.API_PATH}`;
-
+const baseUrl = `${appEnv.API_URL}${appEnv.API_PATH}`;
 const api = axios.create({
   baseURL: baseUrl,
 });

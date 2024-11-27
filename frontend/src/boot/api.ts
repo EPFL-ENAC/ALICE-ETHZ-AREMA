@@ -8,10 +8,10 @@ declare module '@vue/runtime-core' {
   }
 }
 
+const appEnv = window.env;
+
 const cdnUrl = 'https://enacit4r-cdn.epfl.ch/';
-
-const baseUrl = `${process.env.API_URL}${process.env.API_PATH}`;
-
+const baseUrl = `${appEnv.API_URL}${appEnv.API_PATH}`;
 const api = axios.create({
   baseURL: baseUrl,
 });
