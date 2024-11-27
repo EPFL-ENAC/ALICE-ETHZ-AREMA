@@ -12,8 +12,8 @@ declare module '@vue/runtime-core' {
 const appEnv = window.env;
 
 const keycloak = new Keycloak({
-  realm: 'enacit4r',
-  url: 'https://auth.epfl.ch/auth',
+  url: 'https://enac-it-sso.epfl.ch/',
+  realm: 'AREMA',
   clientId: appEnv.AUTH_CLIENT_ID,
 });
 const cdnUrl = 'https://enacit4r-cdn.epfl.ch/';
