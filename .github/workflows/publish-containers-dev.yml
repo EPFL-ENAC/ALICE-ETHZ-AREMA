@@ -20,13 +20,13 @@ jobs:
         include:
           - Dockerfile: ./backend/Dockerfile
             context: ./backend
-            image: ghcr.io/epfl-enac/arema-api
+            image: ghcr.io/epfl-enac/alice-ethz-arema/arema-api
           - Dockerfile: ./admin/Dockerfile
             context: ./admin
-            image: ghcr.io/epfl-enac/arema-admin
+            image: ghcr.io/epfl-enac/alice-ethz-arema/arema-admin
           - Dockerfile: ./frontend/Dockerfile
             context: ./frontend
-            image: ghcr.io/epfl-enac/arema-ui
+            image: ghcr.io/epfl-enac/alice-ethz-arema/arema-ui
     permissions:
       contents: read
       packages: write
