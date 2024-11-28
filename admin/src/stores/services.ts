@@ -44,7 +44,7 @@ export class Service<
     const range = [query?.$skip || 0, query?.$limit || 10 - 1];
     const sort = query?.$sort
       ? [query?.$sort[0], query?.$sort[1] ? 'DESC' : 'ASC']
-      : ['id', true];
+      : ['id', 'ASC'];
     return api
       .get(`/${this.entityName}/`, {
         params: {
