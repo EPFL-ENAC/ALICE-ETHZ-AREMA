@@ -12,21 +12,22 @@ router = APIRouter()
 @router.get("/", response_model=BuildingMaterialResult, response_model_exclude_none=True)
 async def find(
     filter: str = Query(None),
+    select: str = Query(None),
     sort: str = Query(None),
     range: str = Query("[0,99]"),
     session: AsyncSession = Depends(get_session),
 ) -> BuildingMaterialResult:
     """Search for building materials"""
-    return await BuildingMaterialService(session).find(paramAsDict(filter), paramAsArray(sort), paramAsArray(range))
+    return await BuildingMaterialService(session).find(paramAsDict(filter), paramAsArray(select), paramAsArray(sort), paramAsArray(range))
 
 
-@router.get("/{id}", response_model=BuildingMaterial)
+@router.get("/{id}", response_model=BuildingMaterial, response_model_exclude_none=True)
 async def get(id: int, session: AsyncSession = Depends(get_session)) -> BuildingMaterial:
     """Get a building material by id"""
     return await BuildingMaterialService(session).get(id)
 
 
-@router.delete("/{id}", response_model=BuildingMaterial)
+@router.delete("/{id}", response_model=BuildingMaterial, response_model_exclude_none=True)
 async def delete(
         id: int,
         session: AsyncSession = Depends(get_session),
@@ -35,7 +36,7 @@ async def delete(
     return await BuildingMaterialService(session).delete(id)
 
 
-@router.post("/", response_model=BuildingMaterial)
+@router.post("/", response_model=BuildingMaterial, response_model_exclude_none=True)
 async def create(
     payload: BuildingMaterialDraft,
     session: AsyncSession = Depends(get_session),
@@ -45,7 +46,7 @@ async def create(
     return await BuildingMaterialService(session).create(payload, user)
 
 
-@router.put("/{id}", response_model=BuildingMaterial)
+@router.put("/{id}", response_model=BuildingMaterial, response_model_exclude_none=True)
 async def update(
     id: int, payload: BuildingMaterialDraft,
     session: AsyncSession = Depends(get_session),

@@ -188,7 +188,7 @@ watch(
       nrService
         .find({
           $limit: 100,
-          $select: ['id', 'name'],
+          $select: ['id', 'name', 'type'],
           filter: {},
         })
         .then((res) => {

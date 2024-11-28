@@ -12,21 +12,22 @@ router = APIRouter()
 @router.get("/", response_model=BuildingResult, response_model_exclude_none=True)
 async def find(
     filter: str = Query(None),
+    select: str = Query(None),
     sort: str = Query(None),
     range: str = Query("[0,99]"),
     session: AsyncSession = Depends(get_session),
 ) -> BuildingResult:
     """Search for buildings"""
-    return await BuildingService(session).find(paramAsDict(filter), paramAsArray(sort), paramAsArray(range))
+    return await BuildingService(session).find(paramAsDict(filter), paramAsArray(select), paramAsArray(sort), paramAsArray(range))
 
 
-@router.get("/{id}", response_model=Building)
+@router.get("/{id}", response_model=Building, response_model_exclude_none=True)
 async def get(id: int, session: AsyncSession = Depends(get_session)) -> Building:
     """Get a building by id"""
     return await BuildingService(session).get(id)
 
 
-@router.delete("/{id}", response_model=Building)
+@router.delete("/{id}", response_model=Building, response_model_exclude_none=True)
 async def delete(
         id: int,
         session: AsyncSession = Depends(get_session),
@@ -35,7 +36,7 @@ async def delete(
     return await BuildingService(session).delete(id)
 
 
-@router.post("/", response_model=Building)
+@router.post("/", response_model=Building, response_model_exclude_none=True)
 async def create(
     payload: BuildingDraft,
     session: AsyncSession = Depends(get_session),
@@ -45,7 +46,7 @@ async def create(
     return await BuildingService(session).create(payload, user)
 
 
-@router.put("/{id}", response_model=Building)
+@router.put("/{id}", response_model=Building, response_model_exclude_none=True)
 async def update(
     id: int, payload: BuildingDraft,
     session: AsyncSession = Depends(get_session),

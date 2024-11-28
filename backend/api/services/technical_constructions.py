@@ -20,11 +20,12 @@ class TechnicalConstructionQueryBuilder(QueryBuilder):
         query = self._apply_joins(query, filter)
         return query
 
-    def build_query_with_joins(self, total_count, filter):
-        start, end, query = self.build_query(total_count)
+    def build_query_with_joins(self, total_count, filter, fields=None):
+        start, end, query = self.build_query(total_count, fields)
         query = self._apply_joins(query, filter)
-        query = query.options(selectinload(
-            TechnicalConstruction.building_materials))
+        if fields is None or len(fields) == 0:
+            query = query.options(selectinload(
+                TechnicalConstruction.building_materials))
         return start, end, query
 
     def _apply_joins(self, query, filter):
@@ -69,7 +70,7 @@ class TechnicalConstructionService:
         await self.session.commit()
         return entity
 
-    async def find(self, filter: dict, sort: list, range: list) -> TechnicalConstructionResult:
+    async def find(self, filter: dict, fields: list, sort: list, range: list) -> TechnicalConstructionResult:
         """Get all technical construction matching filter and range"""
         builder = TechnicalConstructionQueryBuilder(TechnicalConstruction, filter, sort, range, {
                                                     "$building_materials": BuildingMaterial})
@@ -80,7 +81,8 @@ class TechnicalConstructionService:
         total_count = total_count_query.one()
 
         # Main query
-        start, end, query = builder.build_query_with_joins(total_count, filter)
+        start, end, query = builder.build_query_with_joins(
+            total_count, filter, fields)
 
         # Execute query
         results = await self.session.exec(query)

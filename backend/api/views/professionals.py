@@ -12,21 +12,22 @@ router = APIRouter()
 @router.get("/", response_model=ProfessionalResult, response_model_exclude_none=True)
 async def find(
     filter: str = Query(None),
+    select: str = Query(None),
     sort: str = Query(None),
     range: str = Query("[0,99]"),
     session: AsyncSession = Depends(get_session),
 ) -> ProfessionalResult:
     """Search for professionals"""
-    return await ProfessionalService(session).find(paramAsDict(filter), paramAsArray(sort), paramAsArray(range))
+    return await ProfessionalService(session).find(paramAsDict(filter), paramAsArray(select), paramAsArray(sort), paramAsArray(range))
 
 
-@router.get("/{id}", response_model=Professional)
+@router.get("/{id}", response_model=Professional, response_model_exclude_none=True)
 async def get(id: int, session: AsyncSession = Depends(get_session)) -> Professional:
     """Get a professional by id"""
     return await ProfessionalService(session).get(id)
 
 
-@router.delete("/{id}", response_model=Professional)
+@router.delete("/{id}", response_model=Professional, response_model_exclude_none=True)
 async def delete(
     id: int,
     session: AsyncSession = Depends(get_session),
@@ -36,7 +37,7 @@ async def delete(
     return await ProfessionalService(session).delete(id)
 
 
-@router.post("/", response_model=Professional)
+@router.post("/", response_model=Professional, response_model_exclude_none=True)
 async def create(
     payload: ProfessionalDraft,
     session: AsyncSession = Depends(get_session),
@@ -46,7 +47,7 @@ async def create(
     return await ProfessionalService(session).create(payload, user)
 
 
-@router.put("/{id}", response_model=Professional)
+@router.put("/{id}", response_model=Professional, response_model_exclude_none=True)
 async def update(
     id: int,
     payload: ProfessionalDraft,

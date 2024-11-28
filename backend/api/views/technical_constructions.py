@@ -12,21 +12,22 @@ router = APIRouter()
 @router.get("/", response_model=TechnicalConstructionResult, response_model_exclude_none=True)
 async def find(
     filter: str = Query(None),
+    select: str = Query(None),
     sort: str = Query(None),
     range: str = Query("[0,99]"),
     session: AsyncSession = Depends(get_session),
 ) -> TechnicalConstructionResult:
     """Search for technical constructions"""
-    return await TechnicalConstructionService(session).find(paramAsDict(filter), paramAsArray(sort), paramAsArray(range))
+    return await TechnicalConstructionService(session).find(paramAsDict(filter), paramAsArray(select), paramAsArray(sort), paramAsArray(range))
 
 
-@router.get("/{id}", response_model=TechnicalConstruction)
+@router.get("/{id}", response_model=TechnicalConstruction, response_model_exclude_none=True)
 async def get(id: int, session: AsyncSession = Depends(get_session)) -> TechnicalConstruction:
     """Get a technical construction by id"""
     return await TechnicalConstructionService(session).get(id)
 
 
-@router.delete("/{id}", response_model=TechnicalConstruction)
+@router.delete("/{id}", response_model=TechnicalConstruction, response_model_exclude_none=True)
 async def delete(
     id: int,
     session: AsyncSession = Depends(get_session),
@@ -36,7 +37,7 @@ async def delete(
     return await TechnicalConstructionService(session).delete(id)
 
 
-@router.post("/", response_model=TechnicalConstruction)
+@router.post("/", response_model=TechnicalConstruction, response_model_exclude_none=True)
 async def create(
     payload: TechnicalConstructionDraft,
     session: AsyncSession = Depends(get_session),
@@ -46,7 +47,7 @@ async def create(
     return await TechnicalConstructionService(session).create(payload, user)
 
 
-@router.put("/{id}", response_model=TechnicalConstruction)
+@router.put("/{id}", response_model=TechnicalConstruction, response_model_exclude_none=True)
 async def update(
     id: int,
     payload: TechnicalConstructionDraft,
