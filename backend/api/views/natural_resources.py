@@ -12,21 +12,22 @@ router = APIRouter()
 @router.get("/", response_model=NaturalResourceResult, response_model_exclude_none=True)
 async def find(
     filter: str = Query(None),
+    select: str = Query(None),
     sort: str = Query(None),
     range: str = Query("[0,99]"),
     session: AsyncSession = Depends(get_session),
 ) -> NaturalResourceResult:
     """Search for natural resources"""
-    return await NaturalResourceService(session).find(paramAsDict(filter), paramAsArray(sort), paramAsArray(range))
+    return await NaturalResourceService(session).find(paramAsDict(filter), paramAsArray(select), paramAsArray(sort), paramAsArray(range))
 
 
-@router.get("/{id}", response_model=NaturalResource)
+@router.get("/{id}", response_model=NaturalResource, response_model_exclude_none=True)
 async def get(id: int, session: AsyncSession = Depends(get_session)) -> NaturalResource:
     """Get a natural resource by id"""
     return await NaturalResourceService(session).get(id)
 
 
-@router.delete("/{id}", response_model=NaturalResource)
+@router.delete("/{id}", response_model=NaturalResource, response_model_exclude_none=True)
 async def delete(
     id: int,
     session: AsyncSession = Depends(get_session),
@@ -36,7 +37,7 @@ async def delete(
     return await NaturalResourceService(session).delete(id)
 
 
-@router.post("/", response_model=NaturalResource)
+@router.post("/", response_model=NaturalResource, response_model_exclude_none=True)
 async def create(
     natural_resource: NaturalResource,
     session: AsyncSession = Depends(get_session),
@@ -46,7 +47,7 @@ async def create(
     return await NaturalResourceService(session).create(natural_resource, user)
 
 
-@router.put("/{id}", response_model=NaturalResource)
+@router.put("/{id}", response_model=NaturalResource, response_model_exclude_none=True)
 async def update(
     id: int,
     natural_resource: NaturalResource,

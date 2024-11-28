@@ -20,10 +20,12 @@ class BuildingMaterialQueryBuilder(QueryBuilder):
         query = self._apply_joins(query, filter)
         return query
 
-    def build_query_with_joins(self, total_count, filter):
-        start, end, query = self.build_query(total_count)
+    def build_query_with_joins(self, total_count, filter, fields=None):
+        start, end, query = self.build_query(total_count, fields)
         query = self._apply_joins(query, filter)
-        query = query.options(selectinload(BuildingMaterial.natural_resources))
+        if fields is None or len(fields) == 0:
+            query = query.options(selectinload(
+                BuildingMaterial.natural_resources))
         return start, end, query
 
     def _apply_joins(self, query, filter):
@@ -68,8 +70,8 @@ class BuildingMaterialService:
         await self.session.commit()
         return entity
 
-    async def find(self, filter: dict, sort: list, range: list) -> BuildingMaterialResult:
-        """Get all buildings matching filter and range"""
+    async def find(self, filter: dict, fields: list, sort: list, range: list) -> BuildingMaterialResult:
+        """Get all building materials matching filter and range"""
         builder = BuildingMaterialQueryBuilder(BuildingMaterial, filter, sort, range, {
                                                "$building_materials": BuildingMaterial})
 
@@ -79,7 +81,8 @@ class BuildingMaterialService:
         total_count = total_count_query.one()
 
         # Main query
-        start, end, query = builder.build_query_with_joins(total_count, filter)
+        start, end, query = builder.build_query_with_joins(
+            total_count, filter, fields)
 
         # Execute query
         results = await self.session.exec(query)

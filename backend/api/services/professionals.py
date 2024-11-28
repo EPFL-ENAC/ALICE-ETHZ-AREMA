@@ -20,11 +20,12 @@ class ProfessionalQueryBuilder(QueryBuilder):
         query = self._apply_joins(query, filter)
         return query
 
-    def build_query_with_joins(self, total_count, filter):
-        start, end, query = self.build_query(total_count)
+    def build_query_with_joins(self, total_count, filter, fields=None):
+        start, end, query = self.build_query(total_count, fields)
         query = self._apply_joins(query, filter)
-        query = query.options(selectinload(Professional.building_materials),
-                              selectinload(Professional.technical_constructions))
+        if fields is None or len(fields) == 0:
+            query = query.options(selectinload(Professional.building_materials),
+                                  selectinload(Professional.technical_constructions))
         return start, end, query
 
     def _apply_joins(self, query, filter):
@@ -71,7 +72,7 @@ class ProfessionalService:
         await self.session.commit()
         return entity
 
-    async def find(self, filter: dict, sort: list, range: list) -> ProfessionalResult:
+    async def find(self, filter: dict, fields: list, sort: list, range: list) -> ProfessionalResult:
         """Get all professionals matching filter and range"""
         builder = ProfessionalQueryBuilder(Professional, filter, sort, range, {
             "$buildings": Building,
@@ -85,7 +86,8 @@ class ProfessionalService:
         total_count = total_count_query.one()
 
         # Main query
-        start, end, query = builder.build_query_with_joins(total_count, filter)
+        start, end, query = builder.build_query_with_joins(
+            total_count, filter, fields)
 
         # Execute query
         results = await self.session.exec(query)

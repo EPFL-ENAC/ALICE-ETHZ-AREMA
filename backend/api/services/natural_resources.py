@@ -19,8 +19,8 @@ class NaturalResourceQueryBuilder(QueryBuilder):
         query = self._apply_joins(query, filter)
         return query
 
-    def build_query_with_joins(self, total_count, filter):
-        start, end, query = self.build_query(total_count)
+    def build_query_with_joins(self, total_count, filter, fields=None):
+        start, end, query = self.build_query(total_count, fields)
         query = self._apply_joins(query, filter)
         # query = query.options(selectinload(NaturalResource.building_materials))
         return start, end, query
@@ -67,7 +67,7 @@ class NaturalResourceService:
         await self.session.commit()
         return entity
 
-    async def find(self, filter: dict, sort: list, range: list) -> NaturalResourceResult:
+    async def find(self, filter: dict, fields: list, sort: list, range: list) -> NaturalResourceResult:
         """Get all buildings matching filter and range"""
         builder = NaturalResourceQueryBuilder(NaturalResource, filter, sort, range, {
                                               "$building_materials": BuildingMaterial})
@@ -78,7 +78,8 @@ class NaturalResourceService:
         total_count = total_count_query.one()
 
         # Main query
-        start, end, query = builder.build_query_with_joins(total_count, filter)
+        start, end, query = builder.build_query_with_joins(
+            total_count, filter, fields)
 
         # Execute query
         results = await self.session.exec(query)
