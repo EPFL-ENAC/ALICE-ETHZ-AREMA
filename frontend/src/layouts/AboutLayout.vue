@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh lpr fFr">
     <q-header reveal elevated class="bg-black">
       <q-bar v-show="false" dense class="bg-amber text-grey-8 q-pr-md">
         <q-space />
@@ -16,9 +16,21 @@
       </q-bar>
 
       <q-toolbar>
-        <img src="arema-h-1.svg" height="30px" style="filter: invert(80%)" />
+        <img
+          v-if="$q.screen.gt.sm"
+          src="arema-h-1.svg"
+          height="30px"
+          style="filter: invert(100%)"
+        />
         <q-space />
-        <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
+        <q-btn
+          dense
+          flat
+          round
+          :icon="rightDrawerOpen ? 'close' : 'menu'"
+          size="xl"
+          @click="rightDrawerOpen = !rightDrawerOpen"
+        />
       </q-toolbar>
     </q-header>
 
@@ -26,22 +38,32 @@
       <router-view />
     </q-page-container>
 
-    <q-footer class="a-bg-orange q-mb-lg">
+    <q-drawer
+      overlay
+      v-model="rightDrawerOpen"
+      side="right"
+      class="bg-black text-white"
+      :width="$q.screen.gt.sm ? 800 : $q.screen.gt.xs ? 500 : 300"
+    >
+      <nav-drawer />
+    </q-drawer>
+
+    <q-footer class="bg-primary q-mb-lg">
       <q-btn
         flat
         icon="expand_more"
         size="48px"
-        to="/filters"
+        to="/search"
         class="text-grey-3 full-width q-pb-md"
       />
     </q-footer>
-    <q-footer class="bg-grey-3 a-text-orange">
+    <q-footer class="bg-grey-3 text-primary">
       <q-toolbar>
         <q-btn
           flat
           dense
           size="lg"
-          to="/filters"
+          to="/search"
           class=""
           :label="$t('filters')"
         />
@@ -51,6 +73,8 @@
 </template>
 
 <script setup lang="ts">
+import NavDrawer from 'src/components/NavDrawer.vue';
+const rightDrawerOpen = ref(false);
 const { locale } = useI18n({ useScope: 'global' });
 
 const locales = ['en', 'de', 'fr'];

@@ -40,10 +40,11 @@ a {
   background-color: #f6f8fa;
 }
 
-.a-bg-orange {
-  background-color: #be7437;
+.q-btn--outline:before {
+  border: 2px solid currentColor;
 }
 
-.a-text-orange {
-  color: #be7437;
+.text-black i {
+  color: #acc6a1;
+  font-style: normal;
 }

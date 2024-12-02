@@ -16,19 +16,44 @@
       </q-bar>
 
       <q-toolbar>
-        <img src="arema-h-1.svg" height="30px" style="filter: invert(80%)" />
+        <img
+          v-if="$q.screen.gt.sm"
+          src="arema-h-1.svg"
+          height="30px"
+          style="filter: invert(100%)"
+        />
         <q-space />
-        <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
+        <q-btn
+          dense
+          flat
+          round
+          :icon="rightDrawerOpen ? 'close' : 'menu'"
+          size="xl"
+          @click="rightDrawerOpen = !rightDrawerOpen"
+        />
       </q-toolbar>
     </q-header>
 
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <q-drawer
+      overlay
+      v-model="rightDrawerOpen"
+      side="right"
+      class="bg-black text-white"
+      :width="$q.screen.gt.sm ? 800 : $q.screen.gt.xs ? 500 : 300"
+    >
+      <nav-drawer />
+    </q-drawer>
   </q-layout>
 </template>
 
 <script setup lang="ts">
+import NavDrawer from 'src/components/NavDrawer.vue';
+const rightDrawerOpen = ref(false);
+
 const { locale } = useI18n({ useScope: 'global' });
 
 const locales = ['en', 'de', 'fr'];

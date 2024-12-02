@@ -1,18 +1,18 @@
 <template>
-  <q-page class="q-pa-md a-bg-orange">
-    <div class="text-h4 text-uppercase text-orange-11 q-mb-lg">
+  <q-page class="q-pa-md bg-primary">
+    <div class="text-h4 text-uppercase text-secondary q-mb-lg">
       {{ $t('purpose') }}
     </div>
     <div class="text-black" style="font-size: xx-large">
-      {{ $t('purpose_text') }}
+      <span v-html="$t('purpose_text')"></span>
     </div>
     <div class="q-mt-lg">
-      <vue-link
+      <router-link
         to="/manifesto"
         class="text-uppercase"
         style="font-size: larger"
-        >{{ $t('read_manifesto') }}</vue-link
-      >
+        >{{ $t('read_manifesto') }} <q-icon name="open_in_new"
+      /></router-link>
     </div>
   </q-page>
 </template>

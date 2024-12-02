@@ -8,16 +8,16 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/',
-    component: () => import('layouts/PurposeLayout.vue'),
+    component: () => import('layouts/AboutLayout.vue'),
     children: [
-      { path: 'purpose', component: () => import('pages/PurposePage.vue') },
+      { path: 'about', component: () => import('pages/AboutPage.vue') },
     ],
   },
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: 'filters', component: () => import('pages/FiltersPage.vue') },
+      { path: 'search', component: () => import('pages/SearchPage.vue') },
     ],
   },
 
