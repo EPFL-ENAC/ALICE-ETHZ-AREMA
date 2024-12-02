@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh lpr fFr">
     <q-header reveal elevated class="bg-black">
       <q-bar v-show="false" dense class="bg-amber text-grey-8 q-pr-md">
         <q-space />
@@ -47,13 +47,34 @@
     >
       <nav-drawer />
     </q-drawer>
+
+    <q-footer class="bg-primary q-mb-lg">
+      <q-btn
+        flat
+        icon="expand_more"
+        size="48px"
+        to="/search"
+        class="text-grey-3 full-width q-pb-md"
+      />
+    </q-footer>
+    <q-footer class="bg-grey-3 text-primary">
+      <q-toolbar>
+        <q-btn
+          flat
+          dense
+          size="lg"
+          to="/search"
+          class=""
+          :label="$t('filters')"
+        />
+      </q-toolbar>
+    </q-footer>
   </q-layout>
 </template>
 
 <script setup lang="ts">
 import NavDrawer from 'src/components/NavDrawer.vue';
 const rightDrawerOpen = ref(false);
-
 const { locale } = useI18n({ useScope: 'global' });
 
 const locales = ['en', 'de', 'fr'];

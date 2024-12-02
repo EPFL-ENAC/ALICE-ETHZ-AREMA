@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from api.db import get_session, AsyncSession
 from api.auth import kc_service, User
 from api.models.domain import Professional
 from api.models.query import ProfessionalDraft, ProfessionalResult
 from api.services.professionals import ProfessionalService
-from enacit4r_sql.utils.query import paramAsArray, paramAsDict
+from enacit4r_sql.utils.query import validate_params, ValidationError
 
 router = APIRouter()
 
@@ -18,7 +18,11 @@ async def find(
     session: AsyncSession = Depends(get_session),
 ) -> ProfessionalResult:
     """Search for professionals"""
-    return await ProfessionalService(session).find(paramAsDict(filter), paramAsArray(select), paramAsArray(sort), paramAsArray(range))
+    try:
+        validated = validate_params(filter, sort, range, select)
+        return await ProfessionalService(session).find(validated["filter"], validated["fields"], validated["sort"], validated["range"])
+    except ValidationError as e:
+        raise HTTPException(status_code=400, detail=f"{e}")
 
 
 @router.get("/{id}", response_model=Professional, response_model_exclude_none=True)

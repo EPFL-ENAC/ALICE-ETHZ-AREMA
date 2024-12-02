@@ -1,4 +1,3 @@
-import os
 from fastapi import FastAPI, Depends, status, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from api.config import config

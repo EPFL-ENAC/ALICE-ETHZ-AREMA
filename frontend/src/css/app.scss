@@ -39,3 +39,12 @@ a {
 .marked tr:nth-child(even) {
   background-color: #f6f8fa;
 }
+
+.q-btn--outline:before {
+  border: 2px solid currentColor;
+}
+
+.text-black i {
+  color: #acc6a1;
+  font-style: normal;
+}
