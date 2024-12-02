@@ -25,6 +25,28 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <q-footer class="a-bg-orange q-mb-lg">
+      <q-btn
+        flat
+        icon="expand_more"
+        size="48px"
+        to="/filters"
+        class="text-grey-3 full-width q-pb-md"
+      />
+    </q-footer>
+    <q-footer class="bg-grey-3 a-text-orange">
+      <q-toolbar>
+        <q-btn
+          flat
+          dense
+          size="lg"
+          to="/filters"
+          class=""
+          :label="$t('filters')"
+        />
+      </q-toolbar>
+    </q-footer>
   </q-layout>
 </template>
 
