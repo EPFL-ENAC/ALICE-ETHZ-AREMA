@@ -138,4 +138,9 @@ export default {
   upload_file_hint: 'Upload an image, a video or a document.',
   status: 'Status',
   materials: 'Materials',
+  fire: 'Fire',
+  class: 'Class',
+  low: 'Low',
+  std: 'Standard',
+  high: 'High',
 };

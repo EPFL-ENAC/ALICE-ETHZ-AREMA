@@ -70,6 +70,7 @@
           :key="property"
           v-model="entity"
           :property="property"
+          :options="fireResistanceClasses"
         />
       </div>
       <div class="col">
@@ -78,6 +79,7 @@
           :key="property"
           v-model="entity"
           :property="property"
+          :options="fireResistanceClasses"
         />
       </div>
     </div>
@@ -112,6 +114,8 @@ interface Props {
 const props = defineProps<Props>();
 
 const entity = ref(props.modelValue);
+
+const fireResistanceClasses = ['A', 'B', 'C', 'D', 'E', 'F'];
 
 watch(
   () => props.modelValue,
