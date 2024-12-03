@@ -27,7 +27,7 @@
       <q-btn
         no-caps
         size="xl"
-        to="/contribute"
+        to="/admin"
         :label="$t('contribute')"
         class="text-primary"
       ></q-btn>

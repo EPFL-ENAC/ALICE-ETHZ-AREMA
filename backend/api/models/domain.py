@@ -46,9 +46,9 @@ class PhysicalEntity(Entity):
     diffusivity: Optional[float] = Field(default=None)
     absorption_coefficient: Optional[float] = Field(default=None)
     sound_reduction_index: Optional[float] = Field(default=None)
-    reaction_to_fire: Optional[float] = Field(default=None)
-    building_material_class: Optional[float] = Field(default=None)
-    fire_resistance_class: Optional[float] = Field(default=None)
+    reaction_to_fire: Optional[str] = Field(default=None)
+    building_material_class: Optional[str] = Field(default=None)
+    fire_resistance_class: Optional[str] = Field(default=None)
     air_tightness: Optional[float] = Field(default=None)
 
     density_low: Optional[float] = Field(default=None)
@@ -66,9 +66,6 @@ class PhysicalEntity(Entity):
     diffusivity_low: Optional[float] = Field(default=None)
     absorption_coefficient_low: Optional[float] = Field(default=None)
     sound_reduction_index_low: Optional[float] = Field(default=None)
-    reaction_to_fire_low: Optional[float] = Field(default=None)
-    building_material_class_low: Optional[float] = Field(default=None)
-    fire_resistance_class_low: Optional[float] = Field(default=None)
     air_tightness_low: Optional[float] = Field(default=None)
 
     density_high: Optional[float] = Field(default=None)
@@ -86,9 +83,6 @@ class PhysicalEntity(Entity):
     diffusivity_high: Optional[float] = Field(default=None)
     absorption_coefficient_high: Optional[float] = Field(default=None)
     sound_reduction_index_high: Optional[float] = Field(default=None)
-    reaction_to_fire_high: Optional[float] = Field(default=None)
-    building_material_class_high: Optional[float] = Field(default=None)
-    fire_resistance_class_high: Optional[float] = Field(default=None)
     air_tightness_high: Optional[float] = Field(default=None)
 
 # Association tables
