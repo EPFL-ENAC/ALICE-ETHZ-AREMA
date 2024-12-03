@@ -41,8 +41,8 @@
               <div class="col-12 col-sm-3">
                 <taxonomy-select
                   v-model="selected.materials"
-                  entity-type="building"
-                  path="material"
+                  entity-type="natural-resource"
+                  path="type"
                   :label="$t('materials')"
                   multiple
                 />
