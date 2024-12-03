@@ -55,7 +55,7 @@ jobs:
           context: ${{ matrix.context }}
           push: true
           file: ${{ matrix.dockerfile }}
-          tags: ${{ steps.meta.outputs.tags }},${{ matrix.image }}:${{ github.sha }},${{ matrix.image }}:latest
+          tags: ${{ steps.meta.outputs.tags }},${{ matrix.image }}:${{ github.sha }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: what's the git ref
         run: echo "github.ref -> ${{ github.ref }} ; github.ref_name -> ${{ github.ref_name }}"
