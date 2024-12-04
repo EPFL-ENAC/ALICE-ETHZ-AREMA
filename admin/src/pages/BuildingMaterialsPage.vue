@@ -33,9 +33,15 @@
             </template>
           </q-input>
         </template>
-        <template v-slot:body-cell-type="props">
+        <template v-slot:body-cell-types="props">
           <q-td :props="props">
-            <q-badge color="accent" :label="props.value" />
+            <q-badge
+              color="accent"
+              v-for="type in props.value"
+              :key="type"
+              :label="type"
+              class="q-mr-sm"
+            />
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -108,12 +114,12 @@ const columns = computed(() => {
       sortable: true,
     },
     {
-      name: 'type',
+      name: 'types',
       required: true,
-      label: t('type'),
+      label: t('types'),
       align: 'left',
-      field: 'type',
-      format: getTypeLabel,
+      field: 'types',
+      format: (val: string[] | undefined) => (val ? val.map(getTypeLabel) : []),
       sortable: true,
     },
     {

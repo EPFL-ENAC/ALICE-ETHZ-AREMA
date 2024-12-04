@@ -32,10 +32,11 @@
               </div>
               <div class="col-12 col-sm-4">
                 <taxonomy-select
-                  v-model="selected.type"
+                  v-model="selected.types"
                   entity-type="building-material"
                   path="type"
-                  :label="$t('type') + ' *'"
+                  multiple
+                  :label="$t('types') + ' *'"
                 />
               </div>
               <div class="col-12 col-sm-4">
@@ -173,7 +174,7 @@ const naturalResourcesOptions = ref<
 >([]);
 
 const isValid = computed(() => {
-  return selected.value.name && selected.value.type;
+  return selected.value.name && selected.value.types;
 });
 
 watch(

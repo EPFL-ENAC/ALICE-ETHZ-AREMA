@@ -26,7 +26,6 @@ class BuildingMaterialDraft(BuildingMaterialBase):
 class BuildingMaterialRead(BuildingMaterialBase):
     id: Optional[int] = Field(default=None)
     name: Optional[str] = Field(default=None)
-    type: Optional[str] = Field(default=None)
     natural_resources: List[NaturalResource] = None
 
 
@@ -105,7 +104,6 @@ class ProfessionalDraft(ProfessionalBase):
 class ProfessionalRead(ProfessionalBase):
     id: Optional[int] = Field(default=None)
     name: Optional[str] = Field(default=None)
-    type: Optional[str] = Field(default=None)
     building_materials: List[BuildingMaterial] = None
     technical_constructions: List[TechnicalConstruction] = None
 

@@ -161,7 +161,7 @@ class NaturalResource(NaturalResourceBase, table=True):
 
 
 class BuildingMaterialBase(PhysicalEntity):
-    type: str
+    types: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
     materials: Optional[List[str]] = Field(
         default=None, sa_column=Column(JSON))
     files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
