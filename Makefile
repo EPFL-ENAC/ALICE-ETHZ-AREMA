@@ -32,6 +32,13 @@ run-dbadmin:
 stop-dbadmin:
 	docker compose stop pgadmin
 
+
+
+workflow:
+	# .secrets should have GITHUB_TOKEN
+	# .env should have GITHUB_ACTOR
+	act -W .github/workflows/deploy.yml -s GITHUB_TOKEN=$(cat .secrets | grep GITHUB_TOKEN | cut -d '=' -f2) --env-file .env
+
 # setup and run when deploying on server
 setup:
 	echo "nothing to see here"
