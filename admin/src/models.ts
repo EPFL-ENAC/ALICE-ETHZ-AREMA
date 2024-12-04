@@ -131,6 +131,18 @@ export interface TechnicalConstruction extends PhysicalEntity {
   building_material_ids?: number[];
 }
 
+export interface BuildingElement {
+  id?: number;
+  building?: Building;
+  technical_construction?: TechnicalConstruction;
+  professionals?: Professional[];
+
+  // draft
+  building_id?: number;
+  technical_construction_id?: number;
+  professional_ids?: number[];
+}
+
 export interface Building extends Entity {
   type?: string;
   status?: string;
@@ -144,11 +156,11 @@ export interface Building extends Entity {
 
   building_materials?: BuildingMaterial[];
   professionals?: Professional[];
-  technical_constructions?: TechnicalConstruction[];
+  building_elements?: BuildingElement[];
 
   // draft
   building_material_ids?: number[];
-  technical_construction_ids?: number[];
+  building_element_ids?: number[];
   professional_ids?: number[];
 }
 

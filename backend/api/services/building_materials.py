@@ -53,6 +53,7 @@ class BuildingMaterialService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Building material not found")
+        return entity
 
     async def delete(self, id: int) -> BuildingMaterial:
         """Delete a building material by id"""

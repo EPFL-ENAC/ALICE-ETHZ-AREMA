@@ -53,6 +53,7 @@ class ProfessionalService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Professional not found")
+        return entity
 
     async def delete(self, id: int) -> Professional:
         """Delete a professional by id"""

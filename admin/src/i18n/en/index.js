@@ -143,4 +143,9 @@ export default {
   low: 'Low',
   std: 'Standard',
   high: 'High',
+  technical_construction: 'Technical construction',
+  building_element_technical_construction_used_hint:
+    'Technical construction used.',
+  building_element_professionals_hint: 'Professionals involved.',
+  no_building_elements: 'No building elements',
 };

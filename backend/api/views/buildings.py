@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends, Query, HTTPException
 from api.db import get_session, AsyncSession
 from api.auth import kc_service, User
 from api.models.domain import Building
-from api.models.query import BuildingDraft, BuildingResult
+from api.models.query import BuildingDraft, BuildingResult, BuildingElementResult
 from api.services.buildings import BuildingService
+from api.services.building_elements import BuildingElementService
 from enacit4r_sql.utils.query import validate_params, ValidationError
 
 router = APIRouter()
@@ -58,3 +59,20 @@ async def update(
 ) -> Building:
     """Update a building by id"""
     return await BuildingService(session).update(id, payload, user)
+
+# Building elements
+
+
+@router.get("/{id}/building-element", response_model=BuildingElementResult, response_model_exclude_none=True)
+async def findElements(id: int,
+                       filter: str = Query(None),
+                       select: str = Query(None),
+                       sort: str = Query(None),
+                       range: str = Query("[0,99]"), session: AsyncSession = Depends(get_session)) -> BuildingElementResult:
+    """Get the building elements of a building by id"""
+    try:
+        validated = validate_params(filter, sort, range, select)
+        validated["filter"]["building_id"] = id
+        return await BuildingElementService(session).find(validated["filter"], validated["fields"], validated["sort"], validated["range"])
+    except ValidationError as e:
+        raise HTTPException(status_code=400, detail=f"{e}")

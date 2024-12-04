@@ -4,8 +4,9 @@ from sqlalchemy.sql import text
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from fastapi import HTTPException
-from api.models.domain import FileItem, Building, BuildingMaterial, TechnicalConstruction, Professional
-from api.models.query import BuildingDraft, BuildingResult
+from api.models.domain import FileItem, Building, BuildingMaterial, BuildingElement, Professional
+from api.models.query import BuildingDraft, BuildingResult, BuildingElementDraft
+from api.services.building_elements import BuildingElementService
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
 from api.services.s3 import s3_client
@@ -25,8 +26,7 @@ class BuildingQueryBuilder(QueryBuilder):
         query = self._apply_joins(query, filter)
         if fields is None or len(fields) == 0:
             query = query.options(selectinload(Building.building_materials),
-                                  selectinload(
-                                      Building.technical_constructions),
+                                  selectinload(Building.building_elements),
                                   selectinload(Building.professionals))
         return start, end, query
 
@@ -55,6 +55,7 @@ class BuildingService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Building not found")
+        return entity
 
     async def delete(self, id: int) -> Building:
         """Delete a building by id"""
@@ -62,7 +63,7 @@ class BuildingService:
             select(Building)
             .where(Building.id == id)
             .options(selectinload(Building.building_materials),
-                     selectinload(Building.technical_constructions),
+                     selectinload(Building.building_elements),
                      selectinload(Building.professionals)))
         entity = res.one_or_none()
         if not entity:
@@ -70,7 +71,7 @@ class BuildingService:
                 status_code=404, detail="Building not found")
         s3_client.delete_files(f"{self.folder}/{entity.id}")
         entity.building_materials.clear()
-        entity.technical_constructions.clear()
+        entity.building_elements.clear()
         entity.professionals.clear()
         await self.session.delete(entity)
         await self.session.commit()
@@ -79,7 +80,7 @@ class BuildingService:
     async def find(self, filter: dict, fields: list, sort: list, range: list) -> BuildingResult:
         """Get all buildings matching filter and range"""
         builder = BuildingQueryBuilder(Building, filter, sort, range, {
-                                       "$building_materials": BuildingMaterial, "$technical_constructions": TechnicalConstruction})
+                                       "$building_materials": BuildingMaterial, "$building_elements": BuildingElement, "$professionals": Professional})
 
         # Do a query to satisfy total count
         count_query = builder.build_count_query_with_joins(filter)
@@ -103,7 +104,10 @@ class BuildingService:
 
     async def create(self, payload: BuildingDraft, user: User = None) -> Building:
         """Create a new building"""
-        entity = Building(**payload.model_dump())
+        entity = Building()
+        for key, value in payload.model_dump().items():
+            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "building_material_ids", "building_elements", "professional_ids"]:
+                setattr(entity, key, value)
         entity.created_at = datetime.now()
         entity.updated_at = datetime.now()
         if user:
@@ -113,9 +117,6 @@ class BuildingService:
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
         entity.building_materials.extend(new_bms)
-        new_tcs = await self._get_technical_constructions(payload.technical_construction_ids)
-        entity.technical_constructions.clear()
-        entity.technical_constructions.extend(new_tcs)
         new_pros = await self._get_professionals(payload.professional_ids)
         entity.professionals.clear()
         entity.professionals.extend(new_pros)
@@ -132,6 +133,9 @@ class BuildingService:
             entity.files = new_files
             await self.session.commit()
 
+        # handle building elements
+        await self._apply_building_elements(entity.id, payload.building_elements)
+
         return entity
 
     async def update(self, id: int, payload: BuildingDraft, user: User = None) -> Building:
@@ -140,15 +144,14 @@ class BuildingService:
             select(Building)
             .where(Building.id == id)
             .options(selectinload(Building.building_materials),
-                     selectinload(Building.technical_constructions),
+                     selectinload(Building.building_elements),
                      selectinload(Building.professionals)))
         entity = res.one_or_none()
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Building not found")
         for key, value in payload.model_dump().items():
-            debug(key, value)
-            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "building_material_ids", "technical_construction_ids", "professional_ids"]:
+            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "building_material_ids", "building_elements", "professional_ids"]:
                 setattr(entity, key, value)
         entity.updated_at = datetime.now()
         if user:
@@ -165,20 +168,40 @@ class BuildingService:
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
         entity.building_materials.extend(new_bms)
-        new_tcs = await self._get_technical_constructions(payload.technical_construction_ids)
-        entity.technical_constructions.clear()
-        entity.technical_constructions.extend(new_tcs)
         new_pros = await self._get_professionals(payload.professional_ids)
         entity.professionals.clear()
         entity.professionals.extend(new_pros)
         await self.session.commit()
+        # handle building elements
+        await self._apply_building_elements(entity.id, payload.building_elements)
         return entity
+
+    async def _apply_building_elements(self, building_id: int, elements: list[BuildingElementDraft]):
+        be_service = BuildingElementService(self.session)
+        # look up building elements for this building
+        res = await be_service.find({"building_id": building_id}, [], [], [])
+        bes = res.data
+        updated_ids = [be.id for be in elements if be.id is not None]
+        # delete building elements that are not in the new list
+        for be in bes:
+            if be.id not in updated_ids:
+                await be_service.delete(be.id)
+        # create/update building elements
+        for element in elements:
+            element.building_id = building_id
+            if element.id is None:
+                await be_service.create(element)
+            else:
+                await be_service.update(element.id, element)
 
     async def _get_building_materials(self, ids: list[int]):
         return await self.session.exec(select(BuildingMaterial).filter(BuildingMaterial.id.in_(ids)))
 
-    async def _get_technical_constructions(self, ids: list[int]):
-        return await self.session.exec(select(TechnicalConstruction).filter(TechnicalConstruction.id.in_(ids)))
+    async def _get_building_elements(self, ids: list[int]):
+        return await self.session.exec(select(BuildingElement)
+                                       .filter(BuildingElement.id.in_(ids))
+                                       .options(selectinload(BuildingElement.professionals),
+                                                selectinload(BuildingElement.technical_construction)))
 
     async def _get_professionals(self, ids: list[int]):
         return await self.session.exec(select(Professional).filter(Professional.id.in_(ids)))

@@ -53,6 +53,7 @@ class TechnicalConstructionService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Technical construction not found")
+        return entity
 
     async def delete(self, id: int) -> TechnicalConstruction:
         """Delete a technical construction by id"""

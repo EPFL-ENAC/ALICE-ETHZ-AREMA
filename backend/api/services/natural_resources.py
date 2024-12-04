@@ -52,6 +52,7 @@ class NaturalResourceService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Natural resource not found")
+        return entity
 
     async def delete(self, id: int) -> NaturalResource:
         """Delete a natural resource by id"""
