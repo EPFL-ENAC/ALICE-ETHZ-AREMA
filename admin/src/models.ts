@@ -60,9 +60,9 @@ export interface PhysicalEntity extends Entity {
   diffusivity?: number;
   absorption_coefficient?: number;
   sound_reduction_index?: number;
-  reaction_to_fire?: number;
-  building_material_class?: number;
-  fire_resistance_class?: number;
+  reaction_to_fire?: string;
+  building_material_class?: string;
+  fire_resistance_class?: string;
   air_tightness?: number;
 
   density_low?: number;
@@ -80,9 +80,6 @@ export interface PhysicalEntity extends Entity {
   diffusivity_low?: number;
   absorption_coefficient_low?: number;
   sound_reduction_index_low?: number;
-  reaction_to_fire_low?: number;
-  building_material_class_low?: number;
-  fire_resistance_class_low?: number;
   air_tightness_low?: number;
 
   density_high?: number;
@@ -100,9 +97,6 @@ export interface PhysicalEntity extends Entity {
   diffusivity_high?: number;
   absorption_coefficient_high?: number;
   sound_reduction_index_high?: number;
-  reaction_to_fire_high?: number;
-  building_material_class_high?: number;
-  fire_resistance_class_high?: number;
   air_tightness_high?: number;
 }
 
@@ -137,6 +131,18 @@ export interface TechnicalConstruction extends PhysicalEntity {
   building_material_ids?: number[];
 }
 
+export interface BuildingElement {
+  id?: number;
+  building?: Building;
+  technical_construction?: TechnicalConstruction;
+  professionals?: Professional[];
+
+  // draft
+  building_id?: number;
+  technical_construction_id?: number;
+  professional_ids?: number[];
+}
+
 export interface Building extends Entity {
   type?: string;
   status?: string;
@@ -150,11 +156,11 @@ export interface Building extends Entity {
 
   building_materials?: BuildingMaterial[];
   professionals?: Professional[];
-  technical_constructions?: TechnicalConstruction[];
+  building_elements?: BuildingElement[];
 
   // draft
   building_material_ids?: number[];
-  technical_construction_ids?: number[];
+  building_element_ids?: number[];
   professional_ids?: number[];
 }
 

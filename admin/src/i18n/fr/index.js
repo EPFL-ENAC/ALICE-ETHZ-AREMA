@@ -90,4 +90,9 @@ export default {
   upload_file_hint: 'Téléverser une image, une vidéo ou un fichier PDF.',
   status: 'Etat',
   materials: 'Matériaux',
+  fire: 'Feu',
+  class: 'Classe',
+  low: 'Bas',
+  std: 'Standard',
+  high: 'Haut',
 };

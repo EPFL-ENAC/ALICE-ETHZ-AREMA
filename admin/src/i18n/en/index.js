@@ -138,4 +138,14 @@ export default {
   upload_file_hint: 'Upload an image, a video or a document.',
   status: 'Status',
   materials: 'Materials',
+  fire: 'Fire',
+  class: 'Class',
+  low: 'Low',
+  std: 'Standard',
+  high: 'High',
+  technical_construction: 'Technical construction',
+  building_element_technical_construction_used_hint:
+    'Technical construction used.',
+  building_element_professionals_hint: 'Professionals involved.',
+  no_building_elements: 'No building elements',
 };

@@ -18,6 +18,17 @@ export interface Geometry {
   point?: [number, number];
 }
 
+export interface TaxonomyNode {
+  id: string;
+  names: Record<string, string>;
+  descriptions?: Record<string, string>;
+  children?: TaxonomyNode[];
+}
+
+export interface Taxonomy {
+  taxonomy: TaxonomyNode[];
+}
+
 export interface Entity {
   id?: number;
   name: string;
@@ -49,9 +60,9 @@ export interface PhysicalEntity extends Entity {
   diffusivity?: number;
   absorption_coefficient?: number;
   sound_reduction_index?: number;
-  reaction_to_fire?: number;
-  building_material_class?: number;
-  fire_resistance_class?: number;
+  reaction_to_fire?: string;
+  building_material_class?: string;
+  fire_resistance_class?: string;
   air_tightness?: number;
 
   density_low?: number;
@@ -69,9 +80,6 @@ export interface PhysicalEntity extends Entity {
   diffusivity_low?: number;
   absorption_coefficient_low?: number;
   sound_reduction_index_low?: number;
-  reaction_to_fire_low?: number;
-  building_material_class_low?: number;
-  fire_resistance_class_low?: number;
   air_tightness_low?: number;
 
   density_high?: number;
@@ -89,18 +97,18 @@ export interface PhysicalEntity extends Entity {
   diffusivity_high?: number;
   absorption_coefficient_high?: number;
   sound_reduction_index_high?: number;
-  reaction_to_fire_high?: number;
-  building_material_class_high?: number;
-  fire_resistance_class_high?: number;
   air_tightness_high?: number;
 }
 
 export interface NaturalResource extends PhysicalEntity {
+  type: string;
   files?: FileItem[];
   building_materials?: BuildingMaterial[];
 }
 
 export interface BuildingMaterial extends PhysicalEntity {
+  type?: string;
+  materials?: string[];
   files?: FileItem[];
   natural_resources?: NaturalResource[];
   technical_constructions?: TechnicalConstruction[];
@@ -112,6 +120,8 @@ export interface BuildingMaterial extends PhysicalEntity {
 }
 
 export interface TechnicalConstruction extends PhysicalEntity {
+  types?: string[];
+  materials?: string[];
   files?: FileItem[];
   building_materials?: BuildingMaterial[];
   professionals?: Professional[];
@@ -121,7 +131,22 @@ export interface TechnicalConstruction extends PhysicalEntity {
   building_material_ids?: number[];
 }
 
+export interface BuildingElement {
+  id?: number;
+  building?: Building;
+  technical_construction?: TechnicalConstruction;
+  professionals?: Professional[];
+
+  // draft
+  building_id?: number;
+  technical_construction_id?: number;
+  professional_ids?: number[];
+}
+
 export interface Building extends Entity {
+  type?: string;
+  status?: string;
+  materials?: string[];
   address?: string;
   long?: number;
   lat?: number;
@@ -131,16 +156,17 @@ export interface Building extends Entity {
 
   building_materials?: BuildingMaterial[];
   professionals?: Professional[];
-  technical_constructions?: TechnicalConstruction[];
+  building_elements?: BuildingElement[];
 
   // draft
   building_material_ids?: number[];
-  technical_construction_ids?: number[];
+  building_element_ids?: number[];
   professional_ids?: number[];
 }
 
 export interface Professional extends Entity {
-  type?: string;
+  types?: string[];
+  materials?: string[];
   address?: string;
   web?: string;
   tel?: string;

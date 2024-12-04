@@ -148,14 +148,12 @@ const columns = computed(() => {
       sortable: false,
     },
     {
-      name: 'technical_constructions',
+      name: 'building_elements',
       required: true,
-      label: t('technical_constructions'),
+      label: t('building_elements'),
       align: 'left',
       field: (row: Building) => {
-        return row.technical_constructions
-          ? row.technical_constructions.map((tc) => tc.name).join(', ')
-          : '-';
+        return row.building_elements?.length;
       },
       sortable: false,
     },

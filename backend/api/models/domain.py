@@ -46,9 +46,9 @@ class PhysicalEntity(Entity):
     diffusivity: Optional[float] = Field(default=None)
     absorption_coefficient: Optional[float] = Field(default=None)
     sound_reduction_index: Optional[float] = Field(default=None)
-    reaction_to_fire: Optional[float] = Field(default=None)
-    building_material_class: Optional[float] = Field(default=None)
-    fire_resistance_class: Optional[float] = Field(default=None)
+    reaction_to_fire: Optional[str] = Field(default=None)
+    building_material_class: Optional[str] = Field(default=None)
+    fire_resistance_class: Optional[str] = Field(default=None)
     air_tightness: Optional[float] = Field(default=None)
 
     density_low: Optional[float] = Field(default=None)
@@ -66,9 +66,6 @@ class PhysicalEntity(Entity):
     diffusivity_low: Optional[float] = Field(default=None)
     absorption_coefficient_low: Optional[float] = Field(default=None)
     sound_reduction_index_low: Optional[float] = Field(default=None)
-    reaction_to_fire_low: Optional[float] = Field(default=None)
-    building_material_class_low: Optional[float] = Field(default=None)
-    fire_resistance_class_low: Optional[float] = Field(default=None)
     air_tightness_low: Optional[float] = Field(default=None)
 
     density_high: Optional[float] = Field(default=None)
@@ -86,9 +83,6 @@ class PhysicalEntity(Entity):
     diffusivity_high: Optional[float] = Field(default=None)
     absorption_coefficient_high: Optional[float] = Field(default=None)
     sound_reduction_index_high: Optional[float] = Field(default=None)
-    reaction_to_fire_high: Optional[float] = Field(default=None)
-    building_material_class_high: Optional[float] = Field(default=None)
-    fire_resistance_class_high: Optional[float] = Field(default=None)
     air_tightness_high: Optional[float] = Field(default=None)
 
 # Association tables
@@ -115,13 +109,6 @@ class BuildingBuildingMaterial(SQLModel, table=True):
         default=None, foreign_key="buildingmaterial.id", primary_key=True)
 
 
-class BuildingTechnicalConstruction(SQLModel, table=True):
-    building_id: Optional[int] = Field(
-        default=None, foreign_key="building.id", primary_key=True)
-    technical_construction_id: Optional[int] = Field(
-        default=None, foreign_key="technicalconstruction.id", primary_key=True)
-
-
 class ProfessionalBuilding(SQLModel, table=True):
     professional_id: Optional[int] = Field(
         default=None, foreign_key="professional.id", primary_key=True)
@@ -141,6 +128,14 @@ class ProfessionalTechnicalConstruction(SQLModel, table=True):
         default=None, foreign_key="professional.id", primary_key=True)
     technical_construction_id: Optional[int] = Field(
         default=None, foreign_key="technicalconstruction.id", primary_key=True)
+
+
+class BuildingElementProfessional(SQLModel, table=True):
+    building_element_id: Optional[int] = Field(
+        default=None, foreign_key="buildingelement.id", primary_key=True)
+    professional_id: Optional[int] = Field(
+        default=None, foreign_key="professional.id", primary_key=True)
+
 
 # Domain tables
 
@@ -209,8 +204,33 @@ class TechnicalConstruction(TechnicalConstructionBase, table=True):
         back_populates="technical_constructions", link_model=TechnicalConstructionBuildingMaterial)
     professionals: List["Professional"] = Relationship(
         back_populates="technical_constructions", link_model=ProfessionalTechnicalConstruction)
-    buildings: List["Building"] = Relationship(
-        back_populates="technical_constructions", link_model=BuildingTechnicalConstruction)
+    building_elements: List["BuildingElement"] = Relationship(
+        back_populates="technical_construction", cascade_delete=True)
+
+# Building elements
+
+
+class BuildingElementBase(SQLModel):
+    building_id: Optional[int] = Field(
+        default=None, foreign_key="building.id", ondelete="CASCADE")
+    technical_construction_id: Optional[int] = Field(
+        default=None, foreign_key="technicalconstruction.id", ondelete="CASCADE")
+
+
+class BuildingElement(BuildingElementBase, table=True):
+    id: Optional[int] = Field(
+        default=None,
+        nullable=False,
+        primary_key=True,
+        index=True,
+    )
+    technical_construction: Optional["TechnicalConstruction"] = Relationship(
+        back_populates="building_elements")
+    building: Optional["Building"] = Relationship(
+        back_populates="building_elements")
+    professionals: List["Professional"] = Relationship(
+        back_populates="building_elements", link_model=BuildingElementProfessional)
+
 
 # Buildings
 
@@ -238,8 +258,8 @@ class Building(BuildingBase, table=True):
         back_populates="buildings", link_model=BuildingBuildingMaterial)
     professionals: List["Professional"] = Relationship(
         back_populates="buildings", link_model=ProfessionalBuilding)
-    technical_constructions: List["TechnicalConstruction"] = Relationship(
-        back_populates="buildings", link_model=BuildingTechnicalConstruction)
+    building_elements: List["BuildingElement"] = Relationship(
+        back_populates="building", cascade_delete=True)
 
 # Professionals
 
@@ -272,3 +292,5 @@ class Professional(ProfessionalBase, table=True):
         back_populates="professionals", link_model=ProfessionalBuildingMaterial)
     technical_constructions: List["TechnicalConstruction"] = Relationship(
         back_populates="professionals", link_model=ProfessionalTechnicalConstruction)
+    building_elements: List["BuildingElement"] = Relationship(
+        back_populates="professionals", link_model=BuildingElementProfessional)

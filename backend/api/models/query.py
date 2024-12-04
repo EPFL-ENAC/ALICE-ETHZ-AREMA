@@ -1,6 +1,6 @@
 from typing import List, Optional
 from sqlmodel import Field
-from api.models.domain import NaturalResource, NaturalResourceBase, BuildingMaterial, BuildingMaterialBase, TechnicalConstruction, TechnicalConstructionBase, BuildingBase, Professional, ProfessionalBase
+from api.models.domain import NaturalResource, NaturalResourceBase, BuildingMaterial, BuildingMaterialBase, TechnicalConstruction, TechnicalConstructionBase, BuildingBase, Professional, ProfessionalBase, BuildingElement, BuildingElementBase
 from enacit4r_sql.models.query import ListResult
 
 # Natural resources
@@ -51,14 +51,34 @@ class TechnicalConstructionRead(TechnicalConstructionBase):
 class TechnicalConstructionResult(ListResult):
     data: List[TechnicalConstructionRead] = []
 
+# Building elements
+
+
+class BuildingElementDraft(BuildingElementBase):
+    id: Optional[int] = Field(default=None)
+    building_id: Optional[int] = Field(default=None)
+    technical_construction_id: Optional[int] = Field(default=None)
+    professional_ids: List[int] = None
+
+
+class BuildingElementRead(BuildingElementBase):
+    id: Optional[int] = Field(default=None)
+    technical_construction: TechnicalConstruction = None
+    building: BuildingBase = None
+    professionals: List[Professional] = None
+
+
+class BuildingElementResult(ListResult):
+    data: List[BuildingElementRead] = []
+
 # Buildings
 
 
 class BuildingDraft(BuildingBase):
     id: Optional[int] = Field(default=None)
     building_material_ids: List[int] = []
-    technical_construction_ids: List[int] = []
     professional_ids: List[int] = []
+    building_elements: List[BuildingElementDraft] = []
 
 
 class BuildingRead(BuildingBase):
@@ -66,7 +86,7 @@ class BuildingRead(BuildingBase):
     name: Optional[str] = Field(default=None)
     type: Optional[str] = Field(default=None)
     building_materials: List[BuildingMaterial] = None
-    technical_constructions: List[TechnicalConstruction] = None
+    building_elements: List[BuildingElement] = None
     professionals: List[Professional] = None
 
 

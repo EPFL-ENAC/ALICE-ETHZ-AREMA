@@ -1,10 +1,11 @@
 <template>
   <q-dialog v-model="showDialog" persistent @hide="onHide">
     <q-card class="dialog-lg">
-      <q-card-section>
-        <div class="text-h6">{{ $t(editMode ? 'edit' : 'add') }}</div>
-      </q-card-section>
-
+      <q-card-actions>
+        <div class="text-h6 q-ml-sm">{{ $t(editMode ? 'edit' : 'add') }}</div>
+        <q-space />
+        <q-btn flat icon="close" color="primary" v-close-popup />
+      </q-card-actions>
       <q-separator />
 
       <q-card-section>

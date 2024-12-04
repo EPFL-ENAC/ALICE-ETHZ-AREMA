@@ -43,9 +43,9 @@ taxonomy:
               de: Holz
               fr: Bois
               it: Legno
-          - id: other-fibres
+          - id: other-fibers
             names:
-              en: "Other Fibres"
+              en: "Other Fibers"
               de: "Andere Fasern"
               fr: "Autres Fibres"
               it: "Altre Fibre"

@@ -1,108 +1,63 @@
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
-// Todo make the relationship and then add all the fields
 
-
-// Ref: natural_resources.zone_ids > zones._id
-// Table zones {
-//   _id string [primary key]
-//   zone string [note: "a geojson representing a polygon on a map"]
-// }
-
-Table natural_resources {
-  _id string [primary key]
-  name string [unique, not null]
-  zone_ids string[] [note: "several zones"]
-  // allow to list professional
-  // allow building materials
+Table NaturalResource {
+  id int [pk]
 }
 
-enum BuildingElements {
-  "foundation"
-  "floor load-bearing"
-  "floor non-load-bearing"
-  "wall exterior load-bearing"
-  "wall exterior non-load-bearing"
-  "wall interior load-bearing"
-  "wall interior non-load-bearing"
-  "windows"
-  "doors"
-  "structural"
-  "roof"
-  "insulation exterior"
-  "insulation interior"
-  "cladding interior"
-  "cladding exterior"
-}
-Table building_elements {
-  _id int [unique, not null, pk]
-  name BuildingElements
+Table BuildingMaterial {
+  id int [pk]
 }
 
-Table building_materials {
-  _id string [primary key]
-  constituant_ids string[] [not null, ref: > natural_resources._id, note: "principal constituants, limit: [0, 3]"]
-  usage_ids number[] [not null, ref: > building_elements._id, note: "which are the common uses, limit: [0, 3]"]
-
-  Note: "example is a 'chaux-chanvre which has two natural resources chaux + chanvre"
+Table TechnicalConstruction {
+  id int [pk]
 }
 
-Table technical_constructions {
-  _id string [primary key]
-  building_material string [not null, ref: - building_materials._id]
-  building_element string [not null, ref: - building_elements._id]
-  images string[] [note: "url of images, 10Mb maximum of data"]
-  // view: not stored -> building_ids string[] [note: "", ref: > buildings._id]
+Table Building {
+  id int [pk]
 }
 
-// Ref: technical_constructions.images > images._id
-// Table images {
-//   _id string [primary key]
-//   url string [unique, not null]
-//   created_at timestamp
-// }
-
-enum ProfessionalTypes {
-"architect"
-"civil engineer"
-"supplier"
-"craftsmen"
-"building physics"
-"association"
-"construction firms"
-"dealer"
+Table Professional {
+  id int [pk]
 }
 
-Table professional_types {
-  _id int [pk]
-  type ProfessionalTypes [not null]
+Table BuildingElement {
+  id int [pk]
+  technical_construction_id int [ref: > TechnicalConstruction.id]
+  building_id int [ref: > Building.id]
 }
 
-Table professionals {
-  _id string [primary key]
-  name string [not null, unique]
-  address string [not null, unique]
-  type string [ref: - professional_types._id, not null]
-  expertise_pro_bm string[] [ref: > building_materials._id]
-  expertise_pro_nr string[] [ref: > natural_resources._id, note: "should contain the zone area [{name: chaux, zones: [zone1, zone2]}, chanvre, stone]"]
-  area_delivery string [note: "radius + coordinate"]
+Table BuildingMaterial_NaturalResource {
+  natural_resource_id int [ref: > NaturalResource.id]
+  building_material_id int [ref: > BuildingMaterial.id]
 }
 
-Table buildings {
-  _id integer [primary key]
-  name string [not null, unique]
-  address string [not null, unique] 
-  professional_ids string[] [not null, ref: <> professionals._id]
-  technical_construction_ids string[] [ref: > technical_constructions._id, note: "combination of building_material and building_element"]
-  images string[] [note: "list of urls"]
-  description string [note: "max 400 char for the texts"]
-  // created_at timestamp
-  // created_by string [ref: - users._id]
-  // updated_at timestamp
-  // updated_by string [ref: - users._id]
+Table TechnicalConstruction_BuildingMaterial {
+  building_material_id int [ref: > BuildingMaterial.id]
+  technical_construction_id int [ref: > TechnicalConstruction.id]
 }
 
-// Table users {
-//   _id string [unique, pk]
-//   email string [unique]
-// }
+Table BuildingElement_Professional {
+  building_element_id int [ref: > BuildingElement.id]
+  professional_id int [ref: > Professional.id]
+}
+
+Table Building_BuildingMaterial {
+  building_material_id int [ref: > BuildingMaterial.id]
+  building_id int [ref: > Building.id]
+}
+
+Table Professional_Building {
+  building_id int [ref: > Building.id]
+  professional_id int [ref: > Professional.id]
+}
+
+Table Professional_BuildingMaterial {
+  building_material_id int [ref: > BuildingMaterial.id]
+  professional_id int [ref: > Professional.id]
+}
+
+Table Professional_TechnicalConstruction {
+  technical_construction_id int [ref: > TechnicalConstruction.id]
+  professional_id int [ref: > Professional.id]
+}

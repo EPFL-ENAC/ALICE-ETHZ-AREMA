@@ -3,7 +3,16 @@
     <div class="q-mb-sm">
       {{ $t(property) }}
     </div>
-    <div class="row q-col-gutter-sm q-mb-sm">
+    <div v-if="options">
+      <q-select
+        filled
+        v-model="selected[property]"
+        :label="$t('class')"
+        :options="options"
+        @update:model-value="onUpdate(property)"
+      />
+    </div>
+    <div v-else class="row q-col-gutter-sm q-mb-sm">
       <div class="col">
         <q-input
           filled
@@ -44,11 +53,12 @@ export default defineComponent({
 });
 </script>
 <script setup lang="ts">
-import { NaturalResource } from 'src/models';
+import { PhysicalEntity } from 'src/models';
 
 interface Props {
-  modelValue: NaturalResource;
+  modelValue: PhysicalEntity;
   property: string;
+  options?: string[];
 }
 
 const props = defineProps<Props>();
