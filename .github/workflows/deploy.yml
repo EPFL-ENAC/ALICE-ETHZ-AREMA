@@ -134,7 +134,6 @@ jobs:
           payload=$(cat <<EOF
           {
             "event_type": "update-manifest",
-            "ref": "${{ github.ref }}",
             "client_payload": {
               "repo_name": "${{ secrets.CD_REPO }}",
               "repo_org": "${{ secrets.CD_ORG }}",
