@@ -68,14 +68,17 @@
         class="on-left"
         @click="onViewSelect(view)"
       />
+      <q-spinner-dots v-if="searchService.searching" size="md" />
     </div>
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
-    <div class="q-mt-md">{{ searchService.selectedTerms }}</div>
-    <q-spinner-dots v-if="searchService.searching" size="xl" />
+    <map-results v-if="selectedView === 'map'" />
+    <list-results v-else-if="selectedView === 'list'" />
   </q-page>
 </template>
 
 <script setup lang="ts">
+import MapResults from 'src/components/MapResults.vue';
+import ListResults from 'src/components/ListResults.vue';
 import { TaxonomyNodeOption } from 'src/components/models';
 
 const taxonomies = useTaxonomyStore();
