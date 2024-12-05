@@ -1,3 +1,5 @@
+import { TaxonomyNode } from 'src/models';
+
 export interface Filter {
   [key: string]: any;
 }
@@ -21,4 +23,13 @@ export interface Option {
   value: string;
   label: string;
   level?: number;
+}
+
+export interface TaxonomyNodeOption {
+  value: string;
+  label: string;
+  taxonomy: TaxonomyNode;
+  vocabulary: TaxonomyNode;
+  term?: TaxonomyNode;
+  urn: string;
 }

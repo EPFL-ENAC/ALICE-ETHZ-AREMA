@@ -15,20 +15,35 @@
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
     <div>
       <q-btn
-        v-for="filter in filters"
-        :key="filter"
-        :outline="filter !== selectedFilter"
+        v-for="vocOpt in vocabularyOptions"
+        :key="vocOpt.value"
+        :outline="vocOpt !== selectedVocabulary"
         color="primary"
         unelevated
         square
         no-caps
         size="md"
-        :label="$t(filter)"
-        class="on-left"
-        @click="onFilterSelect(filter)"
+        :label="$t(vocOpt.label)"
+        class="on-left q-mb-sm"
+        @click="onVocabularySelect(vocOpt)"
       />
     </div>
-    <div class="q-mt-md"></div>
+    <div class="q-mt-sm" v-if="selectedVocabulary">
+      <q-btn
+        v-for="termOpt in termOptions"
+        :key="termOpt.urn"
+        :outline="!selectedTerms.includes(termOpt.urn)"
+        color="primary"
+        unelevated
+        square
+        no-caps
+        size="md"
+        :label="$t(termOpt.label)"
+        class="on-left q-mb-sm"
+        @click="onTermSelect(termOpt)"
+      />
+    </div>
+    <div class="q-mt-md">{{ selectedTerms }}</div>
     <div class="q-mt-md">
       <q-btn
         v-for="view in views"
@@ -49,15 +64,69 @@
 </template>
 
 <script setup lang="ts">
+import { TaxonomyNodeOption } from 'src/components/models';
+
+const taxonomies = useTaxonomyStore();
+
 const search = ref('');
-const selectedFilter = ref('material');
+const selectedVocabulary = ref<TaxonomyNodeOption>();
+const selectedTerms = ref<string[]>([]);
 const selectedView = ref('map');
 
-const filters = ['material', 'professional'];
+const vocabularies = [
+  'natural-resource:type',
+  'building-material:type',
+  'technical-construction:type',
+  'professional:type',
+  'building:type',
+  'building:status',
+];
+const vocabularyOptions = ref<TaxonomyNodeOption[]>([]);
+const termOptions = ref<TaxonomyNodeOption[]>([]);
 const views = ['map', 'list'];
 
-function onFilterSelect(filter: string) {
-  selectedFilter.value = filter;
+onMounted(() => {
+  taxonomies.init().then(() => {
+    vocabularyOptions.value = vocabularies
+      .map((voc) => {
+        const tx = taxonomies.getTaxonomy(voc);
+        if (!tx) return undefined;
+        const node = taxonomies.getNode(voc);
+        return node
+          ? ({
+              value: voc,
+              label: voc.endsWith(':type')
+                ? taxonomies.getLabel(tx?.names)
+                : taxonomies.getLabel(node.names) || voc,
+              vocabulary: node,
+              taxonomy: tx,
+              urn: taxonomies.toUrn(tx.id, node.id),
+            } as TaxonomyNodeOption)
+          : undefined;
+      })
+      .filter((opt) => opt !== undefined);
+  });
+});
+
+function onVocabularySelect(voc: TaxonomyNodeOption) {
+  selectedVocabulary.value = voc;
+  termOptions.value =
+    voc.vocabulary.children?.map((child) => ({
+      value: child.id,
+      label: taxonomies.getLabel(child.names) || child.id,
+      taxonomy: voc.taxonomy,
+      vocabulary: voc.vocabulary,
+      term: child,
+      urn: taxonomies.toUrn(voc.taxonomy.id, [voc.vocabulary.id, child.id]),
+    })) || [];
+}
+
+function onTermSelect(term: TaxonomyNodeOption) {
+  if (!selectedVocabulary.value) return;
+  const urn = term.urn;
+  selectedTerms.value.includes(urn)
+    ? selectedTerms.value.splice(selectedTerms.value.indexOf(urn), 1)
+    : selectedTerms.value.push(urn);
 }
 
 function onViewSelect(view: string) {
