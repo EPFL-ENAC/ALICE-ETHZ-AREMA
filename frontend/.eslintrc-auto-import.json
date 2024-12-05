@@ -103,6 +103,8 @@
     "setMapStoreSuffix": true,
     "storeToRefs": true,
     "useTaxonomyStore": true,
-    "useHome": true
+    "useHome": true,
+    "useSearch": true,
+    "useSearchService": true
   }
 }

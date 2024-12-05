@@ -18,6 +18,7 @@
         v-for="vocOpt in vocabularyOptions"
         :key="vocOpt.value"
         :outline="vocOpt !== selectedVocabulary"
+        :disable="searchService.searching"
         color="primary"
         unelevated
         square
@@ -26,13 +27,23 @@
         :label="$t(vocOpt.label)"
         class="on-left q-mb-sm"
         @click="onVocabularySelect(vocOpt)"
-      />
+      >
+        <q-badge
+          v-if="getSelectedTerms(vocOpt).length"
+          :color="vocOpt !== selectedVocabulary ? 'primary' : 'white'"
+          :class="vocOpt !== selectedVocabulary ? 'text-white' : 'text-primary'"
+          class="q-ml-xs"
+        >
+          {{ getSelectedTerms(vocOpt).length }}
+        </q-badge>
+      </q-btn>
     </div>
     <div class="q-mt-sm" v-if="selectedVocabulary">
       <q-btn
         v-for="termOpt in termOptions"
         :key="termOpt.urn"
-        :outline="!selectedTerms.includes(termOpt.urn)"
+        :outline="!searchService.selectedTerms.includes(termOpt.urn)"
+        :disable="searchService.searching"
         color="primary"
         unelevated
         square
@@ -43,7 +54,6 @@
         @click="onTermSelect(termOpt)"
       />
     </div>
-    <div class="q-mt-md">{{ selectedTerms }}</div>
     <div class="q-mt-md">
       <q-btn
         v-for="view in views"
@@ -60,6 +70,8 @@
       />
     </div>
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
+    <div class="q-mt-md">{{ searchService.selectedTerms }}</div>
+    <q-spinner-dots v-if="searchService.searching" size="xl" />
   </q-page>
 </template>
 
@@ -67,10 +79,10 @@
 import { TaxonomyNodeOption } from 'src/components/models';
 
 const taxonomies = useTaxonomyStore();
+const searchService = useSearchService();
 
 const search = ref('');
 const selectedVocabulary = ref<TaxonomyNodeOption>();
-const selectedTerms = ref<string[]>([]);
 const selectedView = ref('map');
 
 const vocabularies = [
@@ -124,12 +136,22 @@ function onVocabularySelect(voc: TaxonomyNodeOption) {
 function onTermSelect(term: TaxonomyNodeOption) {
   if (!selectedVocabulary.value) return;
   const urn = term.urn;
-  selectedTerms.value.includes(urn)
-    ? selectedTerms.value.splice(selectedTerms.value.indexOf(urn), 1)
-    : selectedTerms.value.push(urn);
+  searchService.selectedTerms.includes(urn)
+    ? searchService.selectedTerms.splice(
+        searchService.selectedTerms.indexOf(urn),
+        1,
+      )
+    : searchService.selectedTerms.push(urn);
+  searchService.search();
 }
 
 function onViewSelect(view: string) {
   selectedView.value = view;
+}
+
+function getSelectedTerms(voc: TaxonomyNodeOption) {
+  return (
+    searchService.selectedTerms.filter((term) => term.startsWith(voc.urn)) || []
+  );
 }
 </script>
