@@ -84,6 +84,7 @@ declare global {
   const useDataStore: typeof import('feathers-pinia')['useDataStore']
   const useFeathers: typeof import('./composables/feathers')['useFeathers']
   const useFeathersService: typeof import('./composables/feathers')['useFeathersService']
+  const useHome: typeof import('./stores/home')['useHome']
   const useI18n: typeof import('vue-i18n')['useI18n']
   const useInstanceDefaults: typeof import('feathers-pinia')['useInstanceDefaults']
   const useLink: typeof import('vue-router')['useLink']
@@ -177,6 +178,7 @@ declare module 'vue' {
     readonly useAttrs: UnwrapRef<typeof import('vue')['useAttrs']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
+    readonly useHome: UnwrapRef<typeof import('./stores/home')['useHome']>
     readonly useI18n: UnwrapRef<typeof import('vue-i18n')['useI18n']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
@@ -261,6 +263,7 @@ declare module '@vue/runtime-core' {
     readonly useAttrs: UnwrapRef<typeof import('vue')['useAttrs']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
+    readonly useHome: UnwrapRef<typeof import('./stores/home')['useHome']>
     readonly useI18n: UnwrapRef<typeof import('vue-i18n')['useI18n']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
