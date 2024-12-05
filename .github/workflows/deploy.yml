@@ -17,6 +17,6 @@ jobs:
       TOKEN: ${{ secrets.CD_TOKEN }}
     with:
       # Optional inputs can be passed here
-      ORG: ${{ secrets.CD_ORG }}
-      REPO: ${{ secrets.CD_REPO }}
+      ORG: ethz-alice
+      REPO: arema
       build_context: '["./backend", "./admin", "./frontend"]' # Optional"
