@@ -11,12 +11,13 @@
       flat
       square
       v-touch-pan.prevent.mouse="handlePan"
-      class="bg-primary text-secondary"
+      class="text-secondary"
       style="
         position: absolute;
         bottom: 60px;
         left: 50%;
         transform: translateX(-50%);
+        background-color: transparent;
       "
     >
       <q-icon
