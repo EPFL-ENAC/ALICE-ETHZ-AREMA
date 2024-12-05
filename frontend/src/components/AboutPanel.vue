@@ -3,7 +3,10 @@
     <div class="text-h4 text-uppercase text-secondary q-mb-lg">
       {{ $t('purpose') }}
     </div>
-    <div class="text-black" style="font-size: xx-large">
+    <div
+      class="text-black"
+      :style="$q.screen.gt.xs ? 'font-size: xx-large' : ''"
+    >
       <span v-html="$t('purpose_text')"></span>
     </div>
     <div class="q-mt-lg">

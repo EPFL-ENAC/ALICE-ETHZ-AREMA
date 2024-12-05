@@ -3,13 +3,13 @@
     <q-header
       elevated
       class="bg-black"
-      :style="`height: ${homeStore.toolbarRatio * 50}px !important`"
+      :style="`height: ${homeStore.toolbarRatio * 50}px`"
     >
       <q-toolbar>
         <img
           v-if="$q.screen.gt.sm"
           src="arema-h-1.svg"
-          :style="`height: ${homeStore.toolbarRatio * 30}px !important`"
+          :style="`height: ${homeStore.toolbarRatio * ($q.screen.gt.sm ? 30 : 20)}px`"
           style="filter: invert(100%)"
         />
         <q-space />
@@ -18,7 +18,7 @@
           flat
           round
           :icon="rightDrawerOpen ? 'close' : 'menu'"
-          :size="`${homeStore.toolbarRatio * 24}px`"
+          :size="`${homeStore.toolbarRatio * ($q.screen.gt.sm ? 24 : 12)}px`"
           @click="rightDrawerOpen = !rightDrawerOpen"
         />
       </q-toolbar>
