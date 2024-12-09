@@ -1,0 +1,151 @@
+name: deploy
+
+'on':
+  push:
+    branches:
+      - dev
+    tags: ['v*.*.*']
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{github.repository}}
+
+
+# proper way of doing matrix builds: https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow
+
+jobs:
+  define-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Define matrix
+        id: set-matrix
+        shell: bash
+        run: |
+          matrix=$(jq -nc '[
+            {
+              "Dockerfile": "./backend/Dockerfile",
+              "context": "./backend",
+              "image": "ghcr.io/epfl-enac/alice-ethz-arema/arema-api",
+              "id": 1
+            },
+            {
+              "Dockerfile": "./admin/Dockerfile",
+              "context": "./admin",
+              "image": "ghcr.io/epfl-enac/alice-ethz-arema/arema-admin",
+              "id": 2
+            },
+            {
+              "Dockerfile": "./frontend/Dockerfile",
+              "context": "./frontend",
+              "image": "ghcr.io/epfl-enac/alice-ethz-arema/arema-ui",
+              "id": 3
+            }
+          ]')
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          echo $matrix
+  build-and-push:
+    runs-on: ubuntu-latest
+    needs: define-matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.define-matrix.outputs.matrix) }}
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image_data_1: ${{ steps.collect.outputs.image_data_1 }}
+      image_data_2: ${{ steps.collect.outputs.image_data_2 }}
+      image_data_3: ${{ steps.collect.outputs.image_data_3 }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+  
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ matrix.image }}
+
+      - name: Build and push Docker image EPFL-ENAC.Agent.Service
+        id: build-docker-push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          push: true
+          file: ${{ matrix.dockerfile }}
+          tags: ${{ steps.meta.outputs.tags }},${{ matrix.image }}:${{ github.sha }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Collect Image Data
+        id: collect
+        run: |
+          image_data=$(jq -nc '{
+            "name": "${{ matrix.image }}",
+            "digest": "${{ steps.build-docker-push.outputs.digest }}",
+            "ref_name": "${{ github.ref_name }}"
+          }')
+          echo "image_data_${{ matrix.id }}=$image_data" >> $GITHUB_OUTPUT
+          echo $image_data
+
+  update-manifest:
+    runs-on: ubuntu-latest
+    needs:
+        - build-and-push
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      # pretty much impossible to use multiple outputs in a matrix build
+      # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/passing-information-between-jobs#using-job-outputs-in-a-matrix-job
+      # CF this issue on github: https://github.com/orgs/community/discussions/17245
+
+      - name: Process Images
+        id: aggregate
+        run: |
+          images='${{ toJSON(needs.build-and-push.outputs) }}'
+          processed_images=$(echo "$images" | jq -r 'to_entries | map(.value | fromjson) | tostring')
+          echo "images=$processed_images" >> $GITHUB_OUTPUT
+          echo "images=$processed_images"
+      - name: Set branch name
+        id: set-branch
+        run: |
+          if [[ "${{github.ref}}" == refs/tags/* ]]; then
+            echo "branch=prod" >> $GITHUB_OUTPUT
+            echo "branch=prod"
+          fi
+          if [[ "${{github.ref}}" == refs/heads/dev ]]; then
+            echo "branch=dev" >> $GITHUB_OUTPUT
+            echo "branch=dev"
+          fi
+      - name: Deploy application
+        if: steps.set-branch.outputs.branch != ''
+        run: |
+          payload=$(cat <<EOF
+          {
+            "event_type": "update-manifest",
+            "client_payload": {
+              "repo_name": "${{ secrets.CD_REPO }}",
+              "repo_org": "${{ secrets.CD_ORG }}",
+              "branch": "${{ steps.set-branch.outputs.branch }}",
+              "images": ${{ steps.aggregate.outputs.images }}
+            }
+          }
+          EOF
+          ) && \
+          echo "Deploying application to dev" && \
+          echo "Payload: $payload" && \
+          curl -X POST \
+          -H "Authorization: Bearer ${{ secrets.CD_TOKEN }}" \
+          ${{ secrets.CD_URI }} \
+          -d "$payload"
