@@ -14,9 +14,9 @@ jobs:
   deploy:
     uses: EPFL-ENAC/epfl-enac-build-push-deploy-action/.github/workflows/deploy.yml@main
     secrets:
-      TOKEN: ${{ secrets.CD_TOKEN }}
+      token: ${{ secrets.CD_TOKEN }}
     with:
       # Optional inputs can be passed here
-      ORG: ethz-alice
-      REPO: arema
+      org: ethz-alice
+      repo: arema
       build_context: '["./backend", "./admin", "./frontend"]' # Optional"
