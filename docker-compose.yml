@@ -1,4 +1,23 @@
 services:
+  es8:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.16.1
+    ports:
+      - 9300:9300
+      - 9200:9200
+    environment:
+      - cluster.name=arema
+      - node.name=es8
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - network.host=0.0.0.0
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    restart: always
   postgres:
     #image: postgis/postgis:15-3.5-alpine
     image: postgres:15.5-alpine

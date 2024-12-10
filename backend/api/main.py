@@ -13,6 +13,7 @@ from api.views.buildings import router as buildings_router
 from api.views.professionals import router as professionals_router
 from api.views.building_elements import router as building_elements_router
 from api.views.taxonomy import router as taxonomy_router
+from api.views.search import router as search_router
 
 basicConfig(level=DEBUG)
 
@@ -103,4 +104,10 @@ app.include_router(
     taxonomy_router,
     prefix="/taxonomy",
     tags=["Taxonomies"],
+)
+
+app.include_router(
+    search_router,
+    prefix="/search",
+    tags=["Search"],
 )

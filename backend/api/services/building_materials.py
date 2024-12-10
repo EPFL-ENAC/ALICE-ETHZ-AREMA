@@ -11,6 +11,7 @@ from datetime import datetime
 from api.services.s3 import s3_client
 from api.utils.files import moveTempFile
 from api.auth import User
+from api.services.search import IndexService
 
 
 class BuildingMaterialQueryBuilder(QueryBuilder):
@@ -38,6 +39,18 @@ class BuildingMaterialService:
     def __init__(self, session: AsyncSession):
         self.session = session
         self.folder = "building-materials"
+        self.entityType = "building-material"
+
+    async def index(self):
+        indexService = IndexService()
+        # delete documents of this type
+        indexService.deleteEntities(self.entityType)
+        # add all documents
+        for entity in (await self.session.exec(select(BuildingMaterial))).all():
+            tags = []
+            tags.extend(entity.types)
+            tags.extend(entity.materials)
+            indexService.addEntity(self.entityType, entity, tags)
 
     async def count(self) -> int:
         """Count all building materials"""

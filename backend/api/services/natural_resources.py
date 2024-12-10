@@ -10,6 +10,7 @@ from datetime import datetime
 from api.services.s3 import s3_client
 from api.utils.files import moveTempFile
 from api.auth import User
+from api.services.search import IndexService
 
 
 class NaturalResourceQueryBuilder(QueryBuilder):
@@ -37,6 +38,15 @@ class NaturalResourceService:
     def __init__(self, session: AsyncSession):
         self.session = session
         self.folder = "natural-resources"
+        self.entityType = "natural-resource"
+
+    async def index(self):
+        indexService = IndexService()
+        # delete documents of this type
+        indexService.deleteEntities(self.entityType)
+        # add all documents
+        for entity in (await self.session.exec(select(NaturalResource))).all():
+            indexService.addEntity(self.entityType, entity, [entity.type])
 
     async def count(self) -> int:
         """Count all natural resources"""
