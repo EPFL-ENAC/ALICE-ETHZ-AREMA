@@ -4,7 +4,29 @@
       <map-view class="q-pr-md a-map" />
     </div>
     <div class="col">
-      <div>{{ searchService.selectedTerms }}</div>
+      <q-list separator>
+        <template v-for="row in rows" :key="`${row.entity_type}:${row.id}`">
+          <q-item clickable v-ripple @click="onEntity(row)">
+            <q-item-section>
+              <q-item-label class="text-primary">{{
+                $t(row.entity_type)
+              }}</q-item-label>
+              <q-item-label class="text-bold">{{ row.name }}</q-item-label>
+              <q-item-label caption>{{ row.description }}</q-item-label>
+              <!-- <div v-if="getImageUrls(row).length">
+                <q-carousel animated v-model="slide" arrows navigation infinite>
+                  <template
+                    v-for="(imageUrl, index) in getImageUrls(row)"
+                    :key="imageUrl"
+                  >
+                    <q-carousel-slide :name="index + 1" :img-src="imageUrl" />
+                  </template>
+                </q-carousel>
+              </div> -->
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-list>
     </div>
   </div>
 </template>
@@ -15,6 +37,21 @@ export default defineComponent({
 });
 </script>
 <script setup lang="ts">
-import MapView from './MapView.vue';
+import MapView from 'src/components/MapView.vue';
 const searchService = useSearchService();
+
+const rows = computed(() => searchService.results?.data || []);
+
+// function getImageUrls(row: Document) {
+//   const images = row.files
+//     ? row.files
+//         .filter((fileRef) => fileRef.ref.mime_type?.startsWith('image'))
+//         .map((fileRef) => `${cdnUrl}/${fileRef.ref.path}`)
+//     : [];
+//   return images;
+// }
+
+function onEntity(row: Document) {
+  console.log('onEntity', row);
+}
 </script>

@@ -78,7 +78,7 @@ async def find(
     text: str = Query(None),
     tags: List[str] = Query(None),
     fields: List[str] = Query(
-        ["entity_type", "tags", "id", "name", "description", "files"]),
+        ["entity_type", "tags", "id", "name", "description", "files", "geom"]),
     skip: int = Query(0),
     limit: int = Query(10),
 ) -> SearchResult:

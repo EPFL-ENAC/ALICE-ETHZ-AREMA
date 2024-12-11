@@ -101,26 +101,31 @@ const termOptions = ref<TaxonomyNodeOption[]>([]);
 const views = ['map', 'list'];
 
 onMounted(() => {
-  taxonomies.init().then(() => {
-    vocabularyOptions.value = vocabularies
-      .map((voc) => {
-        const tx = taxonomies.getTaxonomy(voc);
-        if (!tx) return undefined;
-        const node = taxonomies.getNode(voc);
-        return node
-          ? ({
-              value: voc,
-              label: voc.endsWith(':type')
-                ? taxonomies.getLabel(tx?.names)
-                : taxonomies.getLabel(node.names) || voc,
-              vocabulary: node,
-              taxonomy: tx,
-              urn: taxonomies.toUrn(tx.id, node.id),
-            } as TaxonomyNodeOption)
-          : undefined;
-      })
-      .filter((opt) => opt !== undefined);
-  });
+  taxonomies
+    .init()
+    .then(() => {
+      vocabularyOptions.value = vocabularies
+        .map((voc) => {
+          const tx = taxonomies.getTaxonomy(voc);
+          if (!tx) return undefined;
+          const node = taxonomies.getNode(voc);
+          return node
+            ? ({
+                value: voc,
+                label: voc.endsWith(':type')
+                  ? taxonomies.getLabel(tx?.names)
+                  : taxonomies.getLabel(node.names) || voc,
+                vocabulary: node,
+                taxonomy: tx,
+                urn: taxonomies.toUrn(tx.id, node.id),
+              } as TaxonomyNodeOption)
+            : undefined;
+        })
+        .filter((opt) => opt !== undefined);
+    })
+    .then(() => {
+      searchService.search();
+    });
 });
 
 function onVocabularySelect(voc: TaxonomyNodeOption) {

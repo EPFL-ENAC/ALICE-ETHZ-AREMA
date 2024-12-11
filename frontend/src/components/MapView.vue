@@ -1,3 +1,11 @@
+<template>
+  <div
+    id="map-results"
+    :style="`--t-width: ${width}; --t-height: ${height}`"
+    class="mapview"
+  />
+</template>
+
 <script setup lang="ts">
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import '@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css';
@@ -26,7 +34,7 @@ import {
   ScaleControl,
   Popup,
 } from 'maplibre-gl';
-import { shallowRef, onMounted, markRaw, watch, unref } from 'vue';
+
 const { t } = useI18n({ useScope: 'global' });
 
 interface Props {
@@ -52,24 +60,35 @@ const props = withDefaults(defineProps<Props>(), {
   width: '100%',
   height: '800px',
 });
-const map = shallowRef<Map | undefined>(undefined);
 
-const containerId = 'map-view-' + Math.random().toString(36).slice(2);
+let map = shallowRef<Map>();
 
 // track which were the layers and éarlers added, to be able to remove them
 const layerIds: string[] = [];
 const markers: Marker[] = [];
 
 onMounted(() => {
-  map.value = markRaw(
-    new Map({
-      container: containerId,
-      center: [props.centre[0], props.centre[1]],
-      style: style,
-      trackResize: true,
-      zoom: props.zoom,
-    }),
-  );
+  initMap();
+});
+
+onUnmounted(() => {
+  if (map.value) {
+    map.value.remove();
+    map.value = undefined;
+  }
+});
+
+function initMap() {
+  if (map.value) {
+    return;
+  }
+  map.value = new Map({
+    container: 'map-results',
+    center: [props.centre[0], props.centre[1]],
+    style: style,
+    trackResize: true,
+    zoom: props.zoom,
+  });
   map.value.addControl(new NavigationControl({}));
   map.value.addControl(new GeolocateControl({}));
   map.value.addControl(new ScaleControl({}));
@@ -86,7 +105,7 @@ onMounted(() => {
   map.value.on('load', function () {
     displayFeatures();
   });
-});
+}
 
 watch(
   () => props.features,
@@ -232,16 +251,6 @@ function randomColor() {
     .substring(1, 7)}`;
 }
 </script>
-
-<template>
-  <div>
-    <div
-      :id="containerId"
-      :style="`--t-width: ${width}; --t-height: ${height}`"
-      class="mapview"
-    />
-  </div>
-</template>
 
 <style scoped>
 .mapview {
