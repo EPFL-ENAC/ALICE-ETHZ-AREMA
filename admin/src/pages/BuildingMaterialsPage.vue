@@ -26,6 +26,16 @@
             icon="add"
             @click="onAdd"
           />
+          <q-btn
+            v-if="authStore.isAdmin"
+            size="sm"
+            color="primary"
+            :disable="loading"
+            :label="$t('index')"
+            icon="manage_search"
+            @click="onIndex"
+            class="on-right"
+          />
           <q-space />
           <q-input dense debounce="300" v-model="filter" clearable>
             <template v-slot:append>
@@ -206,6 +216,21 @@ function fetchFromServer(
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
+
+function onIndex() {
+  loading.value = true;
+  service
+    .index()
+    .then((result) => {
+      $q.notify({
+        message: t('all_items_indexed', { count: result }),
+        type: 'positive',
+      });
+    })
+    .finally(() => {
+      loading.value = false;
+    });
+}
 
 function onAdd() {
   selected.value = { name: '' };

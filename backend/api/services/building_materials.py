@@ -41,16 +41,21 @@ class BuildingMaterialService:
         self.folder = "building-materials"
         self.entityType = "building-material"
 
-    async def index(self):
+    async def index(self) -> int:
+        """Index all building materials"""
         indexService = IndexService()
         # delete documents of this type
         indexService.deleteEntities(self.entityType)
         # add all documents
+        count = 0
         for entity in (await self.session.exec(select(BuildingMaterial))).all():
             tags = []
             tags.extend(entity.types)
             tags.extend(entity.materials)
             indexService.addEntity(self.entityType, entity, tags)
+            count += 1
+        debug(f"Indexed {count} building materials")
+        return count
 
     async def count(self) -> int:
         """Count all building materials"""

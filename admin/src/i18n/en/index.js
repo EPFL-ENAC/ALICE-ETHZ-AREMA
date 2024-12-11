@@ -148,4 +148,5 @@ export default {
     'Technical construction used.',
   building_element_professionals_hint: 'Professionals involved.',
   no_building_elements: 'No building elements',
+  all_items_indexed: 'All items indexed ({count})',
 };

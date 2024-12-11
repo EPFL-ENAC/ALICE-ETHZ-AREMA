@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, Query
+from typing import List
+from fastapi import APIRouter, Depends, Query, HTTPException
 from api.auth import kc_service, User
 from api.db import get_session, AsyncSession
 from api.services.natural_resources import NaturalResourceService
@@ -6,7 +7,7 @@ from api.services.building_materials import BuildingMaterialService
 from api.services.technical_constructions import TechnicalConstructionService
 from api.services.buildings import BuildingService
 from api.services.professionals import ProfessionalService
-from api.services.search import IndexService
+from api.services.search import IndexService, ANALYZED_FIELDS
 from api.models.query import SearchResult
 from enacit4r_sql.utils.query import paramAsDict
 
@@ -20,16 +21,26 @@ async def populate_index(
     user: User = Depends(kc_service.require_admin())
 ):
     """Index all or specific entity type"""
-    service = NaturalResourceService(session)
-    await service.index()
-    service = BuildingMaterialService(session)
-    await service.index()
-    service = TechnicalConstructionService(session)
-    await service.index()
-    service = BuildingService(session)
-    await service.index()
-    service = ProfessionalService(session)
-    await service.index()
+    try:
+        indexCounts = {}
+        if type is None or type == "natural-resource":
+            service = NaturalResourceService(session)
+            indexCounts["natural-resource"] = await service.index()
+        if type is None or type == "building-material":
+            service = BuildingMaterialService(session)
+            indexCounts["building-material"] = await service.index()
+        if type is None or type == "technical-construction":
+            service = TechnicalConstructionService(session)
+            indexCounts["technical-construction"] = await service.index()
+        if type is None or type == "building":
+            service = BuildingService(session)
+            indexCounts["building"] = await service.index()
+        if type is None or type == "professional":
+            service = ProfessionalService(session)
+            indexCounts["professional"] = await service.index()
+        return indexCounts
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.delete("/_index")
@@ -46,16 +57,43 @@ async def delete_index(
         else:
             indexService.deleteIndex()
     except Exception as e:
-        return {"error": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/", response_model=SearchResult, response_model_exclude_none=True)
+@router.get("/_query", response_model=SearchResult, response_model_exclude_none=True)
 async def find(
     query: str = Query(None),
     skip: int = Query(0),
     limit: int = Query(10),
+    user: User = Depends(kc_service.require_admin())
 ) -> SearchResult:
-    """Search documents matching the query"""
+    """Search documents matching the Elasticsearch query"""
     indexService = IndexService()
     queryDict = paramAsDict(query)
+    return indexService.search(query=queryDict, skip=skip, limit=limit)
+
+
+@router.get("/", response_model=SearchResult, response_model_exclude_none=True)
+async def find(
+    text: str = Query(None),
+    tags: List[str] = Query(None),
+    fields: List[str] = Query(
+        ["entity_type", "tags", "id", "name", "description", "files"]),
+    skip: int = Query(0),
+    limit: int = Query(10),
+) -> SearchResult:
+    """Search documents by tags or full text"""
+    indexService = IndexService()
+    tagsQuery = {"terms": {"tags": tags}} if tags else None
+    textQuery = {"multi_match": {"query": text,
+                                 "fields": ANALYZED_FIELDS}} if text else None
+    queryDict = {}
+    if tagsQuery and textQuery:
+        queryDict = {"query": {"bool": {"must": [tagsQuery, textQuery]}}}
+    elif tagsQuery:
+        queryDict = {"query": tagsQuery}
+    elif textQuery:
+        queryDict = {"query": textQuery}
+    if fields:
+        queryDict["_source"] = fields
     return indexService.search(query=queryDict, skip=skip, limit=limit)

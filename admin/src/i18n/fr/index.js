@@ -95,4 +95,11 @@ export default {
   low: 'Bas',
   std: 'Standard',
   high: 'Haut',
+  technical_construction: 'Construction technique',
+  building_element_technical_construction_used_hint:
+    'Constructions techniques utilisées.',
+  building_element_professionals_hint:
+    'Professionnels impliqués dans la construction.',
+  no_building_elements: 'Aucun élément de bâtiment',
+  all_items_indexed: 'Tous les éléments sont indexés ({count}).',
 };
