@@ -15,7 +15,7 @@ export const useSearchService = defineStore('search', () => {
     searching.value = true;
     results.value = undefined;
     return api
-      .get('/search', {
+      .get('/search/', {
         params: {
           tags: selectedTerms.value,
         },
