@@ -50,8 +50,10 @@ class ProfessionalService:
         count = 0
         for entity in (await self.session.exec(select(Professional))).all():
             tags = []
-            tags.extend(entity.types)
-            tags.extend(entity.materials)
+            if entity.types:
+                tags.extend(entity.types)
+            if entity.materials:
+                tags.extend(entity.materials)
             indexService.addEntity(self.entityType, entity, tags)
             count += 1
         debug(f"Indexed {count} professionals")

@@ -32,7 +32,7 @@
                   v-model="selected.types"
                   entity-type="professional"
                   path="type"
-                  :label="$t('type') + ' *'"
+                  :label="$t('types') + ' *'"
                   multiple
                 />
               </div>

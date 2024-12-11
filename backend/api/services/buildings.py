@@ -51,9 +51,11 @@ class BuildingService:
         # add all documents
         count = 0
         for entity in (await self.session.exec(select(Building))).all():
-            tags = [entity.type]
-            tags.append(entity.status)
-            tags.extend(entity.materials)
+            tags = [entity.type] if entity.type else []
+            if entity.status:
+                tags.append(entity.status)
+            if entity.materials:
+                tags.extend(entity.materials)
             indexService.addEntity(self.entityType, entity, tags)
             count += 1
         debug(f"Indexed {count} buildings")

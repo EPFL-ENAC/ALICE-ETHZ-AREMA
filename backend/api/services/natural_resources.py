@@ -49,7 +49,8 @@ class NaturalResourceService:
         # add all documents
         count = 0
         for entity in (await self.session.exec(select(NaturalResource))).all():
-            indexService.addEntity(self.entityType, entity, [entity.type])
+            indexService.addEntity(self.entityType, entity, [
+                                   entity.type] if entity.type else [])
             count += 1
         debug(f"Indexed {count} natural resources")
         return count
