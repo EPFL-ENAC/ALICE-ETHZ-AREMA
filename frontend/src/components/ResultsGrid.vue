@@ -16,7 +16,7 @@
               </div>
               <div class="text-body2">{{ row.description }}</div>
               <div v-if="getImageUrls(row).length">
-                <q-image :src="getImageUrls(row)[0]" />
+                <q-img :src="getImageUrls(row)[0]" />
               </div>
             </q-card-section>
           </q-card>
