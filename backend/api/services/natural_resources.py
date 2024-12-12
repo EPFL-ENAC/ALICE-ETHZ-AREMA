@@ -38,10 +38,10 @@ class NaturalResourceService:
 
     def __init__(self, session: AsyncSession):
         self.session = session
-        self.folder = "natural-resources"
         self.entityType = "natural-resource"
+        self.folder = f"{self.entityType}s"
 
-    async def index(self) -> int:
+    async def indexAll(self) -> int:
         """Index all natural resources"""
         indexService = IndexService()
         # delete documents of this type
@@ -49,8 +49,8 @@ class NaturalResourceService:
         # add all documents
         count = 0
         for entity in (await self.session.exec(select(NaturalResource))).all():
-            indexService.addEntity(self.entityType, entity, [
-                                   entity.type] if entity.type else [])
+            indexService.addEntity(
+                self.entityType, entity, self._makeTags(entity))
             count += 1
         debug(f"Indexed {count} natural resources")
         return count
@@ -83,6 +83,8 @@ class NaturalResourceService:
         s3_client.delete_files(f"{self.folder}/{entity.id}")
         await self.session.delete(entity)
         await self.session.commit()
+        # delete from index
+        IndexService().deleteEntity(self.entityType, entity.id)
         return entity
 
     async def find(self, filter: dict, fields: list, sort: list, range: list) -> NaturalResourceResult:
@@ -130,7 +132,9 @@ class NaturalResourceService:
                 new_files.append(item.model_dump())
             entity.files = new_files
             await self.session.commit()
-
+        # add to index
+        IndexService().addEntity(
+            self.entityType, entity, self._makeTags(entity))
         return entity
 
     async def update(self, id: int, payload: NaturalResource, user: User = None) -> NaturalResource:
@@ -158,4 +162,10 @@ class NaturalResourceService:
                 new_files.append(item.model_dump())
             entity.files = new_files
         await self.session.commit()
+        # update in index
+        IndexService().updateEntity(
+            self.entityType, entity, self._makeTags(entity))
         return entity
+
+    def _makeTags(self, entity: NaturalResource) -> list[str]:
+        return [entity.type] if entity.type else []

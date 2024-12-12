@@ -38,10 +38,10 @@ class ProfessionalService:
 
     def __init__(self, session: AsyncSession):
         self.session = session
-        self.folder = "professionals"
         self.entityType = "professional"
+        self.folder = f"{self.entityType}s"
 
-    async def index(self) -> int:
+    async def indexAll(self) -> int:
         """Index all professionals"""
         indexService = IndexService()
         # delete documents of this type
@@ -49,12 +49,8 @@ class ProfessionalService:
         # add all documents
         count = 0
         for entity in (await self.session.exec(select(Professional))).all():
-            tags = []
-            if entity.types:
-                tags.extend(entity.types)
-            if entity.materials:
-                tags.extend(entity.materials)
-            indexService.addEntity(self.entityType, entity, tags)
+            indexService.addEntity(
+                self.entityType, entity, self._makeTags(entity))
             count += 1
         debug(f"Indexed {count} professionals")
         return count
@@ -91,6 +87,8 @@ class ProfessionalService:
         entity.technical_constructions.clear()
         await self.session.delete(entity)
         await self.session.commit()
+        # delete from index
+        IndexService().deleteEntity(self.entityType, entity.id)
         return entity
 
     async def find(self, filter: dict, fields: list, sort: list, range: list) -> ProfessionalResult:
@@ -149,6 +147,9 @@ class ProfessionalService:
             entity.files = new_files
             await self.session.commit()
 
+        # add to index
+        IndexService().addEntity(
+            self.entityType, entity, self._makeTags(entity))
         return entity
 
     async def update(self, id: int, payload: ProfessionalDraft, user: User = None) -> Professional:
@@ -186,7 +187,18 @@ class ProfessionalService:
         entity.technical_constructions.clear()
         entity.technical_constructions.extend(new_tcs)
         await self.session.commit()
+        # update in index
+        IndexService().updateEntity(
+            self.entityType, entity, self._makeTags(entity))
         return entity
+
+    def _makeTags(self, entity: Professional) -> list[str]:
+        tags = []
+        if entity.types:
+            tags.extend(entity.types)
+        if entity.materials:
+            tags.extend(entity.materials)
+        return tags
 
     async def _get_building_materials(self, ids: list[int]):
         return await self.session.exec(select(BuildingMaterial).filter(BuildingMaterial.id.in_(ids)))

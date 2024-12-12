@@ -40,6 +40,16 @@ class IndexService:
         doc["tags"] = tags
         self._updateDocument(doc_id, doc)
 
+    def deleteEntity(self, entity_type: str, entity_id: int):
+        """Delete an entity from the index
+
+        Args:
+            entity_type (str): The class of the entity
+            entity_id (int): The id of the entity
+        """
+        doc_id = f"{entity_type}:{entity_id}"
+        self._deleteDocument(doc_id)
+
     def deleteEntities(self, entity_type: str):
         """Delete all entities of a given type
 

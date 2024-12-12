@@ -40,10 +40,10 @@ class BuildingService:
 
     def __init__(self, session: AsyncSession):
         self.session = session
-        self.folder = "buildings"
         self.entityType = "building"
+        self.folder = f"{self.entityType}s"
 
-    async def index(self) -> int:
+    async def indexAll(self) -> int:
         """Index all buildings"""
         indexService = IndexService()
         # delete documents of this type
@@ -51,12 +51,8 @@ class BuildingService:
         # add all documents
         count = 0
         for entity in (await self.session.exec(select(Building))).all():
-            tags = [entity.type] if entity.type else []
-            if entity.status:
-                tags.append(entity.status)
-            if entity.materials:
-                tags.extend(entity.materials)
-            indexService.addEntity(self.entityType, entity, tags)
+            indexService.addEntity(
+                self.entityType, entity, self._makeTags(entity))
             count += 1
         debug(f"Indexed {count} buildings")
         return count
@@ -95,6 +91,8 @@ class BuildingService:
         entity.professionals.clear()
         await self.session.delete(entity)
         await self.session.commit()
+        # delete from index
+        IndexService().deleteEntity(self.entityType, entity.id)
         return entity
 
     async def find(self, filter: dict, fields: list, sort: list, range: list) -> BuildingResult:
@@ -156,6 +154,10 @@ class BuildingService:
         # handle building elements
         await self._apply_building_elements(entity.id, payload.building_elements)
 
+        # add to index
+        IndexService().addEntity(
+            self.entityType, entity, self._makeTags(entity))
+
         return entity
 
     async def update(self, id: int, payload: BuildingDraft, user: User = None) -> Building:
@@ -194,6 +196,9 @@ class BuildingService:
         await self.session.commit()
         # handle building elements
         await self._apply_building_elements(entity.id, payload.building_elements)
+        # update in index
+        IndexService().updateEntity(
+            self.entityType, entity, self._makeTags(entity))
         return entity
 
     async def _apply_building_elements(self, building_id: int, elements: list[BuildingElementDraft]):
@@ -213,6 +218,16 @@ class BuildingService:
                 await be_service.create(element)
             else:
                 await be_service.update(element.id, element)
+
+    def _makeTags(self, entity: Building) -> list[str]:
+        tags = []
+        if entity.type:
+            tags.append(entity.type)
+        if entity.status:
+            tags.append(entity.status)
+        if entity.materials:
+            tags.extend(entity.materials)
+        return tags
 
     async def _get_building_materials(self, ids: list[int]):
         return await self.session.exec(select(BuildingMaterial).filter(BuildingMaterial.id.in_(ids)))

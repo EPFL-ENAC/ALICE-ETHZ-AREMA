@@ -25,19 +25,19 @@ async def populate_index(
         indexCounts = {}
         if type is None or type == "natural-resource":
             service = NaturalResourceService(session)
-            indexCounts["natural-resource"] = await service.index()
+            indexCounts["natural-resource"] = await service.indexAll()
         if type is None or type == "building-material":
             service = BuildingMaterialService(session)
-            indexCounts["building-material"] = await service.index()
+            indexCounts["building-material"] = await service.indexAll()
         if type is None or type == "technical-construction":
             service = TechnicalConstructionService(session)
-            indexCounts["technical-construction"] = await service.index()
+            indexCounts["technical-construction"] = await service.indexAll()
         if type is None or type == "building":
             service = BuildingService(session)
-            indexCounts["building"] = await service.index()
+            indexCounts["building"] = await service.indexAll()
         if type is None or type == "professional":
             service = ProfessionalService(session)
-            indexCounts["professional"] = await service.index()
+            indexCounts["professional"] = await service.indexAll()
         return indexCounts
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
