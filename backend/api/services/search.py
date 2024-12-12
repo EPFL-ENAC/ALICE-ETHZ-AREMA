@@ -24,6 +24,8 @@ class IndexService:
         doc = entity.model_dump()
         doc["entity_type"] = entity_type
         doc["tags"] = tags
+        if "long" in doc and "lat" in doc:
+            doc["location"] = {"lat": doc["lat"], "lon": doc["long"]}
         self._addDocument(doc_id, doc)
 
     def updateEntity(self, entity_type: str, entity, tags: list[str]):
@@ -136,6 +138,9 @@ class IndexService:
                         },
                         "entity_type": {
                             "type": "keyword"
+                        },
+                        "location": {
+                            "type": "geo_point"
                         }
                     }
                 }

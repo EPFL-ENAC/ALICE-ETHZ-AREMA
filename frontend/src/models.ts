@@ -191,6 +191,10 @@ export interface Document extends Entity {
   entity_type: string;
   id: number;
   files?: FileItem[];
+  location?: {
+    lon: number;
+    lat: number;
+  };
 }
 
 export interface SearchResult {

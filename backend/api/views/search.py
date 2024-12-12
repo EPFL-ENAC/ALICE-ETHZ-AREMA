@@ -78,7 +78,8 @@ async def find(
     text: str = Query(None),
     tags: List[str] = Query(None),
     fields: List[str] = Query(
-        ["entity_type", "tags", "id", "name", "description", "files", "geom"]),
+        ["entity_type", "tags", "id", "name", "description", "files", "location"]),
+    exists: List[str] = Query([]),  # filter documents with a non-empty field
     skip: int = Query(0),
     limit: int = Query(10),
 ) -> SearchResult:
@@ -99,6 +100,10 @@ async def find(
             terms[vocabulary].append(tag)
         for vocabulary in terms:
             mustQueries.append({"terms": {"tags": terms[vocabulary]}})
+
+    if exists:
+        for field in exists:
+            mustQueries.append({"exists": {"field": field}})
 
     queryDict = {}
     if len(mustQueries):

@@ -11,20 +11,8 @@ import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import '@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import 'maplibregl-theme-switcher/styles.css';
-// import { geocoderApi } from '../utils/geocoder';
 import { style } from '../utils/maps';
-import * as MapboxDrawGeodesic from 'mapbox-gl-draw-geodesic';
-// import MaplibreGeocoder from '@maplibre/maplibre-gl-geocoder';
-import {
-  type Feature,
-  type MultiPolygon,
-  type Polygon,
-  type Point,
-  center,
-  circle,
-  FeatureCollection,
-  Units,
-} from '@turf/turf';
+import { type Feature, type Point, FeatureCollection } from '@turf/turf';
 import {
   FullscreenControl,
   GeolocateControl,
@@ -38,10 +26,7 @@ import {
 const { t } = useI18n({ useScope: 'global' });
 
 interface Props {
-  features?: [
-    | Feature<Polygon | MultiPolygon | Point>[]
-    | Feature<Polygon | MultiPolygon | Point>,
-  ];
+  features?: FeatureCollection;
   centre?: [number, number];
   zoom?: number;
   aspectRatio?: number;
@@ -93,14 +78,6 @@ function initMap() {
   map.value.addControl(new GeolocateControl({}));
   map.value.addControl(new ScaleControl({}));
   map.value.addControl(new FullscreenControl({}));
-  // map.value.addControl(
-  //   new MaplibreGeocoder(geocoderApi, {
-  //     maplibregl: { Marker },
-  //     showResultsWhileTyping: true,
-  //     language: locale.value,
-  //   }),
-  //   'top-left',
-  // );
 
   map.value.on('load', function () {
     displayFeatures();
@@ -116,13 +93,13 @@ watch(
 );
 
 function displayFeatures() {
-  const features = unref(props.features);
+  const features = props.features?.features;
   if (map.value && layerIds.length > 0) {
     layerIds.forEach((layerId) => {
       map.value?.removeLayer(layerId);
       map.value?.removeSource(layerId);
     });
-    layerIds.splice(0);
+    if (layerIds.length) layerIds.splice(0);
   }
   if (map.value && markers.length > 0) {
     markers.forEach((marker) => {
@@ -131,79 +108,24 @@ function displayFeatures() {
     markers.splice(0);
   }
   if (features) {
-    features
-      .map((f) => unref(f))
-      .forEach((feature) => {
-        if (feature.type === 'FeatureCollection') {
-          displayPolygons(feature);
-        } else if (MapboxDrawGeodesic.isCircle(feature)) {
-          displayCircle(feature);
-        } else if (feature.type === 'Feature') {
-          displayPoint(feature);
-        }
-      });
-  }
-}
-
-function displayCircle(feature: Feature<Polygon>) {
-  if (map.value) {
-    // a circle is not a geojson type, then prevent changes in representation using the geodesic API
-    const center = MapboxDrawGeodesic.getCircleCenter(feature);
-    const radius = MapboxDrawGeodesic.getCircleRadius(feature);
-    const popup = new Popup({
-      closeButton: false,
-      offset: 25,
-    }).setHTML(`
-      <div class="text-h6"><a href="/professional/${feature.id}">${
-        feature.properties?.name
-      }</a></div>
-      <p>${feature.properties?.description}</p>
-      <p><b>${t('address')}</b>: ${feature.properties?.address}</p>
-      <p><b>${t('areaDelivery')}</b>: ${radius}km</p>
-      `);
-    markers.push(
-      new Marker({ color: '#FF0000' })
-        .setLngLat(center)
-        .setPopup(popup)
-        .addTo(map.value),
-    );
-
-    // Generate a polygon using turf.circle.
-    // See https://turfjs.org/docs/#circle
-    const options = {
-      steps: 64,
-      units: 'kilometers' as Units,
-    };
-    const cc = circle(center, radius, options);
-
-    // Add a fill layer with some transparency.
-    const color = randomColor();
-    layerIds.push(`${feature.id}`);
-    map.value.addLayer({
-      id: `${feature.id}`,
-      type: 'fill',
-      source: {
-        type: 'geojson',
-        data: cc,
-      },
-      paint: {
-        'fill-color': color,
-        'fill-opacity': 0.2,
-      },
+    features.forEach((feature) => {
+      if (feature.geometry.type === 'Point') {
+        displayPoint(feature as Feature<Point>);
+      }
     });
   }
 }
 
 function displayPoint(feature: Feature<Point>) {
   if (map.value) {
-    const center = feature.geometry.coordinates;
+    const center = feature.geometry.coordinates as [number, number];
     const popup = new Popup({
       closeButton: false,
       offset: 25,
     }).setHTML(`
+      <div class="text-primary">${t(feature.properties?.entity_type)}</div>
       <div class="text-h6">${feature.properties?.name}</div>
-      <p>${feature.properties?.description}</p>
-      <p><b>${t('address')}</b>: ${feature.properties?.address}</p>`);
+      <div>${feature.properties?.description ? feature.properties?.description : ''}</div>`);
     markers.push(
       new Marker({ color: '#FF0000' })
         .setLngLat(center)
@@ -211,44 +133,6 @@ function displayPoint(feature: Feature<Point>) {
         .addTo(map.value),
     );
   }
-}
-
-function displayPolygons(featureCollection: Feature<FeatureCollection>) {
-  const ct = center(featureCollection);
-  const popup = new Popup({
-    closeButton: false,
-    offset: 25,
-  }).setHTML(`<b>Zones</b>: ${featureCollection.features.length}`);
-  markers.push(
-    new Marker({ color: '#FF0000' })
-      .setLngLat(ct.geometry.coordinates)
-      .setPopup(popup)
-      .addTo(map.value),
-  );
-
-  const color = randomColor();
-  layerIds.push(`${feature.id}`);
-  featureCollection.features.forEach((feature) => {
-    // Add a fill layer with some transparency.
-    map.value?.addLayer({
-      id: `${feature.id}`,
-      type: 'fill',
-      source: {
-        type: 'geojson',
-        data: feature,
-      },
-      paint: {
-        'fill-color': color,
-        'fill-opacity': 0.2,
-      },
-    });
-  });
-}
-
-function randomColor() {
-  return `#${(0x1000000 + Math.random() * 0xffffff)
-    .toString(16)
-    .substring(1, 7)}`;
 }
 </script>
 

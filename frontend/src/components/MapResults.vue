@@ -1,10 +1,10 @@
 <template>
   <div class="row q-col-gutter-md">
     <div class="col">
-      <map-view class="q-pr-md" />
+      <map-view :features="searchService.features" class="q-pr-md" />
     </div>
     <div class="col">
-      <q-list v-if="searchService.hasFilters" separator>
+      <q-list separator>
         <template v-for="row in rows" :key="`${row.entity_type}:${row.id}`">
           <q-item clickable v-ripple @click="onEntity(row)">
             <q-item-section>
@@ -49,7 +49,7 @@ import { Document } from 'src/models';
 
 const searchService = useSearchService();
 
-const rows = computed(() => searchService.results?.data || []);
+const rows = computed(() => searchService.geoResults?.data || []);
 
 // function getImageUrls(row: Document) {
 //   const images = row.files
