@@ -4,6 +4,7 @@ import { SearchResult } from 'src/models';
 
 export const useSearchService = defineStore('search', () => {
   const selectedTerms = ref<string[]>([]);
+  const filterText = ref('');
   const searching = ref(false);
   const results = ref<SearchResult>();
 
@@ -18,6 +19,7 @@ export const useSearchService = defineStore('search', () => {
       .get('/search/', {
         params: {
           tags: selectedTerms.value,
+          text: filterText.value,
         },
         paramsSerializer: {
           indexes: null, // no brackets at all
@@ -33,6 +35,7 @@ export const useSearchService = defineStore('search', () => {
 
   return {
     selectedTerms,
+    filterText,
     searching,
     results,
     reset,

@@ -5,12 +5,14 @@
     </div>
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
     <q-input
-      v-model="search"
+      v-model="searchService.filterText"
       borderless
+      debounce="500"
       input-style="font-size: 48px;"
       input-class="text-secondary"
       :placeholder="$t('type_here')"
       class="q-mt-md q-mb-md"
+      @update:model-value="searchService.search"
     />
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
     <div>
@@ -84,7 +86,6 @@ import { TaxonomyNodeOption } from 'src/components/models';
 const taxonomies = useTaxonomyStore();
 const searchService = useSearchService();
 
-const search = ref('');
 const selectedVocabulary = ref<TaxonomyNodeOption>();
 const selectedView = ref('map');
 

@@ -84,16 +84,26 @@ async def find(
 ) -> SearchResult:
     """Search documents by tags or full text"""
     indexService = IndexService()
-    tagsQuery = {"terms": {"tags": tags}} if tags else None
-    textQuery = {"multi_match": {"query": text,
-                                 "fields": ANALYZED_FIELDS}} if text else None
+    mustQueries = []
+
+    if text:
+        mustQueries.append({"multi_match": {"query": text,
+                                            "fields": ANALYZED_FIELDS}})
+    if tags:
+        terms = {}
+        # group terms (urn) by their parent
+        for tag in tags:
+            vocabulary = tag.rsplit('.', 1)[0]
+            if vocabulary not in terms:
+                terms[vocabulary] = []
+            terms[vocabulary].append(tag)
+        for vocabulary in terms:
+            mustQueries.append({"terms": {"tags": terms[vocabulary]}})
+
     queryDict = {}
-    if tagsQuery and textQuery:
-        queryDict = {"query": {"bool": {"must": [tagsQuery, textQuery]}}}
-    elif tagsQuery:
-        queryDict = {"query": tagsQuery}
-    elif textQuery:
-        queryDict = {"query": textQuery}
+    if len(mustQueries):
+        queryDict = {"query": {"bool": {"must": mustQueries}}}
     if fields:
         queryDict["_source"] = fields
+
     return indexService.search(query=queryDict, skip=skip, limit=limit)

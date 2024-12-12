@@ -77,6 +77,8 @@ export default {
     'Constructions techniques utilisées.',
   building_professionals_hint: 'Professionnels impliqués dans la construction.',
   layout: 'Disposition',
+  layout_help:
+    "Ceci est un exemple de disposition de page de chaque élément permettant de visualiser comment chaque champ est placé dans la page correspondante du portail web d'AREMA.",
   physical_characteristics: 'Caractéristiques physiques',
   article_top: 'Article (haut)',
   article_bottom: 'Article (bas)',
@@ -102,4 +104,11 @@ export default {
     'Professionnels impliqués dans la construction.',
   no_building_elements: 'Aucun élément de bâtiment',
   all_items_indexed: 'Tous les éléments sont indexés ({count}).',
+  search_index: 'Index de recherche',
+  search_index_help:
+    "L'index de recherche permet de rechercher des éléments par texte libre et par tags. Il s'agit d'une fonctionnalité essentielle du portail web principal d'AREMA. Chaque élément est automatiquement indexé, dès sa création ou sa mise à jour ; votre intervention n'est normalement pas nécessaire. Néanmoins, pour des besoins d'administration avancés, il est possible de supprimer l'index à tout moment, puis de réindexer tous les éléments.",
+  drop_index: "Supprimer l'index",
+  index_all: 'Tout indexer',
+  index_dropped: 'Index supprimé',
+  index_drop_error: "Erreur lors de la suppression de l'index",
 };

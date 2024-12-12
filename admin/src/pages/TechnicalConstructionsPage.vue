@@ -31,7 +31,7 @@
             size="sm"
             color="primary"
             :disable="loading"
-            :label="$t('index')"
+            :label="$t('index_all')"
             icon="manage_search"
             @click="onIndex"
             class="on-right"
@@ -231,6 +231,12 @@ function onIndex() {
       $q.notify({
         message: t('all_items_indexed', { count: result }),
         type: 'positive',
+      });
+    })
+    .catch((err) => {
+      $q.notify({
+        message: err.message,
+        type: 'negative',
       });
     })
     .finally(() => {

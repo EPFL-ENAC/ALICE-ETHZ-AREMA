@@ -104,6 +104,7 @@
     "useFilesStore": true,
     "useTaxonomy": true,
     "useTaxonomyStore": true,
-    "URN_PREFIX": true
+    "URN_PREFIX": true,
+    "useSearchService": true
   }
 }
