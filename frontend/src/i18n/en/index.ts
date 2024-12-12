@@ -24,4 +24,6 @@ export default {
   videos: 'Videos',
   search: 'Search',
   showing_results: 'Showing results {count}/{total}',
+  no_results: 'No results',
+  show_more: 'Show more',
 };

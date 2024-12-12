@@ -7,12 +7,13 @@
     <q-input
       v-model="searchService.filterText"
       borderless
+      clearable
       debounce="500"
       input-style="font-size: 48px;"
       input-class="text-secondary"
       :placeholder="$t('type_here')"
       class="q-mt-md q-mb-md"
-      @update:model-value="searchService.search"
+      @update:model-value="searchService.search()"
     />
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
     <div>
@@ -125,12 +126,20 @@ onMounted(() => {
         .filter((opt) => opt !== undefined);
     })
     .then(() => {
-      searchService.search();
+      searchService.search(100);
     });
 });
 
 function onVocabularySelect(voc: TaxonomyNodeOption) {
-  selectedVocabulary.value = voc;
+  if (voc === selectedVocabulary.value) {
+    // clear associated terms
+    searchService.selectedTerms = searchService.selectedTerms.filter(
+      (term) => !term.startsWith(voc.urn),
+    );
+    searchService.search();
+  } else {
+    selectedVocabulary.value = voc;
+  }
   termOptions.value =
     voc.vocabulary.children?.map((child) => ({
       value: child.id,
