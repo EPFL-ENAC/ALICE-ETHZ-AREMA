@@ -155,7 +155,7 @@ watch(
       bmService
         .find({
           $limit: 100,
-          $select: ['id', 'name', 'type'],
+          $select: ['id', 'name', 'types'],
           filter: {},
         })
         .then((res) => {
