@@ -48,7 +48,7 @@ export default defineComponent({
     });
 
     function onFeatureSelected(
-      selectedFeatures: Feature<Polygon | MultiPolygon>[]
+      selectedFeatures: Feature<Polygon | MultiPolygon>[],
     ) {
       if (selectedFeatures && selectedFeatures.length > 0) {
         const value = selectedFeatures.pop();
@@ -59,7 +59,7 @@ export default defineComponent({
         ) {
           value.properties.circleRadius = round(
             value.properties.circleRadius,
-            0
+            0,
           );
           const center = value.geometry.coordinates;
           geocoderApi
@@ -115,7 +115,7 @@ export default defineComponent({
               ) {
                 suggestedFeatures.value = collection.features;
                 suggestions.value = collection.features.map(
-                  (feature) => feature.properties.display_name
+                  (feature) => feature.properties.display_name,
                 );
               }
             });
@@ -128,7 +128,7 @@ export default defineComponent({
 
     function onAddressUpdate() {
       const location = suggestedFeatures.value.find(
-        (feature) => feature.properties?.text === address.value
+        (feature) => feature.properties?.text === address.value,
       );
       if (location) updateWithLocation(location);
     }
@@ -174,7 +174,7 @@ export default defineComponent({
             use-input
             clearable
             input-debounce="200"
-            :label="$t('address')"
+            :label="$t('address') + '*'"
             :options="suggestions"
             @filter="lookupAddress"
             @change="onAddressUpdate"

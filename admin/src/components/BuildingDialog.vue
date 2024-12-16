@@ -21,14 +21,18 @@
           <q-tab-panel name="general" class="q-pl-none q-pr-none">
             <div class="row q-mb-md q-col-gutter-md">
               <div class="col-12 col-sm-3">
-                <q-input filled v-model="selected.name" :label="$t('name')" />
+                <q-input
+                  filled
+                  v-model="selected.name"
+                  :label="$t('name') + '*'"
+                />
               </div>
               <div class="col-12 col-sm-3">
                 <taxonomy-select
                   v-model="selected.type"
                   entity-type="building"
                   path="type"
-                  :label="$t('type')"
+                  :label="$t('type') + '*'"
                 />
               </div>
               <div class="col-12 col-sm-3">
