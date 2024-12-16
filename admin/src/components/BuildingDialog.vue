@@ -10,8 +10,8 @@
 
       <q-card-section>
         <q-tabs v-model="tab" dense align="left" no-caps>
-          <q-tab name="general" :label="$t('general')" />
-          <q-tab name="location" :label="$t('location')" />
+          <q-tab name="general" :label="$t('general') + ' *'" />
+          <q-tab name="location" :label="$t('location') + ' *'" />
           <q-tab name="multimedia" :label="$t('multimedia')" />
           <q-tab name="relations" :label="$t('relations')" />
         </q-tabs>
@@ -21,27 +21,18 @@
           <q-tab-panel name="general" class="q-pl-none q-pr-none">
             <div class="row q-mb-md q-col-gutter-md">
               <div class="col-12 col-sm-3">
-                <q-input
-                  filled
-                  v-model="selected.name"
-                  :label="$t('name') + '*'"
-                />
+                <q-input filled v-model="selected.name" :label="$t('name') + ' *'" />
               </div>
               <div class="col-12 col-sm-3">
                 <taxonomy-select
                   v-model="selected.type"
                   entity-type="building"
                   path="type"
-                  :label="$t('type') + '*'"
+                  :label="$t('type') + ' *'"
                 />
               </div>
               <div class="col-12 col-sm-3">
-                <taxonomy-select
-                  v-model="selected.status"
-                  entity-type="building"
-                  path="status"
-                  :label="$t('status')"
-                />
+                <taxonomy-select v-model="selected.status" entity-type="building" path="status" :label="$t('status')" />
               </div>
               <div class="col-12 col-sm-3">
                 <taxonomy-select
@@ -58,6 +49,7 @@
               v-model="selected.description"
               autogrow
               :label="$t('description')"
+              :hint="$t('description_bd_hint')"
               class="q-mb-md"
             />
             <q-input
@@ -65,6 +57,7 @@
               v-model="selected.article_top"
               type="textarea"
               :label="$t('article_top')"
+              :hint="$t('article_top_bd_hint')"
               class="q-mb-md"
             />
             <q-input
@@ -72,15 +65,10 @@
               v-model="selected.article_bottom"
               type="textarea"
               :label="$t('article_bottom')"
+              :hint="$t('article_bottom_bd_hint')"
               class="q-mb-md"
             />
-            <q-input
-              filled
-              v-model="selected.side_note"
-              type="textarea"
-              :label="$t('side_note')"
-              class="q-mb-md"
-            />
+            <q-input filled v-model="selected.side_note" type="textarea" :label="$t('side_note')" class="q-mb-md" />
             <q-input
               filled
               v-model="selected.external_links"
@@ -128,23 +116,15 @@
             <div class="text-bold q-mb-sm">{{ $t('building_elements') }}</div>
             <q-card flat bordered class="bg-grey-2">
               <q-card-section class="q-pa-none">
-                <div
-                  v-if="buildingElements?.length === 0"
-                  class="text-help q-pa-md"
-                >
+                <div v-if="buildingElements?.length === 0" class="text-help q-pa-md">
                   {{ $t('no_building_elements') }}
                 </div>
                 <q-list separator>
-                  <q-item
-                    v-for="(element, index) in buildingElements"
-                    :key="index"
-                  >
+                  <q-item v-for="(element, index) in buildingElements" :key="index">
                     <q-item-section>
                       <building-element-form
                         v-model="buildingElements[index]"
-                        :technical-constructions-options="
-                          technicalConstructionsOptions
-                        "
+                        :technical-constructions-options="technicalConstructionsOptions"
                         :professionals-options="professionalsOptions"
                       />
                     </q-item-section>
@@ -163,12 +143,7 @@
                 </q-list>
               </q-card-section>
               <q-card-actions class="q-pa-md">
-                <q-btn
-                  color="primary"
-                  icon="add"
-                  size="sm"
-                  @click="onAddBuildingElement"
-                />
+                <q-btn color="primary" icon="add" size="sm" @click="onAddBuildingElement" />
               </q-card-actions>
             </q-card>
           </q-tab-panel>
@@ -178,19 +153,8 @@
       <q-separator />
 
       <q-card-actions align="right" class="bg-grey-3">
-        <q-btn
-          flat
-          :label="$t('cancel')"
-          color="secondary"
-          @click="onCancel"
-          v-close-popup
-        />
-        <q-btn
-          :label="$t('save')"
-          color="primary"
-          @click="onSave"
-          :disable="!isValid"
-        />
+        <q-btn flat :label="$t('cancel')" color="secondary" @click="onCancel" v-close-popup />
+        <q-btn :label="$t('save')" color="primary" @click="onSave" :disable="!isValid" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -202,13 +166,7 @@ export default defineComponent({
 });
 </script>
 <script setup lang="ts">
-import {
-  BuildingMaterial,
-  Building,
-  Professional,
-  TechnicalConstruction,
-  BuildingElement,
-} from 'src/models';
+import { BuildingMaterial, Building, Professional, TechnicalConstruction, BuildingElement } from 'src/models';
 import { notifyError } from '../utils/notify';
 import PointMapInput from 'src/components/PointMapInput.vue';
 import FilesInput from 'src/components/FilesInput.vue';
@@ -283,18 +241,14 @@ watch(
           filter: {},
         })
         .then((res) => {
-          buildingMaterialsOptions.value = res.data.map(
-            (item: BuildingMaterial) => ({
-              label: item.name,
-              value: item.id,
-            }),
-          );
+          buildingMaterialsOptions.value = res.data.map((item: BuildingMaterial) => ({
+            label: item.name,
+            value: item.id,
+          }));
         });
       if (editMode.value) {
         buildingMaterials.value = selected.value.building_materials
-          ? selected.value.building_materials.map(
-              (item: BuildingMaterial) => item.id,
-            )
+          ? selected.value.building_materials.map((item: BuildingMaterial) => item.id)
           : [];
       }
 
@@ -306,12 +260,10 @@ watch(
           filter: {},
         })
         .then((res) => {
-          technicalConstructionsOptions.value = res.data.map(
-            (item: TechnicalConstruction) => ({
-              label: item.name,
-              value: item.id,
-            }),
-          );
+          technicalConstructionsOptions.value = res.data.map((item: TechnicalConstruction) => ({
+            label: item.name,
+            value: item.id,
+          }));
         });
 
       professionals.value = [];
@@ -344,8 +296,7 @@ watch(
           .then((res) => {
             buildingElements.value =
               res.data?.map((be: BuildingElement) => {
-                be.professional_ids =
-                  be.professionals?.map((item: Professional) => item.id) || [];
+                be.professional_ids = be.professionals?.map((item: Professional) => item.id) || [];
                 delete be.professionals;
                 return be;
               }) || [];
