@@ -48,8 +48,6 @@ export default {
   building_element_professionals_hint: 'Professionals involved.',
   building_element_technical_construction_used_hint: 'Technical construction used.',
   building_elements: 'Building elements',
-  building_material_class_hint: 'DIN EN ISO 11925-2',
-  building_material_class: 'Building material class',
   building_material_constituants_hint: 'Building material are made of natural resources.',
   building_material_constituants: 'Building material constituants',
   building_materials: 'Building materials',

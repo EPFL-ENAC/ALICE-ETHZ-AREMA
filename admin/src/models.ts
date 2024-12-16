@@ -61,7 +61,6 @@ export interface PhysicalEntity extends Entity {
   absorption_coefficient?: number;
   sound_reduction_index?: number;
   reaction_to_fire?: string;
-  building_material_class?: string;
   fire_resistance_class?: string;
   air_tightness?: number;
 

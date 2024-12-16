@@ -47,7 +47,6 @@ class PhysicalEntity(Entity):
     absorption_coefficient: Optional[float] = Field(default=None)
     sound_reduction_index: Optional[float] = Field(default=None)
     reaction_to_fire: Optional[str] = Field(default=None)
-    building_material_class: Optional[str] = Field(default=None)
     fire_resistance_class: Optional[str] = Field(default=None)
     air_tightness: Optional[float] = Field(default=None)
 

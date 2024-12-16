@@ -4,11 +4,7 @@
     <div class="row q-col-gutter-lg">
       <div class="col">
         <property-form-item
-          v-for="property in [
-            'density',
-            'compressive_strength',
-            'tensile_strength',
-          ]"
+          v-for="property in ['density', 'compressive_strength', 'tensile_strength']"
           :key="property"
           v-model="entity"
           :property="property"
@@ -51,10 +47,7 @@
     <div class="row q-col-gutter-lg">
       <div class="col">
         <property-form-item
-          v-for="property in [
-            'absorption_coefficient',
-            'sound_reduction_index',
-          ]"
+          v-for="property in ['absorption_coefficient', 'sound_reduction_index']"
           :key="property"
           v-model="entity"
           :property="property"
@@ -66,11 +59,11 @@
     <div class="row q-col-gutter-lg">
       <div class="col">
         <property-form-item
-          v-for="property in ['reaction_to_fire', 'building_material_class']"
+          v-for="property in ['reaction_to_fire']"
           :key="property"
           v-model="entity"
           :property="property"
-          :options="fireResistanceClasses"
+          :options="reactionToFireClasses"
         />
       </div>
       <div class="col">
@@ -115,7 +108,8 @@ const props = defineProps<Props>();
 
 const entity = ref(props.modelValue);
 
-const fireResistanceClasses = ['A', 'B', 'C', 'D', 'E', 'F'];
+const reactionToFireClasses = ['A1', 'A2', 'B', 'C', 'D', 'E', 'F'];
+const fireResistanceClasses = ['R', 'RE', 'REI', 'EI'];
 
 watch(
   () => props.modelValue,
