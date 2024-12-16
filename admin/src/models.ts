@@ -147,6 +147,9 @@ export interface Building extends Entity {
   type?: string;
   status?: string;
   materials?: string[];
+  client?: string;
+  gross_internal_area?: number;
+  year?: number;
   address?: string;
   long?: number;
   lat?: number;

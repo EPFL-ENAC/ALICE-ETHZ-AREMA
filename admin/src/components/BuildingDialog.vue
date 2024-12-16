@@ -44,6 +44,23 @@
                 />
               </div>
             </div>
+            <div class="row q-mb-md q-col-gutter-md">
+              <div class="col-12 col-sm-4">
+                <q-input filled v-model="selected.client" :label="$t('client')" />
+              </div>
+              <div class="col-12 col-sm-4">
+                <q-input
+                  filled
+                  v-model.number="selected.gross_internal_area"
+                  type="number"
+                  :label="$t('gross_internal_area')"
+                  :hint="$t('gross_internal_area_hint')"
+                />
+              </div>
+              <div class="col-12 col-sm-4">
+                <q-input filled v-model.number="selected.year" type="number" :label="$t('year_of_construction')" />
+              </div>
+            </div>
             <text-input
               v-model="selected.description"
               :label="$t('description')"

@@ -240,6 +240,9 @@ class BuildingBase(Entity):
     status: Optional[str] = Field(default=None)
     materials: Optional[List[str]] = Field(
         default=None, sa_column=Column(JSON))
+    client: Optional[str] = Field(default=None)
+    gross_internal_area: Optional[float] = Field(default=None)
+    year: Optional[int] = Field(default=None)
     address: Optional[str] = Field(default=None)
     long: Optional[float] = Field(default=None)
     lat: Optional[float] = Field(default=None)
