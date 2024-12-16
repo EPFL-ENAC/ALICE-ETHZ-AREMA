@@ -12,63 +12,23 @@ export const style: StyleSpecification = {
       minzoom: 0,
       maxzoom: 20,
     },
-    swissimage: {
-      type: 'raster',
-      tiles: [
-        'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage-product/default/current/3857/{z}/{x}/{y}.jpeg',
-      ],
-    },
   },
   layers: [
-    {
-      id: 'classic',
-      type: 'raster',
-      source: 'osm',
-      layout: { visibility: 'none' },
-    },
     {
       id: 'light',
       type: 'raster',
       source: 'osm',
       paint: {
         'raster-saturation': -0.9,
-        'raster-brightness-min': 0.7,
+        'raster-brightness-min': 0.2,
       },
-    },
-    {
-      id: 'dark',
-      type: 'raster',
-      source: 'osm',
-      paint: {
-        'raster-saturation': -1,
-        'raster-brightness-max': 0.2,
-      },
-      layout: { visibility: 'none' },
-    },
-    {
-      id: 'swissimage',
-      type: 'raster',
-      source: 'swissimage',
-      layout: { visibility: 'none' },
     },
   ],
 };
 
 export const themes: ThemeDefinition[] = [
   {
-    id: 'classic',
-    label: t('classic'),
-  },
-  {
     id: 'light',
     label: t('light'),
-  },
-  {
-    id: 'dark',
-    label: t('dark'),
-  },
-  {
-    id: 'swissimage',
-    label: t('aerial'),
   },
 ];

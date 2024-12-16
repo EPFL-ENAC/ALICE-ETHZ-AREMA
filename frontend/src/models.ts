@@ -185,3 +185,21 @@ export interface Professional extends Entity {
   building_material_ids?: number[];
   technical_construction_ids?: number[];
 }
+
+export interface Document extends Entity {
+  tags?: string[];
+  entity_type: string;
+  id: number;
+  files?: FileItem[];
+  location?: {
+    lon: number;
+    lat: number;
+  };
+}
+
+export interface SearchResult {
+  total: number;
+  skip: number;
+  limit: number;
+  data?: Document[];
+}

@@ -26,13 +26,14 @@ stop-db:
 down-db:
 	docker compose down postgres
 
-run-dbadmin:
-	docker compose up -d --pull=always pgadmin
+run-es:
+	docker compose up -d --pull=always es8
 
-stop-dbadmin:
-	docker compose stop pgadmin
+stop-es:
+	docker compose stop es8
 
-
+down-es:
+	docker compose down es8
 
 workflow:
 	# .secrets should have GITHUB_TOKEN

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Dict
 from sqlmodel import Field
 from api.models.domain import NaturalResource, NaturalResourceBase, BuildingMaterial, BuildingMaterialBase, TechnicalConstruction, TechnicalConstructionBase, BuildingBase, Professional, ProfessionalBase, BuildingElement, BuildingElementBase
 from enacit4r_sql.models.query import ListResult
@@ -110,3 +110,7 @@ class ProfessionalRead(ProfessionalBase):
 
 class ProfessionalResult(ListResult):
     data: List[ProfessionalRead] = []
+
+
+class SearchResult(ListResult):
+    data: List[Dict] = []

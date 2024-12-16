@@ -1,6 +1,7 @@
 <template>
   <div>
     <q-btn
+      :disable="home"
       to="/"
       no-caps
       size="48px"
@@ -35,7 +36,7 @@
       <q-btn
         no-caps
         size="xl"
-        to="/resosurces"
+        to="/resources"
         :label="$t('resources')"
         class="text-primary"
       ></q-btn>
@@ -73,4 +74,9 @@ export default defineComponent({
   name: 'NavDrawer',
 });
 </script>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+interface Props {
+  home?: boolean;
+}
+defineProps<Props>();
+</script>

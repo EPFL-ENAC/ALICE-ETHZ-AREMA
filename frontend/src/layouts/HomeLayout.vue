@@ -1,31 +1,25 @@
 <template>
   <q-layout view="hHh lpR fFf">
+    <header-panel v-model="rightDrawerOpen" home />
+
     <q-page-container>
       <router-view />
     </q-page-container>
 
-    <q-footer class="bg-black q-mb-lg">
-      <q-btn
-        flat
-        icon="expand_more"
-        size="48px"
-        to="/about"
-        class="text-grey-3 full-width q-pb-md"
-      />
-    </q-footer>
-    <q-footer class="bg-primary text-orange-11">
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          size="lg"
-          to="/about"
-          class=""
-          :label="$t('purpose')"
-        />
-      </q-toolbar>
-    </q-footer>
+    <q-drawer
+      overlay
+      v-model="rightDrawerOpen"
+      side="right"
+      class="bg-black text-white"
+      :width="$q.screen.gt.sm ? 800 : $q.screen.gt.xs ? 500 : 300"
+    >
+      <nav-drawer home />
+    </q-drawer>
   </q-layout>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import HeaderPanel from 'src/components/HeaderPanel.vue';
+import NavDrawer from 'src/components/NavDrawer.vue';
+const rightDrawerOpen = ref(false);
+</script>

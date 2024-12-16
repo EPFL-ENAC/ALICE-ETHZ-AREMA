@@ -90,6 +90,7 @@ declare global {
   const useLink: typeof import('vue-router')['useLink']
   const useRoute: typeof import('vue-router')['useRoute']
   const useRouter: typeof import('vue-router')['useRouter']
+  const useSearchService: typeof import('./stores/search')['useSearchService']
   const useServiceInstance: typeof import('feathers-pinia')['useServiceInstance']
   const useServices: typeof import('./stores/services')['useServices']
   const useSlots: typeof import('vue')['useSlots']
@@ -187,6 +188,7 @@ declare module 'vue' {
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
     readonly useRouter: UnwrapRef<typeof import('vue-router')['useRouter']>
+    readonly useSearchService: UnwrapRef<typeof import('./stores/search')['useSearchService']>
     readonly useServices: UnwrapRef<typeof import('./stores/services')['useServices']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
     readonly useTaxonomyStore: UnwrapRef<typeof import('./stores/taxonomies')['useTaxonomyStore']>
@@ -275,6 +277,7 @@ declare module '@vue/runtime-core' {
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
     readonly useRouter: UnwrapRef<typeof import('vue-router')['useRouter']>
+    readonly useSearchService: UnwrapRef<typeof import('./stores/search')['useSearchService']>
     readonly useServices: UnwrapRef<typeof import('./stores/services')['useServices']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
     readonly useTaxonomyStore: UnwrapRef<typeof import('./stores/taxonomies')['useTaxonomyStore']>

@@ -125,6 +125,8 @@ export default {
   building_technical_construction_used_hint: 'Technical construction used.',
   building_professionals_hint: 'Professionals involved.',
   layout: 'Layout',
+  layout_help:
+    "This is a preview of the layout of each item. It indicates how each field is placed in the item's page in the main web portal of AREMA.",
   physical_characteristics: 'Physical characteristics',
   article_top: 'Article (top)',
   article_bottom: 'Article (bottom)',
@@ -148,4 +150,12 @@ export default {
     'Technical construction used.',
   building_element_professionals_hint: 'Professionals involved.',
   no_building_elements: 'No building elements',
+  all_items_indexed: 'All items indexed ({count})',
+  search_index: 'Search index',
+  search_index_help:
+    'The search index is used to search for items by free text and tags. It is an essential functionality of the main web portal of AREMA. Each item is automatically indexed, as soon as it is created or updated; your intervention is normally not needed. Nevertheless, for advanced administration purpose, it is possible to drop the index at any anytime and then re-index all the items.',
+  drop_index: 'Drop index',
+  index_all: 'Index all',
+  index_dropped: 'Index dropped',
+  index_drop_error: 'Index drop error',
 };

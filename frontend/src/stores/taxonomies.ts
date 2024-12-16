@@ -23,27 +23,23 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return `${URN_PREFIX}:${entityType}:${Array.isArray(path) ? path.join('.') : path}`;
   }
 
-  async function getTaxonomy(
-    entityType: string,
-  ): Promise<TaxonomyNode | undefined> {
-    if (!taxonomies.value) {
-      return init().then(() => {
-        if (!taxonomies.value) return undefined;
-        else return getTaxonomy(entityType);
-      });
-    }
-    return Promise.resolve(
-      taxonomies.value?.taxonomy.find((tx) => tx.id === entityType),
-    );
+  function getTaxonomy(entityTypeOrUrn: string): TaxonomyNode | undefined {
+    if (!taxonomies.value) return undefined;
+
+    const tokens = entityTypeOrUrn.replace(`${URN_PREFIX}:`, '').split(':');
+    if (!tokens || tokens.length === 0) return undefined;
+
+    const entityType = tokens[0];
+    return taxonomies.value?.taxonomy.find((tx) => tx.id === entityType);
   }
 
-  async function getTaxonomyNode(
+  function getTaxonomyNode(
     entityType: string,
     path: string | string[] = [],
-  ): Promise<TaxonomyNode | undefined> {
-    const tx = await getTaxonomy(entityType);
-    if (!tx) return Promise.resolve(undefined);
-    return Promise.resolve(getNodeFromPath(tx, path));
+  ): TaxonomyNode | undefined {
+    const tx = getTaxonomy(entityType);
+    if (!tx) return undefined;
+    return getNodeFromPath(tx, path);
   }
 
   function getNode(urn: string): TaxonomyNode | undefined {
@@ -111,6 +107,7 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
   }
 
   return {
+    init,
     getTaxonomy,
     getTaxonomyNode,
     getNode,

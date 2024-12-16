@@ -86,6 +86,23 @@ export class Service<
       return api.delete(`/${this.entityName}/${id}`, config);
     });
   }
+
+  async index() {
+    if (!authStore.isAuthenticated) return Promise.reject('Not authenticated');
+    return authStore.updateToken().then(() => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${authStore.accessToken}`,
+        },
+        params: {
+          type: this.entityName,
+        },
+      };
+      return api
+        .post('/search/_index', {}, config)
+        .then((res) => res.data[this.entityName]);
+    });
+  }
 }
 
 export const useServices = defineStore('services', () => {

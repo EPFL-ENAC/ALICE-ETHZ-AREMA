@@ -22,6 +22,7 @@ class Config(BaseSettings):
 
     PATH_PREFIX: str = "/api"
 
+    # S3
     S3_ENDPOINT_PROTOCOL: str
     S3_ENDPOINT_HOSTNAME: str
     S3_ACCESS_KEY_ID: str
@@ -29,6 +30,9 @@ class Config(BaseSettings):
     S3_REGION: str
     S3_BUCKET: str
     S3_PATH_PREFIX: str
+
+    # ES
+    ES_URL: str
 
     @model_validator(mode="before")
     def form_db_url(cls, values: dict) -> dict:

@@ -102,6 +102,9 @@
     "setActivePinia": true,
     "setMapStoreSuffix": true,
     "storeToRefs": true,
-    "useTaxonomyStore": true
+    "useTaxonomyStore": true,
+    "useHome": true,
+    "useSearch": true,
+    "useSearchService": true
   }
 }

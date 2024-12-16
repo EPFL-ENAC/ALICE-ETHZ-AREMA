@@ -231,7 +231,7 @@ export default defineComponent({
             use-input
             clearable
             input-debounce="200"
-            :label="$t('address')"
+            :label="$t('address') + '*'"
             :options="suggestions"
             @filter="lookupAddress"
             @change="onAddressUpdate"
