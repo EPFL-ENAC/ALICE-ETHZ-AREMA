@@ -31,23 +31,11 @@
                 />
               </div>
             </div>
-            <q-input filled v-model="selected.description" type="textarea" :label="$t('description')" class="q-mb-md" />
-            <q-input filled v-model="selected.article_top" type="textarea" :label="$t('article_top')" class="q-mb-md" />
-            <q-input
-              filled
-              v-model="selected.article_bottom"
-              type="textarea"
-              :label="$t('article_bottom')"
-              class="q-mb-md"
-            />
-            <q-input filled v-model="selected.side_note" type="textarea" :label="$t('side_note')" class="q-mb-md" />
-            <q-input
-              filled
-              v-model="selected.external_links"
-              type="textarea"
-              :label="$t('external_links')"
-              class="q-mb-md"
-            />
+            <text-input v-model="selected.description" :label="$t('description')" class="q-mb-md" />
+            <text-input v-model="selected.article_top" :label="$t('article_top')" class="q-mb-md" />
+            <text-input v-model="selected.article_bottom" :label="$t('article_bottom')" class="q-mb-md" />
+            <text-input v-model="selected.side_note" :label="$t('side_note')" class="q-mb-md" />
+            <text-input v-model="selected.external_links" :label="$t('external_links')" class="q-mb-md" />
           </q-tab-panel>
           <q-tab-panel name="physical_characteristics" class="q-pl-none q-pr-none">
             <physical-entity-form v-model="selected" />
@@ -79,6 +67,7 @@ import { notifyError } from 'src/utils/notify';
 import PhysicalEntityForm from 'src/components/PhysicalEntityForm.vue';
 import FilesInput from 'src/components/FilesInput.vue';
 import TaxonomySelect from 'src/components/TaxonomySelect.vue';
+import TextInput from 'src/components/TextInput.vue';
 
 interface DialogProps {
   modelValue: boolean;

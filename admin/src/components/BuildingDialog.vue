@@ -44,38 +44,26 @@
                 />
               </div>
             </div>
-            <q-input
-              filled
+            <text-input
               v-model="selected.description"
-              autogrow
               :label="$t('description')"
               :hint="$t('description_bd_hint')"
               class="q-mb-md"
             />
-            <q-input
-              filled
+            <text-input
               v-model="selected.article_top"
-              type="textarea"
               :label="$t('article_top')"
               :hint="$t('article_top_bd_hint')"
               class="q-mb-md"
             />
-            <q-input
-              filled
+            <text-input
               v-model="selected.article_bottom"
-              type="textarea"
               :label="$t('article_bottom')"
               :hint="$t('article_bottom_bd_hint')"
               class="q-mb-md"
             />
-            <q-input filled v-model="selected.side_note" type="textarea" :label="$t('side_note')" class="q-mb-md" />
-            <q-input
-              filled
-              v-model="selected.external_links"
-              type="textarea"
-              :label="$t('external_links')"
-              class="q-mb-md"
-            />
+            <text-input v-model="selected.side_note" :label="$t('side_note')" class="q-mb-md" />
+            <text-input v-model="selected.external_links" :label="$t('external_links')" class="q-mb-md" />
           </q-tab-panel>
           <q-tab-panel name="location" class="q-pl-none q-pr-none">
             <point-map-input
@@ -173,6 +161,7 @@ import FilesInput from 'src/components/FilesInput.vue';
 import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 import BuildingElementForm from 'src/components/BuildingElementForm.vue';
 import { Option } from 'src/components/models';
+import TextInput from 'src/components/TextInput.vue';
 
 interface DialogProps {
   modelValue: boolean;

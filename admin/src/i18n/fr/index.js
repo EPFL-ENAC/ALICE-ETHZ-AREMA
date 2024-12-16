@@ -88,6 +88,7 @@ export default {
   password_edit_hint: 'Laisser vide pour NE PAS modifier le mot de passe.',
   phone: 'Téléphone',
   physical_characteristics: 'Caractéristiques physiques',
+  preview: 'Aperçu',
   professional_building_material_expertise_hint: 'Expertise en matériaux de construction.',
   professional_technical_construction_expertise_hint: 'Expertise en constructions techniques.',
   professionals: 'Professionnels',
@@ -115,5 +116,6 @@ export default {
   user: 'Utilisateur',
   users: 'Utilisateurs',
   website: 'Site web',
+  write: 'Ecrire',
   zone: 'Zone',
 };
