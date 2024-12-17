@@ -13,6 +13,8 @@ export const style: StyleSpecification = {
       maxzoom: 20,
     },
   },
+  glyphs:
+    'https://orangemug.github.io/font-glyphs/glyphs/{fontstack}/{range}.pbf',
   layers: [
     {
       id: 'light',
