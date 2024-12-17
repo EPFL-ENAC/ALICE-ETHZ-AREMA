@@ -9,6 +9,7 @@ import {
 } from 'geojson';
 
 export const useSearchService = defineStore('search', () => {
+  const selectedView = ref('map');
   const selectedTerms = ref<string[]>([]);
   const filterText = ref('');
   const searching = ref(false);
@@ -90,6 +91,7 @@ export const useSearchService = defineStore('search', () => {
   }
 
   return {
+    selectedView,
     selectedTerms,
     filterText,
     searching,

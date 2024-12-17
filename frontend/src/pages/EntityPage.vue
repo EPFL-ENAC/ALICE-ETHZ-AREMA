@@ -8,7 +8,7 @@
           <div class="text-h3">{{ entity.name }}</div>
 
           <div class="text-body1">{{ entity.description }}</div>
-          <div v-if="getImageUrls(entity).length">
+          <div v-if="entity && getImageUrls(entity).length">
             <template v-for="url in getImageUrls(entity)" :key="url">
               <q-img :src="url" style="max-height: 100px; max-width: 100px" />
             </template>

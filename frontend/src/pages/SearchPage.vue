@@ -61,7 +61,7 @@
       <q-btn
         v-for="view in views"
         :key="view"
-        :outline="view !== selectedView"
+        :outline="view !== searchService.selectedView"
         color="secondary"
         unelevated
         square
@@ -74,8 +74,8 @@
       <q-spinner-dots v-if="searchService.searching" size="md" />
     </div>
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
-    <map-results v-if="selectedView === 'map'" />
-    <list-results v-else-if="selectedView === 'list'" />
+    <map-results v-if="searchService.selectedView === 'map'" />
+    <list-results v-else-if="searchService.selectedView === 'list'" />
   </q-page>
 </template>
 
@@ -88,7 +88,6 @@ const taxonomies = useTaxonomyStore();
 const searchService = useSearchService();
 
 const selectedVocabulary = ref<TaxonomyNodeOption>();
-const selectedView = ref('map');
 
 const vocabularies = [
   'natural-resource:type',
@@ -164,7 +163,7 @@ function onTermSelect(term: TaxonomyNodeOption) {
 }
 
 function onViewSelect(view: string) {
-  selectedView.value = view;
+  searchService.selectedView = view;
 }
 
 function getSelectedTerms(voc: TaxonomyNodeOption) {
