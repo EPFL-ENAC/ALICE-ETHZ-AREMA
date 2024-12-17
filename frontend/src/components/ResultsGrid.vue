@@ -43,6 +43,7 @@ import { Document } from 'src/models';
 import TagsBadges from 'src/components/TagsBadges.vue';
 
 const searchService = useSearchService();
+const router = useRouter();
 
 const loading = computed(() => searchService.searching);
 const rows = computed(() => searchService.results?.data || []);
@@ -59,5 +60,6 @@ function getImageUrls(row: Document) {
 
 function onEntity(row: Document) {
   console.log('onEntity', row);
+  router.push({ name: row.entity_type, params: { id: row.id } });
 }
 </script>

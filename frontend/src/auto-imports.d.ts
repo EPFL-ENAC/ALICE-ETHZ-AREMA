@@ -13,6 +13,7 @@ declare global {
   const $shallowRef: typeof import('vue/macros')['$shallowRef']
   const $toRef: typeof import('vue/macros')['$toRef']
   const EffectScope: typeof import('vue')['EffectScope']
+  const Service: typeof import('./stores/services')['Service']
   const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
   const computed: typeof import('vue')['computed']
   const createApp: typeof import('vue')['createApp']
@@ -93,6 +94,7 @@ declare global {
   const useSearch: typeof import('./stores/search')['useSearch']
   const useSearchService: typeof import('./stores/search')['useSearchService']
   const useServiceInstance: typeof import('feathers-pinia')['useServiceInstance']
+  const useServices: typeof import('./stores/services')['useServices']
   const useSlots: typeof import('vue')['useSlots']
   const useTaxonomyStore: typeof import('./stores/taxonomies')['useTaxonomyStore']
   const watch: typeof import('vue')['watch']
@@ -119,6 +121,7 @@ declare module 'vue' {
     readonly $shallowRef: UnwrapRef<typeof import('vue/macros')['$shallowRef']>
     readonly $toRef: UnwrapRef<typeof import('vue/macros')['$toRef']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly Service: UnwrapRef<typeof import('./stores/services')['Service']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
@@ -186,6 +189,7 @@ declare module 'vue' {
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
     readonly useRouter: UnwrapRef<typeof import('vue-router')['useRouter']>
     readonly useSearchService: UnwrapRef<typeof import('./stores/search')['useSearchService']>
+    readonly useServices: UnwrapRef<typeof import('./stores/services')['useServices']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
     readonly useTaxonomyStore: UnwrapRef<typeof import('./stores/taxonomies')['useTaxonomyStore']>
     readonly watch: UnwrapRef<typeof import('vue')['watch']>
@@ -205,6 +209,7 @@ declare module '@vue/runtime-core' {
     readonly $shallowRef: UnwrapRef<typeof import('vue/macros')['$shallowRef']>
     readonly $toRef: UnwrapRef<typeof import('vue/macros')['$toRef']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly Service: UnwrapRef<typeof import('./stores/services')['Service']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
@@ -272,6 +277,7 @@ declare module '@vue/runtime-core' {
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
     readonly useRouter: UnwrapRef<typeof import('vue-router')['useRouter']>
     readonly useSearchService: UnwrapRef<typeof import('./stores/search')['useSearchService']>
+    readonly useServices: UnwrapRef<typeof import('./stores/services')['useServices']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
     readonly useTaxonomyStore: UnwrapRef<typeof import('./stores/taxonomies')['useTaxonomyStore']>
     readonly watch: UnwrapRef<typeof import('vue')['watch']>

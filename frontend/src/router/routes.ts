@@ -12,6 +12,31 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: 'about', component: () => import('pages/AboutPage.vue') },
       { path: 'search', component: () => import('pages/SearchPage.vue') },
+      {
+        name: 'natural-resource',
+        path: 'natural-resource/:id',
+        component: () => import('pages/EntityPage.vue'),
+      },
+      {
+        name: 'building-material',
+        path: 'building-material/:id',
+        component: () => import('pages/EntityPage.vue'),
+      },
+      {
+        name: 'technical-construction',
+        path: 'technical-construction/:id',
+        component: () => import('pages/EntityPage.vue'),
+      },
+      {
+        name: 'building',
+        path: 'building/:id',
+        component: () => import('pages/EntityPage.vue'),
+      },
+      {
+        name: 'professional',
+        path: 'professional/:id',
+        component: () => import('pages/EntityPage.vue'),
+      },
     ],
   },
 

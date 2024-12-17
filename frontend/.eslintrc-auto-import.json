@@ -105,6 +105,8 @@
     "useTaxonomyStore": true,
     "useHome": true,
     "useSearch": true,
-    "useSearchService": true
+    "useSearchService": true,
+    "Service": true,
+    "useServices": true
   }
 }

@@ -3,7 +3,7 @@
     <q-toolbar>
       <img
         v-if="$q.screen.gt.sm"
-        src="arema-h-1.svg"
+        src="/arema-h-1.svg"
         :style="
           home ? `height: ${homeStore.toolbarRatio * 30}px` : 'height: 30px'
         "
