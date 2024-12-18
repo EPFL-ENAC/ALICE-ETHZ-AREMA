@@ -106,7 +106,6 @@
     "useHome": true,
     "useSearch": true,
     "useSearchService": true,
-    "Service": true,
-    "useServices": true
+    "Service": true
   }
 }

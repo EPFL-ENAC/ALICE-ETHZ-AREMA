@@ -3,18 +3,20 @@
     <div v-if="!loading" class="row q-col-gutter-lg">
       <template v-for="row in rows" :key="`${row.entity_type}:${row.id}`">
         <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-          <q-card flat bordered class="q-ma-none" style="min-height: 300px">
+          <q-card flat bordered class="q-ma-none">
             <q-card-section
               class="q-pa-md"
               style="cursor: pointer"
-              @click="onEntity(row)"
+              @click="onDocument(row)"
             >
               <div class="text-primary">{{ $t(row.entity_type) }}</div>
               <div class="text-h5">{{ row.name }}</div>
               <div>
                 <tags-badges :document="row" />
               </div>
-              <div class="text-body2">{{ row.description }}</div>
+              <div class="text-body2">
+                <q-markdown :src="row.description" />
+              </div>
               <div v-if="getImageUrls(row).length">
                 <q-img
                   :src="getImageUrls(row)[0]"
@@ -58,8 +60,7 @@ function getImageUrls(row: Document) {
   return images;
 }
 
-function onEntity(row: Document) {
-  console.log('onEntity', row);
-  router.push({ name: row.entity_type, params: { id: row.id } });
+function onDocument(row: Document) {
+  router.push({ name: 'doc', params: { id: `${row.entity_type}:${row.id}` } });
 }
 </script>

@@ -49,6 +49,13 @@ export const useSearchService = defineStore('search', () => {
     selectedTerms.value = [];
   }
 
+  function getDocument(id: string) {
+    return api.get('/search/_doc', { params: { id } }).then((response) => {
+      const result = response.data;
+      return result.data?.length ? result.data[0] : undefined;
+    });
+  }
+
   function search(withLimit: number = limit.value) {
     searching.value = true;
     results.value = undefined;
@@ -103,5 +110,6 @@ export const useSearchService = defineStore('search', () => {
     limit,
     reset,
     search,
+    getDocument,
   };
 });

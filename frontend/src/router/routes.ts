@@ -13,7 +13,11 @@ const routes: RouteRecordRaw[] = [
       { path: 'about', component: () => import('pages/AboutPage.vue') },
       { path: 'search', component: () => import('pages/SearchPage.vue') },
       {
-        name: 'natural-resource',
+        name: 'doc',
+        path: 'doc/:id',
+        component: () => import('pages/DocumentPage.vue'),
+      },
+      {
         path: 'natural-resource/:id',
         component: () => import('pages/EntityPage.vue'),
       },

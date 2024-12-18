@@ -6,7 +6,7 @@
     <div class="col">
       <q-list separator>
         <template v-for="row in rows" :key="`${row.entity_type}:${row.id}`">
-          <q-item clickable v-ripple @click="onEntity(row)">
+          <q-item clickable v-ripple @click="onDocument(row)">
             <q-item-section>
               <q-item-label class="text-primary">{{
                 $t(row.entity_type)
@@ -15,7 +15,9 @@
               <div>
                 <tags-badges :document="row" />
               </div>
-              <q-item-label caption>{{ row.description }}</q-item-label>
+              <q-item-label caption>
+                <q-markdown :src="row.description" />
+              </q-item-label>
               <!-- <div v-if="getImageUrls(row).length">
                 <q-carousel animated v-model="slide" arrows navigation infinite>
                   <template
@@ -47,6 +49,7 @@ import MapView from 'src/components/MapView.vue';
 import TagsBadges from 'src/components/TagsBadges.vue';
 import { Document } from 'src/models';
 
+const router = useRouter();
 const searchService = useSearchService();
 
 const rows = computed(() => searchService.geoResults?.data || []);
@@ -60,7 +63,7 @@ const rows = computed(() => searchService.geoResults?.data || []);
 //   return images;
 // }
 
-function onEntity(row: Document) {
-  console.log('onEntity', row);
+function onDocument(row: Document) {
+  router.push({ name: 'doc', params: { id: `${row.entity_type}:${row.id}` } });
 }
 </script>

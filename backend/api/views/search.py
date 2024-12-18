@@ -73,6 +73,14 @@ async def find(
     return indexService.search(query=queryDict, skip=skip, limit=limit)
 
 
+@router.get("/_doc", response_model=SearchResult, response_model_exclude_none=True)
+async def find(id: str = Query(None)) -> SearchResult:
+    """Search documents matching the Elasticsearch query"""
+    indexService = IndexService()
+    queryDict = {"query": {"term": {"_id": id}}}
+    return indexService.search(query=queryDict, skip=0, limit=1)
+
+
 @router.get("/", response_model=SearchResult, response_model_exclude_none=True)
 async def find(
     text: str = Query(None),
