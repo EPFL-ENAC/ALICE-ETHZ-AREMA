@@ -1,4 +1,18 @@
 // app global css in SCSS form
+@font-face {
+  font-family: FTKunstGrotesk;
+  src: url(./fonts/FTKunstGrotesk-Medium.woff);
+}
+@font-face {
+  font-family: FTKunstGroteskItalic;
+  src: url(./fonts/FTKunstGrotesk-MediumItalic.woff);
+}
+
+body {
+  font-family: FTKunstGrotesk, Helvetica, Arial, sans-serif;
+  text-rendering: geometricPrecision;
+  // padding-top: calc(var(--header-height) - 1px)
+}
 
 a {
   color: black;

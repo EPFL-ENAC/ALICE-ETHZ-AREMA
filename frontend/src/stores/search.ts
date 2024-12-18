@@ -50,10 +50,14 @@ export const useSearchService = defineStore('search', () => {
   }
 
   function getDocument(id: string) {
-    return api.get('/search/_doc', { params: { id } }).then((response) => {
-      const result = response.data;
-      return result.data?.length ? result.data[0] : undefined;
-    });
+    searching.value = true;
+    return api
+      .get('/search/_doc', { params: { id } })
+      .then((response) => {
+        const result = response.data;
+        return result.data?.length ? result.data[0] : undefined;
+      })
+      .finally(() => (searching.value = false));
   }
 
   function search(withLimit: number = limit.value) {

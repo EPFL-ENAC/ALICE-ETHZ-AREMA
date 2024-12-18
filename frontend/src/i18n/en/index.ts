@@ -26,4 +26,5 @@ export default {
   showing_results: 'Showing results {count}/{total}',
   no_results: 'No results',
   show_more: 'Show more',
+  external_links: 'External links',
 };

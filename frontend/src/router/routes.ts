@@ -17,30 +17,6 @@ const routes: RouteRecordRaw[] = [
         path: 'doc/:id',
         component: () => import('pages/DocumentPage.vue'),
       },
-      {
-        path: 'natural-resource/:id',
-        component: () => import('pages/EntityPage.vue'),
-      },
-      {
-        name: 'building-material',
-        path: 'building-material/:id',
-        component: () => import('pages/EntityPage.vue'),
-      },
-      {
-        name: 'technical-construction',
-        path: 'technical-construction/:id',
-        component: () => import('pages/EntityPage.vue'),
-      },
-      {
-        name: 'building',
-        path: 'building/:id',
-        component: () => import('pages/EntityPage.vue'),
-      },
-      {
-        name: 'professional',
-        path: 'professional/:id',
-        component: () => import('pages/EntityPage.vue'),
-      },
     ],
   },
 
