@@ -13,6 +13,9 @@
         <div class="text-h5 q-mb-lg">
           <q-markdown :src="document.description" />
         </div>
+        <div class="q-mb-lg">
+          <physical-parameters-panel :document="document" />
+        </div>
       </div>
       <div class="col-12 col-md-3"></div>
     </div>
@@ -60,9 +63,10 @@ export default defineComponent({
 });
 </script>
 <script setup lang="ts">
+import TagsBadges from 'src/components/TagsBadges.vue';
+import PhysicalParametersPanel from 'src/components/PhysicalParametersPanel.vue';
 import { cdnUrl } from 'src/boot/api';
 import { Document } from 'src/models';
-import TagsBadges from 'src/components/TagsBadges.vue';
 
 interface Props {
   document: Document;

@@ -77,7 +77,7 @@
     <div class="text-bold q-mb-sm">{{ $t('others') }}</div>
     <div class="row q-col-gutter-lg">
       <div class="col">
-        <property-form-item v-model="entity" :property="'air_tightness'" />
+        <property-form-number v-model="entity" :property="'air_tightness'" />
       </div>
       <div class="col"></div>
     </div>
