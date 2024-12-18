@@ -80,6 +80,8 @@ export interface PhysicalEntity extends Entity {
   diffusivity_low?: number;
   absorption_coefficient_low?: number;
   sound_reduction_index_low?: number;
+  reaction_to_fire_low?: string;
+  fire_resistance_class_low?: string;
   air_tightness_low?: number;
 
   density_high?: number;
@@ -97,6 +99,8 @@ export interface PhysicalEntity extends Entity {
   diffusivity_high?: number;
   absorption_coefficient_high?: number;
   sound_reduction_index_high?: number;
+  reaction_to_fire_high?: string;
+  fire_resistance_class_high?: string;
   air_tightness_high?: number;
 }
 

@@ -3,16 +3,7 @@
     <div class="q-mb-sm">
       {{ $t(property) }}
     </div>
-    <div v-if="options">
-      <q-select
-        filled
-        v-model="selected[property]"
-        :label="$t('class')"
-        :options="options"
-        @update:model-value="onUpdate(property)"
-      />
-    </div>
-    <div v-else class="row q-col-gutter-sm q-mb-sm">
+    <div class="row q-col-gutter-sm q-mb-sm">
       <div class="col">
         <q-input
           filled
@@ -49,7 +40,7 @@
 
 <script lang="ts">
 export default defineComponent({
-  name: 'PropertyFormItem',
+  name: 'PropertyFormNumber',
 });
 </script>
 <script setup lang="ts">
@@ -58,7 +49,6 @@ import { PhysicalEntity } from 'src/models';
 interface Props {
   modelValue: PhysicalEntity;
   property: string;
-  options?: string[];
 }
 
 const props = defineProps<Props>();
