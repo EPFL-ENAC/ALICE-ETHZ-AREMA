@@ -66,3 +66,9 @@ a {
 .a-map {
   border-right: solid 2px $primary;
 }
+
+.a-legend {
+  background-color: $primary;
+  opacity: 0.8;
+  color: white;
+}

@@ -39,10 +39,48 @@
             <div class="text-body1">
               <q-markdown :src="document.article_top" />
             </div>
-            <div v-if="document && getImageUrls().length">
-              <template v-for="url in getImageUrls()" :key="url">
-                <q-img :src="url" style="max-height: 100px; max-width: 100px" />
-              </template>
+            <div v-if="document.files?.length" class="q-mt-xl q-mb-xl">
+              <q-carousel
+                v-model="slide"
+                transition-prev="scale"
+                transition-next="scale"
+                swipeable
+                control-color="primary"
+                padding
+                arrows
+                autoplay
+                infinite
+                height="500px"
+                class="bg-grey-2 text-grey-6"
+              >
+                <template v-for="(file, index) in document.files" :key="index">
+                  <q-carousel-slide
+                    v-if="isImage(file)"
+                    :name="index"
+                    :img-src="toFileUrl(file)"
+                  >
+                    <div
+                      v-if="file.legend"
+                      class="absolute-bottom text-center a-legend"
+                    >
+                      <div class="text-caption">{{ file.legend }}</div>
+                    </div>
+                  </q-carousel-slide>
+                  <q-carousel-slide
+                    v-else
+                    :name="index"
+                    class="column no-wrap flex-center"
+                  >
+                    <q-icon name="style" size="56px" />
+                    <div
+                      v-if="file.legend"
+                      class="absolute-bottom text-center a-legend"
+                    >
+                      <div class="text-caption">{{ file.legend }}</div>
+                    </div>
+                  </q-carousel-slide>
+                </template>
+              </q-carousel>
             </div>
             <div class="text-body1">
               <q-markdown :src="document.article_bottom" />
@@ -99,7 +137,7 @@ export default defineComponent({
 import TagsBadges from 'src/components/TagsBadges.vue';
 import PhysicalParametersPanel from 'src/components/PhysicalParametersPanel.vue';
 import { cdnUrl } from 'src/boot/api';
-import { Document } from 'src/models';
+import { Document, FileItem } from 'src/models';
 
 const searchService = useSearchService();
 const router = useRouter();
@@ -110,6 +148,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
+const slide = ref(0);
 const relationSummaries = ref<Document[]>([]);
 
 onMounted(async () => {
@@ -125,14 +164,12 @@ watch(
   },
 );
 
-function getImageUrls() {
-  if (!props.document) return [];
-  const images = props.document.files
-    ? props.document.files
-        .filter((fileRef) => fileRef.ref.mime_type?.startsWith('image'))
-        .map((fileRef) => `${cdnUrl}/${fileRef.ref.path}`)
-    : [];
-  return images;
+function isImage(file: FileItem) {
+  return file.ref.mime_type.startsWith('image');
+}
+
+function toFileUrl(file: FileItem) {
+  return `${cdnUrl}/${file.ref.path}`;
 }
 
 function updateRelationSummaries() {
