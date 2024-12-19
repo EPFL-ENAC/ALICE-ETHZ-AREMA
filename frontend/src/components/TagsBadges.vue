@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-chip
-      v-for="tag in getTagLabels(document)"
+      v-for="tag in labels"
       :key="tag"
       outline
       color="primary"
@@ -26,7 +26,19 @@ interface Props {
   document: Document;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
+
+const labels = ref<string[]>([]);
+
+onMounted(init);
+
+watch(() => props.document, init);
+
+function init() {
+  taxonomies.init().then(() => {
+    labels.value = getTagLabels(props.document);
+  });
+}
 
 function getTagLabels(row: Document) {
   return row.tags
@@ -34,6 +46,7 @@ function getTagLabels(row: Document) {
         .map((tag) => taxonomies.getNode(tag))
         .filter((node) => node)
         .map((node) => taxonomies.getLabel(node?.names))
+        .filter((label) => label !== undefined)
     : [];
 }
 </script>
