@@ -1,9 +1,9 @@
 <template>
   <div class="row q-col-gutter-md">
-    <div class="col">
+    <div class="col-12 col-md-6">
       <map-view :features="searchService.features" class="q-pr-md" />
     </div>
-    <div class="col">
+    <div class="col-12 col-md-6">
       <q-list separator>
         <template v-for="row in rows" :key="`${row.entity_type}:${row.id}`">
           <q-item clickable v-ripple @click="onDocument(row)">

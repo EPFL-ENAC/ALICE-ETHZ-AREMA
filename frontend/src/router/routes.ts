@@ -14,7 +14,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'search', component: () => import('pages/SearchPage.vue') },
       {
         name: 'doc',
-        path: 'doc/:id',
+        path: '_/:id',
         component: () => import('pages/DocumentPage.vue'),
       },
     ],

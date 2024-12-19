@@ -23,7 +23,7 @@
       <div class="col-12 col-md-1"></div>
       <div class="col-12 col-md-2">
         <div v-if="document?.external_links">
-          <div class="text-primary">
+          <div class="text-primary text-caption">
             {{ $t('external_links') }}
           </div>
           <q-separator color="primary" class="q-mb-sm" />
@@ -49,7 +49,7 @@
         <q-markdown
           v-if="document.side_note"
           :src="document.side_note"
-          class="text-primary"
+          class="text-primary text-caption"
         />
       </div>
       <div class="col-12 col-md-1"></div>
