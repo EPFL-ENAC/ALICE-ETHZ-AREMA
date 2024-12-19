@@ -39,6 +39,7 @@
             <div class="text-body1">
               <q-markdown :src="document.article_top" />
             </div>
+
             <div v-if="document.files?.length" class="q-mt-xl q-mb-xl">
               <q-carousel
                 v-model="slide"
@@ -47,8 +48,7 @@
                 swipeable
                 control-color="primary"
                 padding
-                arrows
-                autoplay
+                :arrows="document.files?.length > 1"
                 infinite
                 height="500px"
                 class="bg-grey-2 text-grey-6"
@@ -71,7 +71,13 @@
                     :name="index"
                     class="column no-wrap flex-center"
                   >
-                    <q-icon name="style" size="56px" />
+                    <div class="text-uppercase">{{ $t('download') }}</div>
+                    <q-btn flat color="secondary" @click="onDownload(file)">
+                      <q-icon
+                        :name="isPDF(file) ? 'picture_as_pdf' : 'file_download'"
+                        size="100px"
+                      />
+                    </q-btn>
                     <div
                       v-if="file.legend"
                       class="absolute-bottom text-center a-legend"
@@ -136,8 +142,8 @@ export default defineComponent({
 <script setup lang="ts">
 import TagsBadges from 'src/components/TagsBadges.vue';
 import PhysicalParametersPanel from 'src/components/PhysicalParametersPanel.vue';
-import { cdnUrl } from 'src/boot/api';
 import { Document, FileItem } from 'src/models';
+import { toFileUrl, isImage, isPDF } from 'src/utils/files';
 
 const searchService = useSearchService();
 const router = useRouter();
@@ -151,26 +157,9 @@ const props = defineProps<Props>();
 const slide = ref(0);
 const relationSummaries = ref<Document[]>([]);
 
-onMounted(async () => {
-  console.log('mounted');
-  updateRelationSummaries();
-});
+onMounted(updateRelationSummaries);
 
-watch(
-  () => props.document,
-  () => {
-    console.log('watch');
-    updateRelationSummaries();
-  },
-);
-
-function isImage(file: FileItem) {
-  return file.ref.mime_type.startsWith('image');
-}
-
-function toFileUrl(file: FileItem) {
-  return `${cdnUrl}/${file.ref.path}`;
-}
+watch(() => props.document, updateRelationSummaries);
 
 function updateRelationSummaries() {
   if (!props.document?.relates_to) return;
@@ -192,5 +181,9 @@ function updateRelationSummaries() {
 
 function onDocument(row: Document) {
   router.push({ name: 'doc', params: { id: `${row.entity_type}:${row.id}` } });
+}
+
+function onDownload(file: FileItem) {
+  window.open(toFileUrl(file), '_blank');
 }
 </script>

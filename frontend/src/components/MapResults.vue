@@ -29,6 +29,12 @@
                 </q-carousel>
               </div> -->
             </q-item-section>
+            <q-item-section v-if="getImageUrls(row).length" avatar>
+              <q-img
+                :src="getImageUrls(row)[0]"
+                style="max-height: 100px; width: 150px"
+              />
+            </q-item-section>
           </q-item>
         </template>
       </q-list>
@@ -48,20 +54,12 @@ export default defineComponent({
 import MapView from 'src/components/MapView.vue';
 import TagsBadges from 'src/components/TagsBadges.vue';
 import { Document } from 'src/models';
+import { getImageUrls } from 'src/utils/files';
 
 const router = useRouter();
 const searchService = useSearchService();
 
 const rows = computed(() => searchService.geoResults?.data || []);
-
-// function getImageUrls(row: Document) {
-//   const images = row.files
-//     ? row.files
-//         .filter((fileRef) => fileRef.ref.mime_type?.startsWith('image'))
-//         .map((fileRef) => `${cdnUrl}/${fileRef.ref.path}`)
-//     : [];
-//   return images;
-// }
 
 function onDocument(row: Document) {
   router.push({ name: 'doc', params: { id: `${row.entity_type}:${row.id}` } });

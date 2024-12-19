@@ -48,4 +48,5 @@ export default {
   fire: 'Fire',
   reaction_to_fire: 'Reaction to fire',
   fire_resistance_class: 'Fire resistance class',
+  download: 'Download',
 };

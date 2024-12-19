@@ -20,7 +20,7 @@
               <div v-if="getImageUrls(row).length">
                 <q-img
                   :src="getImageUrls(row)[0]"
-                  style="max-height: 100px; max-width: 100px"
+                  style="max-height: 150px; max-width: 100%"
                 />
               </div>
             </q-card-section>
@@ -40,25 +40,15 @@ export default defineComponent({
 });
 </script>
 <script setup lang="ts">
-import { cdnUrl } from 'src/boot/api';
 import { Document } from 'src/models';
 import TagsBadges from 'src/components/TagsBadges.vue';
+import { getImageUrls } from 'src/utils/files';
 
 const searchService = useSearchService();
 const router = useRouter();
 
 const loading = computed(() => searchService.searching);
 const rows = computed(() => searchService.results?.data || []);
-
-function getImageUrls(row: Document) {
-  const images = row.files
-    ? row.files
-        .filter((fileRef) => fileRef.ref.mime_type?.startsWith('image'))
-        .map((fileRef) => `${cdnUrl}/${fileRef.ref.path}`)
-    : [];
-  console.log('getImageUrls', images);
-  return images;
-}
 
 function onDocument(row: Document) {
   router.push({ name: 'doc', params: { id: `${row.entity_type}:${row.id}` } });
