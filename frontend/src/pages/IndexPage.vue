@@ -8,7 +8,7 @@
       <about-panel class="q-pa-md bg-primary" style="height: 90vh" />
     </div>
     <div>
-      <search-panel class="q-pa-md" />
+      <search-panel class="q-pa-md" style="min-height: 95vh" />
     </div>
   </q-page>
 </template>
