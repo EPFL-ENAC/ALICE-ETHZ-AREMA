@@ -236,6 +236,9 @@ class BuildingService:
         relations = (await self.session.exec(select(ProfessionalBuilding).where(ProfessionalBuilding.building_id == entity.id))).all()
         relates_to.extend(
             [f"professional:{rel.professional_id}" for rel in relations])
+        relations = (await self.session.exec(select(BuildingElement).where(BuildingElement.building_id == entity.id))).all()
+        relates_to.extend(
+            [f"technical-construction:{rel.technical_construction_id}" for rel in relations])
         return relates_to
 
     async def _get_building_materials(self, ids: list[int]):

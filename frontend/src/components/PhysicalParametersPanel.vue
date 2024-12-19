@@ -3,9 +3,13 @@
     <template v-for="section in sections" :key="section">
       <div v-if="hasValues(section)">
         <div class="text-h6">{{ $t(section) }}</div>
-        <q-list class="q-mb-md">
+        <q-list dense class="q-mb-md">
           <template v-for="field in fields[section]" :key="field">
-            <q-item v-if="hasFieldValue(field)" class="q-pa-none">
+            <q-item
+              v-if="hasFieldValue(field)"
+              class="q-pa-none"
+              style="padding: 0 !important"
+            >
               <q-item-section>
                 <q-item-label>{{ $t(field) }}</q-item-label>
               </q-item-section>
