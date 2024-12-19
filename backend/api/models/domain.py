@@ -10,7 +10,8 @@ from enacit4r_files.models.files import FileRef
 
 
 class FileItem(BaseModel):
-    ref: FileRef
+    ref: Optional[FileRef] = Field(default=None)
+    url: Optional[str] = Field(default=None)
     legend: Optional[str] = Field(default=None)
 
 

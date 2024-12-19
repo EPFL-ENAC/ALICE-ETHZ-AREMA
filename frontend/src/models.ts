@@ -10,7 +10,8 @@ export interface FileRef {
 }
 
 export interface FileItem {
-  ref: FileRef;
+  ref?: FileRef;
+  url?: string;
   legend?: string;
 }
 

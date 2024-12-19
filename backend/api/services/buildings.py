@@ -146,8 +146,11 @@ class BuildingService:
             s3_folder = f"{self.folder}/{entity.id}"
             new_files = []
             for i, item_dict in enumerate(entity.files):
-                item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
-                new_files.append(item.model_dump())
+                if "ref" in item_dict:
+                    item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
+                    new_files.append(item.model_dump())
+                elif "url" in item_dict:
+                    new_files.append(item_dict)
             entity.files = new_files
             await self.session.commit()
 
@@ -183,8 +186,11 @@ class BuildingService:
             s3_folder = f"{self.folder}/{entity.id}"
             new_files = []
             for i, item_dict in enumerate(entity.files):
-                item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
-                new_files.append(item.model_dump())
+                if "ref" in item_dict:
+                    item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
+                    new_files.append(item.model_dump())
+                elif "url" in item_dict:
+                    new_files.append(item_dict)
             entity.files = new_files
         # handle relationships
         new_bms = await self._get_building_materials(payload.building_material_ids)

@@ -1,20 +1,16 @@
 <template>
   <div>
     <q-list bordered separator v-if="files.length" class="q-mb-md">
-      <template v-for="(file, idx) in files" :key="file.ref.path">
+      <template v-for="(file, idx) in files" :key="file.ref?.path || file.url">
         <q-item>
           <q-item-section>
-            <a
-              :href="`${baseUrl}/files/${file.ref.alt_path ? file.ref.alt_path : file.ref.path}`"
-              target="_blank"
-              class="epfl q-mb-md"
-            >
-              {{ file.ref.alt_name ? file.ref.alt_name : file.ref.name }}
+            <a :href="getURL(file)" target="_blank" class="epfl q-mb-md">
+              {{ getLabel(file) }}
               <q-icon name="visibility" />
             </a>
             <q-input filled v-model="file.legend" :label="$t('legend')" />
           </q-item-section>
-          <q-item-section avatar v-if="isImage(file.ref)">
+          <q-item-section avatar v-if="isImage(file)">
             <q-img :src="`${baseUrl}/files/${file.ref.path}`" width="200px" fit="scale-down" />
           </q-item-section>
           <q-item-section avatar>
@@ -23,7 +19,12 @@
         </q-item>
       </template>
     </q-list>
+    <div class="q-gutter-sm">
+      <q-radio v-model="type" val="files" :label="$t('files')" />
+      <q-radio v-model="type" val="url" :label="$t('url')" />
+    </div>
     <q-file
+      v-if="type === 'files'"
       filled
       v-model="localFiles"
       multiple
@@ -34,6 +35,7 @@
       :loading="uploading"
       @update:model-value="onLocalFilesSelected"
     />
+    <q-input v-else filled v-model="selectedUrl" :label="$t('url')" :hint="$t('url_hint')" @keyup.enter="onURLAdd" />
   </div>
 </template>
 
@@ -55,9 +57,11 @@ const props = defineProps<Props>();
 
 const filesStore = useFilesStore();
 
+const type = ref('files');
 const files = ref(props.modelValue);
 const localFiles = ref<FileObject[]>([]);
 const uploading = ref(false);
+const selectedUrl = ref('');
 
 watch(
   () => props.modelValue,
@@ -66,8 +70,9 @@ watch(
   },
 );
 
-function isImage(file: FileRef) {
-  return ['.png', '.jpg', '.jpeg', '.webp'].find((suffix) => file.name.toLowerCase().endsWith(suffix));
+function isImage(file: FileItem) {
+  const name = file.url ? file.url : file.ref.name;
+  return ['.png', '.jpg', '.jpeg', '.webp'].find((suffix) => name.toLowerCase().endsWith(suffix));
 }
 
 function onDeleteFile(file: FileItem, idx: number) {
@@ -91,5 +96,24 @@ function onLocalFilesSelected() {
         localFiles.value = [];
       });
   });
+}
+
+function onURLAdd() {
+  if (!selectedUrl.value) {
+    return;
+  }
+  uploading.value = true;
+  files.value.push({ url: selectedUrl.value });
+  selectedUrl.value = '';
+}
+
+function getURL(file: FileItem) {
+  if (file.url) return file.url;
+  return file.ref?.alt_path ? `${baseUrl}/files/${file.ref?.alt_path}` : `${baseUrl}/files/${file.ref?.path}`;
+}
+
+function getLabel(file: FileItem) {
+  if (file.url) return file.url;
+  return file.ref.alt_name ? file.ref.alt_name : file.ref.name;
 }
 </script>

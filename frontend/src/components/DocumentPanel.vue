@@ -46,8 +46,9 @@
                 transition-prev="scale"
                 transition-next="scale"
                 swipeable
-                control-color="primary"
+                control-color="secondary"
                 padding
+                navigation
                 :arrows="document.files?.length > 1"
                 infinite
                 height="500px"
@@ -66,6 +67,17 @@
                       <div class="text-caption">{{ file.legend }}</div>
                     </div>
                   </q-carousel-slide>
+
+                  <q-carousel-slide v-else-if="isVideo(file)" :name="index">
+                    <q-video :src="toFileUrl(file)" class="absolute-full" />
+                    <div
+                      v-if="file.legend"
+                      class="absolute-bottom text-center a-legend"
+                    >
+                      <div class="text-caption">{{ file.legend }}</div>
+                    </div>
+                  </q-carousel-slide>
+
                   <q-carousel-slide
                     v-else
                     :name="index"
@@ -143,7 +155,7 @@ export default defineComponent({
 import TagsBadges from 'src/components/TagsBadges.vue';
 import PhysicalParametersPanel from 'src/components/PhysicalParametersPanel.vue';
 import { Document, FileItem } from 'src/models';
-import { toFileUrl, isImage, isPDF } from 'src/utils/files';
+import { toFileUrl, isImage, isVideo, isPDF } from 'src/utils/files';
 
 const searchService = useSearchService();
 const router = useRouter();
@@ -157,11 +169,12 @@ const props = defineProps<Props>();
 const slide = ref(0);
 const relationSummaries = ref<Document[]>([]);
 
-onMounted(updateRelationSummaries);
+onMounted(init);
 
-watch(() => props.document, updateRelationSummaries);
+watch(() => props.document, init);
 
-function updateRelationSummaries() {
+function init() {
+  slide.value = 0;
   if (!props.document?.relates_to) return;
   relationSummaries.value = [];
   Promise.all(

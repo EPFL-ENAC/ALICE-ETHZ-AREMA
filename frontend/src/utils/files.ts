@@ -4,20 +4,36 @@ import { Document, FileItem } from 'src/models';
 export function getImageUrls(row: Document) {
   const images = row.files
     ? row.files
-        .filter((fileRef) => fileRef.ref.mime_type?.startsWith('image'))
-        .map((fileRef) => `${cdnUrl}/${fileRef.ref.path}`)
+        .filter(
+          (fileRef) =>
+            fileRef.ref && fileRef.ref.mime_type?.startsWith('image'),
+        )
+        .map((fileRef) => `${cdnUrl}/${fileRef.ref?.path}`)
     : [];
   return images;
 }
 
 export function isImage(file: FileItem) {
-  return file.ref.mime_type.startsWith('image');
+  const name = file.url ? file.url : file.ref?.name;
+  return ['.png', '.jpg', '.jpeg', '.webp'].find(
+    (suffix) => name && name.toLowerCase().endsWith(suffix),
+  );
+}
+
+export function isVideo(file: FileItem) {
+  return file.url?.includes('youtube.com') || file.url?.includes('vimeo.com');
 }
 
 export function isPDF(file: FileItem) {
-  return file.ref.mime_type === 'application/pdf';
+  return file.ref?.mime_type === 'application/pdf';
 }
 
 export function toFileUrl(file: FileItem) {
-  return `${cdnUrl}/${file.ref.path}`;
+  if (file.url) {
+    return file.url
+      .replace('youtube.com/watch?v=', 'youtube.com/embed/')
+      .replace('youtu.be', 'youtube.com/embed')
+      .replace('vimeo.com', 'player.vimeo.com/video');
+  }
+  return `${cdnUrl}/${file.ref?.path}`;
 }
