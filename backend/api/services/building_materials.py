@@ -4,7 +4,7 @@ from sqlalchemy.sql import text
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from fastapi import HTTPException
-from api.models.domain import FileItem, BuildingMaterial, BuildingMaterial, NaturalResource
+from api.models.domain import FileItem, BuildingMaterial, BuildingMaterial, NaturalResource, BuildingMaterialNaturalResource, TechnicalConstructionBuildingMaterial, BuildingBuildingMaterial, ProfessionalBuildingMaterial
 from api.models.query import BuildingMaterialResult, BuildingMaterialDraft
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
@@ -50,7 +50,7 @@ class BuildingMaterialService:
         count = 0
         for entity in (await self.session.exec(select(BuildingMaterial))).all():
             indexService.addEntity(
-                self.entityType, entity, self._makeTags(entity))
+                self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
             count += 1
         debug(f"Indexed {count} building materials")
         return count
@@ -140,7 +140,7 @@ class BuildingMaterialService:
             await self.session.commit()
         # add to index
         IndexService().addEntity(
-            self.entityType, entity, self._makeTags(entity))
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         return entity
 
     async def update(self, id: int, payload: BuildingMaterialDraft, user: User = None) -> BuildingMaterial:
@@ -175,7 +175,7 @@ class BuildingMaterialService:
         await self.session.commit()
         # update in index
         IndexService().updateEntity(
-            self.entityType, entity, self._makeTags(entity))
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         return entity
 
     def _makeTags(self, entity: BuildingMaterial) -> list[str]:
@@ -185,6 +185,20 @@ class BuildingMaterialService:
         if entity.materials:
             tags.extend(entity.materials)
         return tags
+
+    async def _makeRelations(self, entity: BuildingMaterial) -> list[str]:
+        relations = (await self.session.exec(select(BuildingMaterialNaturalResource).where(BuildingMaterialNaturalResource.building_material_id == entity.id))).all()
+        relates_to = [
+            f"natural-resource:{rel.natural_resource_id}" for rel in relations]
+        relations = (await self.session.exec(select(TechnicalConstructionBuildingMaterial).where(TechnicalConstructionBuildingMaterial.building_material_id == entity.id))).all()
+        relates_to.extend(
+            [f"technical-construction:{rel.technical_construction_id}" for rel in relations])
+        relations = (await self.session.exec(select(BuildingBuildingMaterial).where(BuildingBuildingMaterial.building_material_id == entity.id))).all()
+        relates_to.extend([f"building:{rel.building_id}" for rel in relations])
+        relations = (await self.session.exec(select(ProfessionalBuildingMaterial).where(ProfessionalBuildingMaterial.building_material_id == entity.id))).all()
+        relates_to.extend(
+            [f"professional:{rel.professional_id}" for rel in relations])
+        return relates_to
 
     async def _get_natural_resources(self, ids: list[int]):
         return await self.session.exec(select(NaturalResource).filter(NaturalResource.id.in_(ids)))

@@ -49,10 +49,18 @@ export const useSearchService = defineStore('search', () => {
     selectedTerms.value = [];
   }
 
-  function getDocument(id: string) {
+  async function getDocument(
+    id: string,
+    fields: string[] = [],
+  ): Promise<Document> {
     searching.value = true;
     return api
-      .get('/search/_doc', { params: { id } })
+      .get('/search/_doc', {
+        params: { id, fields },
+        paramsSerializer: {
+          indexes: null, // no brackets at all
+        },
+      })
       .then((response) => {
         const result = response.data;
         return result.data?.length ? result.data[0] : undefined;
@@ -60,7 +68,7 @@ export const useSearchService = defineStore('search', () => {
       .finally(() => (searching.value = false));
   }
 
-  function search(withLimit: number = limit.value) {
+  async function search(withLimit: number = limit.value) {
     searching.value = true;
     results.value = undefined;
     limit.value = withLimit;

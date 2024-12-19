@@ -4,7 +4,7 @@ from sqlalchemy.sql import text
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from fastapi import HTTPException
-from api.models.domain import FileItem, TechnicalConstruction, BuildingMaterial
+from api.models.domain import FileItem, TechnicalConstruction, BuildingMaterial, TechnicalConstructionBuildingMaterial, ProfessionalTechnicalConstruction
 from api.models.query import TechnicalConstructionResult, TechnicalConstructionDraft
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
@@ -55,7 +55,7 @@ class TechnicalConstructionService:
             if entity.materials:
                 tags.extend(entity.materials)
             indexService.addEntity(
-                self.entityType, entity, self._makeTags(entity))
+                self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
             count += 1
         debug(f"Indexed {count} technical constructions")
         return count
@@ -146,7 +146,7 @@ class TechnicalConstructionService:
 
         # add to index
         IndexService().addEntity(
-            self.entityType, entity, self._makeTags(entity))
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
 
         return entity
 
@@ -182,7 +182,7 @@ class TechnicalConstructionService:
         await self.session.commit()
         # update in index
         IndexService().updateEntity(
-            self.entityType, entity, self._makeTags(entity))
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         return entity
 
     def _makeTags(self, entity: TechnicalConstruction) -> list[str]:
@@ -192,6 +192,15 @@ class TechnicalConstructionService:
         if entity.materials:
             tags.extend(entity.materials)
         return tags
+
+    async def _makeRelations(self, entity: TechnicalConstruction) -> list[str]:
+        relations = (await self.session.exec(select(TechnicalConstructionBuildingMaterial).where(TechnicalConstructionBuildingMaterial.technical_construction_id == entity.id))).all()
+        relates_to = [
+            f"building-material:{rel.building_material_id}" for rel in relations]
+        relations = (await self.session.exec(select(ProfessionalTechnicalConstruction).where(ProfessionalTechnicalConstruction.technical_construction_id == entity.id))).all()
+        relates_to.extend(
+            [f"professional:{rel.professional_id}" for rel in relations])
+        return relates_to
 
     async def _get_building_materials(self, ids: list[int]):
         return await self.session.exec(select(BuildingMaterial).filter(BuildingMaterial.id.in_(ids)))

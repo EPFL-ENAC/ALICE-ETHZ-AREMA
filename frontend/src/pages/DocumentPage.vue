@@ -1,11 +1,6 @@
 <template>
   <q-page class="q-pa-md bg-grey-2">
-    <div v-if="searchService.searching">
-      <q-spinner-dots />
-    </div>
-    <div v-else>
-      <document-panel v-if="document" :document="document" />
-    </div>
+    <document-panel v-if="document" :document="document" />
   </q-page>
 </template>
 

@@ -4,7 +4,7 @@ from sqlalchemy.sql import text
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from fastapi import HTTPException
-from api.models.domain import FileItem, Building, BuildingMaterial, BuildingElement, Professional
+from api.models.domain import FileItem, Building, BuildingMaterial, BuildingElement, Professional, BuildingBuildingMaterial, ProfessionalBuilding
 from api.models.query import BuildingDraft, BuildingResult, BuildingElementDraft
 from api.services.building_elements import BuildingElementService
 from enacit4r_sql.utils.query import QueryBuilder
@@ -52,7 +52,7 @@ class BuildingService:
         count = 0
         for entity in (await self.session.exec(select(Building))).all():
             indexService.addEntity(
-                self.entityType, entity, self._makeTags(entity))
+                self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
             count += 1
         debug(f"Indexed {count} buildings")
         return count
@@ -156,7 +156,7 @@ class BuildingService:
 
         # add to index
         IndexService().addEntity(
-            self.entityType, entity, self._makeTags(entity))
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
 
         return entity
 
@@ -198,7 +198,7 @@ class BuildingService:
         await self._apply_building_elements(entity.id, payload.building_elements)
         # update in index
         IndexService().updateEntity(
-            self.entityType, entity, self._makeTags(entity))
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         return entity
 
     async def _apply_building_elements(self, building_id: int, elements: list[BuildingElementDraft]):
@@ -228,6 +228,15 @@ class BuildingService:
         if entity.materials:
             tags.extend(entity.materials)
         return tags
+
+    async def _makeRelations(self, entity: Building) -> list[str]:
+        relations = (await self.session.exec(select(BuildingBuildingMaterial).where(BuildingBuildingMaterial.building_id == entity.id))).all()
+        relates_to = [
+            f"building-material:{rel.building_material_id}" for rel in relations]
+        relations = (await self.session.exec(select(ProfessionalBuilding).where(ProfessionalBuilding.building_id == entity.id))).all()
+        relates_to.extend(
+            [f"professional:{rel.professional_id}" for rel in relations])
+        return relates_to
 
     async def _get_building_materials(self, ids: list[int]):
         return await self.session.exec(select(BuildingMaterial).filter(BuildingMaterial.id.in_(ids)))

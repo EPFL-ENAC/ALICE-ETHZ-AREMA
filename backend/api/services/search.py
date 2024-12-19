@@ -12,7 +12,7 @@ class IndexService:
         self.client = Elasticsearch(config.ES_URL)
         self.index_name = index_name
 
-    def addEntity(self, entity_type: str, entity, tags: list[str]):
+    def addEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] = []):
         """Add a new entity to the index
 
         Args:
@@ -24,11 +24,12 @@ class IndexService:
         doc = entity.model_dump()
         doc["entity_type"] = entity_type
         doc["tags"] = tags
+        doc["relates_to"] = relates_to
         if "long" in doc and "lat" in doc:
             doc["location"] = {"lat": doc["lat"], "lon": doc["long"]}
         self._addDocument(doc_id, doc)
 
-    def updateEntity(self, entity_type: str, entity, tags: list[str]):
+    def updateEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] = []):
         """Update an entity of the index
 
         Args:
@@ -40,6 +41,7 @@ class IndexService:
         doc = entity.model_dump()
         doc["entity_type"] = entity_type
         doc["tags"] = tags
+        doc["relates_to"] = relates_to
         self._updateDocument(doc_id, doc)
 
     def deleteEntity(self, entity_type: str, entity_id: int):
@@ -103,7 +105,8 @@ class IndexService:
 
     def _deleteDocument(self, doc_id):
         self._ensureIndex()
-        self.client.delete(index=self.index_name, id=doc_id)
+        if self.client.exists(index=self.index_name, id=doc_id):
+            self.client.delete(index=self.index_name, id=doc_id)
 
     def _deleteDocuments(self, query: dict):
         self._ensureIndex()
@@ -134,6 +137,9 @@ class IndexService:
                 "mappings": {
                     "properties": {
                         "tags": {
+                            "type": "keyword"
+                        },
+                        "relates_to": {
                             "type": "keyword"
                         },
                         "entity_type": {

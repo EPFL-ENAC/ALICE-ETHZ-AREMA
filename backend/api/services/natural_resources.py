@@ -4,7 +4,7 @@ from sqlalchemy.sql import text
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from fastapi import HTTPException
-from api.models.domain import FileItem, NaturalResource, BuildingMaterial
+from api.models.domain import FileItem, NaturalResource, BuildingMaterial, BuildingMaterialNaturalResource
 from api.models.query import NaturalResourceResult
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
@@ -50,7 +50,7 @@ class NaturalResourceService:
         count = 0
         for entity in (await self.session.exec(select(NaturalResource))).all():
             indexService.addEntity(
-                self.entityType, entity, self._makeTags(entity))
+                self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
             count += 1
         debug(f"Indexed {count} natural resources")
         return count
@@ -134,7 +134,7 @@ class NaturalResourceService:
             await self.session.commit()
         # add to index
         IndexService().addEntity(
-            self.entityType, entity, self._makeTags(entity))
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         return entity
 
     async def update(self, id: int, payload: NaturalResource, user: User = None) -> NaturalResource:
@@ -164,8 +164,14 @@ class NaturalResourceService:
         await self.session.commit()
         # update in index
         IndexService().updateEntity(
-            self.entityType, entity, self._makeTags(entity))
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         return entity
 
     def _makeTags(self, entity: NaturalResource) -> list[str]:
         return [entity.type] if entity.type else []
+
+    async def _makeRelations(self, entity: NaturalResource) -> list[str]:
+        relations = (await self.session.exec(select(BuildingMaterialNaturalResource).where(BuildingMaterialNaturalResource.natural_resource_id == entity.id))).all()
+        relates_to = [
+            f"building-material:{rel.building_material_id}" for rel in relations]
+        return relates_to

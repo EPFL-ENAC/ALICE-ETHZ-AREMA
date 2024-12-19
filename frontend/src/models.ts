@@ -199,6 +199,7 @@ export interface Document extends Entity {
     lon: number;
     lat: number;
   };
+  relates_to?: string[];
 }
 
 export interface SearchResult {

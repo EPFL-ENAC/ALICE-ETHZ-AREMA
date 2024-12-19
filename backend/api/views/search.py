@@ -74,10 +74,12 @@ async def find(
 
 
 @router.get("/_doc", response_model=SearchResult, response_model_exclude_none=True)
-async def find(id: str = Query(None)) -> SearchResult:
+async def find(id: str = Query(None), fields: List[str] = Query(None)) -> SearchResult:
     """Search documents matching the Elasticsearch query"""
     indexService = IndexService()
     queryDict = {"query": {"term": {"_id": id}}}
+    if fields is not None and len(fields) > 0:
+        queryDict["_source"] = fields
     return indexService.search(query=queryDict, skip=0, limit=1)
 
 
@@ -116,7 +118,7 @@ async def find(
     queryDict = {}
     if len(mustQueries):
         queryDict = {"query": {"bool": {"must": mustQueries}}}
-    if fields:
+    if fields is not None and len(fields) > 0:
         queryDict["_source"] = fields
 
     return indexService.search(query=queryDict, skip=skip, limit=limit)
