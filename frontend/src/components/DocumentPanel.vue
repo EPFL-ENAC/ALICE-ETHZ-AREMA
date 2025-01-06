@@ -5,7 +5,16 @@
     </div>
     <div v-else>
       <div class="row q-col-gutter-md">
-        <div class="col-12 col-md-3"></div>
+        <div class="col-12 col-md-2"></div>
+        <div class="col-12 col-md-1">
+          <router-link
+            to="/search"
+            class="text-primary"
+            style="text-decoration: none"
+          >
+            <q-icon name="arrow_back" /> {{ $t('search') }}
+          </router-link>
+        </div>
         <div class="col-12 col-md-6">
           <div class="text-primary text-uppercase q-mb-sm">
             {{ $t(document.entity_type) }}
