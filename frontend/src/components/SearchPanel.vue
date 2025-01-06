@@ -51,7 +51,7 @@
         unelevated
         square
         no-caps
-        size="md"
+        size="12px"
         :label="$t(termOpt.label)"
         class="on-left q-mb-sm"
         @click="onTermSelect(termOpt)"
