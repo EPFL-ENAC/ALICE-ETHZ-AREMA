@@ -136,10 +136,18 @@ onMounted(() => {
 
 function onVocabularySelect(voc: TaxonomyNodeOption) {
   if (voc === selectedVocabulary.value) {
-    // clear associated terms
-    searchService.selectedTerms = searchService.selectedTerms.filter(
-      (term) => !term.startsWith(voc.urn),
-    );
+    // any selected terms ?
+    if (!searchService.selectedTerms.some((term) => term.startsWith(voc.urn))) {
+      // select all terms
+      searchService.selectedTerms.push(
+        ...termOptions.value.map((term) => term.urn),
+      );
+    } else {
+      // clear associated terms
+      searchService.selectedTerms = searchService.selectedTerms.filter(
+        (term) => !term.startsWith(voc.urn),
+      );
+    }
     searchService.search();
   } else {
     selectedVocabulary.value = voc;
