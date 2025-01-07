@@ -3,10 +3,10 @@
     <div v-if="!loading" class="row q-col-gutter-lg">
       <template v-for="row in rows" :key="`${row.entity_type}:${row.id}`">
         <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-          <q-card flat bordered class="q-ma-none">
+          <q-card flat bordered class="q-ma-none" style="height: 400px">
             <q-card-section
               class="q-pa-md"
-              style="cursor: pointer"
+              style="cursor: pointer; height: 100%"
               @click="onDocument(row)"
             >
               <div class="text-primary">{{ $t(row.entity_type) }}</div>
@@ -14,9 +14,12 @@
               <div>
                 <tags-badges :document="row" />
               </div>
-              <div class="text-body2">
+              <q-scroll-area
+                style="height: 100px"
+                class="text-body2 q-mt-sm q-mb-sm"
+              >
                 <q-markdown :src="row.description" />
-              </div>
+              </q-scroll-area>
               <div v-if="getImageUrls(row).length">
                 <q-img
                   :src="getImageUrls(row)[0]"

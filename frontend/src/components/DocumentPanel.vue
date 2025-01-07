@@ -5,11 +5,11 @@
     </div>
     <div v-else>
       <div class="row q-col-gutter-md">
-        <div class="col-12 col-md-2"></div>
-        <div class="col-12 col-md-1">
+        <div class="col-12 col-md-1"></div>
+        <div class="col-12 col-md-2">
           <router-link
             to="/search"
-            class="text-primary"
+            class="text-primary text-caption"
             style="text-decoration: none"
           >
             <q-icon name="arrow_back" /> {{ $t('search') }}
