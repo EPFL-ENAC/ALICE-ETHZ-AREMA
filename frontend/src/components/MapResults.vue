@@ -18,7 +18,7 @@
                 }}</q-item-label>
                 <q-item-label class="text-bold">{{ row.name }}</q-item-label>
                 <div>
-                  <tags-badges :document="row" />
+                  <tags-badges :item="row" />
                 </div>
                 <q-item-label caption>
                   <q-markdown :src="row.description" />
@@ -51,11 +51,6 @@
   </div>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  name: 'MapResults',
-});
-</script>
 <script setup lang="ts">
 import MapView from 'src/components/MapView.vue';
 import TagsBadges from 'src/components/TagsBadges.vue';

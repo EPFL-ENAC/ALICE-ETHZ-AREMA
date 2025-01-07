@@ -11,7 +11,7 @@ from datetime import datetime
 from api.services.s3 import s3_client
 from api.utils.files import moveTempFile
 from api.auth import User
-from api.services.search import IndexService
+from api.services.search import EntityIndexer
 
 
 class NaturalResourceQueryBuilder(QueryBuilder):
@@ -43,7 +43,7 @@ class NaturalResourceService:
 
     async def indexAll(self) -> int:
         """Index all natural resources"""
-        indexService = IndexService()
+        indexService = EntityIndexer()
         # delete documents of this type
         indexService.deleteEntities(self.entityType)
         # add all documents
@@ -84,7 +84,7 @@ class NaturalResourceService:
         await self.session.delete(entity)
         await self.session.commit()
         # delete from index
-        IndexService().deleteEntity(self.entityType, entity.id)
+        EntityIndexer().deleteEntity(self.entityType, entity.id)
         return entity
 
     async def find(self, filter: dict, fields: list, sort: list, range: list) -> NaturalResourceResult:
@@ -136,7 +136,7 @@ class NaturalResourceService:
             entity.files = new_files
             await self.session.commit()
         # add to index
-        IndexService().addEntity(
+        EntityIndexer().addEntity(
             self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         return entity
 
@@ -169,7 +169,7 @@ class NaturalResourceService:
             entity.files = new_files
         await self.session.commit()
         # update in index
-        IndexService().updateEntity(
+        EntityIndexer().updateEntity(
             self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         return entity
 

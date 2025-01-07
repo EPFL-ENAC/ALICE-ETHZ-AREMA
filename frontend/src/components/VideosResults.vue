@@ -4,28 +4,22 @@
       <div v-if="!loading" class="row q-col-gutter-lg">
         <template v-for="row in rows" :key="`${row.entity_type}:${row.id}`">
           <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-            <q-card flat bordered class="q-ma-none">
+            <q-card flat bordered class="q-ma-none" style="min-height: 360px">
               <q-card-section
                 class="q-pa-md"
                 style="cursor: pointer; height: 100%"
-                @click="onDocument(row)"
+                @click="onVideo(row)"
               >
                 <div class="text-primary">{{ $t(row.entity_type) }}</div>
                 <div class="text-h5">{{ row.name }}</div>
                 <div>
                   <tags-badges :item="row" />
                 </div>
-                <q-scroll-area
-                  style="height: 100px"
-                  class="text-body2 q-mt-sm q-mb-sm"
-                >
-                  <q-markdown :src="row.description" />
-                </q-scroll-area>
-                <div v-if="getImageUrls(row).length">
-                  <q-img
-                    :src="getImageUrls(row)[0]"
-                    style="max-height: 150px; max-width: 100%"
-                  />
+                <div class="text-body2 q-mt-sm q-mb-sm">
+                  <q-markdown :src="row.legend" />
+                </div>
+                <div>
+                  <q-video :src="toEmbededVideoUrl(row.url)" />
                 </div>
               </q-card-section>
             </q-card>
@@ -51,22 +45,23 @@
 </template>
 
 <script setup lang="ts">
-import { Document } from 'src/models';
+import { Video } from 'src/models';
 import TagsBadges from 'src/components/TagsBadges.vue';
-import { getImageUrls } from 'src/utils/files';
+import { toEmbededVideoUrl } from 'src/utils/files';
 
 const searchService = useSearchService();
-const router = useRouter();
 
-const total = computed(() => searchService.results?.total || 0);
-const count = computed(() => searchService.results?.data?.length || 0);
+const total = computed(() => searchService.videoResults?.total || 0);
+const count = computed(() => searchService.videoResults?.data?.length || 0);
+
 const loading = computed(() => searchService.searching);
-const rows = computed(() => searchService.results?.data || []);
+const rows = computed(() => searchService.videoResults?.data || []);
 
-function onDocument(row: Document) {
-  router.push({ name: 'doc', params: { id: `${row.entity_type}:${row.id}` } });
+function onVideo(row: Video) {
+  window.open(row.url, '_blank');
 }
+
 function loadMore() {
-  searchService.search_entities(searchService.limit + 100);
+  searchService.search_videos(searchService.limit + 100);
 }
 </script>

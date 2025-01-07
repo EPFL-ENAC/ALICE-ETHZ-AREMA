@@ -13,7 +13,7 @@
       input-class="text-secondary"
       :placeholder="$t('type_here')"
       class="q-mt-md q-mb-md"
-      @update:model-value="searchService.search_entities()"
+      @update:model-value="searchService.search_videos()"
     />
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
     <div>
@@ -58,31 +58,16 @@
       />
     </div>
     <div class="q-mt-md">
-      <q-btn
-        v-for="view in views"
-        :key="view"
-        :outline="view !== searchService.selectedView"
-        color="secondary"
-        unelevated
-        square
-        no-caps
-        size="md"
-        :label="$t(view)"
-        class="on-left"
-        @click="onViewSelect(view)"
-      />
       <q-spinner-dots v-if="searchService.searching" size="md" />
     </div>
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
-    <map-results v-if="searchService.selectedView === 'map'" />
-    <list-results v-else-if="searchService.selectedView === 'list'" />
+    <videos-results />
   </div>
 </template>
 
 <script setup lang="ts">
-import MapResults from 'src/components/MapResults.vue';
-import ListResults from 'src/components/ListResults.vue';
 import { TaxonomyNodeOption } from 'src/components/models';
+import VideosResults from './VideosResults.vue';
 
 const taxonomies = useTaxonomyStore();
 const searchService = useSearchService();
@@ -99,7 +84,6 @@ const vocabularies = [
 ];
 const vocabularyOptions = ref<TaxonomyNodeOption[]>([]);
 const termOptions = ref<TaxonomyNodeOption[]>([]);
-const views = ['map', 'list'];
 
 onMounted(() => {
   taxonomies
@@ -125,7 +109,7 @@ onMounted(() => {
         .filter((opt) => opt !== undefined);
     })
     .then(() => {
-      searchService.search_entities(100);
+      searchService.search_videos(100);
     });
 });
 
@@ -143,7 +127,7 @@ function onVocabularySelect(voc: TaxonomyNodeOption) {
         (term) => !term.startsWith(voc.urn),
       );
     }
-    searchService.search_entities();
+    searchService.search_videos();
   } else {
     selectedVocabulary.value = voc;
   }
@@ -167,11 +151,7 @@ function onTermSelect(term: TaxonomyNodeOption) {
         1,
       )
     : searchService.selectedTerms.push(urn);
-  searchService.search_entities();
-}
-
-function onViewSelect(view: string) {
-  searchService.selectedView = view;
+  searchService.search_videos();
 }
 
 function getSelectedTerms(voc: TaxonomyNodeOption) {

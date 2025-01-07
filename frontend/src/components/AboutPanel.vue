@@ -20,9 +20,4 @@
   </div>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  name: 'AboutPanel',
-});
-</script>
 <script setup lang="ts"></script>

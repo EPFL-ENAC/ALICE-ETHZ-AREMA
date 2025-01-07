@@ -61,11 +61,6 @@
   </div>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  name: 'NavDrawer',
-});
-</script>
 <script setup lang="ts">
 interface Props {
   home?: boolean;

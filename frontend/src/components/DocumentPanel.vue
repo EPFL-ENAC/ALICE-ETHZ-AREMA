@@ -21,7 +21,7 @@
           </div>
           <div class="text-h2 q-mb-md">{{ document.name }}</div>
           <div class="q-mb-lg">
-            <tags-badges :document="document" />
+            <tags-badges :item="document" />
           </div>
           <div class="text-h5 q-mb-lg">
             <q-markdown :src="document.description" />
@@ -155,11 +155,6 @@
   </div>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  name: 'DocumentPanel',
-});
-</script>
 <script setup lang="ts">
 import TagsBadges from 'src/components/TagsBadges.vue';
 import PhysicalParametersPanel from 'src/components/PhysicalParametersPanel.vue';

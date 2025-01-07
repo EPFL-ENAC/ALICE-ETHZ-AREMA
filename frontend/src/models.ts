@@ -209,3 +209,20 @@ export interface SearchResult {
   limit: number;
   data?: Document[];
 }
+
+export interface Video {
+  id: string;
+  name: string;
+  legend?: string;
+  url: string;
+  tags: string[];
+  parent_id: string;
+  entity_type: string;
+}
+
+export interface VideoResult {
+  total: number;
+  skip: number;
+  limit: number;
+  data?: Video[];
+}

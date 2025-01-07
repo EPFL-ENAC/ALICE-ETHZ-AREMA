@@ -13,17 +13,12 @@
   </div>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  name: 'TagsBadges',
-});
-</script>
 <script setup lang="ts">
-import { Document } from 'src/models';
+import { Document, Video } from 'src/models';
 const taxonomies = useTaxonomyStore();
 
 interface Props {
-  document: Document;
+  item: Document | Video;
 }
 
 const props = defineProps<Props>();
@@ -32,17 +27,17 @@ const labels = ref<string[]>([]);
 
 onMounted(init);
 
-watch(() => props.document, init);
+watch(() => props.item, init);
 
 function init() {
   taxonomies.init().then(() => {
-    labels.value = getTagLabels(props.document);
+    labels.value = getTagLabels(props.item);
   });
 }
 
-function getTagLabels(row: Document) {
-  return row.tags
-    ? row.tags
+function getTagLabels(item: Document | Video) {
+  return item.tags
+    ? item.tags
         .map((tag) => taxonomies.getNode(tag))
         .filter((node) => node)
         .map((node) => taxonomies.getLabel(node?.names))

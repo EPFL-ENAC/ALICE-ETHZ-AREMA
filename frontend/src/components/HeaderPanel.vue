@@ -26,11 +26,6 @@
   </q-header>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  name: 'HeaderPanel',
-});
-</script>
 <script setup lang="ts">
 interface Props {
   modelValue: boolean;

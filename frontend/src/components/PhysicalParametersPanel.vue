@@ -27,11 +27,6 @@
   </div>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  name: 'PhysicalParamametersPanel',
-});
-</script>
 <script setup lang="ts">
 import { Document } from 'src/models';
 

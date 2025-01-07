@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { api } from 'src/boot/api';
-import { SearchResult, Document } from 'src/models';
+import { SearchResult, Document, VideoResult } from 'src/models';
 import {
   Feature,
   FeatureCollection,
@@ -15,6 +15,7 @@ export const useSearchService = defineStore('search', () => {
   const searching = ref(false);
   const results = ref<SearchResult>();
   const geoResults = ref<SearchResult>();
+  const videoResults = ref<VideoResult>();
   const skip = ref(0);
   const limit = ref(100);
 
@@ -52,11 +53,12 @@ export const useSearchService = defineStore('search', () => {
   async function getDocument(
     id: string,
     fields: string[] = [],
+    index: string = 'entities',
   ): Promise<Document> {
     searching.value = true;
     return api
       .get('/search/_doc', {
-        params: { id, fields },
+        params: { id, fields, index },
         paramsSerializer: {
           indexes: null, // no brackets at all
         },
@@ -68,13 +70,14 @@ export const useSearchService = defineStore('search', () => {
       .finally(() => (searching.value = false));
   }
 
-  async function search(withLimit: number = limit.value) {
+  async function search_entities(withLimit: number = limit.value) {
     searching.value = true;
     results.value = undefined;
+    geoResults.value = undefined;
     limit.value = withLimit;
     return Promise.all([
       api
-        .get('/search/', {
+        .get('/search/_entities', {
           params: {
             tags: selectedTerms.value,
             text: filterText.value,
@@ -89,7 +92,7 @@ export const useSearchService = defineStore('search', () => {
           results.value = response.data;
         }),
       api
-        .get('/search/', {
+        .get('/search/_entities', {
           params: {
             tags: selectedTerms.value,
             text: filterText.value,
@@ -109,6 +112,30 @@ export const useSearchService = defineStore('search', () => {
     });
   }
 
+  async function search_videos(withLimit: number = limit.value) {
+    searching.value = true;
+    videoResults.value = undefined;
+    limit.value = withLimit;
+    return api
+      .get('/search/_videos', {
+        params: {
+          tags: selectedTerms.value,
+          text: filterText.value,
+          skip: skip.value,
+          limit: limit.value,
+        },
+        paramsSerializer: {
+          indexes: null, // no brackets at all
+        },
+      })
+      .then((response) => {
+        videoResults.value = response.data;
+      })
+      .finally(() => {
+        searching.value = false;
+      });
+  }
+
   return {
     selectedView,
     selectedTerms,
@@ -116,12 +143,14 @@ export const useSearchService = defineStore('search', () => {
     searching,
     results,
     geoResults,
+    videoResults,
     features,
     hasFilters,
     skip,
     limit,
     reset,
-    search,
+    search_entities,
+    search_videos,
     getDocument,
   };
 });

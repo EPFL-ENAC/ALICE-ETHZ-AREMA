@@ -12,7 +12,7 @@ from datetime import datetime
 from api.services.s3 import s3_client
 from api.utils.files import moveTempFile
 from api.auth import User
-from api.services.search import IndexService
+from api.services.search import EntityIndexer
 
 
 class BuildingQueryBuilder(QueryBuilder):
@@ -45,7 +45,7 @@ class BuildingService:
 
     async def indexAll(self) -> int:
         """Index all buildings"""
-        indexService = IndexService()
+        indexService = EntityIndexer()
         # delete documents of this type
         indexService.deleteEntities(self.entityType)
         # add all documents
@@ -92,7 +92,7 @@ class BuildingService:
         await self.session.delete(entity)
         await self.session.commit()
         # delete from index
-        IndexService().deleteEntity(self.entityType, entity.id)
+        EntityIndexer().deleteEntity(self.entityType, entity.id)
         return entity
 
     async def find(self, filter: dict, fields: list, sort: list, range: list) -> BuildingResult:
@@ -158,7 +158,7 @@ class BuildingService:
         await self._apply_building_elements(entity.id, payload.building_elements)
 
         # add to index
-        IndexService().addEntity(
+        EntityIndexer().addEntity(
             self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
 
         return entity
@@ -203,7 +203,7 @@ class BuildingService:
         # handle building elements
         await self._apply_building_elements(entity.id, payload.building_elements)
         # update in index
-        IndexService().updateEntity(
+        EntityIndexer().updateEntity(
             self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         return entity
 
