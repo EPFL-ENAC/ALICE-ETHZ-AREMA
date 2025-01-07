@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="text-h5 text-uppercase text-primary">
-      {{ $t('filters') }}
+      {{ $t('videos') }}
     </div>
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
     <q-input
