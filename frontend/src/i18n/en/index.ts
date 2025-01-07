@@ -48,5 +48,6 @@ export default {
   u: 'U',
   vapor_diffusion_resistance: 'Vapor Diffusion Resistance',
   videos: 'Videos',
+  watch: 'Watch',
   youngs_modulus: "Young's Modulus",
 };

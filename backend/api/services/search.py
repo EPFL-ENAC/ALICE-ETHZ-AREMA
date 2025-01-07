@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 import copy
+import re
+from markdown_it import MarkdownIt
 from elasticsearch import Elasticsearch
 from api.config import config
 from api.models.query import SearchResult
@@ -198,20 +200,8 @@ class VideoIndexService(IndexService):
             entity_type (str): The class of the entity
             entity (_type_): The entity object to add
         """
-        # check files is an attribute of the entity
-        if not entity.files:
-            return
-        parent_id = f"{entity_type}:{entity.id}"
-        for idx, file in enumerate(entity.files):
-            doc_id = f"{entity_type}:{entity.id}:file:{idx}"
-            if "url" in file and self.isVideoUrl(file["url"]):
-                doc = copy.deepcopy(file)
-                doc["id"] = doc_id
-                doc["name"] = entity.name
-                doc["entity_type"] = entity_type
-                doc["parent_id"] = parent_id
-                doc["tags"] = tags
-                self._addDocument(doc_id, doc)
+        for doc in self._getVideos(entity_type, entity, tags):
+            self._addDocument(doc["id"], doc)
 
     def updateVideos(self, entity_type: str, entity, tags: list[str]):
         """Update videos of an entity of the index
@@ -221,19 +211,8 @@ class VideoIndexService(IndexService):
             entity (_type_): The entity object to add
             tags (list[str]): The associated tags
         """
-        if "files" not in entity:
-            return
-        parent_id = f"{entity_type}:{entity.id}"
-        for idx, file in enumerate(entity.files):
-            doc_id = f"{entity_type}:{entity.id}:file:{idx}"
-            if "url" in file and self.isVideoUrl(file["url"]):
-                doc = copy.deepcopy(file)
-                doc["id"] = doc_id
-                doc["name"] = entity.name
-                doc["entity_type"] = entity_type
-                doc["parent_id"] = parent_id
-                doc["tags"] = tags
-                self._updateDocument(doc_id, doc)
+        for doc in self._getVideos(entity_type, entity, tags):
+            self._updateDocument(doc["id"], doc)
 
     def deleteVideos(self, entity_type: str, entity_id: int):
         """Delete videos of an entity from the index
@@ -254,6 +233,105 @@ class VideoIndexService(IndexService):
         """
         query = {"query": {"term": {"entity_type": entity_type}}}
         self._deleteDocuments(query)
+
+    def _getVideos(self, entity_type: str, entity, tags: list[str]):
+        """Get videos of an entity
+
+        Args:
+            entity_type (str): The class of the entity
+            entity (_type_): The entity object to add
+            tags (list[str]): The associated tags
+
+        Returns:
+            list[dict]: The list of video documents 
+        """
+        docs = []
+        docs += self._getVideosFromFiles(entity_type, entity, tags)
+        for field in ["external_links", "article_top", "article_bottom", "side_note"]:
+            docs += self._getVideosFromField(field, entity_type, entity, tags)
+        return docs
+
+    def _getVideosFromFiles(self, entity_type: str, entity, tags: list[str]):
+        """Get videos of an entity from the files attribute
+
+        Args:
+            entity_type (str): The class of the entity
+            entity (_type_): The entity object to add
+            tags (list[str]): The associated tags
+
+        Returns:
+            list[dict]: The list of video documents 
+        """
+        if not entity.files:
+            return []
+        docs = []
+        parent_id = f"{entity_type}:{entity.id}"
+        for idx, file in enumerate(entity.files):
+            doc_id = f"{entity_type}:{entity.id}:file:{idx}"
+            if "url" in file and self.isVideoUrl(file["url"]):
+                doc = copy.deepcopy(file)
+                doc["id"] = doc_id
+                doc["name"] = entity.name
+                doc["entity_type"] = entity_type
+                doc["parent_id"] = parent_id
+                doc["tags"] = tags
+                docs.append(doc)
+        return docs
+
+    def _getVideosFromField(self, field, entity_type: str, entity, tags: list[str]):
+        """Get videos of an entity from the files attribute
+
+        Args:
+            field (str): The field to search for videos
+            entity_type (str): The class of the entity
+            entity (_type_): The entity object to add
+            tags (list[str]): The associated tags
+
+        Returns:
+            list[dict]: The list of video documents 
+        """
+        text = getattr(entity, field)
+        if not text:
+            return []
+        docs = []
+        parent_id = f"{entity_type}:{entity.id}"
+        links = self.extract_all_links_with_text(text)
+        for idx, link in enumerate(links):
+            doc_id = f"{entity_type}:{entity.id}:{field}:{idx}"
+            if "url" in link and self.isVideoUrl(link["url"]):
+                doc = link
+                doc["id"] = doc_id
+                doc["name"] = entity.name
+                doc["entity_type"] = entity_type
+                doc["parent_id"] = parent_id
+                doc["tags"] = tags
+                docs.append(doc)
+        return docs
+
+    def extract_all_links_with_text(self, markdown_text):
+        md = MarkdownIt()
+        tokens = md.parse(markdown_text)
+        links = []
+
+        # Extract Markdown links
+        for i, token in enumerate(tokens):
+            if token.type == "link_open":
+                href = [attr[1]
+                        for attr in token.attrs if attr[0] == "href"][0]
+                if i + 1 < len(tokens) and tokens[i + 1].type == "text":
+                    legend = tokens[i + 1].content
+                    links.append({"legend": legend, "url": href})
+
+        # Extract plain URLs
+        plain_url_pattern = r'(https?://[^\s]+)'
+        plain_urls = re.findall(plain_url_pattern, markdown_text)
+
+        for url in plain_urls:
+            # Ensure plain URLs are not duplicates of Markdown links
+            if not any(link["url"] == url for link in links):
+                links.append({"legend": None, "url": url})
+
+        return links
 
     def _ensureIndex(self):
         if not self.client.indices.exists(index=self.index_name):

@@ -66,6 +66,7 @@ const rows = computed(() => searchService.results?.data || []);
 function onDocument(row: Document) {
   router.push({ name: 'doc', params: { id: `${row.entity_type}:${row.id}` } });
 }
+
 function loadMore() {
   searchService.search_entities(searchService.limit + 100);
 }

@@ -8,19 +8,29 @@
               <q-card-section
                 class="q-pa-md"
                 style="cursor: pointer; height: 100%"
-                @click="onVideo(row)"
+                @click="onDocument(row)"
               >
                 <div class="text-primary">{{ $t(row.entity_type) }}</div>
                 <div class="text-h5">{{ row.name }}</div>
                 <div>
                   <tags-badges :item="row" />
                 </div>
-                <div class="text-body2 q-mt-sm q-mb-sm">
+                <div class="text-body2">
                   <q-markdown :src="row.legend" />
                 </div>
-                <div>
-                  <q-video :src="toEmbededVideoUrl(row.url)" />
-                </div>
+              </q-card-section>
+              <q-card-section class="q-pt-none">
+                <q-video :src="toEmbededVideoUrl(row.url)" />
+                <q-btn
+                  color="accent"
+                  flat
+                  no-caps
+                  size="sm"
+                  :label="$t('watch')"
+                  icon-right="open_in_new"
+                  class="full-width"
+                  @click="onVideo(row)"
+                />
               </q-card-section>
             </q-card>
           </div>
@@ -50,6 +60,7 @@ import TagsBadges from 'src/components/TagsBadges.vue';
 import { toEmbededVideoUrl } from 'src/utils/files';
 
 const searchService = useSearchService();
+const router = useRouter();
 
 const total = computed(() => searchService.videoResults?.total || 0);
 const count = computed(() => searchService.videoResults?.data?.length || 0);
@@ -59,6 +70,10 @@ const rows = computed(() => searchService.videoResults?.data || []);
 
 function onVideo(row: Video) {
   window.open(row.url, '_blank');
+}
+
+function onDocument(row: Video) {
+  router.push({ name: 'doc', params: { id: row.parent_id } });
 }
 
 function loadMore() {
