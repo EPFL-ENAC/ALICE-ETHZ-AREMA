@@ -51,4 +51,8 @@ function onToggleDrawer() {
   rightDrawerOpen.value = !rightDrawerOpen.value;
   emit('update:modelValue', rightDrawerOpen.value);
 }
+
+onBeforeRouteUpdate(() => {
+  rightDrawerOpen.value = false;
+});
 </script>

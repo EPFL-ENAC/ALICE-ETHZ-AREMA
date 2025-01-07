@@ -36,14 +36,6 @@
       <q-btn
         no-caps
         size="xl"
-        to="/resources"
-        :label="$t('resources')"
-        class="text-primary"
-      ></q-btn>
-      <q-icon name="horizontal_rule" size="md" class="q-mt-md" />
-      <q-btn
-        no-caps
-        size="xl"
         to="/search"
         :label="$t('search')"
         class="text-primary"
