@@ -3,19 +3,15 @@
     <div class="text-bold q-mb-sm">{{ $t('structural') }}</div>
     <div class="row q-col-gutter-lg">
       <div class="col">
-        <property-form-item
-          v-for="property in [
-            'density',
-            'compressive_strength',
-            'tensile_strength',
-          ]"
+        <property-form-number
+          v-for="property in ['density', 'compressive_strength', 'tensile_strength']"
           :key="property"
           v-model="entity"
           :property="property"
         />
       </div>
       <div class="col">
-        <property-form-item
+        <property-form-number
           v-for="property in ['youngs_modulus', 'shrinkage', 'settlement']"
           :key="property"
           v-model="entity"
@@ -26,7 +22,7 @@
     <div class="text-bold q-mb-sm">{{ $t('hygrothermal') }}</div>
     <div class="row q-col-gutter-lg">
       <div class="col">
-        <property-form-item
+        <property-form-number
           v-for="property in [
             'thermal_conductivity',
             'thermal_capacity',
@@ -39,7 +35,7 @@
         />
       </div>
       <div class="col">
-        <property-form-item
+        <property-form-number
           v-for="property in ['u', 'effusivity', 'diffusivity']"
           :key="property"
           v-model="entity"
@@ -50,11 +46,8 @@
     <div class="text-bold q-mb-sm">{{ $t('acoustic') }}</div>
     <div class="row q-col-gutter-lg">
       <div class="col">
-        <property-form-item
-          v-for="property in [
-            'absorption_coefficient',
-            'sound_reduction_index',
-          ]"
+        <property-form-number
+          v-for="property in ['absorption_coefficient', 'sound_reduction_index']"
           :key="property"
           v-model="entity"
           :property="property"
@@ -65,33 +58,26 @@
     <div class="text-bold q-mb-sm">{{ $t('fire') }}</div>
     <div class="row q-col-gutter-lg">
       <div class="col">
-        <property-form-item
-          v-for="property in ['reaction_to_fire', 'building_material_class']"
-          :key="property"
+        <property-form-suggest
           v-model="entity"
-          :property="property"
-          :options="fireResistanceClasses"
+          :property="'reaction_to_fire'"
+          :suggestions="reactionToFireClasses"
+          @suggest="onSuggest"
         />
       </div>
       <div class="col">
-        <property-form-item
-          v-for="property in ['fire_resistance_class']"
-          :key="property"
+        <property-form-suggest
           v-model="entity"
-          :property="property"
-          :options="fireResistanceClasses"
+          :property="'fire_resistance_class'"
+          :suggestions="fireResistanceClasses"
+          @suggest="onSuggest"
         />
       </div>
     </div>
     <div class="text-bold q-mb-sm">{{ $t('others') }}</div>
     <div class="row q-col-gutter-lg">
       <div class="col">
-        <property-form-item
-          v-for="property in ['air_tightness']"
-          :key="property"
-          v-model="entity"
-          :property="property"
-        />
+        <property-form-number v-model="entity" :property="'air_tightness'" />
       </div>
       <div class="col"></div>
     </div>
@@ -105,7 +91,9 @@ export default defineComponent({
 </script>
 <script setup lang="ts">
 import { PhysicalEntity } from 'src/models';
-import PropertyFormItem from 'src/components/PropertyFormItem.vue';
+import PropertyFormNumber from 'src/components/PropertyFormNumber.vue';
+import PropertyFormSuggest from 'src/components/PropertyFormSuggest.vue';
+import { Suggestions } from 'src/components/models';
 
 interface Props {
   modelValue: PhysicalEntity;
@@ -115,7 +103,8 @@ const props = defineProps<Props>();
 
 const entity = ref(props.modelValue);
 
-const fireResistanceClasses = ['A', 'B', 'C', 'D', 'E', 'F'];
+const reactionToFireClasses = ref<Suggestions>({});
+const fireResistanceClasses = ref<Suggestions>({});
 
 watch(
   () => props.modelValue,
@@ -123,4 +112,50 @@ watch(
     entity.value = val;
   },
 );
+
+function onSuggest(property: string, key: string, value: string) {
+  let suggestions: string[] = [];
+  if (property === 'reaction_to_fire') {
+    // format suggested: <A1|A2|B|C|D|E|F>-<S1|S2|S3>-<D0|D1|D2>
+    const base = ['A1', 'A2', 'B', 'C', 'D', 'E', 'F'];
+    if (value && base.find((cls) => value.startsWith(cls))) {
+      const tokens = value.split('-');
+      const smoke = ['S1', 'S2', 'S3'];
+      const droplets = ['D0', 'D1', 'D2'];
+      // if value does not contain smoke
+      if (tokens.length > 1 && !smoke.find((cls) => tokens[1].trim().includes(cls))) {
+        suggestions = smoke.map((s) => `${tokens[0].trim()}-${s}`);
+      } else if (tokens.length > 2 && !droplets.find((cls) => tokens[2].trim().includes(cls))) {
+        suggestions = droplets.map((d) => `${tokens[0].trim()}-${tokens[1].trim()}-${d}`);
+      } else {
+        suggestions = base;
+      }
+    } else {
+      suggestions = base;
+    }
+    reactionToFireClasses.value = {
+      key,
+      options: suggestions,
+    };
+  }
+  if (property === 'fire_resistance_class') {
+    // format suggested: <R|RE|REI|EI>-<30|60|90|120>
+    const base = ['R', 'RE', 'REI', 'EI'];
+    if (value && base.find((cls) => value.startsWith(cls))) {
+      const tokens = value.split('-');
+      const time = ['30', '60', '90', '120'];
+      if (tokens.length > 1 && !time.find((cls) => tokens[1].trim().includes(cls))) {
+        suggestions = time.map((t) => `${tokens[0].trim()}-${t}`);
+      } else {
+        suggestions = base;
+      }
+    } else {
+      suggestions = base;
+    }
+    fireResistanceClasses.value = {
+      key,
+      options: suggestions,
+    };
+  }
+}
 </script>

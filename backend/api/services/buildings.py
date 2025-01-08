@@ -4,7 +4,7 @@ from sqlalchemy.sql import text
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from fastapi import HTTPException
-from api.models.domain import FileItem, Building, BuildingMaterial, BuildingElement, Professional
+from api.models.domain import FileItem, Building, BuildingMaterial, BuildingElement, Professional, BuildingBuildingMaterial, ProfessionalBuilding
 from api.models.query import BuildingDraft, BuildingResult, BuildingElementDraft
 from api.services.building_elements import BuildingElementService
 from enacit4r_sql.utils.query import QueryBuilder
@@ -12,7 +12,7 @@ from datetime import datetime
 from api.services.s3 import s3_client
 from api.utils.files import moveTempFile
 from api.auth import User
-from api.services.search import IndexService
+from api.services.search import EntityIndexer
 
 
 class BuildingQueryBuilder(QueryBuilder):
@@ -45,14 +45,14 @@ class BuildingService:
 
     async def indexAll(self) -> int:
         """Index all buildings"""
-        indexService = IndexService()
+        indexService = EntityIndexer()
         # delete documents of this type
         indexService.deleteEntities(self.entityType)
         # add all documents
         count = 0
         for entity in (await self.session.exec(select(Building))).all():
             indexService.addEntity(
-                self.entityType, entity, self._makeTags(entity))
+                self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
             count += 1
         debug(f"Indexed {count} buildings")
         return count
@@ -92,7 +92,7 @@ class BuildingService:
         await self.session.delete(entity)
         await self.session.commit()
         # delete from index
-        IndexService().deleteEntity(self.entityType, entity.id)
+        EntityIndexer().deleteEntity(self.entityType, entity.id)
         return entity
 
     async def find(self, filter: dict, fields: list, sort: list, range: list) -> BuildingResult:
@@ -146,8 +146,11 @@ class BuildingService:
             s3_folder = f"{self.folder}/{entity.id}"
             new_files = []
             for i, item_dict in enumerate(entity.files):
-                item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
-                new_files.append(item.model_dump())
+                if "ref" in item_dict:
+                    item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
+                    new_files.append(item.model_dump())
+                elif "url" in item_dict:
+                    new_files.append(item_dict)
             entity.files = new_files
             await self.session.commit()
 
@@ -155,8 +158,8 @@ class BuildingService:
         await self._apply_building_elements(entity.id, payload.building_elements)
 
         # add to index
-        IndexService().addEntity(
-            self.entityType, entity, self._makeTags(entity))
+        EntityIndexer().addEntity(
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
 
         return entity
 
@@ -183,8 +186,11 @@ class BuildingService:
             s3_folder = f"{self.folder}/{entity.id}"
             new_files = []
             for i, item_dict in enumerate(entity.files):
-                item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
-                new_files.append(item.model_dump())
+                if "ref" in item_dict:
+                    item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
+                    new_files.append(item.model_dump())
+                elif "url" in item_dict:
+                    new_files.append(item_dict)
             entity.files = new_files
         # handle relationships
         new_bms = await self._get_building_materials(payload.building_material_ids)
@@ -197,8 +203,8 @@ class BuildingService:
         # handle building elements
         await self._apply_building_elements(entity.id, payload.building_elements)
         # update in index
-        IndexService().updateEntity(
-            self.entityType, entity, self._makeTags(entity))
+        EntityIndexer().updateEntity(
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         return entity
 
     async def _apply_building_elements(self, building_id: int, elements: list[BuildingElementDraft]):
@@ -228,6 +234,18 @@ class BuildingService:
         if entity.materials:
             tags.extend(entity.materials)
         return tags
+
+    async def _makeRelations(self, entity: Building) -> list[str]:
+        relations = (await self.session.exec(select(BuildingBuildingMaterial).where(BuildingBuildingMaterial.building_id == entity.id))).all()
+        relates_to = [
+            f"building-material:{rel.building_material_id}" for rel in relations]
+        relations = (await self.session.exec(select(ProfessionalBuilding).where(ProfessionalBuilding.building_id == entity.id))).all()
+        relates_to.extend(
+            [f"professional:{rel.professional_id}" for rel in relations])
+        relations = (await self.session.exec(select(BuildingElement).where(BuildingElement.building_id == entity.id))).all()
+        relates_to.extend(
+            [f"technical-construction:{rel.technical_construction_id}" for rel in relations])
+        return relates_to
 
     async def _get_building_materials(self, ids: list[int]):
         return await self.session.exec(select(BuildingMaterial).filter(BuildingMaterial.id.in_(ids)))

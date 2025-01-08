@@ -1,50 +1,41 @@
 <template>
   <div>
     <q-list bordered separator v-if="files.length" class="q-mb-md">
-      <template v-for="(file, idx) in files" :key="file.ref.path">
+      <template v-for="(file, idx) in files" :key="file.ref?.path || file.url">
         <q-item>
           <q-item-section>
-            <a
-              :href="`${baseUrl}/files/${file.ref.alt_path ? file.ref.alt_path : file.ref.path}`"
-              target="_blank"
-              class="epfl q-mb-md"
-            >
-              {{ file.ref.alt_name ? file.ref.alt_name : file.ref.name }}
+            <a :href="getURL(file)" target="_blank" class="epfl q-mb-md">
+              {{ getLabel(file) }}
               <q-icon name="visibility" />
             </a>
             <q-input filled v-model="file.legend" :label="$t('legend')" />
           </q-item-section>
-          <q-item-section avatar v-if="isImage(file.ref)">
-            <q-img
-              :src="`${baseUrl}/files/${file.ref.path}`"
-              width="200px"
-              fit="scale-down"
-            />
+          <q-item-section avatar v-if="isImage(file)">
+            <q-img :src="`${baseUrl}/files/${file.ref.path}`" width="200px" fit="scale-down" />
           </q-item-section>
           <q-item-section avatar>
-            <q-btn
-              icon="delete"
-              rounded
-              dense
-              flat
-              color="negative"
-              size="12px"
-              @click="onDeleteFile(file, idx)"
-            />
+            <q-btn icon="delete" rounded dense flat color="negative" size="12px" @click="onDeleteFile(file, idx)" />
           </q-item-section>
         </q-item>
       </template>
     </q-list>
+    <div class="q-gutter-sm">
+      <q-radio v-model="type" val="files" :label="$t('files')" />
+      <q-radio v-model="type" val="url" :label="$t('url')" />
+    </div>
     <q-file
+      v-if="type === 'files'"
       filled
-      v-model="localFile"
-      :label="$t('upload_file')"
-      :hint="$t('upload_file_hint')"
+      v-model="localFiles"
+      multiple
+      :label="$t('upload_files')"
+      :hint="$t('upload_files_hint')"
       accept=".jpg, .jpeg, .png, .pdf, .mp4"
       :disable="uploading"
       :loading="uploading"
-      @update:model-value="onLocalFileSelected"
+      @update:model-value="onLocalFilesSelected"
     />
+    <q-input v-else filled v-model="selectedUrl" :label="$t('url')" :hint="$t('url_hint')" @keyup.enter="onURLAdd" />
   </div>
 </template>
 
@@ -66,9 +57,11 @@ const props = defineProps<Props>();
 
 const filesStore = useFilesStore();
 
+const type = ref('files');
 const files = ref(props.modelValue);
-const localFile = ref<FileObject>();
+const localFiles = ref<FileObject[]>([]);
 const uploading = ref(false);
+const selectedUrl = ref('');
 
 watch(
   () => props.modelValue,
@@ -77,10 +70,9 @@ watch(
   },
 );
 
-function isImage(file: FileRef) {
-  return ['.png', '.jpg', '.jpeg', '.webp'].find((suffix) =>
-    file.name.toLowerCase().endsWith(suffix),
-  );
+function isImage(file: FileItem) {
+  const name = file.url ? file.url : file.ref.name;
+  return ['.png', '.jpg', '.jpeg', '.webp'].find((suffix) => name.toLowerCase().endsWith(suffix));
 }
 
 function onDeleteFile(file: FileItem, idx: number) {
@@ -88,19 +80,40 @@ function onDeleteFile(file: FileItem, idx: number) {
   files.value.splice(idx, 1);
 }
 
-function onLocalFileSelected() {
-  if (!localFile.value) {
+function onLocalFilesSelected() {
+  if (!localFiles.value?.length) {
     return;
   }
   uploading.value = true;
-  filesStore
-    .uploadTmpFile(localFile.value)
-    .then((fileRef: FileRef) => {
-      files.value.push({ ref: fileRef });
-      localFile.value = undefined;
-    })
-    .finally(() => {
-      uploading.value = false;
-    });
+  localFiles.value.forEach((file) => {
+    filesStore
+      .uploadTmpFile(file)
+      .then((fileRef: FileRef) => {
+        files.value.push({ ref: fileRef });
+      })
+      .finally(() => {
+        uploading.value = false;
+        localFiles.value = [];
+      });
+  });
+}
+
+function onURLAdd() {
+  if (!selectedUrl.value) {
+    return;
+  }
+  uploading.value = true;
+  files.value.push({ url: selectedUrl.value });
+  selectedUrl.value = '';
+}
+
+function getURL(file: FileItem) {
+  if (file.url) return file.url;
+  return file.ref?.alt_path ? `${baseUrl}/files/${file.ref?.alt_path}` : `${baseUrl}/files/${file.ref?.path}`;
+}
+
+function getLabel(file: FileItem) {
+  if (file.url) return file.url;
+  return file.ref.alt_name ? file.ref.alt_name : file.ref.name;
 }
 </script>

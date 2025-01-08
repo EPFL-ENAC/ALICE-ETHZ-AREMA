@@ -2,14 +2,7 @@
   <q-layout view="hHh lpR fFf">
     <q-header bordered class="bg-white text-grey-10">
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
+        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
           {{ $t('main.brand') }}
@@ -17,12 +10,7 @@
 
         <q-btn-dropdown flat no-caps :label="username">
           <q-list>
-            <q-item
-              clickable
-              v-close-popup
-              @click="onLogout"
-              v-if="authStore.isAuthenticated"
-            >
+            <q-item clickable v-close-popup @click="onLogout" v-if="authStore.isAuthenticated">
               <q-item-section avatar>
                 <q-icon name="logout" size="xs" />
               </q-item-section>
@@ -68,9 +56,7 @@
             <q-icon name="fa-solid fa-compass-drafting" size="xs" />
           </q-item-section>
           <q-item-section>
-            <q-item-label header>{{
-              $t('technical_constructions')
-            }}</q-item-label>
+            <q-item-label header>{{ $t('technical_constructions') }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable v-close-popup :to="'/buildings'">
@@ -90,20 +76,15 @@
           </q-item-section>
         </q-item>
 
-        <q-item-section v-if="authStore.user?.role === 'admin'">
-          <q-item-label class="text-h6" header>{{
-            $t('administration')
-          }}</q-item-label>
-
-          <q-item clickable v-close-popup :to="'/users'">
-            <q-item-section avatar>
-              <q-icon name="person" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label header>{{ $t('users') }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-item-section>
+        <q-item-label class="text-h6" header>{{ $t('help') }}</q-item-label>
+        <q-item clickable v-close-popup @click="onOpenUrl('https://www.markdownguide.org/cheat-sheet/')">
+          <q-item-section avatar>
+            <q-icon name="fa-brands fa-markdown" size="xs" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ $t('markdown_guide') }}</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -145,5 +126,9 @@ function toggleLeftDrawer() {
 
 function onLogout() {
   authStore.logout();
+}
+
+function onOpenUrl(url: string) {
+  window.open(url, '_blank');
 }
 </script>

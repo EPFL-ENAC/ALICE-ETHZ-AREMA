@@ -1,7 +1,7 @@
 taxonomy:
   - id: natural-resource
     names:
-      en: Natural resources
+      en: Natural Resources
       de: Natürliche Ressourcen
       fr: Ressources naturelles
       it: Risorse naturali
@@ -47,5 +47,5 @@ taxonomy:
             names:
               en: "Other Fibers"
               de: "Andere Fasern"
-              fr: "Autres Fibres"
-              it: "Altre Fibre"
+              fr: "Autres fibres"
+              it: "Altre fibre"

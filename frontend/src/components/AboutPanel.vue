@@ -1,6 +1,6 @@
 <template>
-  <div class="q-pa-md bg-primary">
-    <div class="text-h4 text-uppercase text-secondary q-mb-lg">
+  <div>
+    <div class="text-h5 text-uppercase text-secondary q-mb-lg">
       {{ $t('purpose') }}
     </div>
     <div
@@ -20,9 +20,4 @@
   </div>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  name: 'AboutPanel',
-});
-</script>
 <script setup lang="ts"></script>

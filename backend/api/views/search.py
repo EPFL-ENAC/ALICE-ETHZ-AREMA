@@ -7,7 +7,7 @@ from api.services.building_materials import BuildingMaterialService
 from api.services.technical_constructions import TechnicalConstructionService
 from api.services.buildings import BuildingService
 from api.services.professionals import ProfessionalService
-from api.services.search import IndexService, ANALYZED_FIELDS
+from api.services.search import SearchService, EntityIndexer, ENTITY_ANALYZED_FIELDS, VIDEO_ANALYZED_FIELDS
 from api.models.query import SearchResult
 from enacit4r_sql.utils.query import paramAsDict
 
@@ -50,12 +50,12 @@ async def delete_index(
     user: User = Depends(kc_service.require_admin())
 ):
     """Deindex all or specific entity type"""
-    indexService = IndexService()
+    indexer = EntityIndexer()
     try:
         if type:
-            indexService.deleteEntities(type)
+            indexer.deleteEntities(type)
         else:
-            indexService.deleteIndex()
+            indexer.deleteIndex()
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -65,15 +65,68 @@ async def find(
     query: str = Query(None),
     skip: int = Query(0),
     limit: int = Query(10),
+    index: str = Query("entities"),
     user: User = Depends(kc_service.require_admin())
 ) -> SearchResult:
     """Search documents matching the Elasticsearch query"""
-    indexService = IndexService()
+    indexService = SearchService.fromIndex(index)
     queryDict = paramAsDict(query)
     return indexService.search(query=queryDict, skip=skip, limit=limit)
 
 
-@router.get("/", response_model=SearchResult, response_model_exclude_none=True)
+@router.get("/_doc", response_model=SearchResult, response_model_exclude_none=True)
+async def find(id: str = Query(None),
+               index: str = Query("entities"),
+               fields: List[str] = Query(None)) -> SearchResult:
+    """Search documents matching the Elasticsearch query"""
+    indexService = SearchService.fromIndex(index)
+    queryDict = {"query": {"term": {"_id": id}}}
+    if fields is not None and len(fields) > 0:
+        queryDict["_source"] = fields
+    return indexService.search(query=queryDict, skip=0, limit=1)
+
+
+@router.get("/_videos", response_model=SearchResult, response_model_exclude_none=True)
+async def find(
+    text: str = Query(None),
+    tags: List[str] = Query(None),
+    fields: List[str] = Query(
+        ["entity_type", "tags", "id", "parent_id", "name", "legend", "url"]),
+    exists: List[str] = Query([]),  # filter documents with a non-empty field
+    skip: int = Query(0),
+    limit: int = Query(10),
+) -> SearchResult:
+    """Search video documents by full text"""
+    indexService = SearchService.fromIndex("videos")
+    mustQueries = []
+
+    if text:
+        mustQueries.append({"multi_match": {"query": text,
+                                            "fields": VIDEO_ANALYZED_FIELDS}})
+    if tags:
+        terms = {}
+        # group terms (urn) by their parent
+        for tag in tags:
+            vocabulary = tag.split('.', 1)[0]
+            if vocabulary not in terms:
+                terms[vocabulary] = []
+            terms[vocabulary].append(tag)
+        for vocabulary in terms:
+            mustQueries.append({"terms": {"tags": terms[vocabulary]}})
+    if exists:
+        for field in exists:
+            mustQueries.append({"exists": {"field": field}})
+
+    queryDict = {}
+    if len(mustQueries):
+        queryDict = {"query": {"bool": {"must": mustQueries}}}
+    if fields is not None and len(fields) > 0:
+        queryDict["_source"] = fields
+
+    return indexService.search(query=queryDict, skip=skip, limit=limit)
+
+
+@router.get("/_entities", response_model=SearchResult, response_model_exclude_none=True)
 async def find(
     text: str = Query(None),
     tags: List[str] = Query(None),
@@ -83,18 +136,18 @@ async def find(
     skip: int = Query(0),
     limit: int = Query(10),
 ) -> SearchResult:
-    """Search documents by tags or full text"""
-    indexService = IndexService()
+    """Search entity documents by tags or full text"""
+    indexService = SearchService.fromIndex("entities")
     mustQueries = []
 
     if text:
         mustQueries.append({"multi_match": {"query": text,
-                                            "fields": ANALYZED_FIELDS}})
+                                            "fields": ENTITY_ANALYZED_FIELDS}})
     if tags:
         terms = {}
         # group terms (urn) by their parent
         for tag in tags:
-            vocabulary = tag.rsplit('.', 1)[0]
+            vocabulary = tag.split('.', 1)[0]
             if vocabulary not in terms:
                 terms[vocabulary] = []
             terms[vocabulary].append(tag)
@@ -108,7 +161,7 @@ async def find(
     queryDict = {}
     if len(mustQueries):
         queryDict = {"query": {"bool": {"must": mustQueries}}}
-    if fields:
+    if fields is not None and len(fields) > 0:
         queryDict["_source"] = fields
 
     return indexService.search(query=queryDict, skip=skip, limit=limit)

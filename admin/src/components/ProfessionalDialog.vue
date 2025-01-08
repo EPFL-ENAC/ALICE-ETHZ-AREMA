@@ -10,8 +10,8 @@
 
       <q-card-section>
         <q-tabs v-model="tab" dense align="left" no-caps>
-          <q-tab name="general" :label="$t('general')" />
-          <q-tab name="location" :label="$t('location')" />
+          <q-tab name="general" :label="$t('general') + ' *'" />
+          <q-tab name="location" :label="$t('location') + ' *'" />
           <q-tab name="multimedia" :label="$t('multimedia')" />
           <q-tab name="relations" :label="$t('relations')" />
         </q-tabs>
@@ -21,11 +21,7 @@
           <q-tab-panel name="general" class="q-pl-none q-pr-none">
             <div class="row q-mb-md q-col-gutter-md">
               <div class="col-12 col-sm-4">
-                <q-input
-                  filled
-                  v-model="selected.name"
-                  :label="$t('name') + ' *'"
-                />
+                <q-input filled v-model="selected.name" :label="$t('name') + ' *'" />
               </div>
               <div class="col-12 col-sm-4">
                 <taxonomy-select
@@ -46,11 +42,10 @@
                 />
               </div>
             </div>
-            <q-input
-              filled
+            <text-input
               v-model="selected.description"
-              autogrow
               :label="$t('description')"
+              :hint="$t('description_pro_hint')"
               class="q-mb-md"
             />
             <div class="row q-mb-md q-col-gutter-md">
@@ -58,45 +53,31 @@
                 <q-input filled v-model="selected.tel" :label="$t('phone')" />
               </div>
               <div class="col-12 col-sm-4">
-                <q-input
-                  filled
-                  v-model="selected.email"
-                  type="email"
-                  :label="$t('email')"
-                />
+                <q-input filled v-model="selected.email" type="email" :label="$t('email')" />
               </div>
               <div class="col-12 col-sm-4">
                 <q-input filled v-model="selected.web" :label="$t('website')" />
               </div>
             </div>
-            <q-input
-              filled
+            <text-input
               v-model="selected.article_top"
-              type="textarea"
               :label="$t('article_top')"
+              :hint="$t('article_top_pro_hint')"
               class="q-mb-md"
             />
-            <q-input
-              filled
+            <text-input
               v-model="selected.article_bottom"
-              type="textarea"
               :label="$t('article_bottom')"
+              :hint="$t('article_bottom_pro_hint')"
               class="q-mb-md"
             />
-            <q-input
-              filled
+            <text-input
               v-model="selected.side_note"
-              type="textarea"
               :label="$t('side_note')"
+              :hint="$t('side_note_pro_hint')"
               class="q-mb-md"
             />
-            <q-input
-              filled
-              v-model="selected.external_links"
-              type="textarea"
-              :label="$t('external_links')"
-              class="q-mb-md"
-            />
+            <text-input v-model="selected.external_links" :label="$t('external_links')" class="q-mb-md" />
           </q-tab-panel>
           <q-tab-panel name="location" class="q-pl-none q-pr-none">
             <circle-map-input
@@ -140,19 +121,8 @@
       <q-separator />
 
       <q-card-actions align="right" class="bg-grey-3">
-        <q-btn
-          flat
-          :label="$t('cancel')"
-          color="secondary"
-          @click="onCancel"
-          v-close-popup
-        />
-        <q-btn
-          :label="$t('save')"
-          color="primary"
-          @click="onSave"
-          :disable="!isValid"
-        />
+        <q-btn flat :label="$t('cancel')" color="secondary" @click="onCancel" v-close-popup />
+        <q-btn :label="$t('save')" color="primary" @click="onSave" :disable="!isValid" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -164,15 +134,12 @@ export default defineComponent({
 });
 </script>
 <script setup lang="ts">
-import {
-  BuildingMaterial,
-  Professional,
-  TechnicalConstruction,
-} from 'src/models';
+import { BuildingMaterial, Professional, TechnicalConstruction } from 'src/models';
 import { notifyError } from 'src/utils/notify';
 import CircleMapInput from 'src/components/CircleMapInput.vue';
 import FilesInput from 'src/components/FilesInput.vue';
 import TaxonomySelect from 'src/components/TaxonomySelect.vue';
+import TextInput from 'src/components/TextInput.vue';
 
 interface DialogProps {
   modelValue: boolean;
@@ -197,13 +164,9 @@ const circle = ref({});
 const editMode = ref(false);
 const tab = ref('general');
 const buildingMaterials = ref([]);
-const buildingMaterialsOptions = ref<
-  { label: string | undefined; value: number | undefined }[]
->([]);
+const buildingMaterialsOptions = ref<{ label: string | undefined; value: number | undefined }[]>([]);
 const technicalConstructions = ref([]);
-const technicalConstructionsOptions = ref<
-  { label: string | undefined; value: number | undefined }[]
->([]);
+const technicalConstructionsOptions = ref<{ label: string | undefined; value: number | undefined }[]>([]);
 
 const isValid = computed(() => {
   return selected.value.name && selected.value.types && selected.value.address;
@@ -241,18 +204,14 @@ watch(
           filter: {},
         })
         .then((res) => {
-          buildingMaterialsOptions.value = res.data.map(
-            (item: BuildingMaterial) => ({
-              label: item.name,
-              value: item.id,
-            }),
-          );
+          buildingMaterialsOptions.value = res.data.map((item: BuildingMaterial) => ({
+            label: item.name,
+            value: item.id,
+          }));
         });
       if (editMode.value) {
         buildingMaterials.value = selected.value.building_materials
-          ? selected.value.building_materials.map(
-              (item: BuildingMaterial) => item.id,
-            )
+          ? selected.value.building_materials.map((item: BuildingMaterial) => item.id)
           : [];
       }
 
@@ -264,18 +223,14 @@ watch(
           filter: {},
         })
         .then((res) => {
-          technicalConstructionsOptions.value = res.data.map(
-            (item: TechnicalConstruction) => ({
-              label: item.name,
-              value: item.id,
-            }),
-          );
+          technicalConstructionsOptions.value = res.data.map((item: TechnicalConstruction) => ({
+            label: item.name,
+            value: item.id,
+          }));
         });
       if (editMode.value) {
         technicalConstructions.value = selected.value.technical_constructions
-          ? selected.value.technical_constructions.map(
-              (item: TechnicalConstruction) => item.id,
-            )
+          ? selected.value.technical_constructions.map((item: TechnicalConstruction) => item.id)
           : [];
       }
     }

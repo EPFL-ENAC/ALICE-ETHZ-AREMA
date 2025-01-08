@@ -10,7 +10,8 @@ from enacit4r_files.models.files import FileRef
 
 
 class FileItem(BaseModel):
-    ref: FileRef
+    ref: Optional[FileRef] = Field(default=None)
+    url: Optional[str] = Field(default=None)
     legend: Optional[str] = Field(default=None)
 
 
@@ -47,7 +48,6 @@ class PhysicalEntity(Entity):
     absorption_coefficient: Optional[float] = Field(default=None)
     sound_reduction_index: Optional[float] = Field(default=None)
     reaction_to_fire: Optional[str] = Field(default=None)
-    building_material_class: Optional[str] = Field(default=None)
     fire_resistance_class: Optional[str] = Field(default=None)
     air_tightness: Optional[float] = Field(default=None)
 
@@ -66,6 +66,8 @@ class PhysicalEntity(Entity):
     diffusivity_low: Optional[float] = Field(default=None)
     absorption_coefficient_low: Optional[float] = Field(default=None)
     sound_reduction_index_low: Optional[float] = Field(default=None)
+    reaction_to_fire_low: Optional[str] = Field(default=None)
+    fire_resistance_class_low: Optional[str] = Field(default=None)
     air_tightness_low: Optional[float] = Field(default=None)
 
     density_high: Optional[float] = Field(default=None)
@@ -83,6 +85,8 @@ class PhysicalEntity(Entity):
     diffusivity_high: Optional[float] = Field(default=None)
     absorption_coefficient_high: Optional[float] = Field(default=None)
     sound_reduction_index_high: Optional[float] = Field(default=None)
+    reaction_to_fire_high: Optional[str] = Field(default=None)
+    fire_resistance_class_high: Optional[str] = Field(default=None)
     air_tightness_high: Optional[float] = Field(default=None)
 
 # Association tables
@@ -240,6 +244,9 @@ class BuildingBase(Entity):
     status: Optional[str] = Field(default=None)
     materials: Optional[List[str]] = Field(
         default=None, sa_column=Column(JSON))
+    client: Optional[str] = Field(default=None)
+    gross_internal_area: Optional[float] = Field(default=None)
+    year: Optional[int] = Field(default=None)
     address: Optional[str] = Field(default=None)
     long: Optional[float] = Field(default=None)
     lat: Optional[float] = Field(default=None)

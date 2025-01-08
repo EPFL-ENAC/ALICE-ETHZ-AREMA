@@ -4,14 +4,14 @@ from sqlalchemy.sql import text
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from fastapi import HTTPException
-from api.models.domain import FileItem, Professional, Building, BuildingMaterial, TechnicalConstruction
+from api.models.domain import FileItem, Professional, Building, BuildingMaterial, TechnicalConstruction, ProfessionalBuildingMaterial, ProfessionalTechnicalConstruction, ProfessionalBuilding
 from api.models.query import ProfessionalDraft, ProfessionalResult
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
 from api.services.s3 import s3_client
 from api.utils.files import moveTempFile
 from api.auth import User
-from api.services.search import IndexService
+from api.services.search import EntityIndexer
 
 
 class ProfessionalQueryBuilder(QueryBuilder):
@@ -43,14 +43,14 @@ class ProfessionalService:
 
     async def indexAll(self) -> int:
         """Index all professionals"""
-        indexService = IndexService()
+        indexService = EntityIndexer()
         # delete documents of this type
         indexService.deleteEntities(self.entityType)
         # add all documents
         count = 0
         for entity in (await self.session.exec(select(Professional))).all():
             indexService.addEntity(
-                self.entityType, entity, self._makeTags(entity))
+                self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
             count += 1
         debug(f"Indexed {count} professionals")
         return count
@@ -88,7 +88,7 @@ class ProfessionalService:
         await self.session.delete(entity)
         await self.session.commit()
         # delete from index
-        IndexService().deleteEntity(self.entityType, entity.id)
+        EntityIndexer().deleteEntity(self.entityType, entity.id)
         return entity
 
     async def find(self, filter: dict, fields: list, sort: list, range: list) -> ProfessionalResult:
@@ -142,14 +142,17 @@ class ProfessionalService:
             s3_folder = f"{self.folder}/{entity.id}"
             new_files = []
             for i, item_dict in enumerate(entity.files):
-                item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
-                new_files.append(item.model_dump())
+                if "ref" in item_dict:
+                    item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
+                    new_files.append(item.model_dump())
+                elif "url" in item_dict:
+                    new_files.append(item_dict)
             entity.files = new_files
             await self.session.commit()
 
         # add to index
-        IndexService().addEntity(
-            self.entityType, entity, self._makeTags(entity))
+        EntityIndexer().addEntity(
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         return entity
 
     async def update(self, id: int, payload: ProfessionalDraft, user: User = None) -> Professional:
@@ -175,8 +178,11 @@ class ProfessionalService:
             s3_folder = f"{self.folder}/{entity.id}"
             new_files = []
             for i, item_dict in enumerate(entity.files):
-                item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
-                new_files.append(item.model_dump())
+                if "ref" in item_dict:
+                    item = await moveTempFile(FileItem(**item_dict), i, s3_folder)
+                    new_files.append(item.model_dump())
+                elif "url" in item_dict:
+                    new_files.append(item_dict)
             entity.files = new_files
 
         # handle relationships
@@ -188,8 +194,8 @@ class ProfessionalService:
         entity.technical_constructions.extend(new_tcs)
         await self.session.commit()
         # update in index
-        IndexService().updateEntity(
-            self.entityType, entity, self._makeTags(entity))
+        EntityIndexer().updateEntity(
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         return entity
 
     def _makeTags(self, entity: Professional) -> list[str]:
@@ -199,6 +205,17 @@ class ProfessionalService:
         if entity.materials:
             tags.extend(entity.materials)
         return tags
+
+    async def _makeRelations(self, entity: Professional) -> list[str]:
+        relations = (await self.session.exec(select(ProfessionalBuildingMaterial).where(ProfessionalBuildingMaterial.professional_id == entity.id))).all()
+        relates_to = [
+            f"building-material:{rel.building_material_id}" for rel in relations]
+        relations = (await self.session.exec(select(ProfessionalTechnicalConstruction).where(ProfessionalTechnicalConstruction.professional_id == entity.id))).all()
+        relates_to.extend(
+            [f"technical-construction:{rel.technical_construction_id}" for rel in relations])
+        relations = (await self.session.exec(select(ProfessionalBuilding).where(ProfessionalBuilding.professional_id == entity.id))).all()
+        relates_to.extend([f"building:{rel.building_id}" for rel in relations])
+        return relates_to
 
     async def _get_building_materials(self, ids: list[int]):
         return await self.session.exec(select(BuildingMaterial).filter(BuildingMaterial.id.in_(ids)))

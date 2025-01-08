@@ -21,4 +21,10 @@ export interface Option {
   value: string;
   label: string;
   level?: number;
+  selectable?: boolean;
+}
+
+export interface Suggestions {
+  key: string;
+  options: string[];
 }

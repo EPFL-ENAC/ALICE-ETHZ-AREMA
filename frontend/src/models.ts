@@ -10,7 +10,8 @@ export interface FileRef {
 }
 
 export interface FileItem {
-  ref: FileRef;
+  ref?: FileRef;
+  url?: string;
   legend?: string;
 }
 
@@ -80,6 +81,8 @@ export interface PhysicalEntity extends Entity {
   diffusivity_low?: number;
   absorption_coefficient_low?: number;
   sound_reduction_index_low?: number;
+  reaction_to_fire_low?: string;
+  fire_resistance_class_low?: string;
   air_tightness_low?: number;
 
   density_high?: number;
@@ -97,6 +100,8 @@ export interface PhysicalEntity extends Entity {
   diffusivity_high?: number;
   absorption_coefficient_high?: number;
   sound_reduction_index_high?: number;
+  reaction_to_fire_high?: string;
+  fire_resistance_class_high?: string;
   air_tightness_high?: number;
 }
 
@@ -195,6 +200,7 @@ export interface Document extends Entity {
     lon: number;
     lat: number;
   };
+  relates_to?: string[];
 }
 
 export interface SearchResult {
@@ -202,4 +208,21 @@ export interface SearchResult {
   skip: number;
   limit: number;
   data?: Document[];
+}
+
+export interface Video {
+  id: string;
+  name: string;
+  legend?: string;
+  url: string;
+  tags: string[];
+  parent_id: string;
+  entity_type: string;
+}
+
+export interface VideoResult {
+  total: number;
+  skip: number;
+  limit: number;
+  data?: Video[];
 }

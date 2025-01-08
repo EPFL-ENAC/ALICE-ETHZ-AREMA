@@ -10,11 +10,8 @@
 
       <q-card-section>
         <q-tabs v-model="tab" dense align="left" no-caps>
-          <q-tab name="general" :label="$t('general')" />
-          <q-tab
-            name="physical_characteristics"
-            :label="$t('physical_characteristics')"
-          />
+          <q-tab name="general" :label="$t('general') + ' *'" />
+          <q-tab name="physical_characteristics" :label="$t('physical_characteristics')" />
           <q-tab name="multimedia" :label="$t('multimedia')" />
           <q-tab name="relations" :label="$t('relations')" />
         </q-tabs>
@@ -24,11 +21,7 @@
           <q-tab-panel name="general" class="q-pl-none q-pr-none">
             <div class="row q-mb-md q-col-gutter-md">
               <div class="col-12 col-sm-4">
-                <q-input
-                  filled
-                  v-model="selected.name"
-                  :label="$t('name') + ' *'"
-                />
+                <q-input filled v-model="selected.name" :label="$t('name') + ' *'" />
               </div>
               <div class="col-12 col-sm-4">
                 <taxonomy-select
@@ -49,46 +42,33 @@
                 />
               </div>
             </div>
-            <q-input
-              filled
+            <text-input
               v-model="selected.description"
-              type="textarea"
               :label="$t('description')"
+              :hint="$t('description_tc_hint')"
               class="q-mb-md"
             />
-            <q-input
-              filled
+            <text-input
               v-model="selected.article_top"
-              type="textarea"
               :label="$t('article_top')"
+              :hint="$t('article_top_tc_hint')"
               class="q-mb-md"
             />
-            <q-input
-              filled
+            <text-input
               v-model="selected.article_bottom"
-              type="textarea"
               :label="$t('article_bottom')"
+              :hint="$t('article_bottom_tc_hint')"
               class="q-mb-md"
             />
-            <q-input
-              filled
+            <text-input
               v-model="selected.side_note"
-              type="textarea"
               :label="$t('side_note')"
+              :hint="$t('side_note_tc_hint')"
               class="q-mb-md"
             />
-            <q-input
-              filled
-              v-model="selected.external_links"
-              type="textarea"
-              :label="$t('external_links')"
-              class="q-mb-md"
-            />
+            <text-input v-model="selected.external_links" :label="$t('external_links')" class="q-mb-md" />
           </q-tab-panel>
-          <q-tab-panel
-            name="physical_characteristics"
-            class="q-pl-none q-pr-none"
-          >
+          <q-tab-panel name="physical_characteristics" class="q-pl-none q-pr-none">
             <physical-entity-form v-model="selected" />
           </q-tab-panel>
           <q-tab-panel name="multimedia" class="q-pl-none q-pr-none">
@@ -104,9 +84,7 @@
               emit-value
               use-chips
               :label="$t('building_materials')"
-              :hint="
-                $t('technical_construction_building_material_constituants_hint')
-              "
+              :hint="$t('technical_construction_building_material_constituants_hint')"
               class="q-mb-md"
             />
           </q-tab-panel>
@@ -116,19 +94,8 @@
       <q-separator />
 
       <q-card-actions align="right" class="bg-grey-3">
-        <q-btn
-          flat
-          :label="$t('cancel')"
-          color="secondary"
-          @click="onCancel"
-          v-close-popup
-        />
-        <q-btn
-          :label="$t('save')"
-          color="primary"
-          @click="onSave"
-          :disable="!isValid"
-        />
+        <q-btn flat :label="$t('cancel')" color="secondary" @click="onCancel" v-close-popup />
+        <q-btn :label="$t('save')" color="primary" @click="onSave" :disable="!isValid" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -145,6 +112,7 @@ import { notifyError } from 'src/utils/notify';
 import PhysicalEntityForm from 'src/components/PhysicalEntityForm.vue';
 import FilesInput from 'src/components/FilesInput.vue';
 import TaxonomySelect from 'src/components/TaxonomySelect.vue';
+import TextInput from 'src/components/TextInput.vue';
 
 interface DialogProps {
   modelValue: boolean;
@@ -168,9 +136,7 @@ const selected = ref<TechnicalConstruction>({
 const editMode = ref(false);
 const tab = ref('general');
 const buildingMaterials = ref([]);
-const buildingMaterialsOptions = ref<
-  { label: string | undefined; value: number | undefined }[]
->([]);
+const buildingMaterialsOptions = ref<{ label: string | undefined; value: number | undefined }[]>([]);
 
 const isValid = computed(() => {
   return selected.value.name && selected.value.types;
@@ -189,22 +155,18 @@ watch(
       bmService
         .find({
           $limit: 100,
-          $select: ['id', 'name', 'type'],
+          $select: ['id', 'name', 'types'],
           filter: {},
         })
         .then((res) => {
-          buildingMaterialsOptions.value = res.data.map(
-            (item: BuildingMaterial) => ({
-              label: item.name,
-              value: item.id,
-            }),
-          );
+          buildingMaterialsOptions.value = res.data.map((item: BuildingMaterial) => ({
+            label: item.name,
+            value: item.id,
+          }));
         });
       if (editMode.value) {
         buildingMaterials.value = selected.value.building_materials
-          ? selected.value.building_materials.map(
-              (item: BuildingMaterial) => item.id,
-            )
+          ? selected.value.building_materials.map((item: BuildingMaterial) => item.id)
           : [];
       }
     }

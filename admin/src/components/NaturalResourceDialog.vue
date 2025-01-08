@@ -10,11 +10,8 @@
 
       <q-card-section>
         <q-tabs v-model="tab" dense align="left" no-caps>
-          <q-tab name="general" :label="$t('general')" />
-          <q-tab
-            name="physical_characteristics"
-            :label="$t('physical_characteristics')"
-          />
+          <q-tab name="general" :label="$t('general') + ' *'" />
+          <q-tab name="physical_characteristics" :label="$t('physical_characteristics')" />
           <q-tab name="multimedia" :label="$t('multimedia')" />
         </q-tabs>
         <q-separator />
@@ -23,11 +20,7 @@
           <q-tab-panel name="general" class="q-pl-none q-pr-none">
             <div class="row q-mb-md q-col-gutter-md">
               <div class="col-12 col-sm-6">
-                <q-input
-                  filled
-                  v-model="selected.name"
-                  :label="$t('name') + ' *'"
-                />
+                <q-input filled v-model="selected.name" :label="$t('name') + ' *'" />
               </div>
               <div class="col-12 col-sm-6">
                 <taxonomy-select
@@ -38,46 +31,13 @@
                 />
               </div>
             </div>
-            <q-input
-              filled
-              v-model="selected.description"
-              type="textarea"
-              :label="$t('description')"
-              class="q-mb-md"
-            />
-            <q-input
-              filled
-              v-model="selected.article_top"
-              type="textarea"
-              :label="$t('article_top')"
-              class="q-mb-md"
-            />
-            <q-input
-              filled
-              v-model="selected.article_bottom"
-              type="textarea"
-              :label="$t('article_bottom')"
-              class="q-mb-md"
-            />
-            <q-input
-              filled
-              v-model="selected.side_note"
-              type="textarea"
-              :label="$t('side_note')"
-              class="q-mb-md"
-            />
-            <q-input
-              filled
-              v-model="selected.external_links"
-              type="textarea"
-              :label="$t('external_links')"
-              class="q-mb-md"
-            />
+            <text-input v-model="selected.description" :label="$t('description')" class="q-mb-md" />
+            <text-input v-model="selected.article_top" :label="$t('article_top')" class="q-mb-md" />
+            <text-input v-model="selected.article_bottom" :label="$t('article_bottom')" class="q-mb-md" />
+            <text-input v-model="selected.side_note" :label="$t('side_note')" class="q-mb-md" />
+            <text-input v-model="selected.external_links" :label="$t('external_links')" class="q-mb-md" />
           </q-tab-panel>
-          <q-tab-panel
-            name="physical_characteristics"
-            class="q-pl-none q-pr-none"
-          >
+          <q-tab-panel name="physical_characteristics" class="q-pl-none q-pr-none">
             <physical-entity-form v-model="selected" />
           </q-tab-panel>
           <q-tab-panel name="multimedia" class="q-pl-none q-pr-none">
@@ -89,19 +49,8 @@
       <q-separator />
 
       <q-card-actions align="right" class="bg-grey-3">
-        <q-btn
-          flat
-          :label="$t('cancel')"
-          color="secondary"
-          @click="onCancel"
-          v-close-popup
-        />
-        <q-btn
-          :label="$t('save')"
-          color="primary"
-          @click="onSave"
-          :disable="!isValid"
-        />
+        <q-btn flat :label="$t('cancel')" color="secondary" @click="onCancel" v-close-popup />
+        <q-btn :label="$t('save')" color="primary" @click="onSave" :disable="!isValid" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -118,6 +67,7 @@ import { notifyError } from 'src/utils/notify';
 import PhysicalEntityForm from 'src/components/PhysicalEntityForm.vue';
 import FilesInput from 'src/components/FilesInput.vue';
 import TaxonomySelect from 'src/components/TaxonomySelect.vue';
+import TextInput from 'src/components/TextInput.vue';
 
 interface DialogProps {
   modelValue: boolean;

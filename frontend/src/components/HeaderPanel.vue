@@ -3,7 +3,7 @@
     <q-toolbar>
       <img
         v-if="$q.screen.gt.sm"
-        src="arema-h-1.svg"
+        src="/arema-h-1.svg"
         :style="
           home ? `height: ${homeStore.toolbarRatio * 30}px` : 'height: 30px'
         "
@@ -26,11 +26,6 @@
   </q-header>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  name: 'HeaderPanel',
-});
-</script>
 <script setup lang="ts">
 interface Props {
   modelValue: boolean;
@@ -51,4 +46,8 @@ function onToggleDrawer() {
   rightDrawerOpen.value = !rightDrawerOpen.value;
   emit('update:modelValue', rightDrawerOpen.value);
 }
+
+onBeforeRouteUpdate(() => {
+  rightDrawerOpen.value = false;
+});
 </script>

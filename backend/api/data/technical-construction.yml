@@ -1,7 +1,7 @@
 taxonomy:
   - id: technical-construction
     names:
-      en: Technical constructions
+      en: Technical Constructions
       de: Technische Konstruktionen
       fr: Constructions techniques
       it: Costruzioni tecniche
@@ -13,135 +13,163 @@ taxonomy:
           fr: Type
           it: Tipo
         children:
-          - id: be1
+          - id: structure
             names:
-              en: Foundation
-              de: Fundament
-              fr: Fondation
-              it: Fondazione
-          - id: be2
+              en: Structure
+              de: Struktur
+              fr: Structure
+              it: Struttura
+            children:
+              - id: be1
+                names:
+                  en: Foundation
+                  de: Fundament
+                  fr: Fondation
+                  it: Fondazione
+              - id: be2
+                names:
+                  en: Floor slab ground floor
+                  de: Bodenplatte EG
+                  fr: Dalle de sol
+                  it: Pavimento terra
+              - id: be3
+                names:
+                  en: Exterior wall above ground
+                  de: Aussenwand über Terrain
+                  fr: Mur extérieur au-dessus du sol
+                  it: Parete esterna sopra il terreno
+              - id: be4
+                names:
+                  en: Exterior wall under ground
+                  de: Aussenwand unter Terrain
+                  fr: Mur extérieur sous le sol
+                  it: Parete esterna sotto il terreno
+              - id: be5
+                names:
+                  en: Balcony
+                  de: Balkon
+                  fr: Balcon
+                  it: Balcone
+              - id: be6
+                names:
+                  en: Interior wall
+                  de: Innenwand
+                  fr: Mur intérieur
+                  it: Parete interna
+              - id: be7
+                names:
+                  en: Roof
+                  de: Dach
+                  fr: Toit
+                  it: Tetto
+              - id: be8
+                names:
+                  en: Ceiling
+                  de: Decke
+                  fr: Plafond
+                  it: Soffitto
+              - id: be9
+                names:
+                  en: Column
+                  de: Stütze
+                  fr: Colonne
+                  it: Colonna
+              - id: be10
+                names:
+                  en: Stair
+                  de: Treppe
+                  fr: Escalier
+                  it: Scala
+          - id: envelope
             names:
-              en: Floor slab ground floor
-              de: Bodenplatte EG
-              fr: Dalle de sol
-              it: Pavimento terra
-          - id: be3
+              en: Envelope
+              de: Hülle
+              fr: Enveloppe
+              it: Involucro
+            children:
+              - id: be11
+                names:
+                  en: Roof covering
+                  de: Bedachung
+                  fr: Couverture de toit
+                  it: Copertura del tetto
+              - id: be12
+                names:
+                  en: Exterior thermal insulation
+                  de: Aussenwärmedämmung
+                  fr: Isolation thermique extérieure
+                  it: Isolamento termico esterno
+              - id: be13
+                names:
+                  en: Window & door
+                  de: Fenster & Türen
+                  fr: Fenêtre & Porte
+                  it: Finestra & Porta
+              - id: be14
+                names:
+                  en: Exterior wall finishing
+                  de: Äussere Beschichtung unter Terrain
+                  fr: Finition mur extérieur sous-sol
+                  it: Rivestimento parete esterna seminterrato
+              - id: be15
+                names:
+                  en: Exterior wall finishing
+                  de: Fassadenbekleidung
+                  fr: Finition mur extérieur au-dessus du sol
+                  it: Rivestimento parete esterna sopra il terreno
+              - id: be16
+                names:
+                  en: Sun & weather protection
+                  de: Sonnen & Wetterschutz
+                  fr: Protection solaire et contre les intempéries
+                  it: Protezione solare e contro le intemperie
+          - id: finishing
             names:
-              en: Exterior wall above ground
-              de: Aussenwand über Terrain
-              fr: Mur extérieur au-dessus du sol
-              it: Parete esterna sopra il terreno
-          - id: be4
+              en: Finishing
+              de: Ausbau
+              fr: Finition
+              it: Finitura
+            children:
+              - id: be17
+                names:
+                  en: Interior wall finishing
+                  de: Wandbekleidung
+                  fr: Finition mur intérieur
+                  it: Rivestimento parete interna
+              - id: be18
+                names:
+                  en: Interior door
+                  de: Innentür
+                  fr: Porte intérieure
+                  it: Porta interna
+              - id: be19
+                names:
+                  en: Partition wall
+                  de: Trennwand
+                  fr: Cloison
+                  it: Parete divisoria
+              - id: be20
+                names:
+                  en: Ceiling finishing
+                  de: Deckenbekleidung
+                  fr: Finition de plafond
+                  it: Rivestimento soffitto
+              - id: be21
+                names:
+                  en: Floor covering
+                  de: Bodenbelag
+                  fr: Revêtement de sol
+                  it: Rivestimento del pavimento
+          - id: other
             names:
-              en: Exterior wall under ground
-              de: Aussenwand unter Terrain
-              fr: Mur extérieur sous le sol
-              it: Parete esterna sotto il terreno
-          - id: be5
-            names:
-              en: Balcony
-              de: Balkon
-              fr: Balcon
-              it: Balcone
-          - id: be6
-            names:
-              en: Interior wall
-              de: Innenwand
-              fr: Mur intérieur
-              it: Parete interna
-          - id: be7
-            names:
-              en: Roof
-              de: Dach
-              fr: Toit
-              it: Tetto
-          - id: be8
-            names:
-              en: Ceiling
-              de: Decke
-              fr: Plafond
-              it: Soffitto
-          - id: be9
-            names:
-              en: Column
-              de: Stütze
-              fr: Colonne
-              it: Colonna
-          - id: be10
-            names:
-              en: Stair
-              de: Treppe
-              fr: Escalier
-              it: Scala
-          - id: be11
-            names:
-              en: Roof covering
-              de: Bedachung
-              fr: Couverture de toit
-              it: Copertura del tetto
-          - id: be12
-            names:
-              en: Exterior thermal insulation
-              de: Aussenwärmedämmung
-              fr: Isolation thermique extérieure
-              it: Isolamento termico esterno
-          - id: be13
-            names:
-              en: Window & door
-              de: Fenster & Türen
-              fr: Fenêtre & Porte
-              it: Finestra & Porta
-          - id: be14
-            names:
-              en: Exterior wall finishing
-              de: Äussere Beschichtung unter Terrain
-              fr: Finition mur extérieur sous-sol
-              it: Rivestimento parete esterna seminterrato
-          - id: be15
-            names:
-              en: Exterior wall finishing
-              de: Fassadenbekleidung
-              fr: Finition mur extérieur au-dessus du sol
-              it: Rivestimento parete esterna sopra il terreno
-          - id: be16
-            names:
-              en: Sun & weather protection
-              de: Sonnen & Wetterschutz
-              fr: Protection solaire et contre les intempéries
-              it: Protezione solare e contro le intemperie
-          - id: be17
-            names:
-              en: Interior wall finishing
-              de: Wandbekleidung
-              fr: Finition mur intérieur
-              it: Rivestimento parete interna
-          - id: be18
-            names:
-              en: Interior door
-              de: Innentür
-              fr: Porte intérieure
-              it: Porta interna
-          - id: be19
-            names:
-              en: Partition wall
-              de: Trennwand
-              fr: Cloison
-              it: Parete divisoria
-          - id: be20
-            names:
-              en: Ceiling finishing
-              de: Deckenbekleidung
-              fr: Finition de plafond
-              it: Rivestimento soffitto
-          - id: be21
-            names:
-              en: Floor covering
-              de: Bodenbelag
-              fr: Revêtement de sol
-              it: Rivestimento del pavimento
-          - id: be22
-            names:
-              en: Technical equipement
-              de: Technik
-              fr: Équipement technique
-              it: Attrezzatura tecnica
+              en: Other
+              de: Sonstiges
+              fr: Autre
+              it: Altro
+            children:
+              - id: be22
+                names:
+                  en: Technical equipement
+                  de: Technik
+                  fr: Équipement technique
+                  it: Attrezzatura tecnica

@@ -47,37 +47,22 @@ export default defineComponent({
       }
     });
 
-    function onFeatureSelected(
-      selectedFeatures: Feature<Polygon | MultiPolygon>[],
-    ) {
+    function onFeatureSelected(selectedFeatures: Feature<Polygon | MultiPolygon>[]) {
       if (selectedFeatures && selectedFeatures.length > 0) {
         const value = selectedFeatures.pop();
-        if (
-          value &&
-          value.properties &&
-          value.geometry.coordinates.length > 0
-        ) {
-          value.properties.circleRadius = round(
-            value.properties.circleRadius,
-            0,
-          );
+        if (value && value.properties && value.geometry.coordinates.length > 0) {
+          value.properties.circleRadius = round(value.properties.circleRadius, 0);
           const center = value.geometry.coordinates;
-          geocoderApi
-            .reverseGeocode({ query: { lon: center[0], lat: center[1] } })
-            .then((collection) => {
-              if (
-                collection &&
-                collection.features &&
-                collection.features.length
-              ) {
-                const location = collection.features.pop();
-                value.properties = {
-                  ...location?.properties,
-                };
-              }
-              address.value = value.properties?.display_name;
-              emit('update:modelValue', value);
-            });
+          geocoderApi.reverseGeocode({ query: { lon: center[0], lat: center[1] } }).then((collection) => {
+            if (collection && collection.features && collection.features.length) {
+              const location = collection.features.pop();
+              value.properties = {
+                ...location?.properties,
+              };
+            }
+            address.value = value.properties?.display_name;
+            emit('update:modelValue', value);
+          });
         }
       } else {
         emit('update:modelValue', null);
@@ -105,20 +90,12 @@ export default defineComponent({
     function lookupAddress(val, update) {
       update(() => {
         if (val && val.length > 2) {
-          geocoderApi
-            .forwardGeocode({ query: val, limit: 5 })
-            .then((collection) => {
-              if (
-                collection &&
-                collection.features &&
-                collection.features.length
-              ) {
-                suggestedFeatures.value = collection.features;
-                suggestions.value = collection.features.map(
-                  (feature) => feature.properties.display_name,
-                );
-              }
-            });
+          geocoderApi.forwardGeocode({ query: val, limit: 5 }).then((collection) => {
+            if (collection && collection.features && collection.features.length) {
+              suggestedFeatures.value = collection.features;
+              suggestions.value = collection.features.map((feature) => feature.properties.display_name);
+            }
+          });
         } else {
           suggestedFeatures.value = [];
           suggestions.value = [];
@@ -127,9 +104,7 @@ export default defineComponent({
     }
 
     function onAddressUpdate() {
-      const location = suggestedFeatures.value.find(
-        (feature) => feature.properties?.text === address.value,
-      );
+      const location = suggestedFeatures.value.find((feature) => feature.properties?.text === address.value);
       if (location) updateWithLocation(location);
     }
 
@@ -159,14 +134,7 @@ export default defineComponent({
       <div class="col-12">
         <div>
           <q-btn color="primary" @click="edit()" icon="edit" size="sm" />
-          <q-btn
-            flat
-            class="q-ml-sm"
-            color="red"
-            :disable="modelValue === null"
-            @click="deleteAll()"
-            icon="delete"
-          />
+          <q-btn flat class="q-ml-sm" color="red" :disable="modelValue === null" @click="deleteAll()" icon="delete" />
           <q-select
             filled
             dense
@@ -174,7 +142,7 @@ export default defineComponent({
             use-input
             clearable
             input-debounce="200"
-            :label="$t('address') + '*'"
+            :label="$t('address') + ' *'"
             :options="suggestions"
             @filter="lookupAddress"
             @change="onAddressUpdate"

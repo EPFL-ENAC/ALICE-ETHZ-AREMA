@@ -10,7 +10,8 @@ export interface FileRef {
 }
 
 export interface FileItem {
-  ref: FileRef;
+  ref?: FileRef;
+  url?: string;
   legend?: string;
 }
 
@@ -61,7 +62,6 @@ export interface PhysicalEntity extends Entity {
   absorption_coefficient?: number;
   sound_reduction_index?: number;
   reaction_to_fire?: string;
-  building_material_class?: string;
   fire_resistance_class?: string;
   air_tightness?: number;
 
@@ -80,6 +80,8 @@ export interface PhysicalEntity extends Entity {
   diffusivity_low?: number;
   absorption_coefficient_low?: number;
   sound_reduction_index_low?: number;
+  reaction_to_fire_low?: string;
+  fire_resistance_class_low?: string;
   air_tightness_low?: number;
 
   density_high?: number;
@@ -97,6 +99,8 @@ export interface PhysicalEntity extends Entity {
   diffusivity_high?: number;
   absorption_coefficient_high?: number;
   sound_reduction_index_high?: number;
+  reaction_to_fire_high?: string;
+  fire_resistance_class_high?: string;
   air_tightness_high?: number;
 }
 
@@ -147,6 +151,9 @@ export interface Building extends Entity {
   type?: string;
   status?: string;
   materials?: string[];
+  client?: string;
+  gross_internal_area?: number;
+  year?: number;
   address?: string;
   long?: number;
   lat?: number;
