@@ -26,7 +26,7 @@ export default defineComponent({
 </script>
 <script setup lang="ts">
 interface Props {
-  modelValue: FileItem[];
+  modelValue: string;
   label?: string;
   hint?: string;
 }

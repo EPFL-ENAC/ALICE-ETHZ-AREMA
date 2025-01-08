@@ -16,9 +16,9 @@
       <template v-slot:option="scope">
         <q-item v-bind="scope.itemProps">
           <q-item-section>
-            <q-item-label :class="`option-${scope.opt.level}`">
-              {{ scope.opt.label }}</q-item-label
-            >
+            <q-item-label :class="`option-${scope.opt.level} ${scope.opt.selectable ? '' : 'text-grey-6 text-bold'}`">
+              {{ scope.opt.label }}
+            </q-item-label>
           </q-item-section>
         </q-item>
       </template>
@@ -68,6 +68,11 @@ function loadOptions() {
 }
 
 function onSelection() {
+  if (Array.isArray(selected.value)) {
+    selected.value = selected.value.filter((v) => options.value.find((o) => o.value === v)?.selectable);
+  } else {
+    selected.value = options.value.find((o) => o.value === selected.value)?.selectable ? selected.value : null;
+  }
   emit('update:modelValue', selected.value);
 }
 </script>

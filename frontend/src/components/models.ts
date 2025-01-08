@@ -25,11 +25,17 @@ export interface Option {
   level?: number;
 }
 
-export interface TaxonomyNodeOption {
+export interface VocabularyOption {
   value: string;
   label: string;
+  urn: string;
   taxonomy: TaxonomyNode;
   vocabulary: TaxonomyNode;
-  term?: TaxonomyNode;
+}
+
+export interface TermOption {
+  value: string;
+  label: string;
   urn: string;
+  children?: TermOption[];
 }

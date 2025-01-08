@@ -107,7 +107,7 @@ async def find(
         terms = {}
         # group terms (urn) by their parent
         for tag in tags:
-            vocabulary = tag.rsplit('.', 1)[0]
+            vocabulary = tag.split('.', 1)[0]
             if vocabulary not in terms:
                 terms[vocabulary] = []
             terms[vocabulary].append(tag)
@@ -147,7 +147,7 @@ async def find(
         terms = {}
         # group terms (urn) by their parent
         for tag in tags:
-            vocabulary = tag.rsplit('.', 1)[0]
+            vocabulary = tag.split('.', 1)[0]
             if vocabulary not in terms:
                 terms[vocabulary] = []
             terms[vocabulary].append(tag)

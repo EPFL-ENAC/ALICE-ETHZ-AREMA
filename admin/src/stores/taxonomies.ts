@@ -23,24 +23,17 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return `${URN_PREFIX}:${entityType}:${Array.isArray(path) ? path.join('.') : path}`;
   }
 
-  async function getTaxonomy(
-    entityType: string,
-  ): Promise<TaxonomyNode | undefined> {
+  async function getTaxonomy(entityType: string): Promise<TaxonomyNode | undefined> {
     if (!taxonomies.value) {
       return init().then(() => {
         if (!taxonomies.value) return undefined;
         else return getTaxonomy(entityType);
       });
     }
-    return Promise.resolve(
-      taxonomies.value?.taxonomy.find((tx) => tx.id === entityType),
-    );
+    return Promise.resolve(taxonomies.value?.taxonomy.find((tx) => tx.id === entityType));
   }
 
-  async function getTaxonomyNode(
-    entityType: string,
-    path: string | string[] = [],
-  ): Promise<TaxonomyNode | undefined> {
+  async function getTaxonomyNode(entityType: string, path: string | string[] = []): Promise<TaxonomyNode | undefined> {
     const tx = await getTaxonomy(entityType);
     if (!tx) return Promise.resolve(undefined);
     return Promise.resolve(getNodeFromPath(tx, path));
@@ -56,10 +49,7 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return getNodeFromPath(root, tokens[1]);
   }
 
-  function getNodeFromPath(
-    node: TaxonomyNode,
-    path: string | string[] = [],
-  ): TaxonomyNode | undefined {
+  function getNodeFromPath(node: TaxonomyNode, path: string | string[] = []): TaxonomyNode | undefined {
     const elements = Array.isArray(path) ? path : path.split('.');
     if (!elements || elements.length === 0) return node;
     if (!node.children || node.children.length === 0) return node;
@@ -70,9 +60,7 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return child;
   }
 
-  function getLabel(
-    labels: Record<string, string> | undefined,
-  ): string | undefined {
+  function getLabel(labels: Record<string, string> | undefined): string | undefined {
     if (labels === undefined) return undefined;
     if (labels[locale.value]) return labels[locale.value];
     return labels['en'];
@@ -94,15 +82,11 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
         value: toUrn(entityType, [...prefix, child.id]),
         label: getLabel(child.names) || child.id,
         level: level,
+        selectable: child.children ? child.children.length === 0 : true,
       };
       options.push(opt);
       if (child.children?.length) {
-        const opts = asOptions(
-          entityType,
-          child,
-          [...prefix, child.id],
-          level + 1,
-        );
+        const opts = asOptions(entityType, child, [...prefix, child.id], level + 1);
         options.push(...opts);
       }
     }
