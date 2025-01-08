@@ -215,33 +215,7 @@ function onVocabularySelect(voc: VocabularyOption) {
 
 function onTermSelect(term: TermOption) {
   if (!selectedVocabulary.value) return;
-  if (term.children) {
-    // any selected child terms ?
-    if (
-      term.children.some((child) =>
-        searchService.selectedTerms.includes(child.urn),
-      )
-    ) {
-      // clear all child terms
-      searchService.selectedTerms = searchService.selectedTerms.filter(
-        (urn) => !term.children?.find((child) => child.urn === urn),
-      );
-    } else {
-      // select all child terms
-      searchService.selectedTerms.push(
-        ...term.children.map((child) => child.urn),
-      );
-    }
-  } else {
-    // toggle term selection
-    const urn = term.urn;
-    searchService.selectedTerms.includes(urn)
-      ? searchService.selectedTerms.splice(
-          searchService.selectedTerms.indexOf(urn),
-          1,
-        )
-      : searchService.selectedTerms.push(urn);
-  }
+  searchService.selectTerm(term);
   searchService.search_entities();
 }
 
@@ -250,17 +224,10 @@ function onViewSelect(view: string) {
 }
 
 function getSelectedTerms(voc: TermOption) {
-  return (
-    searchService.selectedTerms.filter((term) => term.startsWith(voc.urn)) || []
-  );
+  return searchService.getSelectedTerms(voc);
 }
 
 function isTermSelected(term: TermOption) {
-  if (term.children) {
-    return term.children.some((child) =>
-      searchService.selectedTerms.includes(child.urn),
-    );
-  }
-  return searchService.selectedTerms.includes(term.urn);
+  return searchService.isTermSelected(term);
 }
 </script>

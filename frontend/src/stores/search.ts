@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { api } from 'src/boot/api';
 import { SearchResult, Document, VideoResult } from 'src/models';
+import { VocabularyOption, TermOption } from 'src/components/models';
 import {
   Feature,
   FeatureCollection,
@@ -136,6 +137,54 @@ export const useSearchService = defineStore('search', () => {
       });
   }
 
+  // selection utils
+
+  function selectTerm(term: TermOption) {
+    if (term.children) {
+      // any selected child terms ?
+      if (
+        term.children.some((child) =>
+          selectedTerms.value.includes(child.urn),
+        )
+      ) {
+        // clear all child terms
+        selectedTerms.value = selectedTerms.value.filter(
+          (urn) => !term.children?.find((child) => child.urn === urn),
+        );
+      } else {
+        // select all child terms
+        selectedTerms.value.push(
+          ...term.children.map((child) => child.urn),
+        );
+      }
+    } else {
+      // toggle term selection
+      const urn = term.urn;
+      selectedTerms.value.includes(urn)
+        ? selectedTerms.value.splice(
+            selectedTerms.value.indexOf(urn),
+            1,
+          )
+        : selectedTerms.value.push(urn);
+    }
+  }
+
+
+  function getSelectedTerms(node: VocabularyOption | TermOption) {
+    return (
+      selectedTerms.value.filter((term) => term.startsWith(node.urn)) || []
+    );
+  }
+
+  function isTermSelected(term: TermOption) {
+    if (term.children) {
+      return term.children.some((child) =>
+        selectedTerms.value.includes(child.urn),
+      );
+    }
+    return selectedTerms.value.includes(term.urn);
+  }
+
   return {
     selectedView,
     selectedTerms,
@@ -152,5 +201,8 @@ export const useSearchService = defineStore('search', () => {
     search_entities,
     search_videos,
     getDocument,
+    selectTerm,
+    getSelectedTerms,
+    isTermSelected,
   };
 });

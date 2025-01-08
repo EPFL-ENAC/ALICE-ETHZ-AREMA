@@ -5,6 +5,7 @@
         :features="searchService.features"
         :height="'600px'"
         class="q-pr-md"
+        @map:click="onFeature"
       />
     </div>
     <div class="col-12 col-md-6">
@@ -64,5 +65,9 @@ const rows = computed(() => searchService.geoResults?.data || []);
 
 function onDocument(row: Document) {
   router.push({ name: 'doc', params: { id: `${row.entity_type}:${row.id}` } });
+}
+
+function onFeature(feature) {
+  console.log(feature);
 }
 </script>
