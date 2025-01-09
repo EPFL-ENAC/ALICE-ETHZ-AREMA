@@ -149,7 +149,7 @@ class EntityIndexService(IndexService):
                         "filter": {
                             "ngram_filter": {
                                 "type": "ngram",
-                                "min_gram": 3,  # minimum n-gram length
+                                "min_gram": 4,  # minimum n-gram length
                                 "max_gram": 4   # maximum n-gram length
                             }
                         }
@@ -370,7 +370,7 @@ class VideoIndexService(IndexService):
                         "filter": {
                             "ngram_filter": {
                                 "type": "ngram",
-                                "min_gram": 3,  # minimum n-gram length
+                                "min_gram": 4,  # minimum n-gram length
                                 "max_gram": 4   # maximum n-gram length
                             }
                         }

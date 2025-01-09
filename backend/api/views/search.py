@@ -146,7 +146,7 @@ def make_text_criteria(text: str, analyzed_fields: List[str]):
     should = []
     for field in analyzed_fields:
         should.append({"term": {f"{field}.keyword": text}})
-        # should.append({"match": {f"{field}.ngram": text}})
+        should.append({"match": {f"{field}.ngram": text}})
         should.append(
             {"fuzzy": {f"{field}.fuzzy": {"value": text, "fuzziness": "AUTO"}}})
     return {
