@@ -139,12 +139,17 @@ class EntityIndexService(IndexService):
                                 "type": "custom",
                                 "tokenizer": "standard",
                                 "filter": ["lowercase", "ngram_filter"]
+                            },
+                            "fuzzy_analyzer": {
+                                "type": "custom",
+                                "tokenizer": "standard",
+                                "filter": ["lowercase"]
                             }
                         },
                         "filter": {
                             "ngram_filter": {
                                 "type": "ngram",
-                                "min_gram": 3,  # minimum n-gram length
+                                "min_gram": 4,  # minimum n-gram length
                                 "max_gram": 4   # maximum n-gram length
                             }
                         }
@@ -170,7 +175,19 @@ class EntityIndexService(IndexService):
             for field in ENTITY_ANALYZED_FIELDS:
                 configuration["mappings"]["properties"][field] = {
                     "type": "text",
-                    "analyzer": "ngram_analyzer"
+                    "fields": {
+                        "ngram": {
+                            "type": "text",
+                            "analyzer": "ngram_analyzer"
+                        },
+                        "fuzzy": {
+                            "type": "text",
+                            "analyzer": "fuzzy_analyzer"
+                        },
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
                 }
             self.client.indices.create(
                 index=self.index_name, body=configuration)
@@ -343,12 +360,17 @@ class VideoIndexService(IndexService):
                                 "type": "custom",
                                 "tokenizer": "standard",
                                 "filter": ["lowercase", "ngram_filter"]
+                            },
+                            "fuzzy_analyzer": {
+                                "type": "custom",
+                                "tokenizer": "standard",
+                                "filter": ["lowercase"]
                             }
                         },
                         "filter": {
                             "ngram_filter": {
                                 "type": "ngram",
-                                "min_gram": 3,  # minimum n-gram length
+                                "min_gram": 4,  # minimum n-gram length
                                 "max_gram": 4   # maximum n-gram length
                             }
                         }
@@ -371,7 +393,19 @@ class VideoIndexService(IndexService):
             for field in VIDEO_ANALYZED_FIELDS:
                 configuration["mappings"]["properties"][field] = {
                     "type": "text",
-                    "analyzer": "ngram_analyzer"
+                    "fields": {
+                        "ngram": {
+                            "type": "text",
+                            "analyzer": "ngram_analyzer"
+                        },
+                        "fuzzy": {
+                            "type": "text",
+                            "analyzer": "fuzzy_analyzer"
+                        },
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    }
                 }
             self.client.indices.create(
                 index=self.index_name, body=configuration)

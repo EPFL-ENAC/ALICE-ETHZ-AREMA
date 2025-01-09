@@ -101,21 +101,9 @@ async def find(
     mustQueries = []
 
     if text:
-        mustQueries.append({"multi_match": {"query": text,
-                                            "fields": VIDEO_ANALYZED_FIELDS}})
-    if tags:
-        terms = {}
-        # group terms (urn) by their parent
-        for tag in tags:
-            vocabulary = tag.split('.', 1)[0]
-            if vocabulary not in terms:
-                terms[vocabulary] = []
-            terms[vocabulary].append(tag)
-        for vocabulary in terms:
-            mustQueries.append({"terms": {"tags": terms[vocabulary]}})
-    if exists:
-        for field in exists:
-            mustQueries.append({"exists": {"field": field}})
+        mustQueries.append(make_text_criteria(text, VIDEO_ANALYZED_FIELDS))
+    mustQueries.extend(make_tags_criteria(tags))
+    mustQueries.extend(make_exists_criteria(exists))
 
     queryDict = {}
     if len(mustQueries):
@@ -141,22 +129,9 @@ async def find(
     mustQueries = []
 
     if text:
-        mustQueries.append({"multi_match": {"query": text,
-                                            "fields": ENTITY_ANALYZED_FIELDS}})
-    if tags:
-        terms = {}
-        # group terms (urn) by their parent
-        for tag in tags:
-            vocabulary = tag.split('.', 1)[0]
-            if vocabulary not in terms:
-                terms[vocabulary] = []
-            terms[vocabulary].append(tag)
-        for vocabulary in terms:
-            mustQueries.append({"terms": {"tags": terms[vocabulary]}})
-
-    if exists:
-        for field in exists:
-            mustQueries.append({"exists": {"field": field}})
+        mustQueries.append(make_text_criteria(text, ENTITY_ANALYZED_FIELDS))
+    mustQueries.extend(make_tags_criteria(tags))
+    mustQueries.extend(make_exists_criteria(exists))
 
     queryDict = {}
     if len(mustQueries):
@@ -165,3 +140,41 @@ async def find(
         queryDict["_source"] = fields
 
     return indexService.search(query=queryDict, skip=skip, limit=limit)
+
+
+def make_text_criteria(text: str, analyzed_fields: List[str]):
+    should = []
+    for field in analyzed_fields:
+        should.append({"term": {f"{field}.keyword": text}})
+        should.append({"match": {f"{field}.ngram": text}})
+        should.append(
+            {"fuzzy": {f"{field}.fuzzy": {"value": text, "fuzziness": "AUTO"}}})
+    return {
+        "bool": {
+            "should": should,
+            "minimum_should_match": 1
+        }
+    }
+
+
+def make_tags_criteria(tags: List[str]):
+    terms = {}
+    mustQueries = []
+    if tags:
+        # group terms (urn) by their parent
+        for tag in tags:
+            vocabulary = tag.split('.', 1)[0]
+            if vocabulary not in terms:
+                terms[vocabulary] = []
+            terms[vocabulary].append(tag)
+        for vocabulary in terms:
+            mustQueries.append({"terms": {"tags": terms[vocabulary]}})
+    return mustQueries
+
+
+def make_exists_criteria(exists: List[str]):
+    mustQueries = []
+    if exists:
+        for field in exists:
+            mustQueries.append({"exists": {"field": field}})
+    return mustQueries

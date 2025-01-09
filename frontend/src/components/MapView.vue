@@ -17,6 +17,7 @@ import {
   FullscreenControl,
   GeolocateControl,
   Map,
+  MapMouseEvent,
   NavigationControl,
   ScaleControl,
   Popup,
@@ -45,6 +46,8 @@ const props = withDefaults(defineProps<Props>(), {
   width: '100%',
   height: '800px',
 });
+
+const emit = defineEmits(['map:loaded', 'map:click']);
 
 let map = shallowRef<Map>();
 
@@ -80,6 +83,7 @@ function initMap() {
 
   map.value.on('load', function () {
     displayFeatures();
+    emit('map:loaded', map.value);
   });
 }
 
@@ -188,7 +192,7 @@ function displayFeatures() {
     // the unclustered-point layer, open a popup at
     // the location of the feature, with
     // description HTML from its properties.
-    map.value.on('click', 'entities-unclustered-point', (e) => {
+    map.value.on('click', 'entities-unclustered-point', (e: MapMouseEvent) => {
       if (!map.value) {
         return;
       }
@@ -196,6 +200,7 @@ function displayFeatures() {
       if (!feature) {
         return;
       }
+      emit('map:click', feature, map.value);
       // Ensure that if the map is zoomed out such that
       // multiple copies of the feature are visible, the
       // popup appears over the copy being pointed to.
@@ -212,7 +217,7 @@ function displayFeatures() {
         .setHTML(
           `
       <div class="text-primary">${t(feature.properties?.entity_type)}</div>
-      <div class="text-h6">${feature.properties?.name}</div>
+      <div class="text-bold">${feature.properties?.name}</div>
       <div>${feature.properties?.description ? feature.properties?.description : ''}</div>`,
         )
         .addTo(map.value);
