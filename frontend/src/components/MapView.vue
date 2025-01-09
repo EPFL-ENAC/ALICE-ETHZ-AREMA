@@ -1,9 +1,5 @@
 <template>
-  <div
-    id="map-results"
-    :style="`--t-width: ${width}; --t-height: ${height}`"
-    class="mapview"
-  />
+  <div id="map-results" :style="`--t-width: ${width}; --t-height: ${height}`" class="mapview" />
 </template>
 
 <script setup lang="ts">
@@ -54,6 +50,11 @@ let map = shallowRef<Map>();
 // track which were the layers added, to be able to remove them
 const layerIds: string[] = [];
 
+const EntityTypeSymbols: { [key: string]: { image: string } } = {
+  building: { image: 'building-regular-32.png' }, // 'building-solid.png'
+  professional: { image: 'person-digging-solid-32.png' }, // 'helmet-safety-solid.svg'
+};
+
 onMounted(() => {
   initMap();
 });
@@ -81,7 +82,14 @@ function initMap() {
   map.value.addControl(new ScaleControl({}));
   map.value.addControl(new FullscreenControl({}));
 
-  map.value.on('load', function () {
+  map.value.on('load', () => {
+    Object.keys(EntityTypeSymbols).forEach((entityType) => {
+      map.value?.loadImage(`/symbols/${EntityTypeSymbols[entityType].image}`).then((image) => {
+        if (image?.data) {
+          map.value?.addImage(entityType, image.data);
+        }
+      });
+    });
     displayFeatures();
     emit('map:loaded', map.value);
   });
@@ -158,14 +166,12 @@ function displayFeatures() {
 
     map.value.addLayer({
       id: 'entities-unclustered-point',
-      type: 'circle',
+      type: 'symbol',
       source: 'entities',
       filter: ['!', ['has', 'point_count']],
-      paint: {
-        'circle-color': '#be7437',
-        'circle-radius': 10,
-        'circle-stroke-width': 1,
-        'circle-stroke-color': '#ddd',
+      layout: {
+        'icon-image': ['get', 'entity_type'],
+        'icon-size': 0.8,
       },
     });
     layerIds.push('entities-unclustered-point');
@@ -179,9 +185,7 @@ function displayFeatures() {
         layers: ['entities-clusters'],
       });
       const clusterId = features[0].properties.cluster_id;
-      const zoom = await (
-        map.value.getSource('entities') as GeoJSONSource
-      ).getClusterExpansionZoom(clusterId);
+      const zoom = await (map.value.getSource('entities') as GeoJSONSource).getClusterExpansionZoom(clusterId);
       map.value.easeTo({
         center: (features[0].geometry as Point).coordinates as [number, number],
         zoom,
@@ -204,10 +208,7 @@ function displayFeatures() {
       // Ensure that if the map is zoomed out such that
       // multiple copies of the feature are visible, the
       // popup appears over the copy being pointed to.
-      const coordinates = (feature.geometry as Point).coordinates.slice() as [
-        number,
-        number,
-      ];
+      const coordinates = (feature.geometry as Point).coordinates.slice() as [number, number];
       while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
       }
