@@ -8,10 +8,10 @@ taxonomy:
     children:
       - id: status
         names:
-          en: Status
-          de: Zustand
-          fr: Etat
-          it: Stato
+          en: Intervention Type
+          de: Eingriffstyp
+          fr: Type d'intervention
+          it: Tipo di intervento
         children:
           - id: new
             names:
