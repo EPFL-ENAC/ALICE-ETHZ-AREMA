@@ -33,6 +33,7 @@ export default {
   purpose: 'Purpose',
   reaction_to_fire: 'Reaction to Fire',
   read_manifesto: 'Read the manifesto',
+  relates_to: 'Relates to',
   resources: 'Resources',
   search: 'Search',
   settlement: 'Settlement',

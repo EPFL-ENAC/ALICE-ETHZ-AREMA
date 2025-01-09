@@ -7,11 +7,7 @@
       <div class="row q-col-gutter-md">
         <div class="col-12 col-md-1"></div>
         <div class="col-12 col-md-2">
-          <router-link
-            to="/search"
-            class="text-primary text-caption"
-            style="text-decoration: none"
-          >
+          <router-link to="/search" class="text-primary text-caption" style="text-decoration: none">
             <q-icon name="arrow_back" /> {{ $t('search') }}
           </router-link>
         </div>
@@ -64,45 +60,25 @@
                 class="bg-grey-2 text-grey-6"
               >
                 <template v-for="(file, index) in document.files" :key="index">
-                  <q-carousel-slide
-                    v-if="isImage(file)"
-                    :name="index"
-                    :img-src="toFileUrl(file)"
-                  >
-                    <div
-                      v-if="file.legend"
-                      class="absolute-bottom text-center a-legend"
-                    >
+                  <q-carousel-slide v-if="isImage(file)" :name="index" :img-src="toFileUrl(file)">
+                    <div v-if="file.legend" class="absolute-bottom text-center a-legend">
                       <div class="text-caption">{{ file.legend }}</div>
                     </div>
                   </q-carousel-slide>
 
                   <q-carousel-slide v-else-if="isVideo(file)" :name="index">
                     <q-video :src="toFileUrl(file)" class="absolute-full" />
-                    <div
-                      v-if="file.legend"
-                      class="absolute-bottom text-center a-legend"
-                    >
+                    <div v-if="file.legend" class="absolute-bottom text-center a-legend">
                       <div class="text-caption">{{ file.legend }}</div>
                     </div>
                   </q-carousel-slide>
 
-                  <q-carousel-slide
-                    v-else
-                    :name="index"
-                    class="column no-wrap flex-center"
-                  >
+                  <q-carousel-slide v-else :name="index" class="column no-wrap flex-center">
                     <div class="text-uppercase">{{ $t('download') }}</div>
                     <q-btn flat color="secondary" @click="onDownload(file)">
-                      <q-icon
-                        :name="isPDF(file) ? 'picture_as_pdf' : 'file_download'"
-                        size="100px"
-                      />
+                      <q-icon :name="isPDF(file) ? 'picture_as_pdf' : 'file_download'" size="100px" />
                     </q-btn>
-                    <div
-                      v-if="file.legend"
-                      class="absolute-bottom text-center a-legend"
-                    >
+                    <div v-if="file.legend" class="absolute-bottom text-center a-legend">
                       <div class="text-caption">{{ file.legend }}</div>
                     </div>
                   </q-carousel-slide>
@@ -115,11 +91,7 @@
           </div>
         </div>
         <div class="col-12 col-md-2">
-          <q-markdown
-            v-if="document.side_note"
-            :src="document.side_note"
-            class="text-primary text-caption"
-          />
+          <q-markdown v-if="document.side_note" :src="document.side_note" class="text-primary text-caption" />
         </div>
         <div class="col-12 col-md-1"></div>
       </div>
@@ -128,19 +100,11 @@
         <div class="col-12 col-md-3"></div>
         <div class="col-12 col-md-6">
           <div class="text-primary text-uppercase q-mb-sm">
-            {{ $t('references') }}
+            {{ $t('relates_to') }}
           </div>
           <div class="row q-gutter-md">
-            <template
-              v-for="relation in relationSummaries"
-              :key="`${relation.entity_type}:${relation.id}`"
-            >
-              <q-card
-                flat
-                class="q-mb-md cursor-pointer"
-                @click="onDocument(relation)"
-                style="min-width: 200px"
-              >
+            <template v-for="relation in relationSummaries" :key="`${relation.entity_type}:${relation.id}`">
+              <q-card flat class="q-mb-md cursor-pointer" @click="onDocument(relation)" style="min-width: 200px">
                 <q-card-section>
                   <div class="text-primary">{{ $t(relation.entity_type) }}</div>
                   <div class="text-bold">{{ relation.name }}</div>
@@ -179,25 +143,36 @@ watch(() => props.document, init);
 
 function init() {
   slide.value = 0;
-  if (!props.document?.relates_to) return;
+  if (!props.document) return;
   relationSummaries.value = [];
-  Promise.all(
-    props.document.relates_to.map((rel) => {
-      return searchService.getDocument(rel, [
-        'id',
-        'entity_type',
-        'name',
-        'description',
-      ]);
-    }),
-  ).then((docs) => {
-    console.log(docs);
-    relationSummaries.value = docs;
-  });
+  const fields = ['id', 'entity_type', 'name', 'description'];
+  searchService
+    .getRelatedDocuments(toId(props.document.entity_type, props.document.id), fields)
+    .then((result) => {
+      relationSummaries.value = result.data || [];
+    })
+    .then(() => {
+      // make sure relations in all directions are covered
+      if (!props.document?.relates_to) return;
+      const realtedIds = relationSummaries.value.map((doc) => toId(doc.entity_type, doc.id));
+      Promise.all(
+        props.document?.relates_to
+          .filter((id) => !realtedIds.includes(id))
+          .map((rel) => {
+            return searchService.getDocument(rel, fields);
+          }),
+      ).then((docs) => {
+        relationSummaries.value.concat(docs);
+      });
+    });
 }
 
 function onDocument(row: Document) {
-  router.push({ name: 'doc', params: { id: `${row.entity_type}:${row.id}` } });
+  router.push({ name: 'doc', params: { id: toId(row.entity_type, row.id) } });
+}
+
+function toId(entity_type: string, id: number | string) {
+  return `${entity_type}:${id}`;
 }
 
 function onDownload(file: FileItem) {
