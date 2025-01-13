@@ -77,6 +77,12 @@ function initMap() {
     trackResize: true,
     zoom: props.zoom,
   });
+  // disable map rotation using right click + drag
+  map.value.dragRotate.disable();
+  // disable map rotation using keyboard
+  map.value.keyboard.disable();
+  // disable map rotation using touch rotation gesture
+  map.value.touchZoomRotate.disableRotation();
   map.value.addControl(new NavigationControl({}));
   map.value.addControl(new GeolocateControl({}));
   map.value.addControl(new ScaleControl({}));
