@@ -11,7 +11,6 @@
       <q-card-section>
         <q-tabs v-model="tab" dense align="left" no-caps>
           <q-tab name="general" :label="$t('general') + ' *'" />
-          <q-tab name="physical_characteristics" :label="$t('physical_characteristics')" />
           <q-tab name="multimedia" :label="$t('multimedia')" />
           <q-tab name="relations" :label="$t('relations')" />
         </q-tabs>
@@ -68,9 +67,6 @@
             />
             <text-input v-model="selected.external_links" :label="$t('external_links')" class="q-mb-md" />
           </q-tab-panel>
-          <q-tab-panel name="physical_characteristics" class="q-pl-none q-pr-none">
-            <physical-entity-form v-model="selected" />
-          </q-tab-panel>
           <q-tab-panel name="multimedia" class="q-pl-none q-pr-none">
             <files-input v-model="selected.files" />
           </q-tab-panel>
@@ -109,7 +105,6 @@ export default defineComponent({
 <script setup lang="ts">
 import { BuildingMaterial, TechnicalConstruction } from 'src/models';
 import { notifyError } from 'src/utils/notify';
-import PhysicalEntityForm from 'src/components/PhysicalEntityForm.vue';
 import FilesInput from 'src/components/FilesInput.vue';
 import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 import TextInput from 'src/components/TextInput.vue';
