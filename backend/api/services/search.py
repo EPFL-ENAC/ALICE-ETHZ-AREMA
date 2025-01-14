@@ -259,7 +259,7 @@ class VideoIndexService(IndexService):
         """
         docs = []
         docs += self._getVideosFromFiles(entity_type, entity, tags)
-        for field in ["external_links", "article_top", "article_bottom", "side_note"]:
+        for field in ["article_top", "article_bottom"]:
             docs += self._getVideosFromField(field, entity_type, entity, tags)
         return docs
 
