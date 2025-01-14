@@ -75,7 +75,7 @@ function hasFieldValue(field: string) {
 }
 
 function getFieldValues(field: string) {
-  return [props.document[`${field}_high`], props.document[field], props.document[`${field}_high`]];
+  return [props.document[`${field}_low`], props.document[field], props.document[`${field}_high`]];
 }
 
 function getFieldValue(field: string) {
