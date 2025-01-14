@@ -30,7 +30,7 @@
       multiple
       :label="$t('upload_files')"
       :hint="$t('upload_files_hint')"
-      accept=".jpg, .jpeg, .png, .pdf, .mp4"
+      accept=".jpg, .jpeg, .png, .pdf, .mp4, .webp"
       :disable="uploading"
       :loading="uploading"
       @update:model-value="onLocalFilesSelected"
