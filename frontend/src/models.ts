@@ -56,13 +56,14 @@ export interface PhysicalEntity extends Entity {
   thermal_capacity?: number;
   vapor_diffusion_resistance?: number;
   moisture_buffering?: number;
+  prosity?: number;
+  liquid_transfer_coefficient?: number;
   u?: number;
   effusivity?: number;
   diffusivity?: number;
   absorption_coefficient?: number;
   sound_reduction_index?: number;
   reaction_to_fire?: string;
-  building_material_class?: string;
   fire_resistance_class?: string;
   air_tightness?: number;
 
@@ -76,6 +77,8 @@ export interface PhysicalEntity extends Entity {
   thermal_capacity_low?: number;
   vapor_diffusion_resistance_low?: number;
   moisture_buffering_low?: number;
+  prosity_low?: number;
+  liquid_transfer_coefficient_low?: number;
   u_low?: number;
   effusivity_low?: number;
   diffusivity_low?: number;
@@ -95,6 +98,8 @@ export interface PhysicalEntity extends Entity {
   thermal_capacity_high?: number;
   vapor_diffusion_resistance_high?: number;
   moisture_buffering_high?: number;
+  prosity_high?: number;
+  liquid_transfer_coefficient_high?: number;
   u_high?: number;
   effusivity_high?: number;
   diffusivity_high?: number;
