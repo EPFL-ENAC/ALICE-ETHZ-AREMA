@@ -31,7 +31,7 @@ export default {
   article_top_bd_hint: 'Origine, matériaux/techniques/design utilisés.',
   article_top_bm_hint: 'Origine et fabrication.',
   article_top_pro_hint: 'Bio/histoire.',
-  article_top_tc_hint: 'Origine, disponibilité et fabrication.',
+  article_top_tc_hint: 'Origine et fabrication.',
   article_top: 'Article (haut)',
   building_building_material_used_hint: 'Matériaux de construction utilisés.',
   building_element_professionals_hint: 'Professionnels impliqués dans la construction.',

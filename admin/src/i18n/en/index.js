@@ -42,7 +42,7 @@ export default {
   article_top_bd_hint: 'Background, used materials/techniques/design.',
   article_top_bm_hint: 'Background and manufacturing.',
   article_top_pro_hint: 'Bio/history.',
-  article_top_tc_hint: 'Background, availibility and manufacturing.',
+  article_top_tc_hint: 'Background and manufacturing.',
   article_top: 'Article (top)',
   building_building_material_used_hint: 'Building material used.',
   building_element_professionals_hint: 'Professionals involved.',
