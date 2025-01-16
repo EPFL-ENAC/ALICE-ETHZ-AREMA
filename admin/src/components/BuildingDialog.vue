@@ -172,13 +172,14 @@ export default defineComponent({
 </script>
 <script setup lang="ts">
 import { BuildingMaterial, Building, Professional, TechnicalConstruction, BuildingElement } from 'src/models';
-import { notifyError } from '../utils/notify';
+import { notifyError } from 'src/utils/notify';
 import PointMapInput from 'src/components/PointMapInput.vue';
 import FilesInput from 'src/components/FilesInput.vue';
 import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 import BuildingElementForm from 'src/components/BuildingElementForm.vue';
 import { Option } from 'src/components/models';
 import TextInput from 'src/components/TextInput.vue';
+import type { Feature } from '@turf/turf';
 
 interface DialogProps {
   modelValue: boolean;
@@ -202,7 +203,7 @@ const selected = ref<Building>({
   files: [],
   type: '',
 } as Building);
-const location = ref({});
+const location = ref<Feature>({} as Feature);
 const editMode = ref(false);
 const tab = ref('general');
 const buildingMaterials = ref([]);
@@ -225,16 +226,16 @@ watch(
       // deep copy
       selected.value = JSON.parse(JSON.stringify(props.item));
       editMode.value = selected.value.id !== undefined;
-      location.value = {};
+      location.value = {} as Feature;
       if (editMode.value) {
         location.value = {
           type: 'Feature',
           properties: {
-            display_name: selected.value.address,
+            addressInput: selected.value.address,
           },
           geometry: {
             type: 'Point',
-            coordinates: [selected.value.long, selected.value.lat],
+            coordinates: [selected.value.long || 0, selected.value.lat || 0],
           },
         };
       }
@@ -358,10 +359,10 @@ async function onSave() {
   }
 }
 
-function onPointInputUpdated(newValue) {
+function onPointInputUpdated(newValue: Feature) {
   if (!selected.value) return;
   if (newValue && newValue.properties && newValue.geometry) {
-    selected.value.address = newValue.properties.display_name;
+    selected.value.address = newValue.properties.addressInput;
     selected.value.geom = { point: newValue.geometry.coordinates };
     selected.value.lat = newValue.geometry.coordinates[1];
     selected.value.long = newValue.geometry.coordinates[0];

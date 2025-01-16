@@ -175,7 +175,7 @@ const selected = ref<Professional>({
   name: '',
   files: [],
 } as Professional);
-const circle = ref({});
+const circle = ref<Feature>({} as Feature);
 const editMode = ref(false);
 const tab = ref('general');
 const buildingMaterials = ref([]);
