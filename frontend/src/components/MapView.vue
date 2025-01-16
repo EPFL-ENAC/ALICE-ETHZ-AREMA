@@ -52,7 +52,7 @@ const layerIds: string[] = [];
 
 const EntityTypeSymbols: { [key: string]: { image: string } } = {
   building: { image: 'building-regular-32.png' }, // 'building-solid.png'
-  professional: { image: 'person-digging-solid-32.png' }, // 'helmet-safety-solid.svg'
+  professional: { image: 'compass-drafting-solid-32.png' }, // 'helmet-safety-solid.svg'
 };
 
 onMounted(() => {
