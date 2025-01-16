@@ -282,6 +282,8 @@ class ProfessionalBase(Entity):
     materials: Optional[List[str]] = Field(
         default=None, sa_column=Column(JSON))
     address: Optional[str] = Field(default=None)
+    addresses: Optional[List[str]] = Field(
+        default=None, sa_column=Column(JSON))
     web: Optional[str] = Field(default=None)
     tel: Optional[str] = Field(default=None)
     email: Optional[str] = Field(default=None)

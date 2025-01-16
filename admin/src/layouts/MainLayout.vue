@@ -109,9 +109,9 @@ watch(
   () => authStore.isAuthenticated,
   () => {
     if (authStore.isAuthenticated) {
-      console.log('Authenticated');
+      console.debug('Authenticated');
     } else {
-      console.log('Not authenticated');
+      console.debug('Not authenticated');
     }
   },
 );

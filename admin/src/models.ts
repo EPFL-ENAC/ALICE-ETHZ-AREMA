@@ -181,6 +181,7 @@ export interface Professional extends Entity {
   types?: string[];
   materials?: string[];
   address?: string;
+  addresses?: string[];
   web?: string;
   tel?: string;
   email?: string;

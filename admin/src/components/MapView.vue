@@ -18,23 +18,13 @@ import {
   FeatureCollection,
   Units,
 } from '@turf/turf';
-import {
-  FullscreenControl,
-  GeolocateControl,
-  Map,
-  Marker,
-  NavigationControl,
-  ScaleControl,
-  Popup,
-} from 'maplibre-gl';
+import { FullscreenControl, GeolocateControl, Map, Marker, NavigationControl, ScaleControl, Popup } from 'maplibre-gl';
 import { shallowRef, onMounted, markRaw, watch, unref } from 'vue';
 const { t /*locale*/ } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(
   defineProps<{
-    features: [
-      Feature<Polygon | MultiPolygon>[] | Feature<Polygon | MultiPolygon>,
-    ];
+    features: [Feature<Polygon | MultiPolygon>[] | Feature<Polygon | MultiPolygon>];
     centre?: [number, number];
     zoom?: number;
     aspectRatio?: number;
@@ -117,7 +107,7 @@ function displayFeatures() {
     features
       .map((f) => unref(f))
       .forEach((feature) => {
-        console.log(feature);
+        //console.log(feature);
         if (feature.type === 'FeatureCollection') {
           displayPolygons(feature);
         } else if (MapboxDrawGeodesic.isCircle(feature)) {
@@ -142,12 +132,7 @@ function displayCircle(feature: Feature<Polygon>) {
       <p>${feature.properties.description}</p>
       <p><b>${t('address')}</b>: ${feature.properties.address}</p>
       <p><b>${t('radius')}</b>: ${radius}km</p>`);
-    markers.push(
-      new Marker({ color: '#FF0000' })
-        .setLngLat(center)
-        .setPopup(popup)
-        .addTo(map.value),
-    );
+    markers.push(new Marker({ color: '#FF0000' }).setLngLat(center).setPopup(popup).addTo(map.value));
 
     // Generate a polygon using turf.circle.
     // See https://turfjs.org/docs/#circle
@@ -186,12 +171,7 @@ function displayPoint(feature: Feature<Point>) {
       <div class="text-h6">${feature.properties.name}</div>
       <p>${feature.properties.description}</p>
       <p><b>${t('address')}</b>: ${feature.properties.address}</p>`);
-    markers.push(
-      new Marker({ color: '#FF0000' })
-        .setLngLat(center)
-        .setPopup(popup)
-        .addTo(map.value),
-    );
+    markers.push(new Marker({ color: '#FF0000' }).setLngLat(center).setPopup(popup).addTo(map.value));
   }
 }
 
@@ -201,12 +181,7 @@ function displayPolygons(featureCollection: Feature<FeatureCollection>) {
     closeButton: false,
     offset: 25,
   }).setHTML(`<b>Zones</b>: ${featureCollection.features.length}`);
-  markers.push(
-    new Marker({ color: '#FF0000' })
-      .setLngLat(ct.geometry.coordinates)
-      .setPopup(popup)
-      .addTo(map.value),
-  );
+  markers.push(new Marker({ color: '#FF0000' }).setLngLat(ct.geometry.coordinates).setPopup(popup).addTo(map.value));
 
   const color = randomColor();
   layerIds.push(`${feature.id}`);
@@ -228,19 +203,13 @@ function displayPolygons(featureCollection: Feature<FeatureCollection>) {
 }
 
 function randomColor() {
-  return `#${(0x1000000 + Math.random() * 0xffffff)
-    .toString(16)
-    .substring(1, 7)}`;
+  return `#${(0x1000000 + Math.random() * 0xffffff).toString(16).substring(1, 7)}`;
 }
 </script>
 
 <template>
   <div>
-    <div
-      :id="containerId"
-      :style="`--t-width: ${width}; --t-height: ${height}`"
-      class="mapview"
-    />
+    <div :id="containerId" :style="`--t-width: ${width}; --t-height: ${height}`" class="mapview" />
   </div>
 </template>
 
