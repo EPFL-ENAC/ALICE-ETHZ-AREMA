@@ -79,7 +79,7 @@ const { t } = useI18n();
 
 onMounted(() => {
   const feature = props.modelValue ? JSON.parse(JSON.stringify(props.modelValue)) : null;
-  console.log('feature', feature);
+  //console.log('feature', feature);
   if (feature && feature.properties) {
     address.value = feature.properties.addressInput;
     radius.value = feature.properties.circleRadius;

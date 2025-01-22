@@ -1,9 +1,13 @@
 import { type Feature, type FeatureCollection } from '@turf/turf';
 
+const COUNTRIES = ['ch', 'fr', 'it', 'de', 'at'];
+
 function handleNominatimResponse(geojson: FeatureCollection): Feature[] {
   const features: Feature[] = [];
   const place_names: string[] = [];
-  for (const feature of geojson.features.filter((f: Feature) => f.properties?.address.country_code === 'ch')) {
+  for (const feature of geojson.features.filter((f: Feature) =>
+    COUNTRIES.includes(f.properties?.address.country_code),
+  )) {
     if (feature.properties && !place_names.includes(feature.properties.display_name) && feature.bbox) {
       const center = [
         feature.bbox[0] + (feature.bbox[2] - feature.bbox[0]) / 2,
@@ -40,7 +44,7 @@ export const geocoderApi = {
   forwardGeocode: async (config: { query: string; limit: number; countries: string[] }) => {
     let features: Feature[] = [];
     try {
-      let countrycodes = 'ch';
+      let countrycodes = COUNTRIES.join(',');
       if (config.countries && config.countries.length > 0) countrycodes = config.countries.join(',');
       const request = `https://nominatim.openstreetmap.org/search?q=${config.query}&limit=${config.limit}&format=geojson&polygon_geojson=1&addressdetails=1&countrycodes=${countrycodes}`;
       if (searchController) searchController.abort();
