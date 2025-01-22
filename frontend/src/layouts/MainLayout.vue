@@ -14,11 +14,21 @@
     >
       <nav-drawer />
     </q-drawer>
+
+    <q-footer class="bg-black text-white">
+      <div class="row items-center justify-center">
+        <router-link to="/about" class="text-white q-pa-md">{{ $t('about') }}</router-link>
+        <router-link to="/imprint" class="text-white q-pa-md">{{ $t('imprint') }}</router-link>
+        <router-link to="/disclaimer" class="text-white q-pa-md">{{ $t('disclaimer') }}</router-link>
+        <router-link to="/copyright" class="text-white q-pa-md">{{ $t('copyright') }}</router-link>
+      </div>
+    </q-footer>
   </q-layout>
 </template>
 
 <script setup lang="ts">
 import HeaderPanel from 'src/components/HeaderPanel.vue';
 import NavDrawer from 'src/components/NavDrawer.vue';
+
 const rightDrawerOpen = ref(false);
 </script>

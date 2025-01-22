@@ -88,6 +88,8 @@
       </q-list>
     </q-drawer>
 
+    <login-dialog v-model="showLogin" />
+
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -95,12 +97,19 @@
 </template>
 
 <script setup lang="ts">
+import LoginDialog from 'src/components/LoginDialog.vue';
+
 const authStore = useAuthStore();
+
+const leftDrawerOpen = ref(false);
+const showLogin = ref(false);
+
+const username = computed(() => authStore.profile?.email);
 
 onMounted(() => {
   authStore.init().then(() => {
     if (!authStore.isAuthenticated) {
-      return authStore.login();
+      showLogin.value = true;
     }
   });
 });
@@ -108,17 +117,11 @@ onMounted(() => {
 watch(
   () => authStore.isAuthenticated,
   () => {
-    if (authStore.isAuthenticated) {
-      console.debug('Authenticated');
-    } else {
-      console.debug('Not authenticated');
+    if (!authStore.isAuthenticated) {
+      showLogin.value = true;
     }
   },
 );
-
-const leftDrawerOpen = ref(false);
-
-const username = computed(() => authStore.profile?.email);
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;

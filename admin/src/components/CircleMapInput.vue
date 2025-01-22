@@ -118,7 +118,7 @@ function onFeatureSelected(selectedFeatures: Feature<Polygon | MultiPolygon>[]) 
 
 function onRadiusUpdate() {
   const feature = unref(props.modelValue);
-  if (feature && feature.properties.circleRadius !== radius.value) {
+  if (feature && feature.properties && feature.properties.circleRadius !== radius.value) {
     feature.properties.circleRadius = radius.value;
     feature.properties.addressInput = address.value;
     mapInput.value?.drawFeature(feature);
@@ -128,7 +128,7 @@ function onRadiusUpdate() {
 
 function onAddressUpdate() {
   const feature = unref(props.modelValue);
-  if (feature && feature.properties.addressInput !== address.value) {
+  if (feature && feature.properties && feature.properties.addressInput !== address.value) {
     feature.properties.circleRadius = radius.value;
     feature.properties.addressInput = address.value;
     mapInput.value?.drawFeature(feature);

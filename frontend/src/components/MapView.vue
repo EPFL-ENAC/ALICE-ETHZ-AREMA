@@ -10,6 +10,7 @@ import 'maplibregl-theme-switcher/styles.css';
 import { style } from '../utils/maps';
 import { type FeatureCollection, Point } from 'geojson';
 import {
+  AttributionControl,
   FullscreenControl,
   GeolocateControl,
   Map,
@@ -76,6 +77,7 @@ function initMap() {
     style: style,
     trackResize: true,
     zoom: props.zoom,
+    attributionControl: false,
   });
   // disable map rotation using right click + drag
   map.value.dragRotate.disable();
@@ -87,6 +89,13 @@ function initMap() {
   map.value.addControl(new GeolocateControl({}));
   map.value.addControl(new ScaleControl({}));
   map.value.addControl(new FullscreenControl({}));
+  map.value.addControl(
+    new AttributionControl({
+      compact: false,
+      customAttribution:
+        '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>, <a href="https://sc.ibi.ethz.ch/en/" target="_blank">IBI SC</a>, <a href="https://www.epfl.ch/labs/alice/" target="_blank">ENAC ALICE</a>',
+    }),
+  );
 
   map.value.on('load', () => {
     Object.keys(EntityTypeSymbols).forEach((entityType) => {
