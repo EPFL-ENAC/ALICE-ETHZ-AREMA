@@ -231,25 +231,20 @@ class VideoIndexService(IndexService):
         for doc in self._getVideos(entity_type, entity, tags):
             self._updateDocument(doc["id"], doc)
 
-    def deleteVideos(self, entity_type: str, entity_id: int):
+    def deleteVideos(self, entity_type: str, entity_id: int = None):
         """Delete videos of an entity from the index
 
         Args:
             entity_type (str): The class of the entity
-            entity_id (int): The id of the entity
+            entity_id (int): The id of the entity, optional
         """
-        parent_id = f"{entity_type}:{entity_id}"
-        query = {"query": {"term": {"parent_id": parent_id}}}
-        self._deleteDocument(query)
-
-    def deleteVideos(self, entity_type: str):
-        """Delete all videos of a given type
-
-        Args:
-            entity_type (str): The class of the entities
-        """
-        query = {"query": {"term": {"entity_type": entity_type}}}
-        self._deleteDocuments(query)
+        if entity_id:
+            parent_id = f"{entity_type}:{entity_id}"
+            query = {"query": {"term": {"parent_id": parent_id}}}
+            self._deleteDocument(query)
+        else:
+            query = {"query": {"term": {"entity_type": entity_type}}}
+            self._deleteDocuments(query)
 
     def _getVideos(self, entity_type: str, entity, tags: list[str]):
         """Get videos of an entity
@@ -264,7 +259,7 @@ class VideoIndexService(IndexService):
         """
         docs = []
         docs += self._getVideosFromFiles(entity_type, entity, tags)
-        for field in ["external_links", "article_top", "article_bottom", "side_note"]:
+        for field in ["article_top", "article_bottom"]:
             docs += self._getVideosFromField(field, entity_type, entity, tags)
         return docs
 

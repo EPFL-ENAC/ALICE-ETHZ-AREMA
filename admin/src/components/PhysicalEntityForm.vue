@@ -28,6 +28,7 @@
             'thermal_capacity',
             'vapor_diffusion_resistance',
             'moisture_buffering',
+            'u',
           ]"
           :key="property"
           v-model="entity"
@@ -36,7 +37,7 @@
       </div>
       <div class="col">
         <property-form-number
-          v-for="property in ['u', 'effusivity', 'diffusivity']"
+          v-for="property in ['effusivity', 'diffusivity', 'porosity', 'liquid_transfer_coefficient']"
           :key="property"
           v-model="entity"
           :property="property"

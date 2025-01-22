@@ -2,12 +2,7 @@ import { defineStore } from 'pinia';
 import { api } from 'src/boot/api';
 import { SearchResult, Document, VideoResult } from 'src/models';
 import { VocabularyOption, TermOption } from 'src/components/models';
-import {
-  Feature,
-  FeatureCollection,
-  GeoJsonProperties,
-  Geometry,
-} from 'geojson';
+import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 
 export const useSearchService = defineStore('search', () => {
   const selectedView = ref('map');
@@ -51,15 +46,11 @@ export const useSearchService = defineStore('search', () => {
     selectedTerms.value = [];
   }
 
-  async function getDocument(
-    id: string,
-    fields: string[] = [],
-    index: string = 'entities',
-  ): Promise<Document> {
+  async function getDocument(id: string, fields: string[] = []): Promise<Document> {
     searching.value = true;
     return api
       .get('/search/_doc', {
-        params: { id, fields, index },
+        params: { id, fields, index: 'entities' },
         paramsSerializer: {
           indexes: null, // no brackets at all
         },
@@ -67,6 +58,22 @@ export const useSearchService = defineStore('search', () => {
       .then((response) => {
         const result = response.data;
         return result.data?.length ? result.data[0] : undefined;
+      })
+      .finally(() => (searching.value = false));
+  }
+
+  async function getRelatedDocuments(id: string, fields: string[] = []): Promise<SearchResult> {
+    searching.value = true;
+    return api
+      .get('/search/_entities', {
+        params: { id, fields, relates: [id] },
+        paramsSerializer: {
+          indexes: null, // no brackets at all
+        },
+      })
+      .then((response) => {
+        const result = response.data;
+        return result;
       })
       .finally(() => (searching.value = false));
   }
@@ -142,45 +149,29 @@ export const useSearchService = defineStore('search', () => {
   function selectTerm(term: TermOption) {
     if (term.children) {
       // any selected child terms ?
-      if (
-        term.children.some((child) =>
-          selectedTerms.value.includes(child.urn),
-        )
-      ) {
+      if (term.children.some((child) => selectedTerms.value.includes(child.urn))) {
         // clear all child terms
-        selectedTerms.value = selectedTerms.value.filter(
-          (urn) => !term.children?.find((child) => child.urn === urn),
-        );
+        selectedTerms.value = selectedTerms.value.filter((urn) => !term.children?.find((child) => child.urn === urn));
       } else {
         // select all child terms
-        selectedTerms.value.push(
-          ...term.children.map((child) => child.urn),
-        );
+        selectedTerms.value.push(...term.children.map((child) => child.urn));
       }
     } else {
       // toggle term selection
       const urn = term.urn;
       selectedTerms.value.includes(urn)
-        ? selectedTerms.value.splice(
-            selectedTerms.value.indexOf(urn),
-            1,
-          )
+        ? selectedTerms.value.splice(selectedTerms.value.indexOf(urn), 1)
         : selectedTerms.value.push(urn);
     }
   }
 
-
   function getSelectedTerms(node: VocabularyOption | TermOption) {
-    return (
-      selectedTerms.value.filter((term) => term.startsWith(node.urn)) || []
-    );
+    return selectedTerms.value.filter((term) => term.startsWith(node.urn)) || [];
   }
 
   function isTermSelected(term: TermOption) {
     if (term.children) {
-      return term.children.some((child) =>
-        selectedTerms.value.includes(child.urn),
-      );
+      return term.children.some((child) => selectedTerms.value.includes(child.urn));
     }
     return selectedTerms.value.includes(term.urn);
   }
@@ -201,6 +192,7 @@ export const useSearchService = defineStore('search', () => {
     search_entities,
     search_videos,
     getDocument,
+    getRelatedDocuments,
     selectTerm,
     getSelectedTerms,
     isTermSelected,

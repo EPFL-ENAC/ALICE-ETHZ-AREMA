@@ -85,6 +85,19 @@
               height="400px"
               @update:model-value="onCircleInputUpdated"
             ></circle-map-input>
+            <div class="text-bold q-mt-md">{{ $t('other_addresses') }}</div>
+            <q-list class="q-mb-sm">
+              <q-item v-for="(address, index) in selected.addresses" :key="index" class="q-pa-none">
+                <q-item-section>
+                  <address-input v-model="selected.addresses[index]" :label="$t('address')" />
+                </q-item-section>
+                <q-item-section side>
+                  <q-btn flat size="sm" icon="delete" @click="onDeleteAddress(index)" />
+                </q-item-section>
+              </q-item>
+            </q-list>
+            <div v-if="selected.addresses?.length" class="text-hint q-mb-sm">{{ $t('address_input_hint') }}</div>
+            <q-btn color="primary" icon="add" @click="onAddAddress" size="sm" />
           </q-tab-panel>
           <q-tab-panel name="multimedia" class="q-pl-none q-pr-none">
             <files-input v-model="selected.files" />
@@ -140,6 +153,8 @@ import CircleMapInput from 'src/components/CircleMapInput.vue';
 import FilesInput from 'src/components/FilesInput.vue';
 import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 import TextInput from 'src/components/TextInput.vue';
+import AddressInput from 'src/components/AddressInput.vue';
+import type { Feature } from '@turf/turf';
 
 interface DialogProps {
   modelValue: boolean;
@@ -160,7 +175,7 @@ const selected = ref<Professional>({
   name: '',
   files: [],
 } as Professional);
-const circle = ref({});
+const circle = ref<Feature>({} as Feature);
 const editMode = ref(false);
 const tab = ref('general');
 const buildingMaterials = ref([]);
@@ -186,7 +201,7 @@ watch(
         circle.value = {
           type: 'Feature',
           properties: {
-            display_name: selected.value.address,
+            addressInput: selected.value.address,
             circleRadius: selected.value.radius,
           },
           geometry: {
@@ -237,6 +252,9 @@ watch(
     if (selected.value.files === undefined) {
       selected.value.files = [];
     }
+    if (selected.value.addresses === undefined) {
+      selected.value.addresses = [];
+    }
     showDialog.value = value;
   },
 );
@@ -281,11 +299,11 @@ async function onSave() {
   }
 }
 
-function onCircleInputUpdated(newValue) {
+function onCircleInputUpdated(newValue: Feature) {
   if (!selected.value) return;
 
   if (newValue && newValue.properties && newValue.geometry) {
-    selected.value.address = newValue.properties.display_name;
+    selected.value.address = newValue.properties.addressInput;
     selected.value.radius = newValue.properties.circleRadius;
     selected.value.long = newValue.geometry.coordinates[0][0][0];
     selected.value.lat = newValue.geometry.coordinates[0][0][1];
@@ -301,5 +319,16 @@ function onCircleInputUpdated(newValue) {
     selected.value.lat = undefined;
     selected.value.geom = undefined;
   }
+}
+
+function onAddAddress() {
+  if (selected.value.addresses === undefined) {
+    selected.value.addresses = [];
+  }
+  selected.value.addresses.push('');
+}
+
+function onDeleteAddress(index: number) {
+  selected.value.addresses?.splice(index, 1);
 }
 </script>

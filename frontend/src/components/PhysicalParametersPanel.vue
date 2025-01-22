@@ -5,13 +5,12 @@
         <div class="text-h6">{{ $t(section) }}</div>
         <q-list dense class="q-mb-md">
           <template v-for="field in fields[section]" :key="field">
-            <q-item
-              v-if="hasFieldValue(field)"
-              class="q-pa-none"
-              style="padding: 0 !important"
-            >
+            <q-item v-if="hasFieldValue(field)" class="q-pa-none" style="padding: 0 !important">
               <q-item-section>
                 <q-item-label>{{ $t(field) }}</q-item-label>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label caption>{{ $t(`${field}_hint`) }}</q-item-label>
               </q-item-section>
               <q-item-section avatar>
                 <q-item-label caption>
@@ -52,6 +51,8 @@ const hygrothermalParams = [
   'u',
   'effusivity',
   'diffusivity',
+  'porosity',
+  'liquid_transfer_coefficient',
 ];
 const acousticParams = ['absorption_coefficient', 'sound_reduction_index'];
 const fireParams = ['reaction_to_fire', 'fire_resistance_class'];
@@ -62,6 +63,7 @@ const fields: { [key: string]: string[] } = {
   hygrothermal: hygrothermalParams,
   acoustic: acousticParams,
   fire: fireParams,
+  others: ['air_tightness_hint'],
 };
 
 function hasValues(section: string) {
@@ -73,11 +75,7 @@ function hasFieldValue(field: string) {
 }
 
 function getFieldValues(field: string) {
-  return [
-    props.document[`${field}_high`],
-    props.document[field],
-    props.document[`${field}_high`],
-  ];
+  return [props.document[`${field}_low`], props.document[field], props.document[`${field}_high`]];
 }
 
 function getFieldValue(field: string) {

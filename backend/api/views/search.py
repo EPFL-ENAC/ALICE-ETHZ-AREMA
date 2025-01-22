@@ -61,7 +61,7 @@ async def delete_index(
 
 
 @router.get("/_query", response_model=SearchResult, response_model_exclude_none=True)
-async def find(
+async def find_by_query(
     query: str = Query(None),
     skip: int = Query(0),
     limit: int = Query(10),
@@ -75,10 +75,10 @@ async def find(
 
 
 @router.get("/_doc", response_model=SearchResult, response_model_exclude_none=True)
-async def find(id: str = Query(None),
-               index: str = Query("entities"),
-               fields: List[str] = Query(None)) -> SearchResult:
-    """Search documents matching the Elasticsearch query"""
+async def find_documents(id: str = Query(None),
+                         index: str = Query("entities"),
+                         fields: List[str] = Query(None)) -> SearchResult:
+    """Search document per id"""
     indexService = SearchService.fromIndex(index)
     queryDict = {"query": {"term": {"_id": id}}}
     if fields is not None and len(fields) > 0:
@@ -87,12 +87,14 @@ async def find(id: str = Query(None),
 
 
 @router.get("/_videos", response_model=SearchResult, response_model_exclude_none=True)
-async def find(
+async def find_videos(
     text: str = Query(None),
     tags: List[str] = Query(None),
     fields: List[str] = Query(
         ["entity_type", "tags", "id", "parent_id", "name", "legend", "url"]),
     exists: List[str] = Query([]),  # filter documents with a non-empty field
+    # filter documents related to the given ids
+    relates: List[str] = Query(None),
     skip: int = Query(0),
     limit: int = Query(10),
 ) -> SearchResult:
@@ -104,6 +106,8 @@ async def find(
         mustQueries.append(make_text_criteria(text, VIDEO_ANALYZED_FIELDS))
     mustQueries.extend(make_tags_criteria(tags))
     mustQueries.extend(make_exists_criteria(exists))
+    if relates:
+        mustQueries.append({"terms": {"relates_to": relates}})
 
     queryDict = {}
     if len(mustQueries):
@@ -115,12 +119,14 @@ async def find(
 
 
 @router.get("/_entities", response_model=SearchResult, response_model_exclude_none=True)
-async def find(
+async def find_entities(
     text: str = Query(None),
     tags: List[str] = Query(None),
     fields: List[str] = Query(
-        ["entity_type", "tags", "id", "name", "description", "files", "location"]),
+        ["entity_type", "tags", "id", "name", "description", "files", "location", "relates_to"]),
     exists: List[str] = Query([]),  # filter documents with a non-empty field
+    # filter documents related to the given ids
+    relates: List[str] = Query(None),
     skip: int = Query(0),
     limit: int = Query(10),
 ) -> SearchResult:
@@ -132,6 +138,8 @@ async def find(
         mustQueries.append(make_text_criteria(text, ENTITY_ANALYZED_FIELDS))
     mustQueries.extend(make_tags_criteria(tags))
     mustQueries.extend(make_exists_criteria(exists))
+    if relates:
+        mustQueries.append({"terms": {"relates_to": relates}})
 
     queryDict = {}
     if len(mustQueries):

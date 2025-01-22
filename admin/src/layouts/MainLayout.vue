@@ -45,7 +45,7 @@
         </q-item>
         <q-item clickable v-close-popup :to="'/building-materials'">
           <q-item-section avatar>
-            <q-icon name="fa-solid fa-trowel-bricks" size="xs" />
+            <q-icon name="fa-solid fa-memory" size="xs" />
           </q-item-section>
           <q-item-section>
             <q-item-label header>{{ $t('building_materials') }}</q-item-label>
@@ -53,7 +53,7 @@
         </q-item>
         <q-item clickable v-close-popup :to="'/technical-constructions'">
           <q-item-section avatar>
-            <q-icon name="fa-solid fa-compass-drafting" size="xs" />
+            <q-icon name="fa-solid fa-trowel-bricks" size="xs" />
           </q-item-section>
           <q-item-section>
             <q-item-label header>{{ $t('technical_constructions') }}</q-item-label>
@@ -69,7 +69,7 @@
         </q-item>
         <q-item clickable v-close-popup :to="'/professionals'">
           <q-item-section avatar>
-            <q-icon name="fa-solid fa-person-digging" size="xs" />
+            <q-icon name="fa-solid fa-compass-drafting" size="xs" />
           </q-item-section>
           <q-item-section>
             <q-item-label header>{{ $t('professionals') }}</q-item-label>
@@ -109,9 +109,9 @@ watch(
   () => authStore.isAuthenticated,
   () => {
     if (authStore.isAuthenticated) {
-      console.log('Authenticated');
+      console.debug('Authenticated');
     } else {
-      console.log('Not authenticated');
+      console.debug('Not authenticated');
     }
   },
 );
