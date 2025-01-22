@@ -61,7 +61,7 @@ async def delete_index(
 
 
 @router.get("/_query", response_model=SearchResult, response_model_exclude_none=True)
-async def find(
+async def find_by_query(
     query: str = Query(None),
     skip: int = Query(0),
     limit: int = Query(10),
@@ -75,9 +75,9 @@ async def find(
 
 
 @router.get("/_doc", response_model=SearchResult, response_model_exclude_none=True)
-async def find(id: str = Query(None),
-               index: str = Query("entities"),
-               fields: List[str] = Query(None)) -> SearchResult:
+async def find_documents(id: str = Query(None),
+                         index: str = Query("entities"),
+                         fields: List[str] = Query(None)) -> SearchResult:
     """Search document per id"""
     indexService = SearchService.fromIndex(index)
     queryDict = {"query": {"term": {"_id": id}}}
@@ -87,7 +87,7 @@ async def find(id: str = Query(None),
 
 
 @router.get("/_videos", response_model=SearchResult, response_model_exclude_none=True)
-async def find(
+async def find_videos(
     text: str = Query(None),
     tags: List[str] = Query(None),
     fields: List[str] = Query(
@@ -119,7 +119,7 @@ async def find(
 
 
 @router.get("/_entities", response_model=SearchResult, response_model_exclude_none=True)
-async def find(
+async def find_entities(
     text: str = Query(None),
     tags: List[str] = Query(None),
     fields: List[str] = Query(
