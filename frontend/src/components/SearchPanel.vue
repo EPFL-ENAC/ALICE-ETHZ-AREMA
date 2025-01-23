@@ -9,7 +9,7 @@
       borderless
       clearable
       debounce="500"
-      input-style="font-size: 48px;"
+      :input-style="`font-size: ${$q.screen.gt.sm ? 48 : 36}px;`"
       input-class="text-secondary"
       :placeholder="$t('type_here')"
       class="q-mt-md q-mb-md"
@@ -58,11 +58,7 @@
         >
           <template v-slot:label>
             {{ termOpt.label }}
-            <q-badge
-              v-if="getSelectedTerms(termOpt).length"
-              color="primary"
-              class="text-white q-ml-xs"
-            >
+            <q-badge v-if="getSelectedTerms(termOpt).length" color="primary" class="text-white q-ml-xs">
               {{ getSelectedTerms(termOpt).length }}
             </q-badge>
           </template>
@@ -153,9 +149,7 @@ onMounted(() => {
           return node
             ? ({
                 value: voc,
-                label: voc.endsWith(':type')
-                  ? taxonomies.getLabel(tx?.names)
-                  : taxonomies.getLabel(node.names) || voc,
+                label: voc.endsWith(':type') ? taxonomies.getLabel(tx?.names) : taxonomies.getLabel(node.names) || voc,
                 urn: taxonomies.toUrn(tx.id, node.id),
                 taxonomy: tx,
                 vocabulary: node,
@@ -175,17 +169,11 @@ function onVocabularySelect(voc: VocabularyOption) {
     if (!searchService.selectedTerms.some((term) => term.startsWith(voc.urn))) {
       // select all terms
       searchService.selectedTerms.push(
-        ...termOptions.value
-          .map((term) =>
-            term.children ? term.children.map((child) => child.urn) : term.urn,
-          )
-          .flat(),
+        ...termOptions.value.map((term) => (term.children ? term.children.map((child) => child.urn) : term.urn)).flat(),
       );
     } else {
       // clear associated terms
-      searchService.selectedTerms = searchService.selectedTerms.filter(
-        (term) => !term.startsWith(voc.urn),
-      );
+      searchService.selectedTerms = searchService.selectedTerms.filter((term) => !term.startsWith(voc.urn));
     }
     searchService.search_entities();
   } else {
@@ -202,11 +190,7 @@ function onVocabularySelect(voc: VocabularyOption) {
         termOpt.children = term.children.map((child) => ({
           value: child.id,
           label: taxonomies.getLabel(child.names) || child.id,
-          urn: taxonomies.toUrn(voc.taxonomy.id, [
-            voc.vocabulary.id,
-            term.id,
-            child.id,
-          ]),
+          urn: taxonomies.toUrn(voc.taxonomy.id, [voc.vocabulary.id, term.id, child.id]),
         }));
       }
       return termOpt;
