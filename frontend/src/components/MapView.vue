@@ -19,9 +19,11 @@ import {
   ScaleControl,
   Popup,
   GeoJSONSource,
+  Feature,
 } from 'maplibre-gl';
 
 const { t } = useI18n({ useScope: 'global' });
+const router = useRouter();
 
 interface Props {
   features?: FeatureCollection;
@@ -230,15 +232,24 @@ function displayFeatures() {
         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
       }
 
-      new Popup()
-        .setLngLat(coordinates)
-        .setHTML(
-          `
-      <div class="text-primary">${t(feature.properties?.entity_type)}</div>
-      <div class="text-bold">${feature.properties?.name}</div>
-      <div>${feature.properties?.description ? feature.properties?.description : ''}</div>`,
-        )
-        .addTo(map.value);
+      const divContainer = document.createElement('div');
+      divContainer.onclick = () => onDocument(feature);
+      divContainer.classList.add('cursor-pointer');
+      divContainer.style.minWidth = '200px';
+      const entyTypeContainer = document.createElement('div');
+      entyTypeContainer.classList.add('text-primary');
+      entyTypeContainer.textContent = t(feature.properties?.entity_type);
+      divContainer.appendChild(entyTypeContainer);
+      const nameContainer = document.createElement('div');
+      nameContainer.classList.add('text-bold');
+      nameContainer.textContent = feature.properties?.name;
+      divContainer.appendChild(nameContainer);
+      const descriptionContainer = document.createElement('div');
+      descriptionContainer.classList.add('ellipsis');
+      descriptionContainer.textContent = feature.properties?.description ? feature.properties?.description : '';
+      divContainer.appendChild(descriptionContainer);
+
+      new Popup().setLngLat(coordinates).setDOMContent(divContainer).addTo(map.value);
     });
 
     map.value.on('mouseenter', 'entities-clusters', () => {
@@ -248,6 +259,10 @@ function displayFeatures() {
       if (map.value) map.value.getCanvas().style.cursor = '';
     });
   }
+}
+
+function onDocument(feature: Feature) {
+  router.push({ name: 'doc', params: { id: `${feature.properties.entity_type}:${feature.properties.id}` } });
 }
 </script>
 
