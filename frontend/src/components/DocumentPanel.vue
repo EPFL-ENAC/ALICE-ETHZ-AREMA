@@ -31,13 +31,7 @@
       <div class="row q-col-gutter-md">
         <div class="col-12 col-md-1"></div>
         <div class="col-12 col-md-2">
-          <div v-if="document?.external_links">
-            <div class="text-primary text-caption">
-              {{ $t('external_links') }}
-            </div>
-            <q-separator color="primary" class="q-mb-sm" />
-            <q-markdown :src="document.external_links" />
-          </div>
+          <external-links-panel v-if="$q.screen.gt.sm" :document="document" />
         </div>
         <div class="col-12 col-md-6">
           <div>
@@ -99,11 +93,12 @@
         </div>
         <div class="col-12 col-md-2">
           <q-markdown v-if="document.side_note" :src="document.side_note" class="text-primary text-caption" />
+          <external-links-panel v-if="$q.screen.lt.md" :document="document" />
         </div>
         <div class="col-12 col-md-1"></div>
       </div>
 
-      <div v-if="relationSummaries.length" class="row q-col-gutter-md q-mt-lg">
+      <div v-if="relationSummaries.length" class="row q-col-gutter-md q-mt-md">
         <div class="col-12 col-md-3"></div>
         <div class="col-12 col-md-6">
           <div class="text-primary text-uppercase q-mb-sm">
@@ -127,13 +122,16 @@
 </template>
 
 <script setup lang="ts">
+import { useQuasar } from 'quasar';
 import TagsBadges from 'src/components/TagsBadges.vue';
 import PhysicalParametersPanel from 'src/components/PhysicalParametersPanel.vue';
+import ExternalLinksPanel from 'src/components/ExternalLinksPanel.vue';
 import { Document, FileItem } from 'src/models';
 import { toFileUrl, isImage, isVideo, isPDF } from 'src/utils/files';
 
 const searchService = useSearchService();
 const router = useRouter();
+const $q = useQuasar();
 
 interface Props {
   document: Document;

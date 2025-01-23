@@ -1,14 +1,24 @@
 <template>
   <q-page>
     <q-scroll-observer @scroll="onScroll" />
-    <div class="row items-center justify-evenly bg-black" style="height: 89vh">
+    <div class="row items-center justify-evenly bg-black" style="height: 95vh">
       <img src="arema-1.svg" style="filter: invert(100%); width: 80%" />
     </div>
-    <div>
-      <about-panel class="q-pa-md bg-primary" style="height: 90vh" />
+    <div
+      class="bg-black text-white q-pt-lg q-pb-sm row items-center justify-center"
+      :class="topPos < 10 ? 'fixed-bottom' : ''"
+    >
+      <q-icon
+        name="keyboard_arrow_down"
+        :size="`${$q.screen.gt.sm ? 96 : 80}px`"
+        :style="`opacity: ${1 - topPos / 100}`"
+      />
     </div>
     <div>
-      <search-panel class="q-pa-md" style="min-height: 95vh" />
+      <about-panel class="q-pa-md bg-primary" style="min-height: 50vh" />
+    </div>
+    <div>
+      <search-panel class="q-pa-md" style="min-height: 80vh" />
     </div>
   </q-page>
 </template>
@@ -22,7 +32,10 @@ import { useHome } from 'src/stores/home';
 const $q = useQuasar();
 const homeStore = useHome();
 
-function onScroll(info) {
-  homeStore.update(info.position.top, $q.screen.height);
+const topPos = ref(0);
+
+function onScroll(info: { position: { top: number } }) {
+  topPos.value = info.position.top;
+  homeStore.update(topPos.value, $q.screen.height);
 }
 </script>
