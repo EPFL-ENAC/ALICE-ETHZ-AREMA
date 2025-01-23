@@ -68,8 +68,9 @@ class TechnicalConstructionService:
     async def get(self, id: int) -> TechnicalConstruction:
         """Get a technical construction by id"""
         res = await self.session.exec(
-            select(TechnicalConstruction).where(
-                TechnicalConstruction.id == id))
+            select(TechnicalConstruction)
+            .where(TechnicalConstruction.id == id)
+            .options(selectinload(TechnicalConstruction.building_materials)))
         entity = res.one_or_none()
         if not entity:
             raise HTTPException(

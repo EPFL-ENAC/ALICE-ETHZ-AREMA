@@ -121,7 +121,7 @@
             <div class="text-bold q-mb-sm">{{ $t('building_elements') }}</div>
             <q-card flat bordered class="bg-grey-2">
               <q-card-section class="q-pa-none">
-                <div v-if="buildingElements?.length === 0" class="text-help q-pa-md">
+                <div v-if="buildingElements?.length === 0" class="text-help q-pt-sm q-pr-md q-pl-md">
                   {{ $t('no_building_elements') }}
                 </div>
                 <q-list separator>
@@ -379,6 +379,7 @@ function onAddBuildingElement() {
     building_id: selected.value.id,
     technical_construction_id: undefined,
     professional_ids: [],
+    materials: [],
   });
 }
 

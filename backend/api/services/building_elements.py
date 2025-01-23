@@ -22,7 +22,8 @@ class BuildingElementQueryBuilder(QueryBuilder):
         if fields is None or len(fields) == 0:
             query = query.options(selectinload(BuildingElement.technical_construction),
                                   selectinload(BuildingElement.building),
-                                  selectinload(BuildingElement.professionals))
+                                  selectinload(BuildingElement.professionals),
+                                  selectinload(BuildingElement.materials))
         return start, end, query
 
     def _apply_joins(self, query, filter):
@@ -63,6 +64,7 @@ class BuildingElementService:
             raise HTTPException(
                 status_code=404, detail="Building element not found")
         entity.professionals.clear()
+        entity.materials.clear()
         await self.session.delete(entity)
         await self.session.commit()
         return entity
@@ -96,6 +98,8 @@ class BuildingElementService:
 
     async def create(self, payload: BuildingElementDraft) -> BuildingElement:
         """Create a new building element"""
+        materials = [*payload.materials]
+        payload.materials.clear()
         entity = BuildingElement(**payload.model_dump())
         # handle relationships
         new_pros = await self._get_professionals(payload.professional_ids)
@@ -103,6 +107,9 @@ class BuildingElementService:
         entity.professionals.extend(new_pros)
         self.session.add(entity)
         await self.session.commit()
+        if len(materials):
+            # TODO
+            pass
         return entity
 
     async def update(self, id: int, payload: BuildingElementDraft) -> BuildingElement:
@@ -110,14 +117,14 @@ class BuildingElementService:
         res = await self.session.exec(
             select(BuildingElement)
             .where(BuildingElement.id == id)
-            .options(selectinload(BuildingElement.professionals)))
+            .options(selectinload(BuildingElement.professionals), selectinload(BuildingElement.materials)))
         entity = res.one_or_none()
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Building element not found")
         for key, value in payload.model_dump().items():
             debug(f"{key}: {value}")
-            if key not in ["id", "building_id", "technical_construction_id", "professional_ids"]:
+            if key not in ["id", "building_id", "technical_construction_id", "professional_ids", "materials"]:
                 setattr(entity, key, value)
         # handle relationships
         new_pros = await self._get_professionals(payload.professional_ids)

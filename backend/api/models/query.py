@@ -1,6 +1,6 @@
 from typing import List, Optional, Dict
 from sqlmodel import Field
-from api.models.domain import NaturalResource, NaturalResourceBase, BuildingMaterial, BuildingMaterialBase, TechnicalConstruction, TechnicalConstructionBase, BuildingBase, Professional, ProfessionalBase, BuildingElement, BuildingElementBase
+from api.models.domain import NaturalResource, NaturalResourceBase, BuildingMaterial, BuildingMaterialBase, TechnicalConstruction, TechnicalConstructionBase, BuildingBase, Professional, ProfessionalBase, BuildingElement, BuildingElementBase, BuildingElementMaterial, BuildingElementMaterialBase
 from enacit4r_sql.models.query import ListResult
 
 # Natural resources
@@ -53,11 +53,18 @@ class TechnicalConstructionResult(ListResult):
 # Building elements
 
 
+class BuildingElementMaterialDraft(BuildingElementMaterialBase):
+    id: Optional[int] = Field(default=None)
+    building_element_id: Optional[int] = Field(default=None)
+    building_material_id: Optional[int] = Field(default=None)
+
+
 class BuildingElementDraft(BuildingElementBase):
     id: Optional[int] = Field(default=None)
     building_id: Optional[int] = Field(default=None)
     technical_construction_id: Optional[int] = Field(default=None)
     professional_ids: List[int] = None
+    materials: List[BuildingElementMaterialDraft] = None
 
 
 class BuildingElementRead(BuildingElementBase):
@@ -65,10 +72,12 @@ class BuildingElementRead(BuildingElementBase):
     technical_construction: TechnicalConstruction = None
     building: BuildingBase = None
     professionals: List[Professional] = None
+    materials: List[BuildingElementMaterial] = None
 
 
 class BuildingElementResult(ListResult):
     data: List[BuildingElementRead] = []
+
 
 # Buildings
 
