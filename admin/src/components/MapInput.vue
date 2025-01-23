@@ -10,13 +10,9 @@ import * as MapboxDrawGeodesic from 'mapbox-gl-draw-geodesic';
 import * as MapboxDrawWaypoint from 'mapbox-gl-draw-waypoint';
 // import MaplibreGeocoder from '@maplibre/maplibre-gl-geocoder';
 import { ThemeSwitcherControl } from 'maplibregl-theme-switcher';
+import { type Feature, type MultiPolygon, type Polygon, type Point } from '@turf/turf';
 import {
-  type Feature,
-  type MultiPolygon,
-  type Polygon,
-  type Point,
-} from '@turf/turf';
-import {
+  AttributionControl,
   FullscreenControl,
   GeolocateControl,
   Map,
@@ -68,11 +64,19 @@ export default defineComponent({
         style: style,
         trackResize: true,
         zoom: props.zoom,
+        attributionControl: false,
       });
       map.addControl(new NavigationControl({}));
       map.addControl(new GeolocateControl({}));
       map.addControl(new ScaleControl({}));
       map.addControl(new FullscreenControl({}));
+      map.addControl(
+        new AttributionControl({
+          compact: false,
+          customAttribution:
+            '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>, <a href="https://sc.ibi.ethz.ch/en/" target="_blank">IBI SC</a>, <a href="https://www.epfl.ch/labs/alice/" target="_blank">ENAC ALICE</a>',
+        }),
+      );
       // map.addControl(
       //   new MaplibreGeocoder(geocoderApi, {
       //     maplibregl: { Marker },
@@ -99,15 +103,10 @@ export default defineComponent({
     });
 
     function updateArea() {
-      let selectedFeatures = draw?.getAll().features as Feature<
-        Polygon | MultiPolygon
-      >[];
+      let selectedFeatures = draw?.getAll().features as Feature<Polygon | MultiPolygon>[];
       // filter out circle features that have a radius smaller than 100m
       selectedFeatures = selectedFeatures.filter(
-        (feat) =>
-          !feat.properties ||
-          !feat.properties.circleRadius ||
-          feat.properties.circleRadius > 0.1,
+        (feat) => !feat.properties || !feat.properties.circleRadius || feat.properties.circleRadius > 0.1,
       );
       emit('update:selectedFeatures', selectedFeatures);
       // note: circle center and radius can be extracted using mapbox-gl-draw-geodesic API

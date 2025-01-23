@@ -73,6 +73,13 @@
                     </div>
                   </q-carousel-slide>
 
+                  <q-carousel-slide v-else-if="isPDF(file)" :name="index" style="padding: 0">
+                    <object type="application/pdf" :data="toFileUrl(file)" width="100%" height="100%" />
+                    <div v-if="file.legend" class="absolute-bottom text-center a-legend">
+                      <div class="text-caption">{{ file.legend }}</div>
+                    </div>
+                  </q-carousel-slide>
+
                   <q-carousel-slide v-else :name="index" class="column no-wrap flex-center">
                     <div class="text-uppercase">{{ $t('download') }}</div>
                     <q-btn flat color="secondary" @click="onDownload(file)">

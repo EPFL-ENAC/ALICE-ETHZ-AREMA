@@ -18,7 +18,16 @@ import {
   FeatureCollection,
   Units,
 } from '@turf/turf';
-import { FullscreenControl, GeolocateControl, Map, Marker, NavigationControl, ScaleControl, Popup } from 'maplibre-gl';
+import {
+  AttributionControl,
+  FullscreenControl,
+  GeolocateControl,
+  Map,
+  Marker,
+  NavigationControl,
+  ScaleControl,
+  Popup,
+} from 'maplibre-gl';
 import { shallowRef, onMounted, markRaw, watch, unref } from 'vue';
 const { t /*locale*/ } = useI18n({ useScope: 'global' });
 
@@ -59,12 +68,20 @@ onMounted(() => {
       style: style,
       trackResize: true,
       zoom: props.zoom,
+      attributionControl: false,
     }),
   );
   map.value.addControl(new NavigationControl({}));
   map.value.addControl(new GeolocateControl({}));
   map.value.addControl(new ScaleControl({}));
   map.value.addControl(new FullscreenControl({}));
+  map.value.addControl(
+    new AttributionControl({
+      compact: false,
+      customAttribution:
+        '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>, <a href="https://sc.ibi.ethz.ch/en/" target="_blank">IBI SC</a>, <a href="https://www.epfl.ch/labs/alice/" target="_blank">ENAC ALICE</a>',
+    }),
+  );
   // map.value.addControl(
   //   new MaplibreGeocoder(geocoderApi, {
   //     maplibregl: { Marker },
