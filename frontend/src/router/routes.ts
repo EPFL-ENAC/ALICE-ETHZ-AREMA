@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('layouts/AltLayout.vue'),
     children: [
       { path: 'about', component: () => import('pages/AboutPage.vue') },
       { path: 'imprint', component: () => import('pages/ImprintPage.vue') },
@@ -16,6 +16,12 @@ const routes: RouteRecordRaw[] = [
       { path: 'copyright', component: () => import('pages/CopyrightPage.vue') },
       { path: 'search', component: () => import('pages/SearchPage.vue') },
       { path: 'videos', component: () => import('pages/VideosPage.vue') },
+    ],
+  },
+  {
+    path: '/',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
       {
         name: 'doc',
         path: '_/:id',
