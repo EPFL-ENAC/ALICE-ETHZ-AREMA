@@ -47,6 +47,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['map:loaded', 'map:click']);
 
 let map = shallowRef<Map>();
+const mapLoaded = ref(false);
 
 // track which were the layers added, to be able to remove them
 const layerIds: string[] = [];
@@ -107,13 +108,14 @@ function initMap() {
     });
     displayFeatures();
     emit('map:loaded', map.value);
+    mapLoaded.value = true;
   });
 }
 
 watch(
   () => props.features,
   () => {
-    displayFeatures();
+    if (mapLoaded.value) displayFeatures();
   },
   { immediate: true, deep: true },
 );
