@@ -108,6 +108,8 @@ class EntityIndexService(IndexService):
         doc["entity_type"] = entity_type
         doc["tags"] = tags
         doc["relates_to"] = relates_to
+        if "long" in doc and "lat" in doc:
+            doc["location"] = {"lat": doc["lat"], "lon": doc["long"]}
         self._updateDocument(doc_id, doc)
 
     def deleteEntity(self, entity_type: str, entity_id: int):

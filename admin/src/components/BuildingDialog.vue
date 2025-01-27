@@ -333,7 +333,22 @@ async function onSave() {
   delete selected.value.professionals;
   selected.value.professional_ids = professionals.value;
   delete selected.value.building_elements;
-  selected.value.building_elements = buildingElements.value;
+  if (buildingElements.value) {
+    selected.value.building_elements = buildingElements.value.map((be) => {
+      return {
+        ...be,
+        materials:
+          be.materials
+            ?.filter((m) => m.building_material_id !== undefined && (m.distance || m.weight))
+            .map((m) => {
+              return {
+                ...m,
+                building_element_id: be.id,
+              };
+            }) || [],
+      };
+    });
+  }
   if (selected.value.id) {
     service
       .update(selected.value.id, selected.value)

@@ -4,8 +4,9 @@ from sqlalchemy.sql import text
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from fastapi import HTTPException
-from api.models.domain import BuildingElement, BuildingElement, TechnicalConstruction, Building, Professional
-from api.models.query import BuildingElementResult, BuildingElementDraft
+from api.models.domain import BuildingElement, BuildingElement, TechnicalConstruction, Building, Professional, BuildingElementMaterial
+from api.models.query import BuildingElementResult, BuildingElementDraft, BuildingElementMaterialDraft
+from api.services.building_element_materials import BuildingElementMaterialService
 from enacit4r_sql.utils.query import QueryBuilder
 
 
@@ -107,9 +108,8 @@ class BuildingElementService:
         entity.professionals.extend(new_pros)
         self.session.add(entity)
         await self.session.commit()
-        if len(materials):
-            # TODO
-            pass
+        # handle building elements
+        await self._apply_building_element_materials(entity.id, payload.materials)
         return entity
 
     async def update(self, id: int, payload: BuildingElementDraft) -> BuildingElement:
@@ -131,7 +131,27 @@ class BuildingElementService:
         entity.professionals.clear()
         entity.professionals.extend(new_pros)
         await self.session.commit()
+        # handle building element materials
+        await self._apply_building_element_materials(entity.id, payload.materials)
         return entity
 
     async def _get_professionals(self, ids: list[int]):
         return await self.session.exec(select(Professional).filter(Professional.id.in_(ids)))
+
+    async def _apply_building_element_materials(self, building_element_id: int, materials: list[BuildingElementMaterialDraft]):
+        bem_service = BuildingElementMaterialService(self.session)
+        # look up building elements for this building
+        res = await bem_service.find({"building_element_id": building_element_id}, [], [], [])
+        bems = res.data
+        updated_ids = [mat.id for mat in materials if mat.id is not None]
+        # delete building elements that are not in the new list
+        for bem in bems:
+            if bem.id not in updated_ids:
+                await bem_service.delete(bem.id)
+        # create/update building elements
+        for mat in materials:
+            mat.building_element_id = building_element_id
+            if mat.id is None:
+                await bem_service.create(mat)
+            else:
+                await bem_service.update(mat.id, mat)

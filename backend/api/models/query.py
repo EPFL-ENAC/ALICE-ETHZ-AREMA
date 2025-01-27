@@ -59,6 +59,16 @@ class BuildingElementMaterialDraft(BuildingElementMaterialBase):
     building_material_id: Optional[int] = Field(default=None)
 
 
+class BuildingElementMaterialRead(BuildingElementMaterialBase):
+    id: Optional[int] = Field(default=None)
+    building_element: BuildingElementBase = None
+    building_material: BuildingMaterial = None
+
+
+class BuildingElementMaterialResult(ListResult):
+    data: List[BuildingElementMaterialRead] = []
+
+
 class BuildingElementDraft(BuildingElementBase):
     id: Optional[int] = Field(default=None)
     building_id: Optional[int] = Field(default=None)
