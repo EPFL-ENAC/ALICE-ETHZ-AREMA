@@ -84,13 +84,14 @@ export const geocoderApi = {
 export function toAddress(feature: Feature) {
   let text = '';
   if (feature.properties?.address) {
+    const withHouseNumber = Object.keys(feature.properties.address).includes('house_number');
     ['amenity', 'office', 'road', 'house_number', 'postcode', 'village', 'town', 'city', 'country_code'].forEach(
       (key) => {
         if (feature.properties?.address[key]) {
           const val = feature.properties.address[key];
           text +=
             (['country_code'].includes(key) ? val.toUpperCase() : val) +
-            (['amenity', 'office'].includes(key) ? ', ' : ' ');
+            (['amenity', 'office', withHouseNumber ? 'house_number' : 'road'].includes(key) ? ', ' : ' ');
         }
       },
     );
