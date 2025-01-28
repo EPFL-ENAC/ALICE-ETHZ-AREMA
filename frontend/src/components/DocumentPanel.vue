@@ -106,7 +106,7 @@
           </div>
           <div class="row q-gutter-md">
             <template v-for="addr in [document.address, ...(document.addresses || [])]" :key="addr">
-              <q-card flat class="q-mb-md cursor-pointer" style="min-width: 200px">
+              <q-card flat class="q-mb-md" style="min-width: 200px">
                 <q-card-section>
                   <template v-for="(tk, idx) in addr.split(',')" :key="idx">
                     <div :class="idx === 0 ? 'text-primary' : ''">{{ tk }}</div>
