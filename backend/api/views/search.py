@@ -125,6 +125,8 @@ async def find_entities(
     fields: List[str] = Query(
         ["entity_type", "tags", "id", "name", "description", "files", "location", "relates_to"]),
     exists: List[str] = Query([]),  # filter documents with a non-empty field
+    # filter documents within the bounding box: top, left, bottom, right
+    bbox: List[float] = Query(None),
     # filter documents related to the given ids
     relates: List[str] = Query(None),
     skip: int = Query(0),
@@ -138,6 +140,7 @@ async def find_entities(
         mustQueries.append(make_text_criteria(text, ENTITY_ANALYZED_FIELDS))
     mustQueries.extend(make_tags_criteria(tags))
     mustQueries.extend(make_exists_criteria(exists))
+    mustQueries.extend(make_bbox_criteria(bbox))
     if relates:
         mustQueries.append({"terms": {"relates_to": relates}})
 
@@ -185,4 +188,12 @@ def make_exists_criteria(exists: List[str]):
     if exists:
         for field in exists:
             mustQueries.append({"exists": {"field": field}})
+    return mustQueries
+
+
+def make_bbox_criteria(bbox: List[float]):
+    mustQueries = []
+    if bbox and len(bbox) == 4:
+        mustQueries.append(
+            {"geo_shape": {"location": {"shape": {"type": "envelope", "coordinates": [[bbox[0], bbox[1]], [bbox[2], bbox[3]]]}}}})
     return mustQueries

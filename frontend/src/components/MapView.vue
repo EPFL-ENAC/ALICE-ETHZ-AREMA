@@ -46,7 +46,7 @@ const props = withDefaults(defineProps<Props>(), {
   height: '800px',
 });
 
-const emit = defineEmits(['map:loaded', 'map:click']);
+const emit = defineEmits(['map:loaded', 'map:click', 'map:box']);
 
 let map = shallowRef<Map>();
 const mapLoaded = ref(false);
@@ -257,6 +257,15 @@ function displayFeatures() {
     });
     map.value.on('mouseleave', 'entities-clusters', () => {
       if (map.value) map.value.getCanvas().style.cursor = '';
+    });
+
+    map.value.on('moveend', () => {
+      if (map.value) {
+        const bounds = map.value.getBounds();
+        const nw = bounds.getNorthWest();
+        const se = bounds.getSouthEast();
+        emit('map:box', [nw.toArray(), se.toArray()], map.value);
+      }
     });
   }
 }

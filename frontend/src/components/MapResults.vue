@@ -6,6 +6,7 @@
         :height="'600px'"
         class="q-pr-md"
         @map:click="onFeature"
+        @map:box="onBoundingBox"
       />
     </div>
     <div class="col-12 col-md-6">
@@ -14,9 +15,7 @@
           <template v-for="row in rows" :key="`${row.entity_type}:${row.id}`">
             <q-item clickable v-ripple @click="onDocument(row)">
               <q-item-section>
-                <q-item-label class="text-primary">{{
-                  $t(row.entity_type)
-                }}</q-item-label>
+                <q-item-label class="text-primary">{{ $t(row.entity_type) }}</q-item-label>
                 <q-item-label class="text-bold">{{ row.name }}</q-item-label>
                 <div>
                   <tags-badges :item="row" />
@@ -36,10 +35,7 @@
               </div> -->
               </q-item-section>
               <q-item-section v-if="getImageUrls(row).length" avatar>
-                <q-img
-                  :src="getImageUrls(row)[0]"
-                  style="max-height: 100px; width: 150px"
-                />
+                <q-img :src="getImageUrls(row)[0]" style="max-height: 100px; width: 150px" />
               </q-item-section>
             </q-item>
           </template>
@@ -57,6 +53,7 @@ import MapView from 'src/components/MapView.vue';
 import TagsBadges from 'src/components/TagsBadges.vue';
 import { Document } from 'src/models';
 import { getImageUrls } from 'src/utils/files';
+import { Feature } from 'geojson';
 
 const router = useRouter();
 const searchService = useSearchService();
@@ -67,7 +64,12 @@ function onDocument(row: Document) {
   router.push({ name: 'doc', params: { id: `${row.entity_type}:${row.id}` } });
 }
 
-function onFeature(feature) {
+function onFeature(feature: Feature) {
   console.log(feature);
+}
+
+function onBoundingBox(bounds: [[number, number], [number, number]]) {
+  searchService.bbox = bounds;
+  searchService.search_entities();
 }
 </script>

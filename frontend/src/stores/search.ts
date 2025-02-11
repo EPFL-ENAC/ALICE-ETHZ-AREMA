@@ -8,6 +8,7 @@ export const useSearchService = defineStore('search', () => {
   const selectedView = ref('map');
   const selectedTerms = ref<string[]>([]);
   const filterText = ref('');
+  const bbox = ref<number[][]>([]);
   const searching = ref(false);
   const results = ref<SearchResult>();
   const geoResults = ref<SearchResult>();
@@ -83,6 +84,7 @@ export const useSearchService = defineStore('search', () => {
     results.value = undefined;
     geoResults.value = undefined;
     limit.value = withLimit;
+    const bboxCriteria = bbox.value && bbox.value.length == 2 ? [...bbox.value[0], ...bbox.value[1]] : undefined;
     return Promise.all([
       api
         .get('/search/_entities', {
@@ -107,6 +109,7 @@ export const useSearchService = defineStore('search', () => {
             skip: skip.value,
             limit: limit.value,
             exists: ['location'],
+            bbox: bboxCriteria,
           },
           paramsSerializer: {
             indexes: null, // no brackets at all
@@ -180,6 +183,7 @@ export const useSearchService = defineStore('search', () => {
     selectedView,
     selectedTerms,
     filterText,
+    bbox,
     searching,
     results,
     geoResults,
