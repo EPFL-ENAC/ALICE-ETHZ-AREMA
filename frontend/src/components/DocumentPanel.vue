@@ -47,7 +47,7 @@
                 swipeable
                 control-color="secondary"
                 padding
-                navigation
+                :thumbnails="document.files?.length > 1"
                 :arrows="document.files?.length > 1"
                 infinite
                 height="500px"
