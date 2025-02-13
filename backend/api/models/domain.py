@@ -240,7 +240,28 @@ class BuildingElement(BuildingElementBase, table=True):
         back_populates="building_elements")
     professionals: List["Professional"] = Relationship(
         back_populates="building_elements", link_model=BuildingElementProfessional)
+    materials: List["BuildingElementMaterial"] = Relationship(
+        back_populates="building_element", cascade_delete=True)
 
+
+class BuildingElementMaterialBase(SQLModel):
+    distance: Optional[float] = Field(default=None)
+    weight: Optional[float] = Field(default=None)
+    building_element_id: Optional[int] = Field(
+        default=None, foreign_key="buildingelement.id", ondelete="CASCADE")
+    building_material_id: Optional[int] = Field(
+        default=None, foreign_key="buildingmaterial.id", ondelete="CASCADE")
+
+
+class BuildingElementMaterial(BuildingElementMaterialBase, table=True):
+    id: Optional[int] = Field(
+        default=None,
+        nullable=False,
+        primary_key=True,
+        index=True,
+    )
+    building_element: Optional["BuildingElement"] = Relationship(
+        back_populates="materials")
 
 # Buildings
 

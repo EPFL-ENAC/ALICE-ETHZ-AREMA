@@ -8,35 +8,15 @@ export const useSearchService = defineStore('search', () => {
   const selectedView = ref('map');
   const selectedTerms = ref<string[]>([]);
   const filterText = ref('');
+  const bbox = ref<number[][]>([]);
   const searching = ref(false);
   const results = ref<SearchResult>();
   const geoResults = ref<SearchResult>();
   const videoResults = ref<VideoResult>();
   const skip = ref(0);
   const limit = ref(100);
-
-  const features = computed<FeatureCollection>(() => {
-    const collection: Array<Feature<Geometry, GeoJsonProperties>> = [];
-    if (geoResults.value && geoResults.value.data?.length) {
-      geoResults.value.data.forEach((doc: Document) => {
-        const properties = { ...doc };
-        delete properties.location;
-        const feature = {
-          type: 'Feature',
-          properties,
-          geometry: {
-            type: 'Point',
-            coordinates: [doc.location?.lon, doc.location?.lat],
-          },
-        } as Feature;
-        collection.push(feature);
-      });
-    }
-    return {
-      type: 'FeatureCollection',
-      features: collection,
-    };
-  });
+  // all features (when no bounding box filter)
+  const features = ref<FeatureCollection>();
 
   const hasFilters = computed(() => {
     return selectedTerms.value.length > 0 || filterText.value?.length > 0;
@@ -83,6 +63,7 @@ export const useSearchService = defineStore('search', () => {
     results.value = undefined;
     geoResults.value = undefined;
     limit.value = withLimit;
+    const bboxCriteria = bbox.value && bbox.value.length == 2 ? [...bbox.value[0], ...bbox.value[1]] : undefined;
     return Promise.all([
       api
         .get('/search/_entities', {
@@ -107,6 +88,7 @@ export const useSearchService = defineStore('search', () => {
             skip: skip.value,
             limit: limit.value,
             exists: ['location'],
+            bbox: bboxCriteria,
           },
           paramsSerializer: {
             indexes: null, // no brackets at all
@@ -114,10 +96,36 @@ export const useSearchService = defineStore('search', () => {
         })
         .then((response) => {
           geoResults.value = response.data;
+          if (bboxCriteria === undefined) {
+            features.value = asFeatureCollection();
+          }
         }),
     ]).finally(() => {
       searching.value = false;
     });
+  }
+
+  function asFeatureCollection() {
+    const collection: Array<Feature<Geometry, GeoJsonProperties>> = [];
+    if (geoResults.value && geoResults.value.data?.length) {
+      geoResults.value.data.forEach((doc: Document) => {
+        const properties = { ...doc };
+        delete properties.location;
+        const feature = {
+          type: 'Feature',
+          properties,
+          geometry: {
+            type: 'Point',
+            coordinates: [doc.location?.lon, doc.location?.lat],
+          },
+        } as Feature;
+        collection.push(feature);
+      });
+    }
+    return {
+      type: 'FeatureCollection',
+      features: collection,
+    } as FeatureCollection;
   }
 
   async function search_videos(withLimit: number = limit.value) {
@@ -180,6 +188,7 @@ export const useSearchService = defineStore('search', () => {
     selectedView,
     selectedTerms,
     filterText,
+    bbox,
     searching,
     results,
     geoResults,

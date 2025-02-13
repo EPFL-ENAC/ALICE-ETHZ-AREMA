@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query, HTTPException
 from api.db import get_session, AsyncSession
 from api.auth import kc_service, User
 from api.models.domain import TechnicalConstruction
-from api.models.query import TechnicalConstructionResult, TechnicalConstructionDraft
+from api.models.query import TechnicalConstructionResult, TechnicalConstructionDraft, TechnicalConstructionRead
 from api.services.technical_constructions import TechnicalConstructionService
 from enacit4r_sql.utils.query import validate_params, ValidationError
 
@@ -25,7 +25,7 @@ async def find(
         raise HTTPException(status_code=400, detail=f"{e}")
 
 
-@router.get("/{id}", response_model=TechnicalConstruction, response_model_exclude_none=True)
+@router.get("/{id}", response_model=TechnicalConstructionRead, response_model_exclude_none=True)
 async def get(id: int, session: AsyncSession = Depends(get_session)) -> TechnicalConstruction:
     """Get a technical construction by id"""
     return await TechnicalConstructionService(session).get(id)

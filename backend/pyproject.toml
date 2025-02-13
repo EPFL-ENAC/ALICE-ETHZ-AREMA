@@ -24,6 +24,7 @@ uvicorn = "^0.32.0"
 pyyaml = "^6.0.2"
 elasticsearch = {extras = ["async"], version = "^8.16.0"}
 markdown-it-py = "^3.0.0"
+titiler-core = "^0.21.1"
 
 [build-system]
 requires = ["poetry-core"]

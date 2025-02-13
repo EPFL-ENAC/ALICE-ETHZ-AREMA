@@ -121,7 +121,7 @@
             <div class="text-bold q-mb-sm">{{ $t('building_elements') }}</div>
             <q-card flat bordered class="bg-grey-2">
               <q-card-section class="q-pa-none">
-                <div v-if="buildingElements?.length === 0" class="text-help q-pa-md">
+                <div v-if="buildingElements?.length === 0" class="text-help q-pt-sm q-pr-md q-pl-md">
                   {{ $t('no_building_elements') }}
                 </div>
                 <q-list separator>
@@ -333,7 +333,22 @@ async function onSave() {
   delete selected.value.professionals;
   selected.value.professional_ids = professionals.value;
   delete selected.value.building_elements;
-  selected.value.building_elements = buildingElements.value;
+  if (buildingElements.value) {
+    selected.value.building_elements = buildingElements.value.map((be) => {
+      return {
+        ...be,
+        materials:
+          be.materials
+            ?.filter((m) => m.building_material_id !== undefined && (m.distance || m.weight))
+            .map((m) => {
+              return {
+                ...m,
+                building_element_id: be.id,
+              };
+            }) || [],
+      };
+    });
+  }
   if (selected.value.id) {
     service
       .update(selected.value.id, selected.value)
@@ -379,6 +394,7 @@ function onAddBuildingElement() {
     building_id: selected.value.id,
     technical_construction_id: undefined,
     professional_ids: [],
+    materials: [],
   });
 }
 

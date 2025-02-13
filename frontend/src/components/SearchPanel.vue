@@ -159,6 +159,7 @@ onMounted(() => {
         .filter((opt) => opt !== undefined);
     })
     .then(() => {
+      searchService.bbox = [];
       searchService.search_entities(100);
     });
 });

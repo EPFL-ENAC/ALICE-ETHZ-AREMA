@@ -4,7 +4,7 @@ from sqlalchemy.sql import text
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from fastapi import HTTPException
-from api.models.domain import FileItem, Building, BuildingMaterial, BuildingElement, Professional, BuildingBuildingMaterial, ProfessionalBuilding
+from api.models.domain import FileItem, Building, BuildingMaterial, BuildingElement, BuildingElementProfessional, BuildingElementMaterial, Professional, BuildingBuildingMaterial, ProfessionalBuilding
 from api.models.query import BuildingDraft, BuildingResult, BuildingElementDraft
 from api.services.building_elements import BuildingElementService
 from enacit4r_sql.utils.query import QueryBuilder
@@ -236,15 +236,33 @@ class BuildingService:
         return tags
 
     async def _makeRelations(self, entity: Building) -> list[str]:
+        # building materials
         relations = (await self.session.exec(select(BuildingBuildingMaterial).where(BuildingBuildingMaterial.building_id == entity.id))).all()
         relates_to = [
             f"building-material:{rel.building_material_id}" for rel in relations]
+        # professionals
         relations = (await self.session.exec(select(ProfessionalBuilding).where(ProfessionalBuilding.building_id == entity.id))).all()
         relates_to.extend(
             [f"professional:{rel.professional_id}" for rel in relations])
+        # building elements
         relations = (await self.session.exec(select(BuildingElement).where(BuildingElement.building_id == entity.id))).all()
         relates_to.extend(
             [f"technical-construction:{rel.technical_construction_id}" for rel in relations])
+        be_ids = [rel.id for rel in relations]
+        # building elelement professionals
+        for be_id in be_ids:
+            relations = (await self.session.exec(select(BuildingElementProfessional).where(BuildingElementProfessional.building_element_id == be_id))).all()
+            for rel in relations:
+                pid = f"professional:{rel.professional_id}"
+                if pid not in relates_to:
+                    relates_to.append(pid)
+        for be_id in be_ids:
+            relations = (await self.session.exec(select(BuildingElementMaterial).where(BuildingElementMaterial.building_element_id == be_id))).all()
+            for rel in relations:
+                bmid = f"building-material:{rel.building_material_id}"
+                if bmid not in relates_to:
+                    relates_to.append(bmid)
+
         return relates_to
 
     async def _get_building_materials(self, ids: list[int]):

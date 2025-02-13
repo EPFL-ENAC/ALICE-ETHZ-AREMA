@@ -1,5 +1,10 @@
 <template>
-  <div id="map-results" :style="`--t-width: ${width}; --t-height: ${height}`" class="mapview" />
+  <div>
+    <div id="map-results" :style="`--t-width: ${width}; --t-height: ${height}`" class="mapview" />
+    <div>
+      <q-toggle v-model="showStraw" :label="t('straw_map')" @update:model-value="onStrawMap" />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -46,10 +51,11 @@ const props = withDefaults(defineProps<Props>(), {
   height: '800px',
 });
 
-const emit = defineEmits(['map:loaded', 'map:click']);
+const emit = defineEmits(['map:loaded', 'map:click', 'map:box']);
 
 let map = shallowRef<Map>();
 const mapLoaded = ref(false);
+const showStraw = ref(false);
 
 // track which were the layers added, to be able to remove them
 const layerIds: string[] = [];
@@ -258,11 +264,24 @@ function displayFeatures() {
     map.value.on('mouseleave', 'entities-clusters', () => {
       if (map.value) map.value.getCanvas().style.cursor = '';
     });
+
+    map.value.on('moveend', () => {
+      if (map.value) {
+        const bounds = map.value.getBounds();
+        const nw = bounds.getNorthWest();
+        const se = bounds.getSouthEast();
+        emit('map:box', [nw.toArray(), se.toArray()], map.value);
+      }
+    });
   }
 }
 
 function onDocument(feature: Feature) {
   router.push({ name: 'doc', params: { id: `${feature.properties.entity_type}:${feature.properties.id}` } });
+}
+
+function onStrawMap() {
+  map.value?.setLayoutProperty('straw', 'visibility', showStraw.value ? 'visible' : 'none');
 }
 </script>
 

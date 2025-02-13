@@ -38,6 +38,8 @@ export interface Entity {
   article_bottom?: string;
   side_note?: string;
   external_links?: string;
+  address?: string;
+  addresses?: string[];
 
   created_at?: string;
   updated_at?: string;

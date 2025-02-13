@@ -98,6 +98,27 @@
         <div class="col-12 col-md-1"></div>
       </div>
 
+      <div v-if="document.address" class="row q-col-gutter-md q-mt-md">
+        <div class="col-12 col-md-3"></div>
+        <div class="col-12 col-md-6">
+          <div class="text-primary text-uppercase q-mb-sm">
+            {{ $t('address') }}
+          </div>
+          <div class="row q-gutter-md">
+            <template v-for="addr in [document.address, ...(document.addresses || [])]" :key="addr">
+              <q-card flat class="q-mb-md" style="min-width: 200px">
+                <q-card-section>
+                  <template v-for="(tk, idx) in addr.split(',')" :key="idx">
+                    <div :class="idx === 0 ? 'text-primary' : ''">{{ tk }}</div>
+                  </template>
+                </q-card-section>
+              </q-card>
+            </template>
+          </div>
+        </div>
+        <div class="col-12 col-md-3"></div>
+      </div>
+
       <div v-if="relationSummaries.length" class="row q-col-gutter-md q-mt-md">
         <div class="col-12 col-md-3"></div>
         <div class="col-12 col-md-6">
@@ -167,7 +188,7 @@ function init() {
             return searchService.getDocument(rel, fields);
           }),
       ).then((docs) => {
-        relationSummaries.value.concat(docs);
+        relationSummaries.value = relationSummaries.value.concat(docs);
       });
     });
 }

@@ -13,13 +13,7 @@ import { Query } from 'src/components/models';
 const authStore = useAuthStore();
 
 export class Service<
-  Type extends
-    | NaturalResource
-    | TechnicalConstruction
-    | BuildingMaterial
-    | Building
-    | Professional
-    | BuildingElement,
+  Type extends NaturalResource | TechnicalConstruction | BuildingMaterial | Building | Professional | BuildingElement,
 > {
   constructor(
     public entityType: Type,
@@ -39,14 +33,12 @@ export class Service<
   }
 
   async get(id: string): Promise<Type> {
-    return api.get(`/${this.entityName}/${id}`);
+    return api.get(`/${this.entityName}/${id}`).then((res) => res.data);
   }
 
   async find(query: Query | undefined) {
     const range = [query?.$skip || 0, query?.$limit || 10 - 1];
-    const sort = query?.$sort
-      ? [query?.$sort[0], query?.$sort[1] ? 'DESC' : 'ASC']
-      : ['id', 'ASC'];
+    const sort = query?.$sort ? [query?.$sort[0], query?.$sort[1] ? 'DESC' : 'ASC'] : ['id', 'ASC'];
     return api
       .get(`/${this.entityName}/`, {
         params: {
@@ -98,9 +90,7 @@ export class Service<
           type: this.entityName,
         },
       };
-      return api
-        .post('/search/_index', {}, config)
-        .then((res) => res.data[this.entityName]);
+      return api.post('/search/_index', {}, config).then((res) => res.data[this.entityName]);
     });
   }
 }
@@ -108,14 +98,7 @@ export class Service<
 export const useServices = defineStore('services', () => {
   function make(
     entityName: string,
-  ): Service<
-    | NaturalResource
-    | TechnicalConstruction
-    | BuildingMaterial
-    | Building
-    | Professional
-    | BuildingElement
-  > {
+  ): Service<NaturalResource | TechnicalConstruction | BuildingMaterial | Building | Professional | BuildingElement> {
     let entityType;
     switch (entityName) {
       case 'natural-resource':
