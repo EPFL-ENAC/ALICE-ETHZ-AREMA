@@ -107,13 +107,13 @@ taxonomy:
                   it: Finestra & Porta
               - id: be14
                 names:
-                  en: Exterior wall finishing
+                  en: Exterior wall finishing basement
                   de: Äussere Beschichtung unter Terrain
                   fr: Finition mur extérieur sous-sol
                   it: Rivestimento parete esterna seminterrato
               - id: be15
                 names:
-                  en: Exterior wall finishing
+                  en: Exterior wall finishing above ground
                   de: Fassadenbekleidung
                   fr: Finition mur extérieur au-dessus du sol
                   it: Rivestimento parete esterna sopra il terreno
