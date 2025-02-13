@@ -61,6 +61,7 @@ export default {
   shrinkage_hint: 'mm/m',
   sound_reduction_index: 'Sound Reduction Index',
   sound_reduction_index_hint: 'Rw, dB',
+  straw_map: 'Straw fields map',
   structural: 'Structural',
   tensile_strength: 'Tensile Strength',
   tensile_strength_hint: 'σc, Mpa',

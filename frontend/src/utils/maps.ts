@@ -13,7 +13,7 @@ export const style: StyleSpecification = {
       minzoom: 0,
       maxzoom: 20,
     },
-    heatmap: {
+    straw: {
       type: 'raster',
       tiles: [
         `${baseUrl}/cog/tiles/WorldMercatorWGS84Quad/{z}/{x}/{y}.webp?rescale=-210,2910&colormap_name=oranges&url=${cdnUrl}/arema/maps/2025-02-12T17:08/raster/HeatmapR1000mPixHB10000_4326_cog.tif`,
@@ -33,11 +33,14 @@ export const style: StyleSpecification = {
       },
     },
     {
-      id: 'heatmap',
+      id: 'straw',
       type: 'raster',
-      source: 'heatmap',
+      source: 'straw',
       paint: {
-        'raster-opacity': 0.3,
+        'raster-opacity': 0.5,
+      },
+      layout: {
+        visibility: 'none',
       },
     },
   ],
