@@ -60,6 +60,16 @@ async def update(
     """Update a building by id"""
     return await BuildingService(session).update(id, payload, user)
 
+
+@router.put("/{id}/_index", response_model_exclude_none=True)
+async def publish(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
+) -> None:
+    """Publish/unpublish a building material by id"""
+    return await BuildingService(session).index(id, user)
+
 # Building elements
 
 
