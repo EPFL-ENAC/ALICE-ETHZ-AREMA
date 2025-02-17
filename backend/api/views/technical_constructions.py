@@ -60,3 +60,13 @@ async def update(
 ) -> TechnicalConstruction:
     """Update a technical construction by id"""
     return await TechnicalConstructionService(session).update(id, payload, user)
+
+
+@router.put("/{id}/_index", response_model_exclude_none=True)
+async def publish(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
+) -> None:
+    """Publish/unpublish a technical construction by id"""
+    return await TechnicalConstructionService(session).index(id, user)
