@@ -190,6 +190,10 @@ function init() {
       ).then((docs) => {
         relationSummaries.value = relationSummaries.value.concat(docs);
       });
+    })
+    .then(() => {
+      // sort by entity type
+      relationSummaries.value.sort((a, b) => a.entity_type.localeCompare(b.entity_type));
     });
 }
 
