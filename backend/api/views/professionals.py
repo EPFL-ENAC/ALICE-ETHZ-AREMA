@@ -60,3 +60,13 @@ async def update(
 ) -> Professional:
     """Update a professional by id"""
     return await ProfessionalService(session).update(id, payload, user)
+
+
+@router.put("/{id}/_index", response_model_exclude_none=True)
+async def publish(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
+) -> None:
+    """Publish/unpublish a professional by id"""
+    return await ProfessionalService(session).index(id, user)

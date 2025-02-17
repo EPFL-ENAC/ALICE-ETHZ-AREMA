@@ -66,20 +66,12 @@
         </template>
         <template v-slot:body-cell-types="props">
           <q-td :props="props">
-            <q-badge
-              color="accent"
-              v-for="type in props.value"
-              :key="type"
-              :label="type"
-              class="q-mr-sm"
-            />
+            <q-badge color="accent" v-for="type in props.value" :key="type" :label="type" class="q-mr-sm" />
           </q-td>
         </template>
         <template v-slot:body-cell-web="props">
           <q-td :props="props">
-            <a :href="props.value" target="_blank" class="epfl">{{
-              props.value
-            }}</a>
+            <a :href="props.value" target="_blank" class="epfl">{{ props.value }}</a>
           </q-td>
         </template>
         <template v-slot:body-cell-address="props">
@@ -92,6 +84,25 @@
             <q-chip size="sm">{{ props.value }} km</q-chip>
           </q-td>
         </template>
+        <template v-slot:body-cell-published="props">
+          <q-td :props="props">
+            <div
+              :title="
+                props.row.published_at === undefined
+                  ? t('not_published')
+                  : t('published_on', { date: toDatetimeString(props.row.published_at) })
+              "
+            >
+              <q-icon name="star_outline" v-if="props.row.published_at === undefined" size="sm" />
+              <q-icon
+                name="star_half"
+                v-else-if="isDatetimeBefore(props.row.published_at, props.row.updated_at)"
+                size="sm"
+              />
+              <q-icon name="star" v-else size="sm" />
+            </div>
+          </q-td>
+        </template>
         <template v-slot:body-cell-action="props">
           <q-td :props="props">
             <q-btn
@@ -101,6 +112,7 @@
               dense
               round
               icon="edit"
+              :title="t('edit')"
               @click="onEdit(props.row)"
             >
             </q-btn>
@@ -110,35 +122,50 @@
               flat
               dense
               round
+              icon="publish"
+              :title="t('publish_unpublish')"
+              @click="onTogglePublish(props.row)"
+            >
+            </q-btn>
+            <q-btn
+              color="grey-8"
+              size="12px"
+              flat
+              dense
+              round
               icon="delete"
-              @click="remove(props.row)"
+              :title="t('remove')"
+              @click="onRemove(props.row)"
             >
             </q-btn>
           </q-td>
         </template>
       </q-table>
 
-      <professional-dialog
-        v-model="showEditDialog"
-        :item="selected"
-        @saved="onSaved"
+      <professional-dialog v-model="showEditDialog" :item="selected" @saved="onSaved" />
+      <confirm-dialog
+        v-model="showConfirmDialog"
+        :title="t('remove')"
+        :text="t('confirm_remove', { name: selected?.name })"
+        @confirm="remove()"
       />
     </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { useQuasar } from 'quasar';
 import { Option, Query } from 'src/components/models';
 import { Professional } from 'src/models';
 import { makePaginationRequestHandler } from 'src/utils/pagination';
 import type { PaginationOptions } from 'src/utils/pagination';
 import MapView from 'src/components/MapView.vue';
 import ProfessionalDialog from 'src/components/ProfessionalDialog.vue';
+import ConfirmDialog from 'src/components/ConfirmDialog.vue';
+import { toDatetimeString, isDatetimeBefore } from 'src/utils/time';
+import { notifyError, notifySuccess } from 'src/utils/notify';
 import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 
 const { t } = useI18n({ useScope: 'global' });
-const $q = useQuasar();
 const authStore = useAuthStore();
 const taxonomyStore = useTaxonomyStore();
 const services = useServices();
@@ -203,9 +230,7 @@ const columns = computed(() => {
       label: t('building_materials'),
       align: 'left',
       field: (row: Professional) => {
-        return row.building_materials
-          ? row.building_materials.map((bm) => bm.name).join(', ')
-          : '-';
+        return row.building_materials ? row.building_materials.map((bm) => bm.name).join(', ') : '-';
       },
       sortable: false,
     },
@@ -215,9 +240,7 @@ const columns = computed(() => {
       label: t('technical_constructions'),
       align: 'left',
       field: (row: Professional) => {
-        return row.technical_constructions
-          ? row.technical_constructions.map((bm) => bm.name).join(', ')
-          : '-';
+        return row.technical_constructions ? row.technical_constructions.map((bm) => bm.name).join(', ') : '-';
       },
       sortable: false,
     },
@@ -226,10 +249,16 @@ const columns = computed(() => {
       required: true,
       label: t('last_modification'),
       align: 'left',
-      field: (row: Professional) => {
-        const date = new Date(row.updated_at || row.created_at || '');
-        return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-      },
+      field: 'updated_at',
+      format: toDatetimeString,
+      sortable: false,
+    },
+    {
+      name: 'published',
+      required: true,
+      label: t('published'),
+      align: 'left',
+      field: 'published_at',
       sortable: false,
     },
   ];
@@ -247,6 +276,7 @@ const columns = computed(() => {
 
 const selected = ref<Professional>();
 const showEditDialog = ref(false);
+const showConfirmDialog = ref(false);
 const tableRef = ref();
 const rows = ref<Professional[]>([]);
 const types = ref<string[] | null>(null);
@@ -264,11 +294,7 @@ const professionalTypes = ref<Option[]>([]);
 onMounted(() => {
   tableRef.value.requestServerInteraction();
   taxonomyStore.getTaxonomyNode('professional', 'type').then((types) => {
-    professionalTypes.value = taxonomyStore.asOptions(
-      'professional',
-      types,
-      'type',
-    );
+    professionalTypes.value = taxonomyStore.asOptions('professional', types, 'type');
   });
 });
 
@@ -295,13 +321,7 @@ function asPoint(professional: Professional) {
   return [professional.long, professional.lat];
 }
 
-function fetchFromServer(
-  startRow: number,
-  count: number,
-  filter: string,
-  sortBy: string,
-  descending: boolean,
-) {
+function fetchFromServer(startRow: number, count: number, filter: string, sortBy: string, descending: boolean) {
   const query: Query = {
     $skip: startRow,
     $limit: count,
@@ -345,11 +365,14 @@ function fetchFromServer(
       query.filter.$or = criteria;
     }
   }
-  return service.find(query).then((result) => {
-    rows.value = result.data;
-    loading.value = false;
-    return result;
-  });
+  return service
+    .find(query)
+    .then((result) => {
+      rows.value = result.data;
+      loading.value = false;
+      return result;
+    })
+    .catch(notifyError);
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
@@ -363,17 +386,10 @@ function onIndex() {
   service
     .index()
     .then((result) => {
-      $q.notify({
-        message: t('all_items_indexed', { count: result }),
-        type: 'positive',
-      });
+      notifySuccess(t('all_items_indexed', { count: result }));
+      tableRef.value.requestServerInteraction();
     })
-    .catch((err) => {
-      $q.notify({
-        message: err.message,
-        type: 'negative',
-      });
-    })
+    .catch(notifyError)
     .finally(() => {
       loading.value = false;
     });
@@ -389,23 +405,33 @@ function onEdit(resource: Professional) {
   showEditDialog.value = true;
 }
 
+function onTogglePublish(item: Professional) {
+  if (!item.id) return;
+  service
+    .togglePublish(item.id)
+    .then(() => {
+      tableRef.value.requestServerInteraction();
+    })
+    .catch(notifyError);
+}
+
 function onSaved() {
   tableRef.value.requestServerInteraction();
 }
 
-function remove(resource: Professional) {
-  if (!resource.id) return;
+function onRemove(item: Professional) {
+  selected.value = item;
+  showConfirmDialog.value = true;
+}
+
+function remove() {
+  if (!selected.value?.id) return;
   service
-    .remove(resource.id)
+    .remove(selected.value?.id)
     .then(() => {
       tableRef.value.requestServerInteraction();
     })
-    .catch((err) => {
-      $q.notify({
-        message: err.message,
-        type: 'negative',
-      });
-    });
+    .catch(notifyError);
 }
 
 function getTypeLabel(val: string): string {
