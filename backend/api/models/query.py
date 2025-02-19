@@ -79,8 +79,8 @@ class BuildingElementDraft(BuildingElementBase):
 
 class BuildingElementRead(BuildingElementBase):
     id: Optional[int] = Field(default=None)
-    technical_construction: TechnicalConstruction = None
-    building: BuildingBase = None
+    technical_construction: Optional[TechnicalConstruction] = None
+    building: Optional[BuildingBase] = None
     professionals: List[Professional] = None
     materials: List[BuildingElementMaterial] = None
 
