@@ -61,7 +61,7 @@ export default {
   shrinkage_hint: 'mm/m',
   sound_reduction_index: 'Sound Reduction Index',
   sound_reduction_index_hint: 'Rw, dB',
-  straw_map: 'Straw fields map',
+  straw_map: 'Straw fields',
   structural: 'Structural',
   tensile_strength: 'Tensile Strength',
   tensile_strength_hint: 'σc, Mpa',
@@ -78,4 +78,9 @@ export default {
   watch: 'Watch',
   youngs_modulus: "Young's Modulus",
   youngs_modulus_hint: 'E, Mpa',
+  hartgestein_map: 'Hard stone',
+  kalkstein_map: 'Limestone',
+  konglomerat_map: 'Conglomerate',
+  sandstein_map: 'Sandstone',
+  vulkanisch_map: 'Volcanic',
 };

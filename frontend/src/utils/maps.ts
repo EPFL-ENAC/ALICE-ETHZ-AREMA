@@ -1,7 +1,7 @@
 import { StyleSpecification } from 'maplibre-gl';
 import { ThemeDefinition } from 'maplibregl-theme-switcher';
 import { t } from 'src/boot/i18n';
-import { baseUrl, cdnUrl } from 'src/boot/api';
+import { cdnUrl } from 'src/boot/api';
 
 export const style: StyleSpecification = {
   version: 8,
@@ -13,12 +13,29 @@ export const style: StyleSpecification = {
       minzoom: 0,
       maxzoom: 20,
     },
-    straw: {
-      type: 'raster',
-      tiles: [
-        `${baseUrl}/cog/tiles/WorldMercatorWGS84Quad/{z}/{x}/{y}.webp?rescale=-210,2910&colormap_name=oranges&url=${cdnUrl}/arema/maps/2025-02-12T17:08/raster/HeatmapR1000mPixHB10000_4326_cog.tif`,
-      ],
-      tileSize: 256,
+    hartgestein: {
+      type: 'geojson',
+      data: `${cdnUrl}/arema/maps/2025-02-24T14:56/geojson/Hartgestein.geojson`,
+    },
+    kalkstein: {
+      type: 'geojson',
+      data: `${cdnUrl}/arema/maps/2025-02-24T14:56/geojson/Kalkstein.geojson`,
+    },
+    konglomerat: {
+      type: 'geojson',
+      data: `${cdnUrl}/arema/maps/2025-02-24T14:56/geojson/Konglomerat.geojson`,
+    },
+    sandstein: {
+      type: 'geojson',
+      data: `${cdnUrl}/arema/maps/2025-02-24T14:56/geojson/Sandstein.geojson`,
+    },
+    vulkanisch: {
+      type: 'geojson',
+      data: `${cdnUrl}/arema/maps/2025-02-24T14:56/geojson/Vulkanisch.geojson`,
+    },
+    stroh: {
+      type: 'geojson',
+      data: `${cdnUrl}/arema/maps/2025-02-24T14:56/geojson/Stroh.geojson`,
     },
   },
   glyphs: 'https://orangemug.github.io/font-glyphs/glyphs/{fontstack}/{range}.pbf',
@@ -33,11 +50,73 @@ export const style: StyleSpecification = {
       },
     },
     {
-      id: 'straw',
-      type: 'raster',
-      source: 'straw',
+      id: 'hartgestein',
+      type: 'fill',
+      source: 'hartgestein',
       paint: {
-        'raster-opacity': 0.5,
+        'fill-color': 'rgb(25, 118, 210)',
+        'fill-opacity': 0.5,
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'kalkstein',
+      type: 'fill',
+      source: 'kalkstein',
+      paint: {
+        'fill-color': 'rgb(84, 110, 122)',
+        'fill-opacity': 0.5,
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'konglomerat',
+      type: 'fill',
+      source: 'konglomerat',
+      paint: {
+        'fill-color': 'rgb(85, 139, 47)',
+        'fill-opacity': 0.5,
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'sandstein',
+      type: 'fill',
+      source: 'sandstein',
+      paint: {
+        'fill-color': 'rgb(251, 192, 45)',
+        'fill-opacity': 0.5,
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'vulkanisch',
+      type: 'fill',
+      source: 'vulkanisch',
+      paint: {
+        'fill-color': 'rgb(216, 27, 96)',
+        'fill-opacity': 0.5,
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'stroh',
+      type: 'circle',
+      source: 'stroh',
+      paint: {
+        'circle-color': 'rgb(255, 145, 0)',
+        'circle-opacity': 0.5,
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 7, 1, 16, 2],
       },
       layout: {
         visibility: 'none',
