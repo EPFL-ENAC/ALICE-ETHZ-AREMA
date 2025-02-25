@@ -113,10 +113,73 @@ export const style: StyleSpecification = {
       id: 'stroh',
       type: 'circle',
       source: 'stroh',
+      minzoom: 7,
       paint: {
         'circle-color': 'rgb(255, 145, 0)',
         'circle-opacity': 0.5,
-        'circle-radius': ['interpolate', ['linear'], ['zoom'], 7, 1, 16, 2],
+        'circle-radius': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          10,
+          1,
+          16,
+          ['interpolate', ['linear'], ['get', 'flaeche_m2'], 1, 1, 100, 2, 1000, 5, 10000, 10, 20000, 20, 30000, 30],
+        ],
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'stroh-heat',
+      type: 'heatmap',
+      source: 'stroh',
+      maxzoom: 20,
+      paint: {
+        // Increase the heatmap weight based on frequency and property flaeche_m2
+        'heatmap-weight': [
+          'interpolate',
+          ['linear'],
+          ['get', 'flaeche_m2'],
+          0,
+          0,
+          100,
+          0.0001,
+          10000,
+          0.001,
+          20000,
+          0.002,
+          30000,
+          0.003,
+        ],
+        // Increase the heatmap color weight by zoom level
+        // heatmap-intensity is a multiplier on top of heatmap-weight
+        'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 0, 0, 9, 3, 16, 10],
+        // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
+        // Begin color ramp at 0-stop with a 0-transparency color
+        // to create a blur-like effect.
+        'heatmap-color': [
+          'interpolate',
+          ['linear'],
+          ['heatmap-density'],
+          0,
+          'rgba(255, 255, 255, 0)',
+          0.2,
+          'rgb(253, 232, 220)',
+          0.4,
+          'rgb(253, 210, 183)',
+          0.6,
+          'rgb(252, 174, 129)',
+          0.8,
+          'rgb(252, 124, 73)',
+          1,
+          'rgb(179, 80, 0)',
+        ],
+        // Adjust the heatmap radius by zoom level
+        'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 2, 9, 20],
+        // Transition from heatmap to circle layer by zoom level
+        'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 7, 0.8, 16, 0],
       },
       layout: {
         visibility: 'none',

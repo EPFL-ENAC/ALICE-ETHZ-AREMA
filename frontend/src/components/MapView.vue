@@ -329,7 +329,12 @@ function onDocument(feature: Feature) {
 }
 
 function onShowMap(name: string) {
-  map.value?.setLayoutProperty(name, 'visibility', showMap.value[name] ? 'visible' : 'none');
+  map.value
+    ?.getLayersOrder()
+    .filter((layerId) => layerId.startsWith(name))
+    .forEach((layerId) => {
+      map.value?.setLayoutProperty(layerId, 'visibility', showMap.value[name] ? 'visible' : 'none');
+    });
 }
 </script>
 
