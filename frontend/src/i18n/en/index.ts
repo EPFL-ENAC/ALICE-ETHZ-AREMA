@@ -64,6 +64,7 @@ export default {
   straw_map: 'Straw',
   hemp_map: 'Hemp',
   corn_map: 'Corn',
+  woods_map: 'Woods',
   structural: 'Structural',
   tensile_strength: 'Tensile Strength',
   tensile_strength_hint: 'σc, Mpa',

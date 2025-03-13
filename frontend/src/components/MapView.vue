@@ -24,6 +24,15 @@
         @update:model-value="onShowMap('corn')"
       />
       <q-toggle
+        v-model="showMap['woods']"
+        :label="t('woods_map')"
+        color="green-9"
+        keep-color
+        @update:model-value="onShowMap('woods')"
+      />
+    </div>
+    <div>
+      <q-toggle
         v-model="showMap['hartgestein']"
         :label="t('hartgestein_map')"
         color="blue-8"
@@ -114,6 +123,7 @@ const showMap = ref<{ [key: string]: boolean }>({
   stroh: false,
   hemp: false,
   corn: false,
+  woods: false,
   hartgestein: false,
   kalkstein: false,
   konglomerat: false,

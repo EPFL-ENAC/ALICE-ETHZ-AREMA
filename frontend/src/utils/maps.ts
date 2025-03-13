@@ -50,7 +50,7 @@ export const style: StyleSpecification = {
     woods: {
       type: 'raster',
       tiles: [
-        `${baseUrl}/cog/tiles/WorldMercatorWGS84Quad/{z}/{x}/{y}.webp?rescale=-210,2910&colormap_name=greens&bidx=1,2,3&url=${mapsUrl}/raster/Woods_2024_4326_cog.tif`,
+        `${baseUrl}/cog/tiles/WorldMercatorWGS84Quad/{z}/{x}/{y}.webp?rescale=1,255&colormap_name=algae_r&bidx=2&url=${mapsUrl}/raster/Woods_2024_4326_cog.tif`,
       ],
       tileSize: 256,
     },
