@@ -188,7 +188,7 @@ function init() {
             return searchService.getDocument(rel, fields);
           }),
       ).then((docs) => {
-        relationSummaries.value = relationSummaries.value.concat(docs);
+        relationSummaries.value = relationSummaries.value.concat(docs).filter((doc) => doc !== undefined);
       });
     })
     .then(() => {

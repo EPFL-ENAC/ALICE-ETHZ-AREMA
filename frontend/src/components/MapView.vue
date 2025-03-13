@@ -2,7 +2,78 @@
   <div>
     <div id="map-results" :style="`--t-width: ${width}; --t-height: ${height}`" class="mapview" />
     <div>
-      <q-toggle v-model="showStraw" :label="t('straw_map')" @update:model-value="onStrawMap" />
+      <q-toggle
+        v-model="showMap['stroh']"
+        :label="t('straw_map')"
+        color="orange-13"
+        keep-color
+        @update:model-value="onShowMap('stroh')"
+      />
+      <q-toggle
+        v-model="showMap['hemp']"
+        :label="t('hemp_map')"
+        color="green-13"
+        keep-color
+        @update:model-value="onShowMap('hemp')"
+      />
+      <q-toggle
+        v-model="showMap['corn']"
+        :label="t('corn_map')"
+        color="yellow-13"
+        keep-color
+        @update:model-value="onShowMap('corn')"
+      />
+      <q-toggle
+        v-model="showMap['woods']"
+        :label="t('woods_map')"
+        color="green-9"
+        keep-color
+        @update:model-value="onShowMap('woods')"
+      />
+      <q-toggle
+        v-model="showMap['reynoutria_japonica']"
+        :label="t('reynoutria_japonica_map')"
+        color="purple-6"
+        keep-color
+        @update:model-value="onShowMap('reynoutria_japonica')"
+      />
+    </div>
+    <div>
+      <q-toggle
+        v-model="showMap['hartgestein']"
+        :label="t('hartgestein_map')"
+        color="blue-8"
+        keep-color
+        @update:model-value="onShowMap('hartgestein')"
+      />
+      <q-toggle
+        v-model="showMap['kalkstein']"
+        :label="t('kalkstein_map')"
+        color="blue-grey-7"
+        keep-color
+        @update:model-value="onShowMap('kalkstein')"
+      />
+      <q-toggle
+        v-model="showMap['konglomerat']"
+        :label="t('konglomerat_map')"
+        color="light-green-9"
+        keep-color
+        @update:model-value="onShowMap('konglomerat')"
+      />
+      <q-toggle
+        v-model="showMap['sandstein']"
+        :label="t('sandstein_map')"
+        color="yellow-8"
+        keep-color
+        @update:model-value="onShowMap('sandstein')"
+      />
+      <q-toggle
+        v-model="showMap['vulkanisch']"
+        :label="t('vulkanisch_map')"
+        color="pink-7"
+        keep-color
+        @update:model-value="onShowMap('vulkanisch')"
+      />
     </div>
   </div>
 </template>
@@ -55,7 +126,18 @@ const emit = defineEmits(['map:loaded', 'map:click', 'map:box']);
 
 let map = shallowRef<Map>();
 const mapLoaded = ref(false);
-const showStraw = ref(false);
+const showMap = ref<{ [key: string]: boolean }>({
+  stroh: false,
+  hemp: false,
+  corn: false,
+  woods: false,
+  reynoutria_japonica: false,
+  hartgestein: false,
+  kalkstein: false,
+  konglomerat: false,
+  sandstein: false,
+  vulkanisch: false,
+});
 
 // track which were the layers added, to be able to remove them
 const layerIds: string[] = [];
@@ -280,8 +362,13 @@ function onDocument(feature: Feature) {
   router.push({ name: 'doc', params: { id: `${feature.properties.entity_type}:${feature.properties.id}` } });
 }
 
-function onStrawMap() {
-  map.value?.setLayoutProperty('straw', 'visibility', showStraw.value ? 'visible' : 'none');
+function onShowMap(name: string) {
+  map.value
+    ?.getLayersOrder()
+    .filter((layerId) => layerId.startsWith(name))
+    .forEach((layerId) => {
+      map.value?.setLayoutProperty(layerId, 'visibility', showMap.value[name] ? 'visible' : 'none');
+    });
 }
 </script>
 

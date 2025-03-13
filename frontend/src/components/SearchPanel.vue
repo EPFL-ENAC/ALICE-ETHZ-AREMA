@@ -13,7 +13,7 @@
       input-class="text-secondary"
       :placeholder="$t('type_here')"
       class="q-mt-md q-mb-md"
-      @update:model-value="searchService.search_entities()"
+      @update:model-value="searchService.search_filtered_entities()"
     />
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
     <div>
@@ -176,7 +176,7 @@ function onVocabularySelect(voc: VocabularyOption) {
       // clear associated terms
       searchService.selectedTerms = searchService.selectedTerms.filter((term) => !term.startsWith(voc.urn));
     }
-    searchService.search_entities();
+    searchService.search_filtered_entities();
   } else {
     selectedVocabulary.value = voc;
   }
@@ -201,7 +201,7 @@ function onVocabularySelect(voc: VocabularyOption) {
 function onTermSelect(term: TermOption) {
   if (!selectedVocabulary.value) return;
   searchService.selectTerm(term);
-  searchService.search_entities();
+  searchService.search_filtered_entities();
 }
 
 function onViewSelect(view: string) {
