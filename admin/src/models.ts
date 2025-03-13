@@ -41,8 +41,10 @@ export interface Entity {
 
   created_at?: string;
   updated_at?: string;
+  published_at?: string;
   created_by?: string;
   updated_by?: string;
+  published_by?: string;
 }
 
 export interface PhysicalEntity extends Entity {

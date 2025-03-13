@@ -59,6 +59,25 @@
             <q-badge color="accent" :label="props.value" />
           </q-td>
         </template>
+        <template v-slot:body-cell-published="props">
+          <q-td :props="props">
+            <div
+              :title="
+                props.row.published_at === undefined
+                  ? t('not_published')
+                  : t('published_on', { date: toDatetimeString(props.row.published_at) })
+              "
+            >
+              <q-icon name="star_outline" v-if="props.row.published_at === undefined" size="sm" />
+              <q-icon
+                name="star_half"
+                v-else-if="isDatetimeBefore(props.row.published_at, props.row.updated_at)"
+                size="sm"
+              />
+              <q-icon name="star" v-else size="sm" />
+            </div>
+          </q-td>
+        </template>
         <template v-slot:body-cell-action="props">
           <q-td :props="props">
             <q-btn
@@ -68,6 +87,7 @@
               dense
               round
               icon="edit"
+              :title="t('edit')"
               @click="onEdit(props.row)"
             >
             </q-btn>
@@ -77,34 +97,49 @@
               flat
               dense
               round
+              icon="publish"
+              :title="t('publish_unpublish')"
+              @click="onTogglePublish(props.row)"
+            >
+            </q-btn>
+            <q-btn
+              color="grey-8"
+              size="12px"
+              flat
+              dense
+              round
               icon="delete"
-              @click="remove(props.row)"
+              :title="t('remove')"
+              @click="onRemove(props.row)"
             >
             </q-btn>
           </q-td>
         </template>
       </q-table>
 
-      <natural-resource-dialog
-        v-model="showEditDialog"
-        :item="selected"
-        @saved="onSaved"
-      ></natural-resource-dialog>
+      <natural-resource-dialog v-model="showEditDialog" :item="selected" @saved="onSaved"></natural-resource-dialog>
+      <confirm-dialog
+        v-model="showConfirmDialog"
+        :title="t('remove')"
+        :text="t('confirm_remove', { name: selected?.name })"
+        @confirm="remove()"
+      />
     </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { useQuasar } from 'quasar';
 import { Option, Query } from 'src/components/models';
 import { NaturalResource } from 'src/models';
 import NaturalResourceDialog from 'src/components/NaturalResourceDialog.vue';
+import ConfirmDialog from 'src/components/ConfirmDialog.vue';
 import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 import { makePaginationRequestHandler } from 'src/utils/pagination';
 import type { PaginationOptions } from 'src/utils/pagination';
+import { toDatetimeString, isDatetimeBefore } from 'src/utils/time';
+import { notifyError, notifySuccess } from 'src/utils/notify';
 
 const { t } = useI18n({ useScope: 'global' });
-const $q = useQuasar();
 const authStore = useAuthStore();
 const taxonomyStore = useTaxonomyStore();
 const services = useServices();
@@ -143,10 +178,16 @@ const columns = computed(() => {
       required: true,
       label: t('last_modification'),
       align: 'left',
-      field: (row: NaturalResource) => {
-        const date = new Date(row.updated_at || row.created_at || '');
-        return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-      },
+      field: 'updated_at',
+      format: toDatetimeString,
+      sortable: false,
+    },
+    {
+      name: 'published',
+      required: true,
+      label: t('published'),
+      align: 'left',
+      field: 'published_at',
       sortable: false,
     },
   ];
@@ -164,6 +205,7 @@ const columns = computed(() => {
 
 const selected = ref<NaturalResource>();
 const showEditDialog = ref(false);
+const showConfirmDialog = ref(false);
 const tableRef = ref();
 const rows = ref<NaturalResource[]>([]);
 const types = ref<string[] | null>(null);
@@ -181,21 +223,11 @@ const naturalResourcesTypes = ref<Option[]>([]);
 onMounted(() => {
   tableRef.value.requestServerInteraction();
   taxonomyStore.getTaxonomyNode('natural-resource', 'type').then((types) => {
-    naturalResourcesTypes.value = taxonomyStore.asOptions(
-      'natural-resource',
-      types,
-      'type',
-    );
+    naturalResourcesTypes.value = taxonomyStore.asOptions('natural-resource', types, 'type');
   });
 });
 
-function fetchFromServer(
-  startRow: number,
-  count: number,
-  filter: string,
-  sortBy: string,
-  descending: boolean,
-) {
+function fetchFromServer(startRow: number, count: number, filter: string, sortBy: string, descending: boolean) {
   const query: Query = {
     $skip: startRow,
     $limit: count,
@@ -239,24 +271,17 @@ function onIndex() {
   service
     .index()
     .then((result) => {
-      $q.notify({
-        message: t('all_items_indexed', { count: result }),
-        type: 'positive',
-      });
+      notifySuccess(t('all_items_indexed', { count: result }));
+      tableRef.value.requestServerInteraction();
     })
-    .catch((err) => {
-      $q.notify({
-        message: err.message,
-        type: 'negative',
-      });
-    })
+    .catch(notifyError)
     .finally(() => {
       loading.value = false;
     });
 }
 
 function onAdd() {
-  selected.value = { name: '' };
+  selected.value = { name: '', type: '' };
   showEditDialog.value = true;
 }
 
@@ -265,28 +290,36 @@ function onEdit(item: NaturalResource) {
   showEditDialog.value = true;
 }
 
+function onTogglePublish(item: NaturalResource) {
+  if (!item.id) return;
+  service
+    .togglePublish(item.id)
+    .then(() => {
+      tableRef.value.requestServerInteraction();
+    })
+    .catch(notifyError);
+}
+
 function onSaved() {
   tableRef.value.requestServerInteraction();
 }
 
-function remove(item: NaturalResource) {
-  if (!item.id) return;
+function onRemove(item: NaturalResource) {
+  selected.value = item;
+  showConfirmDialog.value = true;
+}
+
+function remove() {
+  if (!selected.value?.id) return;
   service
-    .remove(item.id)
+    .remove(selected.value.id)
     .then(() => {
       tableRef.value.requestServerInteraction();
     })
-    .catch((err) => {
-      $q.notify({
-        message: err.message,
-        type: 'negative',
-      });
-    });
+    .catch(notifyError);
 }
 
 function getTypeLabel(val: string): string {
-  return (
-    naturalResourcesTypes.value.find((opt) => opt.value === val)?.label || val
-  );
+  return naturalResourcesTypes.value.find((opt) => opt.value === val)?.label || val;
 }
 </script>

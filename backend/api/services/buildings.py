@@ -54,6 +54,8 @@ class BuildingService:
             indexService.addEntity(
                 self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
             count += 1
+            entity.published_at = datetime.now()
+        await self.session.commit()
         debug(f"Indexed {count} buildings")
         return count
 
@@ -124,7 +126,7 @@ class BuildingService:
         """Create a new building"""
         entity = Building()
         for key, value in payload.model_dump().items():
-            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "building_material_ids", "building_elements", "professional_ids"]:
+            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "published_at", "published_by", "building_material_ids", "building_elements", "professional_ids"]:
                 setattr(entity, key, value)
         entity.created_at = datetime.now()
         entity.updated_at = datetime.now()
@@ -153,14 +155,8 @@ class BuildingService:
                     new_files.append(item_dict)
             entity.files = new_files
             await self.session.commit()
-
         # handle building elements
         await self._apply_building_elements(entity.id, payload.building_elements)
-
-        # add to index
-        EntityIndexer().addEntity(
-            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
-
         return entity
 
     async def update(self, id: int, payload: BuildingDraft, user: User = None) -> Building:
@@ -176,7 +172,7 @@ class BuildingService:
             raise HTTPException(
                 status_code=404, detail="Building not found")
         for key, value in payload.model_dump().items():
-            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "building_material_ids", "building_elements", "professional_ids"]:
+            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "published_at", "published_by", "building_material_ids", "building_elements", "professional_ids"]:
                 setattr(entity, key, value)
         entity.updated_at = datetime.now()
         if user:
@@ -202,10 +198,28 @@ class BuildingService:
         await self.session.commit()
         # handle building elements
         await self._apply_building_elements(entity.id, payload.building_elements)
-        # update in index
-        EntityIndexer().updateEntity(
-            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         return entity
+
+    async def index(self, id: int, user: User = None) -> None:
+        """Toggle publication of a building"""
+        res = await self.session.exec(
+            select(Building).where(Building.id == id)
+        )
+        entity = res.one_or_none()
+        if not entity:
+            raise HTTPException(
+                status_code=404, detail="Building not found")
+        if not entity.published_at or entity.published_at < entity.updated_at:
+            EntityIndexer().updateEntity(
+                self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
+            entity.published_at = datetime.now()
+            if user:
+                entity.published_by = user.username
+        else:
+            EntityIndexer().deleteEntity(self.entityType, entity.id)
+            entity.published_at = None
+            entity.published_by = None
+        await self.session.commit()
 
     async def _apply_building_elements(self, building_id: int, elements: list[BuildingElementDraft]):
         be_service = BuildingElementService(self.session)

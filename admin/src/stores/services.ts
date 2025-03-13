@@ -67,6 +67,18 @@ export class Service<
     });
   }
 
+  async togglePublish(id: string | number) {
+    if (!authStore.isAuthenticated) return Promise.reject('Not authenticated');
+    return authStore.updateToken().then(() => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${authStore.accessToken}`,
+        },
+      };
+      return api.put(`/${this.entityName}/${id}/_index`, {}, config);
+    });
+  }
+
   async remove(id: string | number) {
     if (!authStore.isAuthenticated) return Promise.reject('Not authenticated');
     return authStore.updateToken().then(() => {
