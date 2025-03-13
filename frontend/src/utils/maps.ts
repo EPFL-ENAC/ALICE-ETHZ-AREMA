@@ -54,6 +54,10 @@ export const style: StyleSpecification = {
       ],
       tileSize: 256,
     },
+    reynoutria_japonica: {
+      type: 'geojson',
+      data: `${mapsUrl}/geojson/Reynoutria%20Japonica_2025_2024.geojson`,
+    },
   },
   glyphs: 'https://orangemug.github.io/font-glyphs/glyphs/{fontstack}/{range}.pbf',
   layers: [
@@ -353,6 +357,22 @@ export const style: StyleSpecification = {
         'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 2, 9, 20],
         // Transition from heatmap to circle layer by zoom level
         'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 7, 0.8, 16, 0],
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'reynoutria_japonica',
+      type: 'circle',
+      source: 'reynoutria_japonica',
+      minzoom: 1,
+      paint: {
+        'circle-color': 'rgb(255, 0, 234)',
+        'circle-opacity': 0.5,
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 7, 1, 10, 2, 16, 5],
+        'circle-stroke-color': 'rgb(214, 2, 197)',
+        'circle-stroke-width': 0.2,
       },
       layout: {
         visibility: 'none',

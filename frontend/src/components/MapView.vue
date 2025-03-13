@@ -30,6 +30,13 @@
         keep-color
         @update:model-value="onShowMap('woods')"
       />
+      <q-toggle
+        v-model="showMap['reynoutria_japonica']"
+        :label="t('reynoutria_japonica_map')"
+        color="purple-6"
+        keep-color
+        @update:model-value="onShowMap('reynoutria_japonica')"
+      />
     </div>
     <div>
       <q-toggle
@@ -124,6 +131,7 @@ const showMap = ref<{ [key: string]: boolean }>({
   hemp: false,
   corn: false,
   woods: false,
+  reynoutria_japonica: false,
   hartgestein: false,
   kalkstein: false,
   konglomerat: false,

@@ -65,6 +65,7 @@ export default {
   hemp_map: 'Hemp',
   corn_map: 'Corn',
   woods_map: 'Woods',
+  reynoutria_japonica_map: 'Reynoutria Japonica',
   structural: 'Structural',
   tensile_strength: 'Tensile Strength',
   tensile_strength_hint: 'σc, Mpa',
