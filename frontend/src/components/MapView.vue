@@ -10,6 +10,20 @@
         @update:model-value="onShowMap('stroh')"
       />
       <q-toggle
+        v-model="showMap['hemp']"
+        :label="t('hemp_map')"
+        color="green-13"
+        keep-color
+        @update:model-value="onShowMap('hemp')"
+      />
+      <q-toggle
+        v-model="showMap['corn']"
+        :label="t('corn_map')"
+        color="yellow-13"
+        keep-color
+        @update:model-value="onShowMap('corn')"
+      />
+      <q-toggle
         v-model="showMap['hartgestein']"
         :label="t('hartgestein_map')"
         color="blue-8"
@@ -98,6 +112,8 @@ let map = shallowRef<Map>();
 const mapLoaded = ref(false);
 const showMap = ref<{ [key: string]: boolean }>({
   stroh: false,
+  hemp: false,
+  corn: false,
   hartgestein: false,
   kalkstein: false,
   konglomerat: false,
