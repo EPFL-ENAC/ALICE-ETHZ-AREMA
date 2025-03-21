@@ -3,7 +3,7 @@ import { ThemeDefinition } from 'maplibregl-theme-switcher';
 import { t } from 'src/boot/i18n';
 import { baseUrl, cdnUrl } from 'src/boot/api';
 
-const mapsUrl = `${cdnUrl}/arema/maps/2025-03-13T07:57`;
+const mapsUrl = `${cdnUrl}/arema/maps/2025-03-21T08:12`;
 
 export const style: StyleSpecification = {
   version: 8,
@@ -50,7 +50,7 @@ export const style: StyleSpecification = {
     woods: {
       type: 'raster',
       tiles: [
-        `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?rescale=1,255&colormap_name=algae_r&bidx=2&url=${mapsUrl}/raster/Woods_2024_4326_cog.tif`,
+        `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?rescale=1,255&nodata=255&colormap_name=algae&bidx=1&url=${mapsUrl}/raster/Wald_nodata_4326_cog.tif`,
       ],
       tileSize: 256,
     },

@@ -26,3 +26,11 @@ tif-cog:
 	rm -f ${name}_4326_cog.tif && \
 	gdal_translate ${name}_4326.tif ${name}_4326_cog.tif -of COG -co COMPRESS=DEFLATE -co TILING_SCHEME=GoogleMapsCompatible && \
 	gdalinfo ${name}_4326_cog.tif | grep -i "overviews\|byte order\|http"
+
+tif-revert:
+	cd work && \
+	gdal_calc.py -A ${name}.tif --outfile=${name}_r.tif --calc="${max}-A" --NoDataValue=0
+
+tif-nodata:
+	cd work && \
+	gdal_translate -a_nodata ${value} ${name}.tif ${name}_nodata.tif
