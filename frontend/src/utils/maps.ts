@@ -3,7 +3,7 @@ import { ThemeDefinition } from 'maplibregl-theme-switcher';
 import { t } from 'src/boot/i18n';
 import { baseUrl, cdnUrl } from 'src/boot/api';
 
-const mapsUrl = `${cdnUrl}/arema/maps/2025-03-21T08:12`;
+const mapsUrl = `${cdnUrl}/arema/maps/2025-03-24T16:13`;
 
 export const style: StyleSpecification = {
   version: 8,
