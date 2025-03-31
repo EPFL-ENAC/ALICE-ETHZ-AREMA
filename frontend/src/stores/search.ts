@@ -7,6 +7,7 @@ import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson
 export const useSearchService = defineStore('search', () => {
   const selectedView = ref('map');
   const selectedTerms = ref<string[]>([]);
+  const selectedEntityTypes = ref<string[]>([]);
   const filterText = ref('');
   const bbox = ref<number[][]>([]);
   const searching = ref(false);
@@ -74,6 +75,7 @@ export const useSearchService = defineStore('search', () => {
         .get('/search/_entities', {
           params: {
             tags: selectedTerms.value,
+            entity_types: selectedEntityTypes.value,
             text: filterText.value,
             skip: skip.value,
             limit: limit.value,
@@ -89,6 +91,7 @@ export const useSearchService = defineStore('search', () => {
         .get('/search/_entities', {
           params: {
             tags: selectedTerms.value,
+            entity_types: selectedEntityTypes.value,
             text: filterText.value,
             skip: skip.value,
             limit: limit.value,
@@ -141,6 +144,7 @@ export const useSearchService = defineStore('search', () => {
       .get('/search/_videos', {
         params: {
           tags: selectedTerms.value,
+          entity_types: selectedEntityTypes.value,
           text: filterText.value,
           skip: skip.value,
           limit: limit.value,
@@ -178,6 +182,12 @@ export const useSearchService = defineStore('search', () => {
     }
   }
 
+  function selectUrn(urn: string) {
+    selectedTerms.value.includes(urn)
+      ? selectedTerms.value.splice(selectedTerms.value.indexOf(urn), 1)
+      : selectedTerms.value.push(urn);
+  }
+
   function getSelectedTerms(node: VocabularyOption | TermOption) {
     return selectedTerms.value.filter((term) => term.startsWith(node.urn)) || [];
   }
@@ -192,6 +202,7 @@ export const useSearchService = defineStore('search', () => {
   return {
     selectedView,
     selectedTerms,
+    selectedEntityTypes,
     filterText,
     bbox,
     searching,
@@ -211,5 +222,6 @@ export const useSearchService = defineStore('search', () => {
     selectTerm,
     getSelectedTerms,
     isTermSelected,
+    selectUrn,
   };
 });

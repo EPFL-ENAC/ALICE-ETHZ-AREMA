@@ -8,10 +8,10 @@ taxonomy:
     children:
       - id: status
         names:
-          en: Intervention Type
-          de: Eingriffstyp
-          fr: Type d'intervention
-          it: Tipo di intervento
+          en: Intervention
+          de: Eingriff
+          fr: Intervention
+          it: Intervento
         children:
           - id: new
             names:

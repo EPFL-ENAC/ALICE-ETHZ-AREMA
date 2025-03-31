@@ -23,6 +23,7 @@ export interface Option {
   value: string;
   label: string;
   level?: number;
+  children?: Option[];
 }
 
 export interface VocabularyOption {

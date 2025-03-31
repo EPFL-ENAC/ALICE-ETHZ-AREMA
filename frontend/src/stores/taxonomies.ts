@@ -33,10 +33,7 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return taxonomies.value?.taxonomy.find((tx) => tx.id === entityType);
   }
 
-  function getTaxonomyNode(
-    entityType: string,
-    path: string | string[] = [],
-  ): TaxonomyNode | undefined {
+  function getTaxonomyNode(entityType: string, path: string | string[] = []): TaxonomyNode | undefined {
     const tx = getTaxonomy(entityType);
     if (!tx) return undefined;
     return getNodeFromPath(tx, path);
@@ -52,10 +49,7 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return getNodeFromPath(root, tokens[1]);
   }
 
-  function getNodeFromPath(
-    node: TaxonomyNode,
-    path: string | string[] = [],
-  ): TaxonomyNode | undefined {
+  function getNodeFromPath(node: TaxonomyNode, path: string | string[] = []): TaxonomyNode | undefined {
     const elements = Array.isArray(path) ? path : path.split('.');
     if (!elements || elements.length === 0) return node;
     if (!node.children || node.children.length === 0) return node;
@@ -66,9 +60,7 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return child;
   }
 
-  function getLabel(
-    labels: Record<string, string> | undefined,
-  ): string | undefined {
+  function getLabel(labels: Record<string, string> | undefined): string | undefined {
     if (labels === undefined) return undefined;
     if (labels[locale.value]) return labels[locale.value];
     return labels['en'];
@@ -89,17 +81,11 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
       const opt = {
         value: toUrn(entityType, [...prefix, child.id]),
         label: getLabel(child.names) || child.id,
-        level: level,
-      };
+      } as Option;
       options.push(opt);
       if (child.children?.length) {
-        const opts = asOptions(
-          entityType,
-          child,
-          [...prefix, child.id],
-          level + 1,
-        );
-        options.push(...opts);
+        const opts = asOptions(entityType, child, [...prefix, child.id], level + 1);
+        opt.children = opts;
       }
     }
 
@@ -107,6 +93,7 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
   }
 
   return {
+    taxonomies,
     init,
     getTaxonomy,
     getTaxonomyNode,

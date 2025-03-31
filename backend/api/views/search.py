@@ -90,6 +90,7 @@ async def find_documents(id: str = Query(None),
 async def find_videos(
     text: str = Query(None),
     tags: List[str] = Query(None),
+    entity_types: List[str] = Query(None),
     fields: List[str] = Query(
         ["entity_type", "tags", "id", "parent_id", "name", "legend", "url"]),
     exists: List[str] = Query([]),  # filter documents with a non-empty field
@@ -105,6 +106,7 @@ async def find_videos(
     if text:
         mustQueries.append(make_text_criteria(text, VIDEO_ANALYZED_FIELDS))
     mustQueries.extend(make_tags_criteria(tags))
+    mustQueries.extend(make_entity_types_criteria(entity_types))
     mustQueries.extend(make_exists_criteria(exists))
     if relates:
         mustQueries.append({"terms": {"relates_to": relates}})
@@ -122,6 +124,7 @@ async def find_videos(
 async def find_entities(
     text: str = Query(None),
     tags: List[str] = Query(None),
+    entity_types: List[str] = Query(None),
     fields: List[str] = Query(
         ["entity_type", "tags", "id", "name", "description", "files", "location", "relates_to"]),
     exists: List[str] = Query([]),  # filter documents with a non-empty field
@@ -139,6 +142,7 @@ async def find_entities(
     if text:
         mustQueries.append(make_text_criteria(text, ENTITY_ANALYZED_FIELDS))
     mustQueries.extend(make_tags_criteria(tags))
+    mustQueries.extend(make_entity_types_criteria(entity_types))
     mustQueries.extend(make_exists_criteria(exists))
     mustQueries.extend(make_bbox_criteria(bbox))
     if relates:
@@ -180,6 +184,13 @@ def make_tags_criteria(tags: List[str]):
             terms[vocabulary].append(tag)
         for vocabulary in terms:
             mustQueries.append({"terms": {"tags": terms[vocabulary]}})
+    return mustQueries
+
+
+def make_entity_types_criteria(entity_types: List[str]):
+    mustQueries = []
+    if entity_types:
+        mustQueries.append({"terms": {"entity_type": entity_types}})
     return mustQueries
 
 
