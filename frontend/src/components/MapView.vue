@@ -74,6 +74,13 @@
         keep-color
         @update:model-value="onShowMap('vulkanisch')"
       />
+      <q-toggle
+        v-model="showMap['rammed_earth']"
+        :label="t('rammed_earth_map')"
+        color="red-9"
+        keep-color
+        @update:model-value="onShowMap('rammed_earth')"
+      />
     </div>
   </div>
 </template>
@@ -131,6 +138,7 @@ const showMap = ref<{ [key: string]: boolean }>({
   hemp: false,
   corn: false,
   woods: false,
+  rammed_earth: false,
   reynoutria_japonica: false,
   hartgestein: false,
   kalkstein: false,

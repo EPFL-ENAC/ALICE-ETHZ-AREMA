@@ -3,7 +3,7 @@ import { ThemeDefinition } from 'maplibregl-theme-switcher';
 import { t } from 'src/boot/i18n';
 import { baseUrl, cdnUrl } from 'src/boot/api';
 
-const mapsUrl = `${cdnUrl}/arema/maps/2025-03-24T16:13`;
+const mapsUrl = `${cdnUrl}/arema/maps/2025-03-31T13:35`;
 
 export const style: StyleSpecification = {
   version: 8,
@@ -51,6 +51,13 @@ export const style: StyleSpecification = {
       type: 'raster',
       tiles: [
         `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?rescale=1,255&nodata=255&colormap_name=algae&bidx=1&url=${mapsUrl}/raster/Wald_nodata_4326_cog.tif`,
+      ],
+      tileSize: 256,
+    },
+    rammed_earth: {
+      type: 'raster',
+      tiles: [
+        `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?rescale=1,2&colormap_name=reds_r&bidx=1&url=${mapsUrl}/raster/Lehm_2056_30-60_Clay_CEC_4326_cog.tif`,
       ],
       tileSize: 256,
     },
@@ -382,6 +389,17 @@ export const style: StyleSpecification = {
       id: 'woods',
       type: 'raster',
       source: 'woods',
+      paint: {
+        'raster-opacity': 0.5,
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'rammed_earth',
+      type: 'raster',
+      source: 'rammed_earth',
       paint: {
         'raster-opacity': 0.5,
       },

@@ -1,6 +1,6 @@
 <template>
   <div class="row q-col-gutter-md">
-    <div class="col-12 col-md-6">
+    <div class="col-12 col-md-8">
       <map-view
         :features="searchService.features"
         :height="'600px'"
@@ -9,7 +9,7 @@
         @map:box="onBoundingBox"
       />
     </div>
-    <div class="col-12 col-md-6">
+    <div class="col-12 col-md-4">
       <div v-if="!searchService.searching && rows.length === 0">
         {{ $t('no_results') }}
       </div>
