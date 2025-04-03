@@ -26,19 +26,7 @@
           tick-strategy="leaf"
           class="text-primary"
           @update:ticked="onTreeSelection"
-        >
-          <template v-slot:header-entity="prop">
-            <div class="row items-center">
-              <div class="text-primary">{{ prop.node.label }}</div>
-              <q-toggle
-                v-model="selectedEntityTypes[prop.node.value]"
-                size="sm"
-                class="on-left"
-                @update:model-value="onEntityTypeSelect()"
-              />
-            </div>
-          </template>
-        </q-tree>
+        />
       </div>
       <div class="col">
         <div class="q-mb-md">
@@ -55,6 +43,16 @@
             class="on-left"
             @click="onViewSelect(view)"
           />
+          <span>{{ $t('filter_by') }}</span>
+          <template v-for="entityType in entityTypes" :key="entityType.value">
+            <q-toggle
+              v-model="selectedEntityTypes[entityType.value]"
+              :label="entityType.label"
+              size="sm"
+              class="text-primary on-left"
+              @update:model-value="onEntityTypeSelect()"
+            />
+          </template>
           <q-spinner-dots v-if="searchService.searching" size="md" />
         </div>
         <map-results v-if="searchService.selectedView === 'map'" />
@@ -80,7 +78,16 @@ const nodes = computed(() => {
         value: tx.id,
         label: taxonomies.getLabel(tx.names),
         children: taxonomies.asOptions(tx.id, tx),
-        header: 'entity',
+      };
+    }) || []
+  );
+});
+const entityTypes = computed(() => {
+  return (
+    taxonomies.taxonomies?.taxonomy.map((tx) => {
+      return {
+        value: tx.id,
+        label: taxonomies.getLabel(tx.names),
       };
     }) || []
   );
