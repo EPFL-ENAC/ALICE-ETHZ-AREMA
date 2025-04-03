@@ -18,6 +18,7 @@
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
     <div class="row q-col-gutter-md">
       <div class="col-2">
+        <div class="text-primary">{{ $t('filter_by_tags') }}</div>
         <q-tree
           :nodes="nodes"
           node-key="value"
@@ -26,21 +27,22 @@
           tick-strategy="leaf"
           class="text-primary"
           @update:ticked="onTreeSelection"
-        >
-          <template v-slot:header-entity="prop">
-            <div class="row items-center">
-              <div class="text-primary">{{ prop.node.label }}</div>
-              <q-toggle
-                v-model="selectedEntityTypes[prop.node.value]"
-                size="sm"
-                class="on-left"
-                @update:model-value="onEntityTypeSelect()"
-              />
-            </div>
-          </template>
-        </q-tree>
+        />
       </div>
       <div class="col">
+        <div class="q-mb-md">
+          <span class="text-secondary">{{ $t('filter_by_types') }}</span>
+          <template v-for="entityType in entityTypes" :key="entityType.value">
+            <q-toggle
+              v-model="selectedEntityTypes[entityType.value]"
+              :label="entityType.label"
+              size="sm"
+              class="text-primary on-left"
+              color="primary"
+              @update:model-value="onEntityTypeSelect()"
+            />
+          </template>
+        </div>
         <videos-results />
       </div>
     </div>
@@ -56,11 +58,21 @@ const searchService = useSearchService();
 const nodes = computed(() => {
   return (
     taxonomies.taxonomies?.taxonomy.map((tx) => {
+      const children = taxonomies.asOptions(tx.id, tx);
       return {
         value: tx.id,
         label: taxonomies.getLabel(tx.names),
-        children: taxonomies.asOptions(tx.id, tx),
-        header: 'entity',
+        children: children.length > 1 ? children : children[0].children,
+      };
+    }) || []
+  );
+});
+const entityTypes = computed(() => {
+  return (
+    taxonomies.taxonomies?.taxonomy.map((tx) => {
+      return {
+        value: tx.id,
+        label: taxonomies.getLabel(tx.names),
       };
     }) || []
   );

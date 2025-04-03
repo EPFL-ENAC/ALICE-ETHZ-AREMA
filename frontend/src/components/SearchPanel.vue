@@ -51,7 +51,10 @@
               v-model="selectedEntityTypes[entityType.value]"
               :label="entityType.label"
               size="sm"
-              class="text-primary on-left"
+              class="on-left"
+              :color="isEntityTypeEnabled(entityType.value) ? 'secondary' : 'primary'"
+              :class="isEntityTypeEnabled(entityType.value) ? 'text-secondary' : 'text-primary'"
+              :disable="isEntityTypeEnabled(entityType.value)"
               @update:model-value="onEntityTypeSelect()"
             />
           </template>
@@ -95,6 +98,7 @@ const entityTypes = computed(() => {
     }) || []
   );
 });
+const geoEntityTypes = ['building', 'professional'];
 
 const selectedEntityTypes = ref<{ [key: string]: boolean }>({});
 
@@ -109,6 +113,14 @@ onMounted(() => {
 });
 
 function onViewSelect(view: string) {
+  if (view === 'map') {
+    Object.keys(selectedEntityTypes.value)
+      .filter((key) => !geoEntityTypes.includes(key))
+      .forEach((key) => {
+        selectedEntityTypes.value[key] = false;
+      });
+    onEntityTypeSelect();
+  }
   searchService.selectedView = view;
 }
 
@@ -121,5 +133,12 @@ function onEntityTypeSelect() {
     (key) => selectedEntityTypes.value[key],
   );
   searchService.search_filtered_entities();
+}
+
+function isEntityTypeEnabled(entityType: string) {
+  if (searchService.selectedView === 'map') {
+    return !geoEntityTypes.includes(entityType);
+  }
+  return searchService.selectedView === 'map';
 }
 </script>
