@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="text-h5 text-uppercase text-primary">
-      {{ $t('filters') }}
+      {{ $t('search') }}
     </div>
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
     <q-input
@@ -18,6 +18,7 @@
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
     <div class="row q-col-gutter-md">
       <div class="col-2">
+        <div class="text-primary">{{ $t('filter_by_tags') }}</div>
         <q-tree
           :nodes="nodes"
           node-key="value"
@@ -39,11 +40,12 @@
             square
             no-caps
             size="md"
-            :label="$t(view)"
+            :icon="view === 'map' ? 'map' : 'view_list'"
+            :title="$t(view)"
             class="on-left"
             @click="onViewSelect(view)"
           />
-          <span>{{ $t('filter_by') }}</span>
+          <span class="text-secondary">{{ $t('filter_by_types') }}</span>
           <template v-for="entityType in entityTypes" :key="entityType.value">
             <q-toggle
               v-model="selectedEntityTypes[entityType.value]"
@@ -74,10 +76,11 @@ const views = ['map', 'list'];
 const nodes = computed(() => {
   return (
     taxonomies.taxonomies?.taxonomy.map((tx) => {
+      const children = taxonomies.asOptions(tx.id, tx);
       return {
         value: tx.id,
         label: taxonomies.getLabel(tx.names),
-        children: taxonomies.asOptions(tx.id, tx),
+        children: children.length > 1 ? children : children[0].children,
       };
     }) || []
   );
