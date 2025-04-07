@@ -3,7 +3,7 @@ import { ThemeDefinition } from 'maplibregl-theme-switcher';
 import { t } from 'src/boot/i18n';
 import { baseUrl, cdnUrl } from 'src/boot/api';
 
-const mapsUrl = `${cdnUrl}/arema/maps/2025-04-03T16:17`;
+const mapsUrl = `${cdnUrl}/arema/maps/2025-04-07T09:57`;
 
 export const style: StyleSpecification = {
   version: 8,
@@ -57,7 +57,7 @@ export const style: StyleSpecification = {
     rammed_earth: {
       type: 'raster',
       tiles: [
-        `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?rescale=0,254&colormap_name=reds_r&bidx=1&url=${mapsUrl}/raster/Stampflehm_2056_30-60_Clay_CEC_v8_4326_cog.tif`,
+        `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?rescale=0,254&colormap_name=reds_r&bidx=1&url=${mapsUrl}/raster/Stampflehm_2056_30-60_Clay_CEC_v10_4326_cog.tif`,
       ],
       tileSize: 256,
     },
