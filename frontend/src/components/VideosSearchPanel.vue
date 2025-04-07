@@ -9,40 +9,49 @@
       borderless
       clearable
       debounce="500"
-      input-style="font-size: 48px;"
+      :input-style="`font-size: ${$q.screen.gt.sm ? 24 : 18}px;`"
       input-class="text-secondary"
       :placeholder="$t('type_here')"
-      class="q-mt-md q-mb-md"
+      class="q-mt-sm q-mb-sm"
       @update:model-value="searchService.search_videos()"
     />
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
     <div class="row q-col-gutter-md">
-      <div class="col-2">
+      <div v-if="$q.screen.gt.sm" class="col-2">
         <div class="text-primary">{{ $t('filter_by_tags') }}</div>
-        <q-tree
-          :nodes="nodes"
-          node-key="value"
-          label-key="label"
-          v-model:ticked="searchService.selectedTerms"
-          tick-strategy="leaf"
-          class="text-primary"
-          @update:ticked="onTreeSelection"
-        />
+        <tags-selector @update:ticked="onTreeSelection" />
       </div>
       <div class="col">
-        <div class="q-mb-md">
-          <span class="text-secondary">{{ $t('filter_by_types') }}</span>
-          <template v-for="entityType in entityTypes" :key="entityType.value">
-            <q-toggle
-              v-model="selectedEntityTypes[entityType.value]"
-              :label="entityType.label"
-              size="sm"
-              class="text-primary on-left"
-              color="primary"
-              @update:model-value="onEntityTypeSelect()"
-            />
-          </template>
-        </div>
+        <q-toolbar class="q-pl-none">
+          <entity-types-selector v-model="selectedEntityTypes" @update:model-value="onEntityTypeSelect" />
+          <q-btn-dropdown
+            v-if="!$q.screen.gt.sm"
+            :label="$t('filter_by_tags')"
+            outline
+            unelevated
+            square
+            no-caps
+            size="md"
+            color="secondary"
+            class="on-left q-mb-md"
+          >
+            <template v-slot:label>
+              <div>
+                <q-badge
+                  v-if="selectedTermsCount > 0"
+                  class="q-ml-xs"
+                  color="secondary"
+                  :label="selectedTermsCount"
+                  style="font-size: 12px"
+                />
+              </div>
+            </template>
+            <div class="q-pa-sm">
+              <tags-selector @update:ticked="onTreeSelection" />
+            </div>
+          </q-btn-dropdown>
+          <q-spinner-dots v-if="searchService.searching" size="md" class="q-mb-md" />
+        </q-toolbar>
         <videos-results />
       </div>
     </div>
@@ -50,34 +59,13 @@
 </template>
 
 <script setup lang="ts">
+import EntityTypesSelector from 'src/components/EntityTypesSelector.vue';
+import TagsSelector from 'src/components/TagsSelector.vue';
 import VideosResults from 'src/components/VideosResults.vue';
 
 const taxonomies = useTaxonomyStore();
 const searchService = useSearchService();
-
-const nodes = computed(() => {
-  return (
-    taxonomies.taxonomies?.taxonomy.map((tx) => {
-      const children = taxonomies.asOptions(tx.id, tx);
-      return {
-        value: tx.id,
-        label: taxonomies.getLabel(tx.names),
-        children: children.length > 1 ? children : children[0].children,
-      };
-    }) || []
-  );
-});
-const entityTypes = computed(() => {
-  return (
-    taxonomies.taxonomies?.taxonomy.map((tx) => {
-      return {
-        value: tx.id,
-        label: taxonomies.getLabel(tx.names),
-      };
-    }) || []
-  );
-});
-
+const selectedTermsCount = computed(() => searchService.selectedTerms.length);
 const selectedEntityTypes = ref<{ [key: string]: boolean }>({});
 
 onMounted(() => {
