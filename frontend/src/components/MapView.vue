@@ -81,6 +81,13 @@
         keep-color
         @update:model-value="onShowMap('rammed_earth')"
       />
+      <q-toggle
+        v-model="showMap['adobe_earth']"
+        :label="t('adobe_earth_map')"
+        color="purple-9"
+        keep-color
+        @update:model-value="onShowMap('adobe_earth')"
+      />
     </div>
   </div>
 </template>
@@ -139,6 +146,7 @@ const showMap = ref<{ [key: string]: boolean }>({
   corn: false,
   woods: false,
   rammed_earth: false,
+  adobe_earth: false,
   reynoutria_japonica: false,
   hartgestein: false,
   kalkstein: false,

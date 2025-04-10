@@ -3,7 +3,7 @@ import { ThemeDefinition } from 'maplibregl-theme-switcher';
 import { t } from 'src/boot/i18n';
 import { baseUrl, cdnUrl } from 'src/boot/api';
 
-const mapsUrl = `${cdnUrl}/arema/maps/2025-04-07T09:57`;
+const mapsUrl = `${cdnUrl}/arema/maps/2025-04-10T08:59`;
 
 export const style: StyleSpecification = {
   version: 8,
@@ -58,6 +58,13 @@ export const style: StyleSpecification = {
       type: 'raster',
       tiles: [
         `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?rescale=0,254&colormap_name=reds_r&bidx=1&url=${mapsUrl}/raster/Stampflehm_2056_30-60_Clay_CEC_v10_4326_cog.tif`,
+      ],
+      tileSize: 256,
+    },
+    adobe_earth: {
+      type: 'raster',
+      tiles: [
+        `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?rescale=0,254&colormap_name=rdpu_r&bidx=1&url=${mapsUrl}/raster/Torchis_2056_30-60_Clay_CEC_v2_4326_cog.tif`,
       ],
       tileSize: 256,
     },
@@ -400,6 +407,17 @@ export const style: StyleSpecification = {
       id: 'rammed_earth',
       type: 'raster',
       source: 'rammed_earth',
+      paint: {
+        'raster-opacity': 0.5,
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'adobe_earth',
+      type: 'raster',
+      source: 'adobe_earth',
       paint: {
         'raster-opacity': 0.5,
       },
