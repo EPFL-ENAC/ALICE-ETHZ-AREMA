@@ -173,17 +173,20 @@ def make_text_criteria(text: str, analyzed_fields: List[str]):
 
 
 def make_tags_criteria(tags: List[str]):
-    terms = {}
     mustQueries = []
     if tags:
-        # group terms (urn) by their parent
+        nrTerms = []
+        otherTerms = []
         for tag in tags:
             vocabulary = tag.split('.', 1)[0]
-            if vocabulary not in terms:
-                terms[vocabulary] = []
-            terms[vocabulary].append(tag)
-        for vocabulary in terms:
-            mustQueries.append({"terms": {"tags": terms[vocabulary]}})
+            if vocabulary == "urn:arema:natural-resource:type":
+                nrTerms.append(tag)
+            else:
+                otherTerms.append(tag)
+        if len(nrTerms) > 0:
+            mustQueries.append({"terms": {"tags": nrTerms}})
+        if len(otherTerms) > 0:
+            mustQueries.append({"terms": {"tags": otherTerms}})
     return mustQueries
 
 
