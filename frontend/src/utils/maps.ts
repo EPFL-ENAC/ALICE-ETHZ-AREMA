@@ -3,7 +3,7 @@ import { ThemeDefinition } from 'maplibregl-theme-switcher';
 import { t } from 'src/boot/i18n';
 import { baseUrl, cdnUrl } from 'src/boot/api';
 
-const mapsUrl = `${cdnUrl}/arema/maps/2025-04-10T08:59`;
+const mapsUrl = `${cdnUrl}/arema/maps/2025-04-17T10:24`;
 
 export const style: StyleSpecification = {
   version: 8,
@@ -46,6 +46,10 @@ export const style: StyleSpecification = {
     corn: {
       type: 'geojson',
       data: `${mapsUrl}/geojson/Mais_2024.geojson`,
+    },
+    sheep: {
+      type: 'geojson',
+      data: `${mapsUrl}/geojson/Schafe_4326_2025-04-17.geojson`,
     },
     woods: {
       type: 'raster',
@@ -366,6 +370,70 @@ export const style: StyleSpecification = {
           'rgb(222, 255, 70)',
           1,
           'rgb(255, 255, 0)',
+        ],
+        // Adjust the heatmap radius by zoom level
+        'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 2, 9, 20],
+        // Transition from heatmap to circle layer by zoom level
+        'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 7, 0.8, 16, 0],
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'sheep',
+      type: 'circle',
+      source: 'sheep',
+      minzoom: 7,
+      paint: {
+        'circle-color': '#08519c',
+        'circle-opacity': 0.5,
+        'circle-radius': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          10,
+          2,
+          12,
+          ['interpolate', ['linear'], ['get', 'count'], 1, 2, 50, 10, 100, 20, 200, 25, 300, 30, 400, 35],
+        ],
+        'circle-stroke-color': 'rgb(37, 14, 240)',
+        'circle-stroke-width': 0.2,
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'sheep-heat',
+      type: 'heatmap',
+      source: 'sheep',
+      maxzoom: 20,
+      paint: {
+        // Increase the heatmap weight based on frequency and property flaeche_m2
+        'heatmap-weight': ['interpolate', ['linear'], ['get', 'count'], 0, 0, 100, 0.1, 10000, 1, 20000, 2, 30000, 3],
+        // Increase the heatmap color weight by zoom level
+        // heatmap-intensity is a multiplier on top of heatmap-weight
+        'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 0, 0, 9, 3, 16, 10],
+        // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
+        // Begin color ramp at 0-stop with a 0-transparency color
+        // to create a blur-like effect.
+        'heatmap-color': [
+          'interpolate',
+          ['linear'],
+          ['heatmap-density'],
+          0,
+          'rgba(255, 255, 255, 0)',
+          0.2,
+          '#eff3ff',
+          0.4,
+          '#bdd7e7',
+          0.6,
+          '#6baed6',
+          0.8,
+          '#3182bd',
+          1,
+          '#08519c',
         ],
         // Adjust the heatmap radius by zoom level
         'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 2, 9, 20],

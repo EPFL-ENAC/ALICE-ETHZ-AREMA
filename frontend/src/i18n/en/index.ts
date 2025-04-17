@@ -69,6 +69,7 @@ export default {
   woods_map: 'Woods',
   rammed_earth_map: 'Rammed Earth',
   adobe_earth_map: 'Adobe Earth',
+  sheep_map: 'Sheep wool',
   reynoutria_japonica_map: 'Reynoutria Japonica',
   structural: 'Structural',
   tensile_strength: 'Tensile Strength',

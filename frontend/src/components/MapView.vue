@@ -31,6 +31,13 @@
         @update:model-value="onShowMap('woods')"
       />
       <q-toggle
+        v-model="showMap['sheep']"
+        :label="t('sheep_map')"
+        color="blue-6"
+        keep-color
+        @update:model-value="onShowMap('sheep')"
+      />
+      <q-toggle
         v-model="showMap['reynoutria_japonica']"
         :label="t('reynoutria_japonica_map')"
         color="purple-6"
@@ -147,6 +154,7 @@ const showMap = ref<{ [key: string]: boolean }>({
   woods: false,
   rammed_earth: false,
   adobe_earth: false,
+  sheep: false,
   reynoutria_japonica: false,
   hartgestein: false,
   kalkstein: false,
