@@ -3,7 +3,7 @@ import { ThemeDefinition } from 'maplibregl-theme-switcher';
 import { t } from 'src/boot/i18n';
 import { baseUrl, cdnUrl } from 'src/boot/api';
 
-const mapsUrl = `${cdnUrl}/arema/maps/2025-04-17T10:24`;
+const mapsUrl = `${cdnUrl}/arema/maps/2025-05-06T09:25`;
 
 export const style: StyleSpecification = {
   version: 8,
@@ -75,6 +75,10 @@ export const style: StyleSpecification = {
     reynoutria_japonica: {
       type: 'geojson',
       data: `${mapsUrl}/geojson/Reynoutria%20Japonica_2025_2024.geojson`,
+    },
+    demolition: {
+      type: 'geojson',
+      data: `${mapsUrl}/geojson/Abriss_4326_2025-05-01.geojson`,
     },
   },
   glyphs: 'https://orangemug.github.io/font-glyphs/glyphs/{fontstack}/{range}.pbf',
@@ -454,6 +458,22 @@ export const style: StyleSpecification = {
         'circle-opacity': 0.5,
         'circle-radius': ['interpolate', ['linear'], ['zoom'], 7, 1, 10, 2, 16, 5],
         'circle-stroke-color': 'rgb(214, 2, 197)',
+        'circle-stroke-width': 0.2,
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'demolition',
+      type: 'circle',
+      source: 'demolition',
+      minzoom: 1,
+      paint: {
+        'circle-color': '#08519c',
+        'circle-opacity': 0.5,
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 7, 1, 10, ['get', 'surface_area']],
+        'circle-stroke-color': 'rgb(37, 14, 240)',
         'circle-stroke-width': 0.2,
       },
       layout: {

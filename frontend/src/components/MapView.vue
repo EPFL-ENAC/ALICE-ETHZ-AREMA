@@ -44,6 +44,13 @@
         keep-color
         @update:model-value="onShowMap('reynoutria_japonica')"
       />
+      <q-toggle
+        v-model="showMap['demolition']"
+        :label="t('demolition_map')"
+        color="blue-8"
+        keep-color
+        @update:model-value="onShowMap('demolition')"
+      />
     </div>
     <div>
       <q-toggle
@@ -156,6 +163,7 @@ const showMap = ref<{ [key: string]: boolean }>({
   adobe_earth: false,
   sheep: false,
   reynoutria_japonica: false,
+  demolition: false,
   hartgestein: false,
   kalkstein: false,
   konglomerat: false,

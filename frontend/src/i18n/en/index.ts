@@ -71,6 +71,7 @@ export default {
   adobe_earth_map: 'Adobe Earth',
   sheep_map: 'Sheep wool',
   reynoutria_japonica_map: 'Reynoutria Japonica',
+  demolition_map: 'Demolition',
   structural: 'Structural',
   tensile_strength: 'Tensile Strength',
   tensile_strength_hint: 'σc, Mpa',
