@@ -1,9 +1,9 @@
 taxonomy:
   - id: technical-construction
     names:
-      en: Technical Constructions
+      en: Technical Construction
       de: Technische Konstruktionen
-      fr: Constructions techniques
+      fr: Construction technique
       it: Costruzioni tecniche
     children:
       - id: type

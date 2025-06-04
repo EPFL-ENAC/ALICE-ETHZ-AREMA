@@ -1,10 +1,10 @@
 taxonomy:
   - id: natural-resource
     names:
-      en: Natural Resources
-      de: Natürliche Ressourcen
-      fr: Ressources naturelles
-      it: Risorse naturali
+      en: Resources
+      de: Ressourcen
+      fr: Ressources
+      it: Risorse
     children:
       - id: type
         names:

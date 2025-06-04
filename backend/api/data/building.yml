@@ -32,12 +32,12 @@ taxonomy:
           fr: Type
           it: Tipo
         children:
-          - id: apartment-building
+          - id: multi-family-house
             names:
-              en: Apartment Building
+              en: Multi Family House
               de: Mehrfamilienhaus
-              fr: Immeuble d'habitation
-              it: Edificio residenziale
+              fr: Maison multi-familiale
+              it: Casa plurifamiliare
           - id: single-family-house
             names:
               en: Single Family House
@@ -50,6 +50,12 @@ taxonomy:
               de: Bürogebäude
               fr: Immeuble de bureaux
               it: Edificio per uffici
+          - id: industrial-building
+            names:
+              en: Industrial Building
+              de: Industriegebäude
+              fr: Bâtiment industriel
+              it: Edificio industriale
           - id: public-building
             names:
               en: Public Building
