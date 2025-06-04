@@ -48,7 +48,6 @@ const hygrothermalParams = [
   'thermal_capacity',
   'vapor_diffusion_resistance',
   'moisture_buffering',
-  'u',
   'effusivity',
   'diffusivity',
   'porosity',

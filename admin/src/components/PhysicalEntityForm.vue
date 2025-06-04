@@ -28,7 +28,6 @@
             'thermal_capacity',
             'vapor_diffusion_resistance',
             'moisture_buffering',
-            'u',
           ]"
           :key="property"
           v-model="entity"
