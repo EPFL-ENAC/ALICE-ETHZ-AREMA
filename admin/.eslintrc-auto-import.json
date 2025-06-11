@@ -105,6 +105,7 @@
     "useTaxonomy": true,
     "useTaxonomyStore": true,
     "URN_PREFIX": true,
-    "useSearchService": true
+    "useSearchService": true,
+    "useUsersStore": true
   }
 }

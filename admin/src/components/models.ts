@@ -1,5 +1,5 @@
 export interface Filter {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface Query {
@@ -32,3 +32,5 @@ export interface Suggestions {
   key: string;
   options: string[];
 }
+
+export const DefaultAlignment: 'left' | 'right' | 'center' = 'left';
