@@ -14,7 +14,7 @@
         :filter="filter"
         binary-state-sort
         @request="onRequest"
-        :rows-per-page-options="[10, 25, 50]"
+        :rows-per-page-options="[10, 25, 50, 0]"
       >
         <template v-slot:top>
           <q-btn
@@ -212,8 +212,7 @@ const pagination = ref<PaginationOptions>({
   sortBy: 'name',
   descending: false,
   page: 1,
-  rowsPerPage: 10,
-  rowsNumber: 10,
+  rowsPerPage: 50,
 });
 const bmTypes = ref<Option[]>([]);
 

@@ -10,6 +10,7 @@
         row-key="id"
         :pagination="initialPagination"
         :loading="usersStore.loading"
+        :rows-per-page-options="[10, 25, 50, 0]"
       >
         <template v-slot:top>
           <q-btn size="sm" color="primary" :disable="usersStore.loading" :label="t('add')" icon="add" @click="onAdd" />
@@ -119,7 +120,7 @@ const initialPagination = ref({
   sortBy: 'desc',
   descending: false,
   page: 1,
-  rowsPerPage: 20,
+  rowsPerPage: 50,
 });
 
 const columns = computed(() => {
