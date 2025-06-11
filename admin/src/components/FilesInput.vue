@@ -14,7 +14,11 @@
             <q-img :src="`${baseUrl}/files/${file.ref.path}`" width="200px" fit="scale-down" />
           </q-item-section>
           <q-item-section avatar>
-            <q-btn icon="delete" rounded dense flat color="negative" size="12px" @click="onDeleteFile(file, idx)" />
+            <div class="row">
+              <q-btn icon="arrow_upward" rounded dense flat size="12px" @click="onUpFile(file, idx)" />
+              <q-btn icon="arrow_downward" rounded dense flat size="12px" @click="onDownFile(file, idx)" />
+              <q-btn icon="delete" rounded dense flat color="negative" size="12px" @click="onDeleteFile(file, idx)" />
+            </div>
           </q-item-section>
         </q-item>
       </template>
@@ -78,6 +82,21 @@ function isImage(file: FileItem) {
 function onDeleteFile(file: FileItem, idx: number) {
   filesStore.addFileToDelete(file.ref);
   files.value.splice(idx, 1);
+}
+
+function onUpFile(file: FileItem, idx: number) {
+  if (idx > 0) {
+    const tmp = files.value[idx - 1];
+    files.value[idx - 1] = file;
+    files.value[idx] = tmp;
+  }
+}
+function onDownFile(file: FileItem, idx: number) {
+  if (idx < files.value.length - 1) {
+    const tmp = files.value[idx + 1];
+    files.value[idx + 1] = file;
+    files.value[idx] = tmp;
+  }
 }
 
 function onLocalFilesSelected() {
