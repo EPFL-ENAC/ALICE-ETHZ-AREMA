@@ -35,7 +35,7 @@ export default {
   hygrothermal: 'Hygrothermal',
   imprint: 'Imprint',
   list: 'List',
-  liquid_transfer_coefficient: 'Liquid Transfer Coefficient',
+  liquid_transfer_coefficient: 'Liquid Transfer Coefficient for Absorption',
   liquid_transfer_coefficient_hint: 'A, kg/(m²*sqrt(s))',
   map: 'Map',
   material: 'Material',

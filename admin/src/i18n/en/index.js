@@ -117,7 +117,7 @@ export default {
   legend: 'Legend',
   light: 'Light',
   liquid_transfer_coefficient_hint: 'A, kg/(m²*sqrt(s))',
-  liquid_transfer_coefficient: 'Liquid transfer coefficient',
+  liquid_transfer_coefficient: 'Liquid transfer coefficient for absorption',
   location: 'Location',
   logout: 'Logout',
   low: 'Low',
