@@ -35,7 +35,7 @@
         </q-item>
 
         <q-item-label class="text-h6" header>{{ $t('content') }}</q-item-label>
-        <q-item clickable v-close-popup :to="'/natural-resources'">
+        <q-item clickable v-close-popup :to="'/resources'">
           <q-item-section avatar>
             <q-icon name="fa-solid fa-gem" size="xs" />
           </q-item-section>

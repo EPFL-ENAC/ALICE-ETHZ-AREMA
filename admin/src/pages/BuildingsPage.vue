@@ -164,6 +164,15 @@ const columns = computed(() => {
       sortable: true,
     },
     {
+      name: 'published',
+      required: true,
+      label: t('published'),
+      align: 'left',
+      field: 'published_at',
+      sortable: false,
+      style: 'width: 50px',
+    },
+    {
       name: 'type',
       required: true,
       label: t('type'),
@@ -219,21 +228,17 @@ const columns = computed(() => {
       format: toDatetimeString,
       sortable: false,
     },
-    {
-      name: 'published',
-      required: true,
-      label: t('published'),
-      align: 'left',
-      field: 'published_at',
-      sortable: false,
-    },
   ];
 
   if (authStore.isAdmin) {
-    cols.push({
+    cols.splice(2, 0, {
       name: 'action',
       align: 'left',
-      label: t('action'),
+      label: '',
+      field: 'action',
+      required: false,
+      sortable: false,
+      style: 'width: 100px',
     });
   }
 
