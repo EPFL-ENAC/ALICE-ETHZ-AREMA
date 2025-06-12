@@ -19,7 +19,11 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'natural-resources',
-        component: () => import('pages/NaturalResourcesPage.vue'),
+        component: () => import('pages/ResourcesPage.vue'),
+      },
+      {
+        path: 'resources',
+        component: () => import('pages/ResourcesPage.vue'),
       },
       {
         path: 'building-materials',
@@ -29,6 +33,7 @@ const routes: RouteRecordRaw[] = [
         path: 'technical-constructions',
         component: () => import('pages/TechnicalConstructionsPage.vue'),
       },
+      { path: 'users', component: () => import('pages/UsersPage.vue') },
     ],
   },
 

@@ -23,6 +23,13 @@ export interface Option {
   value: string;
   label: string;
   level?: number;
+  children?: Option[];
+}
+
+export interface TaxonomyNodeOption {
+  value: string;
+  label: string;
+  children?: TaxonomyNodeOption[];
 }
 
 export interface VocabularyOption {

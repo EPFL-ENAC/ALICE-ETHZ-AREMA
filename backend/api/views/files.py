@@ -64,7 +64,6 @@ async def delete_temp_files(
     file_path: str,
     user: User = Depends(kc_service.require_admin())
 ):
-    # delete path if it contains /tmp/
-    if "/tmp/" in file_path:
-        await s3_client.delete_file(file_path)
+    # delete file at path
+    await s3_client.delete_file(file_path)
     return

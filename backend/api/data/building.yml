@@ -6,12 +6,55 @@ taxonomy:
       fr: Bâtiments
       it: Edifici
     children:
+      - id: type
+        names:
+          en: Type
+          de: Typ
+          fr: Type
+          it: Tipo
+        children:
+          - id: multi-family-house
+            names:
+              en: Multi Family House
+              de: Mehrfamilienhaus
+              fr: Maison multi-familiale
+              it: Casa plurifamiliare
+          - id: single-family-house
+            names:
+              en: Single Family House
+              de: Einfamilienhaus
+              fr: Maison individuelle
+              it: Casa unifamiliare
+          - id: office-building
+            names:
+              en: Office Building
+              de: Bürogebäude
+              fr: Immeuble de bureaux
+              it: Edificio per uffici
+          - id: industrial-building
+            names:
+              en: Industrial Building
+              de: Industriegebäude
+              fr: Bâtiment industriel
+              it: Edificio industriale
+          - id: public-building
+            names:
+              en: Public Building
+              de: Öffentliches Gebäude
+              fr: Bâtiment public
+              it: Edificio pubblico
+          - id: simple-structure
+            names:
+              en: Simple Structure
+              de: Einfache Struktur
+              fr: Structure simple
+              it: Struttura semplice
       - id: status
         names:
-          en: Intervention Type
-          de: Eingriffstyp
-          fr: Type d'intervention
-          it: Tipo di intervento
+          en: Intervention
+          de: Eingriff
+          fr: Intervention
+          it: Intervento
         children:
           - id: new
             names:
@@ -25,40 +68,3 @@ taxonomy:
               de: Renovierung
               fr: Rénovation
               it: Ristrutturazione
-      - id: type
-        names:
-          en: Type
-          de: Typ
-          fr: Type
-          it: Tipo
-        children:
-          - id: apartment-building
-            names:
-              en: Apartment Building
-              de: Mehrfamilienhaus
-              fr: Immeuble d'habitation
-              it: Edificio residenziale
-          - id: single-family-house
-            names:
-              en: Single Family House
-              de: Einfamilienhaus
-              fr: Maison individuelle
-              it: Casa unifamiliare
-          - id: office-building
-            names:
-              en: Office Building
-              de: Bürogebäude
-              fr: Immeuble de bureaux
-              it: Edificio per uffici
-          - id: public-building
-            names:
-              en: Public Building
-              de: Öffentliches Gebäude
-              fr: Bâtiment public
-              it: Edificio pubblico
-          - id: simple-structure
-            names:
-              en: Simple Structure
-              de: Einfache Struktur
-              fr: Structure simple
-              it: Struttura semplice

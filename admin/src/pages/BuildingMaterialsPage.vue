@@ -14,7 +14,7 @@
         :filter="filter"
         binary-state-sort
         @request="onRequest"
-        :rows-per-page-options="[10, 25, 50]"
+        :rows-per-page-options="[10, 25, 50, 0]"
       >
         <template v-slot:top>
           <q-btn
@@ -153,6 +153,15 @@ const columns = computed(() => {
       sortable: true,
     },
     {
+      name: 'published',
+      required: true,
+      label: t('published'),
+      align: 'left',
+      field: 'published_at',
+      sortable: false,
+      style: 'width: 50px',
+    },
+    {
       name: 'types',
       required: true,
       label: t('types'),
@@ -180,21 +189,17 @@ const columns = computed(() => {
       format: toDatetimeString,
       sortable: false,
     },
-    {
-      name: 'published',
-      required: true,
-      label: t('published'),
-      align: 'left',
-      field: 'published_at',
-      sortable: false,
-    },
   ];
 
   if (authStore.isAdmin) {
-    cols.push({
+    cols.splice(2, 0, {
       name: 'action',
       align: 'left',
-      label: t('action'),
+      label: '',
+      field: 'action',
+      required: false,
+      sortable: false,
+      style: 'width: 100px',
     });
   }
 
@@ -212,8 +217,7 @@ const pagination = ref<PaginationOptions>({
   sortBy: 'name',
   descending: false,
   page: 1,
-  rowsPerPage: 10,
-  rowsNumber: 10,
+  rowsPerPage: 50,
 });
 const bmTypes = ref<Option[]>([]);
 

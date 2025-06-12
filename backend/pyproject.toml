@@ -11,8 +11,8 @@ include = ["api/data/*.yaml"]
 python = "^3.10"
 fastapi = "^0.115.4"
 enacit4r-files = {git = "https://github.com/EPFL-ENAC/enacit4r-files", rev = "0.6.0"}
-enacit4r-auth = {git = "https://github.com/EPFL-ENAC/enacit4r-auth", rev = "0.2.0"}
-enacit4r-sql = {git = "https://github.com/EPFL-ENAC/enacit4r-sql", rev = "0.4.0"}
+enacit4r-auth = {git = "https://github.com/EPFL-ENAC/enacit4r-auth", rev = "0.3.1"}
+enacit4r-sql = {git = "https://github.com/EPFL-ENAC/enacit4r-sql", rev = "0.4.1"}
 alembic = "^1.14.0"
 asyncpg = "^0.30.0"
 psycopg2 = "^2.9.10"

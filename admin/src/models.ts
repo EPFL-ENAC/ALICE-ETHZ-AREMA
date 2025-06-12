@@ -212,3 +212,16 @@ export interface Professional extends Entity {
   building_material_ids?: number[];
   technical_construction_ids?: number[];
 }
+
+export interface AppUser {
+  id?: string;
+  username: string;
+  email: string;
+  email_verified: boolean;
+  first_name?: string;
+  last_name?: string;
+  enabled: boolean;
+  totp: boolean;
+  roles: string[];
+  password?: string;
+}

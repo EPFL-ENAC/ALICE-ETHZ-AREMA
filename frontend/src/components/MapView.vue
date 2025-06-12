@@ -31,11 +31,25 @@
         @update:model-value="onShowMap('woods')"
       />
       <q-toggle
+        v-model="showMap['sheep']"
+        :label="t('sheep_map')"
+        color="blue-6"
+        keep-color
+        @update:model-value="onShowMap('sheep')"
+      />
+      <q-toggle
         v-model="showMap['reynoutria_japonica']"
         :label="t('reynoutria_japonica_map')"
         color="purple-6"
         keep-color
         @update:model-value="onShowMap('reynoutria_japonica')"
+      />
+      <q-toggle
+        v-model="showMap['demolition']"
+        :label="t('demolition_map')"
+        color="blue-8"
+        keep-color
+        @update:model-value="onShowMap('demolition')"
       />
     </div>
     <div>
@@ -73,6 +87,20 @@
         color="pink-7"
         keep-color
         @update:model-value="onShowMap('vulkanisch')"
+      />
+      <q-toggle
+        v-model="showMap['rammed_earth']"
+        :label="t('rammed_earth_map')"
+        color="red-9"
+        keep-color
+        @update:model-value="onShowMap('rammed_earth')"
+      />
+      <q-toggle
+        v-model="showMap['adobe_earth']"
+        :label="t('adobe_earth_map')"
+        color="purple-9"
+        keep-color
+        @update:model-value="onShowMap('adobe_earth')"
       />
     </div>
   </div>
@@ -131,7 +159,11 @@ const showMap = ref<{ [key: string]: boolean }>({
   hemp: false,
   corn: false,
   woods: false,
+  rammed_earth: false,
+  adobe_earth: false,
+  sheep: false,
   reynoutria_japonica: false,
+  demolition: false,
   hartgestein: false,
   kalkstein: false,
   konglomerat: false,

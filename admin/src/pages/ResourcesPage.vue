@@ -14,7 +14,7 @@
         :filter="filter"
         binary-state-sort
         @request="onRequest"
-        :rows-per-page-options="[10, 25, 50]"
+        :rows-per-page-options="[10, 25, 50, 0]"
       >
         <template v-slot:top>
           <q-btn
@@ -117,7 +117,7 @@
         </template>
       </q-table>
 
-      <natural-resource-dialog v-model="showEditDialog" :item="selected" @saved="onSaved"></natural-resource-dialog>
+      <resource-dialog v-model="showEditDialog" :item="selected" @saved="onSaved"></resource-dialog>
       <confirm-dialog
         v-model="showConfirmDialog"
         :title="t('remove')"
@@ -131,7 +131,7 @@
 <script setup lang="ts">
 import { Option, Query } from 'src/components/models';
 import { NaturalResource } from 'src/models';
-import NaturalResourceDialog from 'src/components/NaturalResourceDialog.vue';
+import ResourceDialog from 'src/components/ResourceDialog.vue';
 import ConfirmDialog from 'src/components/ConfirmDialog.vue';
 import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 import { makePaginationRequestHandler } from 'src/utils/pagination';
@@ -165,6 +165,15 @@ const columns = computed(() => {
       sortable: true,
     },
     {
+      name: 'published',
+      required: true,
+      label: t('published'),
+      align: 'left',
+      field: 'published_at',
+      sortable: false,
+      style: 'width: 50px',
+    },
+    {
       name: 'type',
       required: true,
       label: t('type'),
@@ -182,21 +191,17 @@ const columns = computed(() => {
       format: toDatetimeString,
       sortable: false,
     },
-    {
-      name: 'published',
-      required: true,
-      label: t('published'),
-      align: 'left',
-      field: 'published_at',
-      sortable: false,
-    },
   ];
 
   if (authStore.isAdmin) {
-    cols.push({
+    cols.splice(2, 0, {
       name: 'action',
       align: 'left',
-      label: t('action'),
+      label: '',
+      field: 'action',
+      required: false,
+      sortable: false,
+      style: 'width: 100px',
     });
   }
 
@@ -215,8 +220,7 @@ const pagination = ref<PaginationOptions>({
   sortBy: 'name',
   descending: false,
   page: 1,
-  rowsPerPage: 10,
-  rowsNumber: 10,
+  rowsPerPage: 50,
 });
 const naturalResourcesTypes = ref<Option[]>([]);
 

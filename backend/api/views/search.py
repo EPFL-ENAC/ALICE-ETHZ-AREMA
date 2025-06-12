@@ -89,7 +89,9 @@ async def find_documents(id: str = Query(None),
 @router.get("/_videos", response_model=SearchResult, response_model_exclude_none=True)
 async def find_videos(
     text: str = Query(None),
+    resources: List[str] = Query(None),
     tags: List[str] = Query(None),
+    entity_types: List[str] = Query(None),
     fields: List[str] = Query(
         ["entity_type", "tags", "id", "parent_id", "name", "legend", "url"]),
     exists: List[str] = Query([]),  # filter documents with a non-empty field
@@ -104,7 +106,9 @@ async def find_videos(
 
     if text:
         mustQueries.append(make_text_criteria(text, VIDEO_ANALYZED_FIELDS))
+    mustQueries.extend(make_resources_criteria(resources))
     mustQueries.extend(make_tags_criteria(tags))
+    mustQueries.extend(make_entity_types_criteria(entity_types))
     mustQueries.extend(make_exists_criteria(exists))
     if relates:
         mustQueries.append({"terms": {"relates_to": relates}})
@@ -121,7 +125,9 @@ async def find_videos(
 @router.get("/_entities", response_model=SearchResult, response_model_exclude_none=True)
 async def find_entities(
     text: str = Query(None),
+    resources: List[str] = Query(None),
     tags: List[str] = Query(None),
+    entity_types: List[str] = Query(None),
     fields: List[str] = Query(
         ["entity_type", "tags", "id", "name", "description", "files", "location", "relates_to"]),
     exists: List[str] = Query([]),  # filter documents with a non-empty field
@@ -138,7 +144,9 @@ async def find_entities(
 
     if text:
         mustQueries.append(make_text_criteria(text, ENTITY_ANALYZED_FIELDS))
+    mustQueries.extend(make_resources_criteria(resources))
     mustQueries.extend(make_tags_criteria(tags))
+    mustQueries.extend(make_entity_types_criteria(entity_types))
     mustQueries.extend(make_exists_criteria(exists))
     mustQueries.extend(make_bbox_criteria(bbox))
     if relates:
@@ -168,18 +176,35 @@ def make_text_criteria(text: str, analyzed_fields: List[str]):
     }
 
 
+def make_resources_criteria(tags: List[str]):
+    mustQueries = []
+    if tags and len(tags) > 0:
+        mustQueries.append({"terms": {"tags": tags}})
+    return mustQueries
+
+
 def make_tags_criteria(tags: List[str]):
-    terms = {}
     mustQueries = []
     if tags:
-        # group terms (urn) by their parent
+        terms = []
+        entity_types = set()
         for tag in tags:
-            vocabulary = tag.split('.', 1)[0]
-            if vocabulary not in terms:
-                terms[vocabulary] = []
-            terms[vocabulary].append(tag)
-        for vocabulary in terms:
-            mustQueries.append({"terms": {"tags": terms[vocabulary]}})
+            entity_type = tag.split(':')[2] if len(
+                tag.split(':')) > 2 else None
+            if entity_type:
+                entity_types.add(entity_type)
+            terms.append(tag)
+        if len(terms) > 0:
+            mustQueries.append({"terms": {"tags": terms}})
+        if len(entity_types) > 0:
+            mustQueries.append({"terms": {"entity_type": list(entity_types)}})
+    return mustQueries
+
+
+def make_entity_types_criteria(entity_types: List[str]):
+    mustQueries = []
+    if entity_types:
+        mustQueries.append({"terms": {"entity_type": entity_types}})
     return mustQueries
 
 

@@ -14,6 +14,7 @@ from api.views.professionals import router as professionals_router
 from api.views.building_elements import router as building_elements_router
 from api.views.taxonomy import router as taxonomy_router
 from api.views.search import router as search_router
+from api.views.users import router as users_router
 from titiler.core.factory import TilerFactory
 
 basicConfig(level=DEBUG)
@@ -111,6 +112,12 @@ app.include_router(
     search_router,
     prefix="/search",
     tags=["Search"],
+)
+
+app.include_router(
+    users_router,
+    prefix="/user",
+    tags=["Users"],
 )
 
 # Create TilerFactory instance for COGs

@@ -59,6 +59,8 @@ export interface PhysicalEntity extends Entity {
   vapor_diffusion_resistance?: number;
   moisture_buffering?: number;
   prosity?: number;
+  water_content?: number;
+  free_saturation?: number;
   liquid_transfer_coefficient?: number;
   u?: number;
   effusivity?: number;
@@ -80,6 +82,8 @@ export interface PhysicalEntity extends Entity {
   vapor_diffusion_resistance_low?: number;
   moisture_buffering_low?: number;
   prosity_low?: number;
+  water_content_low?: number;
+  free_saturation_low?: number;
   liquid_transfer_coefficient_low?: number;
   u_low?: number;
   effusivity_low?: number;
@@ -101,6 +105,8 @@ export interface PhysicalEntity extends Entity {
   vapor_diffusion_resistance_high?: number;
   moisture_buffering_high?: number;
   prosity_high?: number;
+  water_content_high?: number;
+  free_saturation_high?: number;
   liquid_transfer_coefficient_high?: number;
   u_high?: number;
   effusivity_high?: number;
