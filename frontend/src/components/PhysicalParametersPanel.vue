@@ -7,15 +7,18 @@
           <template v-for="field in fields[section]" :key="field">
             <q-item v-if="hasFieldValue(field)" class="q-pa-none" style="padding: 0 !important">
               <q-item-section>
-                <q-item-label>{{ $t(field) }}</q-item-label>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label caption>{{ $t(`${field}_hint`) }}</q-item-label>
+                <q-item-label
+                  >{{ $t(field) }}
+                  <span v-if="$t(`${field}_symbol`)"
+                    >- <span class="text-bold">{{ $t(`${field}_symbol`) }}</span></span
+                  ></q-item-label
+                >
               </q-item-section>
               <q-item-section avatar>
                 <q-item-label caption>
                   {{ getFieldValue(field) }}
-                </q-item-label>
+                  <span v-if="$t(`${field}_unit`)">[{{ $t(`${field}_unit`) }}]</span></q-item-label
+                >
               </q-item-section>
             </q-item>
             <q-separator v-if="hasFieldValue(field)" color="primary" />
@@ -64,7 +67,7 @@ const fields: { [key: string]: string[] } = {
   hygrothermal: hygrothermalParams,
   acoustic: acousticParams,
   fire: fireParams,
-  others: ['air_tightness_hint'],
+  others: ['air_tightness'],
 };
 
 function hasValues(section: string) {
