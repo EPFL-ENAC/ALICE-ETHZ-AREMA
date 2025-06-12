@@ -1,7 +1,7 @@
 export default {
   'building-material': 'Building Material',
   'natural-resource': 'Natural Resource',
-  'technical-construction': 'Technical Construction',
+  'technical-construction': 'Construction Techniques',
   about: 'About',
   absorption_coefficient: 'Absorption Coefficient (at 500Hz)',
   absorption_coefficient_hint: 'α',
