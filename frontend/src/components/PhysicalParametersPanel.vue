@@ -52,6 +52,8 @@ const hygrothermalParams = [
   'diffusivity',
   'porosity',
   'liquid_transfer_coefficient',
+  'water_content',
+  'free_saturation',
 ];
 const acousticParams = ['absorption_coefficient', 'sound_reduction_index'];
 const fireParams = ['reaction_to_fire', 'fire_resistance_class'];
