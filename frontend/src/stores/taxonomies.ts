@@ -19,8 +19,16 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     });
   }
 
-  function toUrn(entityType: string, path: string | string[]) {
-    return `${URN_PREFIX}:${entityType}:${Array.isArray(path) ? path.join('.') : path}`;
+  function isNamespace(urn: string): boolean {
+    return urn.split(':').length === 3 && urn.startsWith(`${URN_PREFIX}:`);
+  }
+
+  function toUrn(entityType: string, path: string | string[] | undefined) {
+    const namespace = `${URN_PREFIX}:${entityType}`;
+    if (!path || (Array.isArray(path) && path.length === 0)) {
+      return namespace;
+    }
+    return `${namespace}:${Array.isArray(path) ? path.join('.') : path}`;
   }
 
   function getTaxonomy(entityTypeOrUrn: string): TaxonomyNode | undefined {
@@ -99,6 +107,7 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     getTaxonomyNode,
     getNode,
     getLabel,
+    isNamespace,
     toUrn,
     asOptions,
   };

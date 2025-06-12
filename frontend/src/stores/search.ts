@@ -1,13 +1,14 @@
 import { defineStore } from 'pinia';
 import { api } from 'src/boot/api';
 import { SearchResult, Document, VideoResult } from 'src/models';
-import { VocabularyOption, TermOption } from 'src/components/models';
+import { TaxonomyNodeOption } from 'src/components/models';
 import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 
 export const useSearchService = defineStore('search', () => {
   const selectedView = ref('map');
   const selectedTerms = ref<string[]>([]);
   const selectedEntityTypes = ref<string[]>([]);
+  const selectedResourceTerms = ref<string[]>([]);
   const filterText = ref('');
   const bbox = ref<number[][]>([]);
   const searching = ref(false);
@@ -74,6 +75,7 @@ export const useSearchService = defineStore('search', () => {
       api
         .get('/search/_entities', {
           params: {
+            resources: selectedResourceTerms.value,
             tags: selectedTerms.value,
             entity_types: selectedEntityTypes.value,
             text: filterText.value,
@@ -90,6 +92,7 @@ export const useSearchService = defineStore('search', () => {
       api
         .get('/search/_entities', {
           params: {
+            resources: selectedResourceTerms.value,
             tags: selectedTerms.value,
             entity_types: selectedEntityTypes.value,
             text: filterText.value,
@@ -143,6 +146,7 @@ export const useSearchService = defineStore('search', () => {
     return api
       .get('/search/_videos', {
         params: {
+          resources: selectedResourceTerms.value,
           tags: selectedTerms.value,
           entity_types: selectedEntityTypes.value,
           text: filterText.value,
@@ -163,46 +167,60 @@ export const useSearchService = defineStore('search', () => {
 
   // selection utils
 
-  function selectTerm(term: TermOption) {
-    if (term.children) {
-      // any selected child terms ?
-      if (term.children.some((child) => selectedTerms.value.includes(child.urn))) {
-        // clear all child terms
-        selectedTerms.value = selectedTerms.value.filter((urn) => !term.children?.find((child) => child.urn === urn));
-      } else {
-        // select all child terms
-        selectedTerms.value.push(...term.children.map((child) => child.urn));
-      }
-    } else {
-      // toggle term selection
-      const urn = term.urn;
-      selectedTerms.value.includes(urn)
-        ? selectedTerms.value.splice(selectedTerms.value.indexOf(urn), 1)
-        : selectedTerms.value.push(urn);
-    }
-  }
-
   function selectUrn(urn: string) {
     selectedTerms.value.includes(urn)
       ? selectedTerms.value.splice(selectedTerms.value.indexOf(urn), 1)
       : selectedTerms.value.push(urn);
   }
 
-  function getSelectedTerms(node: VocabularyOption | TermOption) {
-    return selectedTerms.value.filter((term) => term.startsWith(node.urn)) || [];
+  function selectNode(node: TaxonomyNodeOption) {
+    if (node.children) {
+      // get node leafs recursively
+      const getLeafs = (n: TaxonomyNodeOption): string[] => {
+        if (!n.children || n.children.length === 0) {
+          return [n.value];
+        }
+        return n.children.flatMap((child) => getLeafs(child));
+      };
+      // get all leafs of the node
+      const leafs = getLeafs(node);
+
+      // any selected child terms ?
+      if (leafs.some((child) => selectedTerms.value.includes(child))) {
+        // clear all child terms
+        selectedTerms.value = selectedTerms.value.filter((urn) => !urn.startsWith(node.value));
+      } else {
+        // select all child terms
+        selectedTerms.value.push(...leafs);
+      }
+    } else {
+      // toggle term selection
+      const urn = node.value;
+      selectedTerms.value.includes(urn)
+        ? selectedTerms.value.splice(selectedTerms.value.indexOf(urn), 1)
+        : selectedTerms.value.push(urn);
+    }
   }
 
-  function isTermSelected(term: TermOption) {
-    if (term.children) {
-      return term.children.some((child) => selectedTerms.value.includes(child.urn));
+  function getSelectedNodes(node: TaxonomyNodeOption): string[] {
+    if (!node || !node.value) {
+      return [];
     }
-    return selectedTerms.value.includes(term.urn);
+    return selectedTerms.value.filter((term) => term.startsWith(node.value)) || [];
+  }
+
+  function isNodeSelected(node: TaxonomyNodeOption) {
+    if (node.children) {
+      return node.children.some((child) => selectedTerms.value.includes(child.value));
+    }
+    return selectedTerms.value.includes(node.value);
   }
 
   return {
     selectedView,
     selectedTerms,
     selectedEntityTypes,
+    selectedResourceTerms,
     filterText,
     bbox,
     searching,
@@ -219,9 +237,9 @@ export const useSearchService = defineStore('search', () => {
     search_videos,
     getDocument,
     getRelatedDocuments,
-    selectTerm,
-    getSelectedTerms,
-    isTermSelected,
+    getSelectedNodes,
+    isNodeSelected,
+    selectNode,
     selectUrn,
   };
 });

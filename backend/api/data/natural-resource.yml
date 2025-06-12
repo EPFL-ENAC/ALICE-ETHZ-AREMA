@@ -49,3 +49,9 @@ taxonomy:
               de: "Andere Fasern"
               fr: "Autres fibres"
               it: "Altre fibre"
+          - id: demolition
+            names:
+              en: Demolition
+              de: Abbruch
+              fr: Démolition
+              it: Demolizione

@@ -89,6 +89,7 @@ async def find_documents(id: str = Query(None),
 @router.get("/_videos", response_model=SearchResult, response_model_exclude_none=True)
 async def find_videos(
     text: str = Query(None),
+    resources: List[str] = Query(None),
     tags: List[str] = Query(None),
     entity_types: List[str] = Query(None),
     fields: List[str] = Query(
@@ -105,6 +106,7 @@ async def find_videos(
 
     if text:
         mustQueries.append(make_text_criteria(text, VIDEO_ANALYZED_FIELDS))
+    mustQueries.extend(make_resources_criteria(resources))
     mustQueries.extend(make_tags_criteria(tags))
     mustQueries.extend(make_entity_types_criteria(entity_types))
     mustQueries.extend(make_exists_criteria(exists))
@@ -123,6 +125,7 @@ async def find_videos(
 @router.get("/_entities", response_model=SearchResult, response_model_exclude_none=True)
 async def find_entities(
     text: str = Query(None),
+    resources: List[str] = Query(None),
     tags: List[str] = Query(None),
     entity_types: List[str] = Query(None),
     fields: List[str] = Query(
@@ -141,6 +144,7 @@ async def find_entities(
 
     if text:
         mustQueries.append(make_text_criteria(text, ENTITY_ANALYZED_FIELDS))
+    mustQueries.extend(make_resources_criteria(resources))
     mustQueries.extend(make_tags_criteria(tags))
     mustQueries.extend(make_entity_types_criteria(entity_types))
     mustQueries.extend(make_exists_criteria(exists))
@@ -172,21 +176,28 @@ def make_text_criteria(text: str, analyzed_fields: List[str]):
     }
 
 
+def make_resources_criteria(tags: List[str]):
+    mustQueries = []
+    if tags and len(tags) > 0:
+        mustQueries.append({"terms": {"tags": tags}})
+    return mustQueries
+
+
 def make_tags_criteria(tags: List[str]):
     mustQueries = []
     if tags:
-        nrTerms = []
-        otherTerms = []
+        terms = []
+        entity_types = set()
         for tag in tags:
-            vocabulary = tag.split('.', 1)[0]
-            if vocabulary == "urn:arema:natural-resource:type":
-                nrTerms.append(tag)
-            else:
-                otherTerms.append(tag)
-        if len(nrTerms) > 0:
-            mustQueries.append({"terms": {"tags": nrTerms}})
-        if len(otherTerms) > 0:
-            mustQueries.append({"terms": {"tags": otherTerms}})
+            entity_type = tag.split(':')[2] if len(
+                tag.split(':')) > 2 else None
+            if entity_type:
+                entity_types.add(entity_type)
+            terms.append(tag)
+        if len(terms) > 0:
+            mustQueries.append({"terms": {"tags": terms}})
+        if len(entity_types) > 0:
+            mustQueries.append({"terms": {"entity_type": list(entity_types)}})
     return mustQueries
 
 

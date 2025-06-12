@@ -6,25 +6,6 @@ taxonomy:
       fr: Bâtiments
       it: Edifici
     children:
-      - id: status
-        names:
-          en: Intervention
-          de: Eingriff
-          fr: Intervention
-          it: Intervento
-        children:
-          - id: new
-            names:
-              en: New
-              de: Neu
-              fr: Nouveau
-              it: Nuovo
-          - id: renovation
-            names:
-              en: Renovation
-              de: Renovierung
-              fr: Rénovation
-              it: Ristrutturazione
       - id: type
         names:
           en: Type
@@ -68,3 +49,22 @@ taxonomy:
               de: Einfache Struktur
               fr: Structure simple
               it: Struttura semplice
+      - id: status
+        names:
+          en: Intervention
+          de: Eingriff
+          fr: Intervention
+          it: Intervento
+        children:
+          - id: new
+            names:
+              en: New
+              de: Neu
+              fr: Nouveau
+              it: Nuovo
+          - id: renovation
+            names:
+              en: Renovation
+              de: Renovierung
+              fr: Rénovation
+              it: Ristrutturazione

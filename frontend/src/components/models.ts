@@ -26,6 +26,12 @@ export interface Option {
   children?: Option[];
 }
 
+export interface TaxonomyNodeOption {
+  value: string;
+  label: string;
+  children?: TaxonomyNodeOption[];
+}
+
 export interface VocabularyOption {
   value: string;
   label: string;
