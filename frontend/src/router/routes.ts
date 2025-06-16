@@ -1,10 +1,15 @@
 import { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
+  //{
+  //  path: '/',
+  //  component: () => import('layouts/HomeLayout.vue'),
+  //  children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+  //},
   {
     path: '/',
-    component: () => import('layouts/HomeLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    component: () => import('layouts/TempLayout.vue'),
+    children: [{ path: '', component: () => import('pages/ComingSoonPage.vue') }],
   },
   {
     path: '/',
