@@ -13,6 +13,9 @@
           <q-item-section avatar v-if="isImage(file)">
             <q-img :src="`${baseUrl}/files/${file.ref.path}`" width="200px" fit="scale-down" />
           </q-item-section>
+          <q-item-section avatar v-if="isSvg(file)">
+            <img :src="`${baseUrl}/files/${file.ref.path}`" width="200" />
+          </q-item-section>
           <q-item-section avatar>
             <div class="row">
               <q-btn icon="arrow_upward" rounded dense flat size="12px" @click="onUpFile(file, idx)" />
@@ -34,7 +37,7 @@
       multiple
       :label="$t('upload_files')"
       :hint="$t('upload_files_hint')"
-      accept=".jpg, .jpeg, .png, .pdf, .mp4, .webp"
+      accept=".jpg, .jpeg, .png, .pdf, .mp4, .webp, .svg"
       :disable="uploading"
       :loading="uploading"
       @update:model-value="onLocalFilesSelected"
@@ -77,6 +80,11 @@ watch(
 function isImage(file: FileItem) {
   const name = file.url ? file.url : file.ref.name;
   return ['.png', '.jpg', '.jpeg', '.webp'].find((suffix) => name.toLowerCase().endsWith(suffix));
+}
+
+function isSvg(file: FileItem) {
+  const name = file.url ? file.url : file.ref.name;
+  return ['.svg'].find((suffix) => name.toLowerCase().endsWith(suffix));
 }
 
 function onDeleteFile(file: FileItem, idx: number) {
