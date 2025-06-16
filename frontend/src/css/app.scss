@@ -80,3 +80,11 @@ a {
 .q-carousel__navigation-inner {
   margin-bottom: 4px;
 }
+
+.fade-text {
+  max-height: 100px;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}

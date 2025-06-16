@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="row q-col-gutter-md">
     <template v-for="section in sections" :key="section">
-      <div v-if="hasValues(section)">
+      <div class="col-12 col-lg-6" v-if="hasValues(section)">
         <div class="text-h6">{{ $t(section) }}</div>
         <q-list dense class="q-mb-md">
           <template v-for="field in fields[section]" :key="field">
@@ -38,7 +38,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const structuralParams = [
+const mechanicalParams = [
   'density',
   'compressive_strength',
   'tensile_strength',
@@ -61,9 +61,9 @@ const hygrothermalParams = [
 const acousticParams = ['absorption_coefficient', 'sound_reduction_index'];
 const fireParams = ['reaction_to_fire', 'fire_resistance_class'];
 
-const sections = ['structural', 'hygrothermal', 'acoustic', 'fire'];
+const sections = ['mechanical', 'hygrothermal', 'acoustic', 'fire'];
 const fields: { [key: string]: string[] } = {
-  structural: structuralParams,
+  mechanical: mechanicalParams,
   hygrothermal: hygrothermalParams,
   acoustic: acousticParams,
   fire: fireParams,
