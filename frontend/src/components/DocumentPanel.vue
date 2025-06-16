@@ -126,11 +126,20 @@
             {{ $t('relates_to') }}
           </div>
           <div class="row q-gutter-md">
-            <template v-for="relation in relationSummaries" :key="`${relation.entity_type}:${relation.id}`">
-              <q-card flat class="q-mb-md cursor-pointer" @click="onDocument(relation)" style="min-width: 200px">
+            <template v-for="entity_type in Object.keys(relationSummariesPerEntityType)" :key="entity_type">
+              <q-card flat class="q-mb-md" style="min-width: 200px">
                 <q-card-section>
-                  <div class="text-primary">{{ $t(relation.entity_type) }}</div>
-                  <div class="text-bold">{{ relation.name }}</div>
+                  <div class="text-primary">{{ $t(entity_type) }}</div>
+                  <ul class="q-mt-xs q-mb-none q-pl-md">
+                    <li
+                      v-for="doc in relationSummariesPerEntityType[entity_type]"
+                      :key="doc.id"
+                      class="text-bold cursor-pointer"
+                      @click="onDocument(doc)"
+                    >
+                      {{ doc.name }}
+                    </li>
+                  </ul>
                 </q-card-section>
               </q-card>
             </template>
@@ -162,6 +171,17 @@ const props = defineProps<Props>();
 
 const slide = ref(0);
 const relationSummaries = ref<Document[]>([]);
+
+const relationSummariesPerEntityType = computed(() => {
+  const relations: { [key: string]: Document[] } = {};
+  relationSummaries.value.forEach((doc) => {
+    if (!relations[doc.entity_type]) {
+      relations[doc.entity_type] = [];
+    }
+    relations[doc.entity_type].push(doc);
+  });
+  return relations;
+});
 
 onMounted(init);
 
