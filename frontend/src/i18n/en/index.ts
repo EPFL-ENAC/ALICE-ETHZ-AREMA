@@ -53,6 +53,7 @@ export default {
   liquid_transfer_coefficient_unit: 'kg/(m²*sqrt(s))',
   map: 'Map',
   material: 'Material',
+  mechanical: 'Mechanical',
   moisture_buffering: 'Moisture Buffering Value',
   moisture_buffering_symbol: 'MBV',
   moisture_buffering_unit: 'g/(m²*%RH)',

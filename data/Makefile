@@ -34,3 +34,9 @@ tif-revert:
 tif-nodata:
 	cd work && \
 	gdal_translate -a_nodata ${value} ${name}.tif ${name}_nodata.tif
+
+cdn:
+	s3cmd put --recursive --acl-public --guess-mime-type ${version} s3://${bucket}/${folder}/
+
+sync:
+	s3cmd sync s3://${bucket}/${folder}/${version}/ ${version}-local/

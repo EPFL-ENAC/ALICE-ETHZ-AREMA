@@ -4,10 +4,7 @@ import { Document, FileItem } from 'src/models';
 export function getImageUrls(row: Document) {
   const images = row.files
     ? row.files
-        .filter(
-          (fileRef) =>
-            fileRef.ref && fileRef.ref.mime_type?.startsWith('image'),
-        )
+        .filter((fileRef) => fileRef.ref && fileRef.ref.mime_type?.startsWith('image'))
         .map((fileRef) => `${cdnUrl}/${fileRef.ref?.path}`)
     : [];
   return images;
@@ -15,9 +12,7 @@ export function getImageUrls(row: Document) {
 
 export function isImage(file: FileItem) {
   const name = file.url ? file.url : file.ref?.name;
-  return ['.png', '.jpg', '.jpeg', '.webp'].find(
-    (suffix) => name && name.toLowerCase().endsWith(suffix),
-  );
+  return ['.png', '.jpg', '.jpeg', '.webp', '.svg'].find((suffix) => name && name.toLowerCase().endsWith(suffix));
 }
 
 export function isVideo(file: FileItem) {

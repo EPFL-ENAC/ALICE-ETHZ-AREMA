@@ -24,21 +24,11 @@
                   <tags-badges :item="row" />
                 </div>
                 <q-item-label caption>
-                  <q-markdown :src="row.description" />
+                  <q-markdown :src="row.description" class="fade-text" />
                 </q-item-label>
-                <!-- <div v-if="getImageUrls(row).length">
-                <q-carousel animated v-model="slide" arrows navigation infinite>
-                  <template
-                    v-for="(imageUrl, index) in getImageUrls(row)"
-                    :key="imageUrl"
-                  >
-                    <q-carousel-slide :name="index + 1" :img-src="imageUrl" />
-                  </template>
-                </q-carousel>
-              </div> -->
               </q-item-section>
               <q-item-section v-if="getImageUrls(row).length" avatar>
-                <q-img :src="getImageUrls(row)[0]" style="max-height: 100px; width: 150px" />
+                <q-img :src="getImageUrls(row)[0]" height="100px" fit="cover" style="min-width: 100px" />
               </q-item-section>
             </q-item>
           </template>

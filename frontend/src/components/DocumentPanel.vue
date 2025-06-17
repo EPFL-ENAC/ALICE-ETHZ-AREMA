@@ -40,51 +40,49 @@
             </div>
 
             <div v-if="document.files?.length" class="q-mt-xl q-mb-xl">
-              <q-carousel
-                v-model="slide"
-                transition-prev="scale"
-                transition-next="scale"
-                swipeable
-                control-color="secondary"
-                padding
-                :thumbnails="document.files?.length > 1"
-                :arrows="document.files?.length > 1"
-                infinite
-                height="500px"
-                class="bg-grey-2 text-grey-6"
-              >
-                <template v-for="(file, index) in document.files" :key="index">
-                  <q-carousel-slide v-if="isImage(file)" :name="index" :img-src="toFileUrl(file)">
-                    <div v-if="file.legend" class="absolute-bottom text-center a-legend">
-                      <div class="text-caption">{{ file.legend }}</div>
-                    </div>
-                  </q-carousel-slide>
-
-                  <q-carousel-slide v-else-if="isVideo(file)" :name="index">
-                    <q-video :src="toFileUrl(file)" class="absolute-full" />
-                    <div v-if="file.legend" class="absolute-bottom text-center a-legend">
-                      <div class="text-caption">{{ file.legend }}</div>
-                    </div>
-                  </q-carousel-slide>
-
-                  <q-carousel-slide v-else-if="isPDF(file)" :name="index" style="padding: 0">
-                    <object type="application/pdf" :data="toFileUrl(file)" width="100%" height="100%" />
-                    <div v-if="file.legend" class="absolute-bottom text-center a-legend">
-                      <div class="text-caption">{{ file.legend }}</div>
-                    </div>
-                  </q-carousel-slide>
-
-                  <q-carousel-slide v-else :name="index" class="column no-wrap flex-center">
+              <q-tab-panels v-model="slide" animated>
+                <q-tab-panel v-for="(file, index) in document.files" :key="index" :name="index" class="q-pa-none">
+                  <div v-if="isImage(file)">
+                    <q-img :src="toFileUrl(file)" height="500px" fit="contain" />
+                  </div>
+                  <div v-else-if="isVideo(file)">
+                    <q-video :src="toFileUrl(file)" style="height: 500px" />
+                  </div>
+                  <div v-else-if="isPDF(file)">
+                    <object type="application/pdf" :data="toFileUrl(file)" width="100%" height="500px" />
+                  </div>
+                  <div v-else class="column no-wrap flex-center">
                     <div class="text-uppercase">{{ $t('download') }}</div>
                     <q-btn flat color="secondary" @click="onDownload(file)">
                       <q-icon :name="isPDF(file) ? 'picture_as_pdf' : 'file_download'" size="100px" />
                     </q-btn>
-                    <div v-if="file.legend" class="absolute-bottom text-center a-legend">
-                      <div class="text-caption">{{ file.legend }}</div>
-                    </div>
-                  </q-carousel-slide>
-                </template>
-              </q-carousel>
+                  </div>
+                  <div v-if="file.legend" class="absolute-bottom text-center a-legend">
+                    <div class="text-caption">{{ file.legend }}</div>
+                  </div>
+                </q-tab-panel>
+              </q-tab-panels>
+              <q-tabs
+                v-if="document.files.length > 1"
+                v-model="slide"
+                class="text-primary q-mt-sm"
+                active-color="secondary"
+                indicator-color="secondary"
+                switch-indicator
+                dense
+              >
+                <q-tab
+                  v-for="(file, index) in document.files"
+                  :key="index"
+                  :name="index"
+                  class="q-mr-sm q-ml-sm q-pr-sm q-pl-sm"
+                >
+                  <q-img v-if="isImage(file)" :src="toFileUrl(file)" height="50px" fit="scale-down" />
+                  <q-icon v-else-if="isVideo(file)" name="video_library" size="30px" />
+                  <q-icon v-else-if="isPDF(file)" name="picture_as_pdf" size="30px" />
+                  <q-icon v-else name="file_download" />
+                </q-tab>
+              </q-tabs>
             </div>
             <div class="text-body1">
               <q-markdown :src="document.article_bottom" />
@@ -126,11 +124,20 @@
             {{ $t('relates_to') }}
           </div>
           <div class="row q-gutter-md">
-            <template v-for="relation in relationSummaries" :key="`${relation.entity_type}:${relation.id}`">
-              <q-card flat class="q-mb-md cursor-pointer" @click="onDocument(relation)" style="min-width: 200px">
+            <template v-for="entity_type in Object.keys(relationSummariesPerEntityType)" :key="entity_type">
+              <q-card flat class="q-mb-md" style="min-width: 200px">
                 <q-card-section>
-                  <div class="text-primary">{{ $t(relation.entity_type) }}</div>
-                  <div class="text-bold">{{ relation.name }}</div>
+                  <div class="text-primary">{{ $t(entity_type) }}</div>
+                  <ul class="q-mt-xs q-mb-none q-pl-md">
+                    <li
+                      v-for="doc in relationSummariesPerEntityType[entity_type]"
+                      :key="doc.id"
+                      class="text-bold cursor-pointer"
+                      @click="onDocument(doc)"
+                    >
+                      {{ doc.name }}
+                    </li>
+                  </ul>
                 </q-card-section>
               </q-card>
             </template>
@@ -162,6 +169,17 @@ const props = defineProps<Props>();
 
 const slide = ref(0);
 const relationSummaries = ref<Document[]>([]);
+
+const relationSummariesPerEntityType = computed(() => {
+  const relations: { [key: string]: Document[] } = {};
+  relationSummaries.value.forEach((doc) => {
+    if (!relations[doc.entity_type]) {
+      relations[doc.entity_type] = [];
+    }
+    relations[doc.entity_type].push(doc);
+  });
+  return relations;
+});
 
 onMounted(init);
 
