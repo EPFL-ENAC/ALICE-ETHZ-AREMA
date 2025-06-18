@@ -22,6 +22,8 @@ const api = axios.create({
   baseURL: baseUrl,
 });
 
+const isDevelopment = appEnv.API_URL.includes('localhost') || appEnv.API_URL.includes('arema-dev.epfl.ch');
+
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
@@ -34,4 +36,4 @@ export default boot(({ app }) => {
   //       so you can easily perform requests against your app's API
 });
 
-export { api, baseUrl, cdnUrl, keycloak };
+export { api, baseUrl, cdnUrl, keycloak, isDevelopment };

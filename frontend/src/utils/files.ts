@@ -4,8 +4,8 @@ import { Document, FileItem } from 'src/models';
 export function getImageUrls(row: Document) {
   const images = row.files
     ? row.files
-        .filter((fileRef) => fileRef.ref && fileRef.ref.mime_type?.startsWith('image'))
-        .map((fileRef) => `${cdnUrl}/${fileRef.ref?.path}`)
+        .filter((fileRef) => isImage(fileRef))
+        .map((fileRef) => (fileRef.url ? fileRef.url : `${cdnUrl}/${fileRef.ref?.path}`))
     : [];
   return images;
 }
@@ -25,12 +25,13 @@ export function isVideo(file: FileItem) {
 }
 
 export function isPDF(file: FileItem) {
-  return file.ref?.mime_type === 'application/pdf';
+  const name = file.url ? file.url : file.ref?.name;
+  return ['.pdf'].some((suffix) => name && name.toLowerCase().endsWith(suffix));
 }
 
 export function toFileUrl(file: FileItem) {
   if (file.url) {
-    return toEmbededVideoUrl(file.url);
+    return isVideo(file) ? toEmbededVideoUrl(file.url) : file.url;
   }
   return `${cdnUrl}/${file.ref?.path}`;
 }

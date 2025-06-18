@@ -33,6 +33,9 @@ export interface Taxonomy {
 export interface Entity {
   id?: number;
   name: string;
+  client?: string;
+  gross_internal_area?: number;
+  year?: number;
   description?: string;
   article_top?: string;
   article_bottom?: string;

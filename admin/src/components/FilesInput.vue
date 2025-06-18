@@ -11,10 +11,12 @@
             <q-input filled v-model="file.legend" :label="$t('legend')" />
           </q-item-section>
           <q-item-section avatar v-if="isImage(file)">
-            <q-img :src="`${baseUrl}/files/${file.ref.path}`" width="200px" fit="scale-down" />
+            <q-img v-if="file.url" :src="file.url" width="200px" fit="scale-down" />
+            <q-img v-else-if="file.ref" :src="`${baseUrl}/files/${file.ref.path}`" width="200px" fit="scale-down" />
           </q-item-section>
           <q-item-section avatar v-if="isSvg(file)">
-            <img :src="`${baseUrl}/files/${file.ref.path}`" width="200" />
+            <img v-if="file.url" :src="file.url" width="200" />
+            <img v-else-if="file.ref" :src="`${baseUrl}/files/${file.ref.path}`" width="200" />
           </q-item-section>
           <q-item-section avatar>
             <div class="row">
@@ -37,7 +39,7 @@
       multiple
       :label="$t('upload_files')"
       :hint="$t('upload_files_hint')"
-      accept=".jpg, .jpeg, .png, .pdf, .mp4, .webp, .svg"
+      accept=".jpg, .jpeg, .png, .pdf, .mp4, .webp, .svg, .txt, .doc, .docx, .xls, .xlsx"
       :disable="uploading"
       :loading="uploading"
       @update:model-value="onLocalFilesSelected"

@@ -4,8 +4,10 @@
       <img
         v-if="$q.screen.gt.sm"
         src="/arema-h-1.svg"
+        class="cursor-pointer"
         :style="home ? `height: ${homeStore.toolbarRatio * 30}px` : 'height: 30px'"
         style="filter: invert(100%)"
+        @click="toHome"
       />
       <q-space />
       <q-btn
@@ -34,6 +36,7 @@ const rightDrawerOpen = ref(props.modelValue);
 
 const homeStore = useHome();
 const $q = useQuasar();
+const router = useRouter();
 
 onMounted(() => {
   homeStore.reset();
@@ -47,4 +50,8 @@ function onToggleDrawer() {
 onBeforeRouteUpdate(() => {
   rightDrawerOpen.value = false;
 });
+
+function toHome() {
+  router.push({ name: 'home' });
+}
 </script>
