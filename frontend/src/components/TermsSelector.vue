@@ -12,7 +12,8 @@
         no-caps
         size="md"
         :label="taxoNode.label"
-        class="on-left q-mb-sm"
+        :title="$t('click_twice_to_select')"
+        class="on-left"
         @click="onTaxoNodeSelect(taxoNode)"
       >
         <q-badge
@@ -25,7 +26,7 @@
         </q-badge>
       </q-btn>
     </div>
-    <div class="q-mt-sm" v-if="selectedNode">
+    <div class="q-mt-md" v-if="selectedNode">
       <template v-for="node in selectedNode.children" :key="node.value">
         <q-btn-dropdown
           v-if="node.children?.length"
@@ -42,7 +43,7 @@
         >
           <template v-slot:label>
             {{ node.label }}
-            <q-badge v-if="getSelectedNodes(node).length" color="primary" class="text-white q-ml-xs">
+            <q-badge v-if="getSelectedNodes(node).length" color="white" class="text-primary q-ml-xs">
               {{ getSelectedNodes(node).length }}
             </q-badge>
           </template>
@@ -77,14 +78,16 @@
         />
       </template>
     </div>
+    <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
     <div>
-      <div class="q-gutter-sm">
+      <div class="q-gutter-sm text-secondary">
         <template v-for="tagOption in resourceTagOptions" :key="tagOption.urn">
           <q-checkbox
             v-model="searchService.selectedResourceTerms"
             :val="tagOption.urn"
-            color="primary"
+            color="secondary"
             :label="tagOption.label"
+            class="q-mt-none"
             @update:model-value="onResourceTag"
           />
         </template>

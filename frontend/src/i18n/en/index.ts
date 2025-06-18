@@ -126,4 +126,5 @@ export default {
   low: 'Low',
   standard: 'Standard',
   high: 'High',
+  click_twice_to_select: 'Click twice to select or deselect all items',
 };
