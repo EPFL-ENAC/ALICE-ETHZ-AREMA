@@ -48,6 +48,7 @@ export default {
   free_saturation: 'Free Saturation',
   free_saturation_symbol: 'wf',
   free_saturation_unit: 'kg/m³',
+  gross_internal_area: 'Gross internal area: {area} m²',
   liquid_transfer_coefficient: 'Liquid Transfer Coefficient for Absorption',
   liquid_transfer_coefficient_symbol: 'A',
   liquid_transfer_coefficient_unit: 'kg/(m²*sqrt(s))',
@@ -119,4 +120,5 @@ export default {
   konglomerat_map: 'Conglomerate',
   sandstein_map: 'Sandstone',
   vulkanisch_map: 'Volcanic',
+  year: 'Year: {year}',
 };

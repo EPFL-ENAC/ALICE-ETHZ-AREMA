@@ -96,6 +96,15 @@
           </div>
         </div>
         <div class="col-12 col-md-2">
+          <q-markdown v-if="document.client" :src="document.client" class="text-primary text-caption" />
+          <div class="q-mb-md">
+            <div v-if="document.gross_internal_area" class="text-secondary text-caption">
+              {{ $t('gross_internal_area', { area: document.gross_internal_area }) }}
+            </div>
+            <div v-if="document.year" class="text-secondary text-caption">
+              {{ $t('year', { year: document.year }) }}
+            </div>
+          </div>
           <q-markdown v-if="document.side_note" :src="document.side_note" class="text-primary text-caption" />
           <external-links-panel v-if="$q.screen.lt.md" :document="document" />
         </div>
