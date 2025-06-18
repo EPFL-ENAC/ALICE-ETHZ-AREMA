@@ -4,12 +4,12 @@ const routes: RouteRecordRaw[] = [
   //{
   //  path: '/',
   //  component: () => import('layouts/HomeLayout.vue'),
-  //  children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+  //  children: [{ name: 'home', path: '', component: () => import('pages/IndexPage.vue') }],
   //},
   {
     path: '/',
     component: () => import('layouts/TempLayout.vue'),
-    children: [{ path: '', component: () => import('pages/ComingSoonPage.vue') }],
+    children: [{ name: 'home', path: '', component: () => import('pages/ComingSoonPage.vue') }],
   },
   {
     path: '/',
