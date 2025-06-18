@@ -1,9 +1,27 @@
 <template>
   <div class="container">
-    <q-btn icon="layers" padding="2px" color="white" text-color="grey-10" no-caps class="layers" size="15px">
+    <q-btn
+      :label="$t('resources')"
+      icon="layers"
+      color="white"
+      text-color="grey-10"
+      no-caps
+      class="layers bg-white"
+      size="12px"
+    >
       <q-menu>
         <q-list>
-          <q-item dense unelevated clickable v-for="key in Object.keys(showMap)" :key="key" @click="onShowMap(key)">
+          <q-item
+            dense
+            unelevated
+            clickable
+            v-for="key in Object.keys(showMap)"
+            :key="key"
+            @click="
+              showMap[key] = !showMap[key];
+              onShowMap(key);
+            "
+          >
             <q-item-section>
               <q-item-label>{{ t(`${key}_map`) }}</q-item-label>
             </q-item-section>
@@ -344,8 +362,8 @@ function onShowMap(name: string) {
 .layers {
   position: absolute;
   z-index: 10;
-  top: 145px;
-  right: 26px;
+  top: 10px;
+  left: 10px;
 }
 .mapview {
   position: relative;
