@@ -4,8 +4,8 @@ import { Document, FileItem } from 'src/models';
 export function getImageUrls(row: Document) {
   const images = row.files
     ? row.files
-        .filter((fileRef) => fileRef.ref && fileRef.ref.mime_type?.startsWith('image'))
-        .map((fileRef) => `${cdnUrl}/${fileRef.ref?.path}`)
+        .filter((fileRef) => isImage(fileRef))
+        .map((fileRef) => (fileRef.url ? fileRef.url : `${cdnUrl}/${fileRef.ref?.path}`))
     : [];
   return images;
 }
