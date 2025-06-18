@@ -16,7 +16,7 @@
       @update:model-value="searchService.search_filtered_entities()"
     />
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
-    <terms-selector @update:terms="onTermsUpdate" />
+    <terms-selector @update:terms="onTermsUpdate" :view="searchService.selectedView" />
     <q-separator size="2px" class="bg-primary q-mt-sm q-mb-md" />
     <div class="q-mt-md q-mb-md">
       <q-btn

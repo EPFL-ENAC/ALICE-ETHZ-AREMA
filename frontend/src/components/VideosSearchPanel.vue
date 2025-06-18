@@ -16,7 +16,7 @@
       @update:model-value="searchService.search_videos()"
     />
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
-    <terms-selector @update:terms="onTermsUpdate" />
+    <terms-selector @update:terms="onTermsUpdate" view="list" />
     <q-separator size="2px" class="bg-primary q-mt-sm q-mb-md" />
     <q-spinner-dots v-if="searchService.searching" size="md" class="q-mb-md" />
     <videos-results />
@@ -29,13 +29,9 @@ import VideosResults from 'src/components/VideosResults.vue';
 
 const taxonomies = useTaxonomyStore();
 const searchService = useSearchService();
-const selectedEntityTypes = ref<{ [key: string]: boolean }>({});
 
 onMounted(() => {
   taxonomies.init().then(() => {
-    taxonomies.taxonomies?.taxonomy.forEach((tx) => {
-      selectedEntityTypes.value[tx.id] = searchService.selectedEntityTypes.includes(tx.id);
-    });
     searchService.search_videos(100);
   });
 });

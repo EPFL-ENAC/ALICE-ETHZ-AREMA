@@ -5,7 +5,7 @@
         v-for="taxoNode in nodes"
         :key="taxoNode.value"
         :outline="taxoNode.value !== selectedNode?.value"
-        :disable="searchService.searching"
+        v-show="!isNodeHidden(taxoNode)"
         color="primary"
         unelevated
         square
@@ -26,8 +26,8 @@
         </q-badge>
       </q-btn>
     </div>
-    <div class="q-mt-md" v-if="selectedNode">
-      <template v-for="node in selectedNode.children" :key="node.value">
+    <div class="q-mt-md" v-show="!isNodeHidden(selectedNode)">
+      <template v-for="node in selectedNode?.children" :key="node.value">
         <q-btn-dropdown
           v-if="node.children?.length"
           :outline="!isNodeSelected(node)"
@@ -101,6 +101,12 @@ import { TermOption, TaxonomyNodeOption } from 'src/components/models';
 
 const taxonomyStore = useTaxonomyStore();
 const searchService = useSearchService();
+
+interface Props {
+  view: string;
+}
+
+const props = defineProps<Props>();
 
 const emit = defineEmits(['update:terms']);
 
@@ -186,6 +192,11 @@ function getSelectedTaxoNodes(node: TaxonomyNodeOption) {
 
 function isNodeSelected(node: TaxonomyNodeOption) {
   return searchService.isNodeSelected(node);
+}
+
+function isNodeHidden(node: TaxonomyNodeOption | undefined) {
+  if (!node) return true;
+  return props.view === 'map' && node.value !== 'urn:arema:building' && node.value !== 'urn:arema:professional';
 }
 
 function onResourceTag() {
