@@ -4,7 +4,7 @@
       {{ $t('copyright') }}
     </div>
     <div class="text-black" style="font-size: x-large">
-      <q-markdown :src="content" />
+      <q-markdown :src="content" no-heading-anchor-links />
     </div>
   </q-page>
 </template>
@@ -13,7 +13,7 @@
 const content = ref('');
 
 onMounted(async () => {
-  fetch('copyright.md').then((response) => {
+  fetch('copyright-en.md').then((response) => {
     response.text().then((text) => {
       content.value = text;
     });

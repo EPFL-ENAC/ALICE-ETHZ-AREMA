@@ -52,6 +52,6 @@ onBeforeRouteUpdate(() => {
 });
 
 function toHome() {
-  router.push({ name: 'home' });
+  router.push('/');
 }
 </script>

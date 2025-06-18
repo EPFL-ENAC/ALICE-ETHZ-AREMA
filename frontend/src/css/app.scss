@@ -54,6 +54,15 @@ a {
   background-color: #f6f8fa;
 }
 
+.text-page h1,
+.text-page h2,
+.text-page h3,
+.text-page h4,
+.text-page h5 {
+  color: $secondary;
+  text-transform: uppercase;
+}
+
 .q-btn--outline:before {
   border: 2px solid currentColor;
 }

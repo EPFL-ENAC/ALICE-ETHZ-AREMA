@@ -4,7 +4,7 @@
       {{ $t('external_links') }}
     </div>
     <q-separator color="primary" class="q-mb-sm" />
-    <q-markdown :src="document.external_links" />
+    <q-markdown :src="document.external_links" no-heading-anchor-links />
   </div>
 </template>
 

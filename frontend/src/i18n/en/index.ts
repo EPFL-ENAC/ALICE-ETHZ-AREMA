@@ -122,4 +122,8 @@ export default {
   sandstein_map: 'Sandstone',
   vulkanisch_map: 'Volcanic',
   year: 'Year: {year}',
+  client: 'Client: {client}',
+  low: 'Low',
+  standard: 'Standard',
+  high: 'High',
 };

@@ -15,7 +15,7 @@
       />
     </div>
     <div>
-      <about-panel class="q-pa-md bg-primary" style="min-height: 50vh" />
+      <purpose-panel class="q-pa-md bg-primary" style="min-height: 50vh" />
     </div>
     <div>
       <search-panel class="q-pa-md" style="min-height: 80vh" />
@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import AboutPanel from 'src/components/AboutPanel.vue';
+import PurposePanel from 'src/components/PurposePanel.vue';
 import SearchPanel from 'src/components/SearchPanel.vue';
 import { useQuasar } from 'quasar';
 import { useHome } from 'src/stores/home';

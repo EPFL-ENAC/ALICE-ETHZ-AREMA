@@ -20,7 +20,7 @@
             <tags-badges :item="document" />
           </div>
           <div class="text-h5 q-mb-lg">
-            <q-markdown :src="document.description" />
+            <q-markdown :src="document.description" no-heading-anchor-links />
           </div>
           <div class="q-mb-lg">
             <physical-parameters-panel :document="document" />
@@ -36,11 +36,11 @@
         <div class="col-12 col-md-6">
           <div>
             <div class="text-body1">
-              <q-markdown :src="document.article_top" />
+              <q-markdown :src="document.article_top" no-heading-anchor-links />
             </div>
 
             <div v-if="document.files?.length" class="q-mt-xl q-mb-xl">
-              <q-tab-panels v-model="slide" animated>
+              <q-tab-panels v-model="slide" animated style="background-color: transparent">
                 <q-tab-panel v-for="(file, index) in document.files" :key="index" :name="index" class="q-pa-none">
                   <div v-if="isImage(file)">
                     <q-img :src="toFileUrl(file)" height="500px" fit="contain" />
@@ -68,7 +68,7 @@
                       <div v-if="file.ref" class="text-secondary">{{ file.ref?.name }}</div>
                     </div>
                   </div>
-                  <div v-if="file.legend" class="absolute-bottom text-center a-legend">
+                  <div v-if="file.legend" class="text-center a-legend">
                     <div class="text-caption">{{ file.legend }}</div>
                   </div>
                 </q-tab-panel>
@@ -91,13 +91,15 @@
               </q-tabs>
             </div>
             <div class="text-body1">
-              <q-markdown :src="document.article_bottom" />
+              <q-markdown :src="document.article_bottom" no-heading-anchor-links />
             </div>
           </div>
         </div>
         <div class="col-12 col-md-2">
-          <q-markdown v-if="document.client" :src="document.client" class="text-primary text-caption" />
           <div class="q-mb-md">
+            <div v-if="document.client" class="text-secondary text-caption">
+              {{ $t('client', { client: document.client }) }}
+            </div>
             <div v-if="document.gross_internal_area" class="text-secondary text-caption">
               {{ $t('gross_internal_area', { area: document.gross_internal_area }) }}
             </div>
@@ -105,7 +107,12 @@
               {{ $t('year', { year: document.year }) }}
             </div>
           </div>
-          <q-markdown v-if="document.side_note" :src="document.side_note" class="text-primary text-caption" />
+          <q-markdown
+            v-if="document.side_note"
+            :src="document.side_note"
+            class="text-primary text-caption"
+            no-heading-anchor-links
+          />
           <external-links-panel v-if="$q.screen.lt.md" :document="document" />
         </div>
         <div class="col-12 col-md-1"></div>

@@ -11,7 +11,7 @@
                 <div>
                   <tags-badges :item="row" />
                 </div>
-                <q-markdown :src="row.description" class="fade-text" />
+                <q-markdown :src="row.description" class="fade-text" no-heading-anchor-links />
                 <div v-if="getImageUrls(row).length" class="q-mt-md">
                   <q-img :src="getImageUrls(row)[0]" height="100px" style="max-width: 100%" fit="cover" />
                 </div>

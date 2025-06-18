@@ -16,7 +16,14 @@
               </q-item-section>
               <q-item-section avatar>
                 <q-item-label caption>
-                  {{ getFieldValue(field) }}
+                  <span
+                    v-for="(value, index) in getFieldValue(field)"
+                    :key="index"
+                    :title="index === 0 ? $t('low') : index === 1 ? $t('standard') : $t('high')"
+                  >
+                    {{ value }}
+                    <span v-if="index < getFieldValue(field).length - 1"> / </span>
+                  </span>
                   <span v-if="$t(`${field}_unit`)">[{{ $t(`${field}_unit`) }}]</span></q-item-label
                 >
               </q-item-section>
@@ -84,6 +91,6 @@ function getFieldValues(field: string) {
 
 function getFieldValue(field: string) {
   const values = getFieldValues(field);
-  return values.map((value) => value || ' - ').join(' / ');
+  return values.map((value) => value || ' - ');
 }
 </script>
