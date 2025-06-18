@@ -13,12 +13,12 @@ taxonomy:
           fr: Type
           it: Tipo
         children:
-          - id: multi-family-house
+          - id: multi-storey-house
             names:
-              en: Multi Family House
+              en: Multi-Storey House
               de: Mehrfamilienhaus
-              fr: Maison multi-familiale
-              it: Casa plurifamiliare
+              fr: Immeuble d'habitation
+              it: Edificio plurifamiliare
           - id: single-family-house
             names:
               en: Single Family House
