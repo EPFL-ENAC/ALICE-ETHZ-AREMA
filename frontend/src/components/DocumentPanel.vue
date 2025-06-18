@@ -49,13 +49,24 @@
                     <q-video :src="toFileUrl(file)" style="height: 500px" />
                   </div>
                   <div v-else-if="isPDF(file)">
-                    <object type="application/pdf" :data="toFileUrl(file)" width="100%" height="500px" />
+                    <object type="application/pdf" :data="toFileUrl(file)" width="100%" height="500px">
+                      <div class="q-pa-md text-center">
+                        <div class="text-uppercase">{{ $t('download') }}</div>
+                        <q-btn flat color="secondary" @click="onDownload(file)">
+                          <q-icon name="picture_as_pdf" size="100px" />
+                        </q-btn>
+                        <div v-if="file.ref" class="text-secondary">{{ file.ref?.name }}</div>
+                      </div>
+                    </object>
                   </div>
                   <div v-else class="column no-wrap flex-center">
-                    <div class="text-uppercase">{{ $t('download') }}</div>
-                    <q-btn flat color="secondary" @click="onDownload(file)">
-                      <q-icon :name="isPDF(file) ? 'picture_as_pdf' : 'file_download'" size="100px" />
-                    </q-btn>
+                    <div class="q-pa-md text-center">
+                      <div class="text-uppercase">{{ $t('download') }}</div>
+                      <q-btn flat color="secondary" @click="onDownload(file)">
+                        <q-icon name="file_download" size="100px" />
+                      </q-btn>
+                      <div v-if="file.ref" class="text-secondary">{{ file.ref?.name }}</div>
+                    </div>
                   </div>
                   <div v-if="file.legend" class="absolute-bottom text-center a-legend">
                     <div class="text-caption">{{ file.legend }}</div>
@@ -71,16 +82,11 @@
                 switch-indicator
                 dense
               >
-                <q-tab
-                  v-for="(file, index) in document.files"
-                  :key="index"
-                  :name="index"
-                  class="q-mr-sm q-ml-sm q-pr-sm q-pl-sm"
-                >
+                <q-tab v-for="(file, index) in document.files" :key="index" :name="index">
                   <q-img v-if="isImage(file)" :src="toFileUrl(file)" height="50px" fit="scale-down" />
                   <q-icon v-else-if="isVideo(file)" name="video_library" size="30px" />
                   <q-icon v-else-if="isPDF(file)" name="picture_as_pdf" size="30px" />
-                  <q-icon v-else name="file_download" />
+                  <q-icon v-else name="file_download" size="30px" />
                 </q-tab>
               </q-tabs>
             </div>

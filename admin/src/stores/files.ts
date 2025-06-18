@@ -9,16 +9,18 @@ export const useFilesStore = defineStore('files', () => {
   const filesToDelete = ref<FileRef[]>([]);
 
   async function uploadTmpFile(file: FileObject): Promise<FileRef> {
-    const formData = new FormData();
-    formData.append('files', file);
-    return api
-      .post('/files/tmp', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${authStore.accessToken}`,
-        },
-      })
-      .then((res) => (res.data && res.data.length ? res.data[0] : null));
+    return authStore.updateToken().then(() => {
+      const formData = new FormData();
+      formData.append('files', file);
+      return api
+        .post('/files/tmp', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${authStore.accessToken}`,
+          },
+        })
+        .then((res) => (res.data && res.data.length ? res.data[0] : null));
+    });
   }
 
   function addFileToDelete(file: FileRef) {
@@ -30,18 +32,20 @@ export const useFilesStore = defineStore('files', () => {
   }
 
   async function deleteFile(file: FileRef) {
-    if (!file.path) return Promise.resolve();
-    const config = {
-      headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
-      },
-    };
-    const promises = [];
-    if (file.alt_path) {
-      promises.push(api.delete(`/files/${file.alt_path}`, config));
-    }
-    promises.push(api.delete(`/files/${file.path}`, config));
-    return Promise.all(promises);
+    return authStore.updateToken().then(() => {
+      if (!file.path) return Promise.resolve();
+      const config = {
+        headers: {
+          Authorization: `Bearer ${authStore.accessToken}`,
+        },
+      };
+      const promises = [];
+      if (file.alt_path) {
+        promises.push(api.delete(`/files/${file.alt_path}`, config));
+      }
+      promises.push(api.delete(`/files/${file.path}`, config));
+      return Promise.all(promises);
+    });
   }
 
   async function deleteFiles() {

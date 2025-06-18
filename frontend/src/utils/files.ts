@@ -25,12 +25,13 @@ export function isVideo(file: FileItem) {
 }
 
 export function isPDF(file: FileItem) {
-  return file.ref?.mime_type === 'application/pdf';
+  const name = file.url ? file.url : file.ref?.name;
+  return ['.pdf'].find((suffix) => name && name.toLowerCase().endsWith(suffix));
 }
 
 export function toFileUrl(file: FileItem) {
   if (file.url) {
-    return toEmbededVideoUrl(file.url);
+    return isVideo(file) ? toEmbededVideoUrl(file.url) : file.url;
   }
   return `${cdnUrl}/${file.ref?.path}`;
 }
