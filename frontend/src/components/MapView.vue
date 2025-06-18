@@ -1,108 +1,25 @@
 <template>
-  <div>
+  <div class="container">
+    <q-btn icon="layers" padding="2px" color="white" text-color="grey-10" no-caps class="layers" size="15px">
+      <q-menu>
+        <q-list>
+          <q-item dense unelevated clickable v-for="key in Object.keys(showMap)" :key="key" @click="onShowMap(key)">
+            <q-item-section>
+              <q-item-label>{{ t(`${key}_map`) }}</q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-toggle
+                v-model="showMap[key]"
+                :color="mapColors[key]"
+                keep-color
+                @update:model-value="onShowMap(key)"
+              />
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-menu>
+    </q-btn>
     <div id="map-results" :style="`--t-width: ${width}; --t-height: ${height}`" class="mapview" />
-    <div>
-      <q-toggle
-        v-model="showMap['stroh']"
-        :label="t('straw_map')"
-        color="orange-13"
-        keep-color
-        @update:model-value="onShowMap('stroh')"
-      />
-      <q-toggle
-        v-model="showMap['hemp']"
-        :label="t('hemp_map')"
-        color="green-13"
-        keep-color
-        @update:model-value="onShowMap('hemp')"
-      />
-      <q-toggle
-        v-model="showMap['corn']"
-        :label="t('corn_map')"
-        color="yellow-13"
-        keep-color
-        @update:model-value="onShowMap('corn')"
-      />
-      <q-toggle
-        v-model="showMap['woods']"
-        :label="t('woods_map')"
-        color="green-9"
-        keep-color
-        @update:model-value="onShowMap('woods')"
-      />
-      <q-toggle
-        v-model="showMap['sheep']"
-        :label="t('sheep_map')"
-        color="blue-6"
-        keep-color
-        @update:model-value="onShowMap('sheep')"
-      />
-      <q-toggle
-        v-model="showMap['reynoutria_japonica']"
-        :label="t('reynoutria_japonica_map')"
-        color="purple-6"
-        keep-color
-        @update:model-value="onShowMap('reynoutria_japonica')"
-      />
-      <q-toggle
-        v-model="showMap['demolition']"
-        :label="t('demolition_map')"
-        color="blue-8"
-        keep-color
-        @update:model-value="onShowMap('demolition')"
-      />
-    </div>
-    <div>
-      <q-toggle
-        v-model="showMap['hartgestein']"
-        :label="t('hartgestein_map')"
-        color="blue-8"
-        keep-color
-        @update:model-value="onShowMap('hartgestein')"
-      />
-      <q-toggle
-        v-model="showMap['kalkstein']"
-        :label="t('kalkstein_map')"
-        color="blue-grey-7"
-        keep-color
-        @update:model-value="onShowMap('kalkstein')"
-      />
-      <q-toggle
-        v-model="showMap['konglomerat']"
-        :label="t('konglomerat_map')"
-        color="light-green-9"
-        keep-color
-        @update:model-value="onShowMap('konglomerat')"
-      />
-      <q-toggle
-        v-model="showMap['sandstein']"
-        :label="t('sandstein_map')"
-        color="yellow-8"
-        keep-color
-        @update:model-value="onShowMap('sandstein')"
-      />
-      <q-toggle
-        v-model="showMap['vulkanisch']"
-        :label="t('vulkanisch_map')"
-        color="pink-7"
-        keep-color
-        @update:model-value="onShowMap('vulkanisch')"
-      />
-      <q-toggle
-        v-model="showMap['rammed_earth']"
-        :label="t('rammed_earth_map')"
-        color="red-9"
-        keep-color
-        @update:model-value="onShowMap('rammed_earth')"
-      />
-      <q-toggle
-        v-model="showMap['adobe_earth']"
-        :label="t('adobe_earth_map')"
-        color="purple-9"
-        keep-color
-        @update:model-value="onShowMap('adobe_earth')"
-      />
-    </div>
   </div>
 </template>
 
@@ -115,7 +32,7 @@ import { style } from '../utils/maps';
 import { type FeatureCollection, Point } from 'geojson';
 import {
   AttributionControl,
-  FullscreenControl,
+  //FullscreenControl,
   GeolocateControl,
   Map,
   MapMouseEvent,
@@ -159,17 +76,33 @@ const showMap = ref<{ [key: string]: boolean }>({
   hemp: false,
   corn: false,
   woods: false,
-  rammed_earth: false,
-  adobe_earth: false,
   sheep: false,
   reynoutria_japonica: false,
   demolition: false,
+  rammed_earth: false,
+  adobe_earth: false,
   hartgestein: false,
   kalkstein: false,
   konglomerat: false,
   sandstein: false,
   vulkanisch: false,
 });
+const mapColors: { [key: string]: string } = {
+  stroh: 'orange-13',
+  hemp: 'green-13',
+  corn: 'yellow-13',
+  woods: 'green-9',
+  sheep: 'blue-6',
+  reynoutria_japonica: 'purple-6',
+  demolition: 'blue-8',
+  rammed_earth: 'red-9',
+  adobe_earth: 'purple-9',
+  hartgestein: 'blue-8',
+  kalkstein: 'blue-grey-7',
+  konglomerat: 'light-green-9',
+  sandstein: 'yellow-8',
+  vulkanisch: 'pink-7',
+};
 
 // track which were the layers added, to be able to remove them
 const layerIds: string[] = [];
@@ -211,7 +144,7 @@ function initMap() {
   map.value.addControl(new NavigationControl({}));
   map.value.addControl(new GeolocateControl({}));
   map.value.addControl(new ScaleControl({}));
-  map.value.addControl(new FullscreenControl({}));
+  //map.value.addControl(new FullscreenControl({}));
   map.value.addControl(
     new AttributionControl({
       compact: false,
@@ -405,7 +338,18 @@ function onShowMap(name: string) {
 </script>
 
 <style scoped>
+.container {
+  position: relative; /* Needed for absolute children */
+}
+.layers {
+  position: absolute;
+  z-index: 10;
+  top: 145px;
+  right: 26px;
+}
 .mapview {
+  position: relative;
+  z-index: 1;
   width: var(--t-width);
   height: var(--t-height);
 }

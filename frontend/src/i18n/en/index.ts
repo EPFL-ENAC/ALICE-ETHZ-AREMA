@@ -86,6 +86,7 @@ export default {
   sound_reduction_index_symbol: 'Rw',
   sound_reduction_index_unit: 'dB',
   straw_map: 'Straw',
+  stroh_map: 'Straw',
   hemp_map: 'Hemp',
   corn_map: 'Corn',
   woods_map: 'Woods',
