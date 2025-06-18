@@ -26,7 +26,7 @@ export function isVideo(file: FileItem) {
 
 export function isPDF(file: FileItem) {
   const name = file.url ? file.url : file.ref?.name;
-  return ['.pdf'].find((suffix) => name && name.toLowerCase().endsWith(suffix));
+  return ['.pdf'].some((suffix) => name && name.toLowerCase().endsWith(suffix));
 }
 
 export function toFileUrl(file: FileItem) {
