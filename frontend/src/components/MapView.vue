@@ -73,7 +73,7 @@
       </q-menu>
     </q-btn>
     <div id="map-results" :style="`--t-width: ${width}; --t-height: ${height}`" class="mapview" />
-    <div class="q-mt-md">
+    <div v-if="hasLegend" class="colors q-mr-lg bg-white rounded-borders shadow-1 q-pa-xs">
       <template v-for="map in Object.keys(showMap)" :key="map">
         <q-icon v-if="showMap[map]" name="circle" :color="mapColors[map]" size="1.2rem" class="q-mr-xs" />
         <span v-if="showMap[map]" class="text-secondary text-caption on-left">
@@ -98,7 +98,7 @@ import {
   Map,
   MapMouseEvent,
   NavigationControl,
-  ScaleControl,
+  //ScaleControl,
   Popup,
   GeoJSONSource,
   Feature,
@@ -194,6 +194,10 @@ const mapColors: { [key: string]: string } = {
   demolition: 'blue-8',
 };
 
+const hasLegend = computed(() => {
+  return Object.keys(showMap.value).some((m) => showMap.value[m]);
+});
+
 // track which were the layers added, to be able to remove them
 const layerIds: string[] = [];
 
@@ -233,11 +237,11 @@ function initMap() {
   map.value.touchZoomRotate.disableRotation();
   map.value.addControl(new NavigationControl({}));
   map.value.addControl(new GeolocateControl({}));
-  map.value.addControl(new ScaleControl({}));
+  //map.value.addControl(new ScaleControl({}));
   //map.value.addControl(new FullscreenControl({}));
   map.value.addControl(
     new AttributionControl({
-      compact: false,
+      compact: true,
       customAttribution:
         '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>, <a href="https://sc.ibi.ethz.ch/en/" target="_blank">IBI SC</a>, <a href="https://www.epfl.ch/labs/alice/" target="_blank">ENAC ALICE</a>',
     }),
@@ -435,6 +439,12 @@ function onShowMap(name: string) {
   position: absolute;
   z-index: 10;
   top: 10px;
+  left: 10px;
+}
+.colors {
+  position: absolute;
+  z-index: 10;
+  bottom: 10px;
   left: 10px;
 }
 .mapview {
