@@ -1,0 +1,4 @@
+- Special features and details (implementation, materials, constructive systems, energy/heating/water management/hvac)
+- Advantages /Disadvantages of used techniques/systems/planning ?
+- Labels, Impact
+- 10 sentences approx.; for small headings use #####

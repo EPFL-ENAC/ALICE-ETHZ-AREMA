@@ -1,0 +1,5 @@
+- Small intro
+- Contents / method of cohesion/bonding/holding together
+- Main properties
+- Historical and/or current uses
+- 5 sentences approx.

@@ -1,0 +1,5 @@
+- Design and detailing (load bearing, openings, finishes, details e.g.)
+- Production/ Manufacturing/ Construction Process (connection/bond between materials, joints, frames, formwork e.g.)
+- Drying /Sun cover /Shrinkage / Settlement
+- Repair and maintenance / End-of-life (re-use, type of waste)
+- 10 sentences approx.; for small headings use #####

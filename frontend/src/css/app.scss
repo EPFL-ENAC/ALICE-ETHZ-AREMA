@@ -54,6 +54,19 @@ a {
   background-color: #f6f8fa;
 }
 
+.q-markdown--link-external:after {
+  display: none !important;
+}
+
+.text-page h1,
+.text-page h2,
+.text-page h3,
+.text-page h4,
+.text-page h5 {
+  color: $secondary;
+  text-transform: uppercase;
+}
+
 .q-btn--outline:before {
   border: 2px solid currentColor;
 }
@@ -71,14 +84,6 @@ a {
   background-color: $primary;
   opacity: 0.8;
   color: white;
-}
-
-.q-carousel__slides-container {
-  height: 85%;
-}
-
-.q-carousel__navigation-inner {
-  margin-bottom: 4px;
 }
 
 .fade-text {

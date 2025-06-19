@@ -7,7 +7,6 @@ import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson
 export const useSearchService = defineStore('search', () => {
   const selectedView = ref('map');
   const selectedTerms = ref<string[]>([]);
-  const selectedEntityTypes = ref<string[]>([]);
   const selectedResourceTerms = ref<string[]>([]);
   const filterText = ref('');
   const bbox = ref<number[][]>([]);
@@ -77,7 +76,6 @@ export const useSearchService = defineStore('search', () => {
           params: {
             resources: selectedResourceTerms.value,
             tags: selectedTerms.value,
-            entity_types: selectedEntityTypes.value,
             text: filterText.value,
             skip: skip.value,
             limit: limit.value,
@@ -93,8 +91,9 @@ export const useSearchService = defineStore('search', () => {
         .get('/search/_entities', {
           params: {
             resources: selectedResourceTerms.value,
-            tags: selectedTerms.value,
-            entity_types: selectedEntityTypes.value,
+            tags: selectedTerms.value.filter((t) =>
+              ['urn:arema:professional', 'urn:arema:building'].some((tx) => t.startsWith(`${tx}:`)),
+            ), // remove location tags
             text: filterText.value,
             skip: skip.value,
             limit: limit.value,
@@ -148,7 +147,6 @@ export const useSearchService = defineStore('search', () => {
         params: {
           resources: selectedResourceTerms.value,
           tags: selectedTerms.value,
-          entity_types: selectedEntityTypes.value,
           text: filterText.value,
           skip: skip.value,
           limit: limit.value,
@@ -219,7 +217,6 @@ export const useSearchService = defineStore('search', () => {
   return {
     selectedView,
     selectedTerms,
-    selectedEntityTypes,
     selectedResourceTerms,
     filterText,
     bbox,

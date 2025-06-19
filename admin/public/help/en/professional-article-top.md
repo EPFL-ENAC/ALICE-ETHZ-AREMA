@@ -1,0 +1,7 @@
+- History of company or person (founding, evolution, background?), location(s)
+- Core business, values, what relations to regenerative materials
+- Special expertise, techniques, approaches?
+- Type and size of activities/projects?
+- Geographic radius of intervention?
+- (if suited: founders + background)
+- 10 sentences approx.; for small headings use #####

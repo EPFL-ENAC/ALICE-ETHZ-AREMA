@@ -243,7 +243,7 @@ class VideoIndexService(IndexService):
         if entity_id:
             parent_id = f"{entity_type}:{entity_id}"
             query = {"query": {"term": {"parent_id": parent_id}}}
-            self._deleteDocument(query)
+            self._deleteDocuments(query)
         else:
             query = {"query": {"term": {"entity_type": entity_type}}}
             self._deleteDocuments(query)

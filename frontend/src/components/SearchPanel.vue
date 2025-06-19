@@ -16,7 +16,7 @@
       @update:model-value="searchService.search_filtered_entities()"
     />
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
-    <terms-selector @update:terms="onTermsUpdate" />
+    <terms-selector @update:terms="onTermsUpdate" :view="searchService.selectedView" />
     <q-separator size="2px" class="bg-primary q-mt-sm q-mb-md" />
     <div class="q-mt-md q-mb-md">
       <q-btn
@@ -45,9 +45,22 @@ import TermsSelector from 'src/components/TermsSelector.vue';
 import MapResults from 'src/components/MapResults.vue';
 import ListResults from 'src/components/ListResults.vue';
 
+const taxonomyStore = useTaxonomyStore();
 const searchService = useSearchService();
 
 const views = ['map', 'list'];
+onMounted(() => {
+  if (!taxonomyStore.taxonomies) {
+    taxonomyStore.init().then(() => {
+      searchService.bbox = [];
+      searchService.search_entities(1000);
+    });
+  } else if (!searchService.results?.total) {
+    // do not search if was already done when coming back to this panel
+    searchService.bbox = [];
+    searchService.search_entities(1000);
+  }
+});
 
 function onViewSelect(view: string) {
   searchService.selectedView = view;

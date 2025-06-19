@@ -46,27 +46,36 @@
               v-model="selected.description"
               :label="$t('description')"
               :hint="$t('description_bm_hint')"
+              help="building-material-description"
               class="q-mb-md"
             />
             <text-input
               v-model="selected.article_top"
               :label="$t('article_top')"
               :hint="$t('article_top_bm_hint')"
+              help="building-material-article-top"
               class="q-mb-md"
             />
             <text-input
               v-model="selected.article_bottom"
               :label="$t('article_bottom')"
               :hint="$t('article_bottom_bm_hint')"
+              help="building-material-article-bottom"
               class="q-mb-md"
             />
             <text-input
               v-model="selected.side_note"
               :label="$t('side_note')"
               :hint="$t('side_note_bm_hint')"
+              help="building-material-side-note"
               class="q-mb-md"
             />
-            <text-input v-model="selected.external_links" :label="$t('external_links')" class="q-mb-md" />
+            <text-input
+              v-model="selected.external_links"
+              :label="$t('external_links')"
+              help="building-material-links"
+              class="q-mb-md"
+            />
           </q-tab-panel>
           <q-tab-panel name="physical_characteristics" class="q-pl-none q-pr-none">
             <physical-entity-form v-model="selected" />

@@ -24,7 +24,7 @@
                   <tags-badges :item="row" />
                 </div>
                 <q-item-label caption>
-                  <q-markdown :src="row.description" class="fade-text" />
+                  <q-markdown :src="row.description" class="fade-text" no-heading-anchor-links />
                 </q-item-label>
               </q-item-section>
               <q-item-section v-if="getImageUrls(row).length" avatar>

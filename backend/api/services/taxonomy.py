@@ -12,6 +12,7 @@ class TaxonomyService:
         """Get all taxonomies"""
         all = [self.get("natural-resource"), self.get("building-material"), self.get(
             "technical-construction"), self.get("building"), self.get("professional")]
+        all.reverse()
         return Taxonomy(taxonomy=[taxo.taxonomy[0] for taxo in all])
 
     def get(self, type: str) -> Taxonomy:

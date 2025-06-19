@@ -1,0 +1,2 @@
+- Complementary info: collaborations (sourcing, associations, other firms)
+- 10 lines approx.

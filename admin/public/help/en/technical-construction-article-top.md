@@ -1,0 +1,3 @@
+- Properties: structural, hygrothermal, appearance visual and haptic, breathability, thermal mass, acoustic, environmental incl toxicity, fire, air tightness, pests, moisture and mould resistance
+- Buildability /costs /social/ economical
+- 10 sentences approx.; for small headings use #####

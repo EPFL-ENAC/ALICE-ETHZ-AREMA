@@ -61,7 +61,7 @@
             <q-item-label header>{{ $t('building_materials') }}</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable v-close-popup :to="'/technical-constructions'">
+        <q-item clickable v-close-popup :to="'/construction-techniques'">
           <q-item-section avatar>
             <q-icon name="fa-solid fa-trowel-bricks" size="xs" />
           </q-item-section>

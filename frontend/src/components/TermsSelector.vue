@@ -6,12 +6,14 @@
         :key="taxoNode.value"
         :outline="taxoNode.value !== selectedNode?.value"
         :disable="searchService.searching"
+        v-show="!isNodeHidden(taxoNode)"
         color="primary"
         unelevated
         square
         no-caps
         size="md"
         :label="taxoNode.label"
+        :title="$t('click_twice_to_select')"
         class="on-left q-mb-sm"
         @click="onTaxoNodeSelect(taxoNode)"
       >
@@ -25,8 +27,8 @@
         </q-badge>
       </q-btn>
     </div>
-    <div class="q-mt-sm" v-if="selectedNode">
-      <template v-for="node in selectedNode.children" :key="node.value">
+    <div class="q-mt-md" v-show="!isNodeHidden(selectedNode)">
+      <template v-for="node in selectedNode?.children" :key="node.value">
         <q-btn-dropdown
           v-if="node.children?.length"
           :outline="!isNodeSelected(node)"
@@ -42,7 +44,7 @@
         >
           <template v-slot:label>
             {{ node.label }}
-            <q-badge v-if="getSelectedNodes(node).length" color="primary" class="text-white q-ml-xs">
+            <q-badge v-if="getSelectedNodes(node).length" color="white" class="text-primary q-ml-xs">
               {{ getSelectedNodes(node).length }}
             </q-badge>
           </template>
@@ -77,14 +79,17 @@
         />
       </template>
     </div>
+    <q-separator size="2px" class="bg-primary q-mt-sm q-mb-md" />
     <div>
-      <div class="q-gutter-sm">
+      <div class="q-gutter-sm text-secondary">
         <template v-for="tagOption in resourceTagOptions" :key="tagOption.urn">
           <q-checkbox
             v-model="searchService.selectedResourceTerms"
+            :disable="searchService.searching"
             :val="tagOption.urn"
-            color="primary"
+            color="secondary"
             :label="tagOption.label"
+            class="q-mt-none"
             @update:model-value="onResourceTag"
           />
         </template>
@@ -98,6 +103,12 @@ import { TermOption, TaxonomyNodeOption } from 'src/components/models';
 
 const taxonomyStore = useTaxonomyStore();
 const searchService = useSearchService();
+
+interface Props {
+  view: string;
+}
+
+const props = defineProps<Props>();
 
 const emit = defineEmits(['update:terms']);
 
@@ -141,13 +152,6 @@ const resourceTagOptions = computed<TermOption[]>(() => {
   );
 });
 
-onMounted(() => {
-  taxonomyStore.init().then(() => {
-    searchService.bbox = [];
-    searchService.search_entities(1000);
-  });
-});
-
 function onTaxoNodeSelect(node: TaxonomyNodeOption) {
   if (selectedNode.value && selectedNode.value.value === node.value) {
     searchService.selectNode(node);
@@ -183,6 +187,11 @@ function getSelectedTaxoNodes(node: TaxonomyNodeOption) {
 
 function isNodeSelected(node: TaxonomyNodeOption) {
   return searchService.isNodeSelected(node);
+}
+
+function isNodeHidden(node: TaxonomyNodeOption | undefined) {
+  if (!node) return true;
+  return props.view === 'map' && node.value !== 'urn:arema:building' && node.value !== 'urn:arema:professional';
 }
 
 function onResourceTag() {

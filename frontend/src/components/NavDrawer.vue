@@ -8,7 +8,7 @@
     <div class="row q-mb-md">
       <q-btn no-caps size="xl" to="/about" :label="$t('about')" class="text-primary"></q-btn>
       <q-icon name="horizontal_rule" size="md" class="q-mt-md" />
-      <q-btn no-caps size="xl" :label="$t('contribute')" class="text-primary" @click="onAdmin"></q-btn>
+      <q-btn no-caps size="xl" to="/contribute" :label="$t('contribute')" class="text-primary"></q-btn>
       <q-icon name="horizontal_rule" size="md" class="q-mt-md" />
       <q-btn no-caps size="xl" to="/search" :label="$t('search')" class="text-primary"></q-btn>
       <q-icon name="horizontal_rule" size="md" class="q-mt-md" />
@@ -25,7 +25,7 @@ interface Props {
 }
 defineProps<Props>();
 
-function onAdmin() {
-  window.location.href = '/admin/';
-}
+//function onAdmin() {
+//  window.location.href = '/admin/';
+//}
 </script>

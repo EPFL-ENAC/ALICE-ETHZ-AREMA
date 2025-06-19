@@ -1,0 +1,4 @@
+- Context, main dates, architectural concept
+- Techniques & Materials, re-use(?), supplier (regionality)
+- Management/ construction process (general planner, participatory, collaborative, prefab?)
+- 10 sentences approx.; for small headings use #####
