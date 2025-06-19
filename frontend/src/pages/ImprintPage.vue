@@ -1,8 +1,5 @@
 <template>
-  <q-page class="q-pa-md bg-primary">
-    <div class="text-h4 text-uppercase text-secondary q-mb-lg">
-      {{ $t('imprint') }}
-    </div>
+  <q-page class="text-page q-pa-md bg-primary">
     <div class="text-black" style="font-size: x-large">
       <q-markdown :src="content" no-heading-anchor-links />
     </div>

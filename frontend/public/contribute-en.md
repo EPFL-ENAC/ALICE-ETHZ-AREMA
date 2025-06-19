@@ -9,4 +9,6 @@ The scientific review committee of the Atlas reserves the right to reject submis
 Please note that this is not a commercial site, and under no circumstances do we intend to promote products or serve as an advertising platform.
 If you agree to contribute to the Atlas of Regenerative Materials you will also become an active reviewer of the new or edited entries.
 
-Contact: [Shoshana Huber](https://sc.ibi.ethz.ch/en/people/scientific-assistants/shoshana_huber.html)
+## Atlas Registration
+
+If you agree and are eager to contribute please send an email to [Shoshana Huber](mailto:shhuber@ethz.ch).

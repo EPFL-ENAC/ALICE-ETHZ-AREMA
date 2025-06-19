@@ -54,6 +54,10 @@ a {
   background-color: #f6f8fa;
 }
 
+.q-markdown--link-external:after {
+  display: none !important;
+}
+
 .text-page h1,
 .text-page h2,
 .text-page h3,

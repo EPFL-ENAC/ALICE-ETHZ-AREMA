@@ -1,3 +1,5 @@
+# Disclaimer
+
 As the operator of the Atlas of Regenerative Materials platform, ETH Zurich accepts no liability for the content provided by users, in particular not for technical information. All information on this platform is provided for information purposes only. All information on buildings, in particular technical, construction- and safety-related, etc. information and its accuracy, must be verified before use. All information on buildings, in particular technical, constructional, safety-related etc. details and their correctness must be clarified exclusively with the local experts responsible for the building before use!
 
 No guarantee can be given for the correctness and accuracy of the information contained. Where this website refers to websites operated by third parties, the Atlas of Regenerative Materials accepts no responsibility for their content. The Atlas of Regenerative Materials expressly reserves the right to change, delete or temporarily not publish content in whole or in part at any time without prior notice.
