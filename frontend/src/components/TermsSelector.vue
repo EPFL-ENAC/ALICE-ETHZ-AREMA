@@ -5,6 +5,7 @@
         v-for="taxoNode in nodes"
         :key="taxoNode.value"
         :outline="taxoNode.value !== selectedNode?.value"
+        :disable="searchService.searching"
         v-show="!isNodeHidden(taxoNode)"
         color="primary"
         unelevated
@@ -84,6 +85,7 @@
         <template v-for="tagOption in resourceTagOptions" :key="tagOption.urn">
           <q-checkbox
             v-model="searchService.selectedResourceTerms"
+            :disable="searchService.searching"
             :val="tagOption.urn"
             color="secondary"
             :label="tagOption.label"
@@ -151,10 +153,12 @@ const resourceTagOptions = computed<TermOption[]>(() => {
 });
 
 onMounted(() => {
-  taxonomyStore.init().then(() => {
-    searchService.bbox = [];
-    searchService.search_entities(1000);
-  });
+  if (!taxonomyStore.taxonomies) {
+    taxonomyStore.init().then(() => {
+      searchService.bbox = [];
+      searchService.search_entities(1000);
+    });
+  }
 });
 
 function onTaxoNodeSelect(node: TaxonomyNodeOption) {
