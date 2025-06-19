@@ -11,33 +11,76 @@
     >
       <q-menu>
         <q-list>
-          <q-item
-            dense
-            unelevated
-            clickable
-            v-for="key in Object.keys(showMap)"
-            :key="key"
-            @click="
-              showMap[key] = !showMap[key];
-              onShowMap(key);
-            "
-          >
-            <q-item-section>
-              <q-item-label>{{ t(`${key}_map`) }}</q-item-label>
-            </q-item-section>
-            <q-item-section side>
-              <q-toggle
-                v-model="showMap[key]"
-                :color="mapColors[key]"
-                keep-color
-                @update:model-value="onShowMap(key)"
-              />
-            </q-item-section>
-          </q-item>
+          <template v-for="node in mapMenu" :key="node.id">
+            <q-item
+              dense
+              unelevated
+              clickable
+              v-if="!node.children"
+              @click="
+                showMap[node.id] = !showMap[node.id];
+                onShowMap(node.id);
+              "
+            >
+              <q-item-section>
+                <q-item-label>{{ t(`maps.${node.id}`) }}</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-toggle
+                  v-model="showMap[node.id]"
+                  :color="mapColors[node.id]"
+                  keep-color
+                  @update:model-value="onShowMap(node.id)"
+                />
+              </q-item-section>
+            </q-item>
+            <q-item v-else clickable>
+              <q-item-section>{{ $t(`maps.${node.id}`) }}</q-item-section>
+              <q-item-section side>
+                <q-icon name="keyboard_arrow_right" />
+              </q-item-section>
+
+              <q-menu anchor="top end" self="top start">
+                <q-list>
+                  <q-item
+                    dense
+                    unelevated
+                    clickable
+                    v-for="child in node.children"
+                    :key="child.id"
+                    @click="
+                      showMap[child.id] = !showMap[child.id];
+                      onShowMap(child.id);
+                    "
+                  >
+                    <q-item-section>
+                      <q-item-label>{{ t(`maps.${child.id}`) }}</q-item-label>
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-toggle
+                        v-model="showMap[child.id]"
+                        :color="mapColors[child.id]"
+                        keep-color
+                        @update:model-value="onShowMap(child.id)"
+                      />
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-item>
+          </template>
         </q-list>
       </q-menu>
     </q-btn>
     <div id="map-results" :style="`--t-width: ${width}; --t-height: ${height}`" class="mapview" />
+    <div class="q-mt-md">
+      <template v-for="map in Object.keys(showMap)" :key="map">
+        <q-icon v-if="showMap[map]" name="circle" :color="mapColors[map]" size="1.2rem" class="q-mr-xs" />
+        <span v-if="showMap[map]" class="text-secondary text-caption on-left">
+          {{ $t(`maps.${map}`) }}
+        </span>
+      </template>
+    </div>
   </div>
 </template>
 
@@ -87,16 +130,38 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['map:loaded', 'map:click', 'map:box']);
 
+interface MapNode {
+  id: string;
+  children?: MapNode[];
+}
+
 let map = shallowRef<Map>();
 const mapLoaded = ref(false);
+const mapMenu = ref<MapNode[]>([
+  {
+    id: 'earth',
+    children: [{ id: 'rammed_earth' }, { id: 'adobe_earth' }],
+  },
+  {
+    id: 'rock',
+    children: [
+      { id: 'hartgestein' },
+      { id: 'kalkstein' },
+      { id: 'konglomerat' },
+      { id: 'sandstein' },
+      { id: 'vulkanisch' },
+    ],
+  },
+  { id: 'stroh' },
+  { id: 'hemp' },
+  { id: 'woods' },
+  {
+    id: 'other_fibers',
+    children: [{ id: 'corn' }, { id: 'sheep' }, { id: 'reynoutria_japonica' }],
+  },
+  { id: 'demolition' },
+]);
 const showMap = ref<{ [key: string]: boolean }>({
-  stroh: false,
-  hemp: false,
-  corn: false,
-  woods: false,
-  sheep: false,
-  reynoutria_japonica: false,
-  demolition: false,
   rammed_earth: false,
   adobe_earth: false,
   hartgestein: false,
@@ -104,15 +169,15 @@ const showMap = ref<{ [key: string]: boolean }>({
   konglomerat: false,
   sandstein: false,
   vulkanisch: false,
+  stroh: false,
+  hemp: false,
+  woods: false,
+  corn: false,
+  sheep: false,
+  reynoutria_japonica: false,
+  demolition: false,
 });
 const mapColors: { [key: string]: string } = {
-  stroh: 'orange-13',
-  hemp: 'green-13',
-  corn: 'yellow-13',
-  woods: 'green-9',
-  sheep: 'blue-6',
-  reynoutria_japonica: 'purple-6',
-  demolition: 'blue-8',
   rammed_earth: 'red-9',
   adobe_earth: 'purple-9',
   hartgestein: 'blue-8',
@@ -120,6 +185,13 @@ const mapColors: { [key: string]: string } = {
   konglomerat: 'light-green-9',
   sandstein: 'yellow-8',
   vulkanisch: 'pink-7',
+  stroh: 'orange-13',
+  hemp: 'green-13',
+  woods: 'green-9',
+  corn: 'yellow-13',
+  sheep: 'blue-6',
+  reynoutria_japonica: 'purple-6',
+  demolition: 'blue-8',
 };
 
 // track which were the layers added, to be able to remove them
