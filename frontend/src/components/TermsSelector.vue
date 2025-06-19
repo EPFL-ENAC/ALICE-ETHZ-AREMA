@@ -13,7 +13,7 @@
         size="md"
         :label="taxoNode.label"
         :title="$t('click_twice_to_select')"
-        class="on-left"
+        class="on-left q-mb-sm"
         @click="onTaxoNodeSelect(taxoNode)"
       >
         <q-badge
@@ -78,7 +78,7 @@
         />
       </template>
     </div>
-    <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
+    <q-separator size="2px" class="bg-primary q-mt-sm q-mb-md" />
     <div>
       <div class="q-gutter-sm text-secondary">
         <template v-for="tagOption in resourceTagOptions" :key="tagOption.urn">
