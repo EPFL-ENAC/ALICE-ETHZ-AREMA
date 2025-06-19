@@ -1,0 +1,4 @@
+- Small intro
+- Content of resource (chemical)
+- Main properties used (load bearing, tensile, insulation, hygrothermal...)
+- 5 sentences approx.

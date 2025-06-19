@@ -1,0 +1,4 @@
+- Explanation all properties (appearance visual and haptic, mechanical, hygrothermal, fire, acoustic, toxicity, thermal mass, pests, mould/moisture resistance)
+- If available: costs/durability/circularity/social aspects
+- If available: shrinkage /settlement?
+- 10 sentences approx.; for small headings use #####

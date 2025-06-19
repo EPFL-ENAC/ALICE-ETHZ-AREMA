@@ -1,0 +1,3 @@
+- First a Headline text of 1 line with # in front (e.g. "# Single family house build participatively with lime-hemp")
+- General description: Type of building, materials/techniques, use of building
+- 5 sentences approx.

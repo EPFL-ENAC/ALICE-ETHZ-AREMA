@@ -65,22 +65,35 @@
               v-model="selected.description"
               :label="$t('description')"
               :hint="$t('description_bd_hint')"
+              help="building-description"
               class="q-mb-md"
             />
             <text-input
               v-model="selected.article_top"
               :label="$t('article_top')"
               :hint="$t('article_top_bd_hint')"
+              help="building-article-top"
               class="q-mb-md"
             />
             <text-input
               v-model="selected.article_bottom"
               :label="$t('article_bottom')"
               :hint="$t('article_bottom_bd_hint')"
+              help="building-article-bottom"
               class="q-mb-md"
             />
-            <text-input v-model="selected.side_note" :label="$t('side_note')" class="q-mb-md" />
-            <text-input v-model="selected.external_links" :label="$t('external_links')" class="q-mb-md" />
+            <text-input
+              v-model="selected.side_note"
+              :label="$t('side_note')"
+              help="building-side-note"
+              class="q-mb-md"
+            />
+            <text-input
+              v-model="selected.external_links"
+              :label="$t('external_links')"
+              help="building-links"
+              class="q-mb-md"
+            />
           </q-tab-panel>
           <q-tab-panel name="location" class="q-pl-none q-pr-none">
             <point-map-input

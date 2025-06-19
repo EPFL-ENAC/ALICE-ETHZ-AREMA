@@ -1,0 +1,4 @@
+- Main projects or highlights or achievements
+- Prices/ Labels/ Certifications
+- Collaborations with other professionals
+- 10 sentences approx.; for small headings use #####

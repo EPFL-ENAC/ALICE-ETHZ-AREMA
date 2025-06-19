@@ -1,0 +1,4 @@
+- Availability in environment (form, quantities, CH/EU/worldwide)
+- Complexity of harvest/extraction
+- Properties physical and chemical (mechanic, hygrothermal, fire, acoustic, pest, mould, resistance against acid/chemicals...)
+- 10 sentences approx.; for small headings use #####
