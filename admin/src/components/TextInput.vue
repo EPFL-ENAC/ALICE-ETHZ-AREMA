@@ -45,7 +45,7 @@ const helpContent = ref('');
 
 onMounted(() => {
   if (props.help) {
-    fetch(`/help/en/${props.help}.md`).then((response) => {
+    fetch(`/admin/help/en/${props.help}.md`).then((response) => {
       response.text().then((text) => {
         helpContent.value = text;
       });
