@@ -43,10 +43,18 @@
               <q-tab-panels v-model="slide" animated style="background-color: transparent">
                 <q-tab-panel v-for="(file, index) in document.files" :key="index" :name="index" class="q-pa-none">
                   <div v-if="isImage(file)">
-                    <q-img :src="toFileUrl(file)" height="500px" fit="contain" />
+                    <q-img
+                      :src="toFileUrl(file)"
+                      :height="$q.screen.lt.sm ? '250px' : $q.screen.lt.lg ? '350px' : '500px'"
+                      fit="contain"
+                      position="50% bottom"
+                    />
                   </div>
                   <div v-else-if="isVideo(file)">
-                    <q-video :src="toFileUrl(file)" style="height: 500px" />
+                    <q-video
+                      :src="toFileUrl(file)"
+                      :style="`height: ${$q.screen.lt.sm ? '250px' : $q.screen.lt.lg ? '350px' : '500px'}`"
+                    />
                   </div>
                   <div v-else-if="isPDF(file)">
                     <object type="application/pdf" :data="toFileUrl(file)" width="100%" height="500px">

@@ -18,6 +18,7 @@ export function isImage(file: FileItem) {
 export function isVideo(file: FileItem) {
   return (
     file.url?.includes('youtube.com') ||
+    file.url?.includes('youtu.be') ||
     file.url?.includes('vimeo.com') ||
     file.url?.includes('srf.ch/play/tv') ||
     file.url?.includes('rts.ch/play/tv')
@@ -40,6 +41,7 @@ export function toEmbededVideoUrl(url: string) {
   if (url) {
     return url
       .replace('youtube.com/watch?v=', 'youtube.com/embed/')
+      .replace('youtu.be/', 'youtube.com/embed/')
       .replace('youtu.be', 'youtube.com/embed')
       .replace('vimeo.com', 'player.vimeo.com/video');
   }
