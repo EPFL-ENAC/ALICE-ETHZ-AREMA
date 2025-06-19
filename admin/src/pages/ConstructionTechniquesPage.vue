@@ -106,11 +106,11 @@
         </template>
       </q-table>
 
-      <technical-construction-dialog
+      <construction-technique-dialog
         v-model="showEditDialog"
         :item="selected"
         @saved="onSaved"
-      ></technical-construction-dialog>
+      ></construction-technique-dialog>
       <confirm-dialog
         v-model="showConfirmDialog"
         :title="t('remove')"
@@ -124,7 +124,7 @@
 <script setup lang="ts">
 import { Option, Query } from 'src/components/models';
 import { TechnicalConstruction } from 'src/models';
-import TechnicalConstructionDialog from 'src/components/TechnicalConstructionDialog.vue';
+import ConstructionTechniqueDialog from 'src/components/ConstructionTechniqueDialog.vue';
 import ConfirmDialog from 'src/components/ConfirmDialog.vue';
 import { makePaginationRequestHandler } from 'src/utils/pagination';
 import type { PaginationOptions } from 'src/utils/pagination';

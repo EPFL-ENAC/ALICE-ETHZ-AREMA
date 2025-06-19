@@ -108,7 +108,7 @@
 
 <script lang="ts">
 export default defineComponent({
-  name: 'TechnicalConstructionDialog',
+  name: 'ConstructionTechniqueDialog',
 });
 </script>
 <script setup lang="ts">

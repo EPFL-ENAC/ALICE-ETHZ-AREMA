@@ -30,8 +30,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/BuildingMaterialsPage.vue'),
       },
       {
-        path: 'technical-constructions',
-        component: () => import('pages/TechnicalConstructionsPage.vue'),
+        path: 'construction-techniques',
+        component: () => import('pages/ConstructionTechniquesPage.vue'),
       },
       { path: 'users', component: () => import('pages/UsersPage.vue') },
     ],
