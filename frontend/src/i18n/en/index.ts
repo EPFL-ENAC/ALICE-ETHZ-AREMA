@@ -63,7 +63,7 @@ export default {
   free_saturation_unit: 'kg/m³',
   free_saturation: 'Free Saturation',
   go_back: 'Go back',
-  gross_internal_area: 'Gross internal area: {area} m²',
+  gross_internal_area: 'Building area: {area} m²',
   high: 'High',
   home: 'Home',
   hygrothermal: 'Hygrothermal',
