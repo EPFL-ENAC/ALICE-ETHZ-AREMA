@@ -1,2 +1,2 @@
 - Source: [name of link](https://example.org), year, language, source
-- Others (eg videos, articles, lectures...)
+- Others (e.g. videos, articles, lectures...).
