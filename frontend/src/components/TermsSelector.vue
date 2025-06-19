@@ -152,15 +152,6 @@ const resourceTagOptions = computed<TermOption[]>(() => {
   );
 });
 
-onMounted(() => {
-  if (!taxonomyStore.taxonomies) {
-    taxonomyStore.init().then(() => {
-      searchService.bbox = [];
-      searchService.search_entities(1000);
-    });
-  }
-});
-
 function onTaxoNodeSelect(node: TaxonomyNodeOption) {
   if (selectedNode.value && selectedNode.value.value === node.value) {
     searchService.selectNode(node);

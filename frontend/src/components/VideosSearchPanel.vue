@@ -27,13 +27,18 @@
 import TermsSelector from 'src/components/TermsSelector.vue';
 import VideosResults from 'src/components/VideosResults.vue';
 
-const taxonomies = useTaxonomyStore();
+const taxonomyStore = useTaxonomyStore();
 const searchService = useSearchService();
 
 onMounted(() => {
-  taxonomies.init().then(() => {
+  if (!taxonomyStore.taxonomies) {
+    taxonomyStore.init().then(() => {
+      searchService.search_videos(100);
+    });
+  } else if (!searchService.videoResults?.total) {
+    // do not search if was already done when coming back to this panel
     searchService.search_videos(100);
-  });
+  }
 });
 
 function onTermsUpdate() {

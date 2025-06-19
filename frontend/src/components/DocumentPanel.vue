@@ -7,7 +7,7 @@
       <div class="row q-col-gutter-md">
         <div class="col-12 col-md-1"></div>
         <div class="col-12 col-md-2">
-          <router-link to="/search" class="text-primary text-caption" style="text-decoration: none">
+          <router-link to="/search" class="text-primary text-caption q-pa-xs" style="border: solid 1px">
             <q-icon name="arrow_back" /> {{ $t('search') }}
           </router-link>
         </div>
