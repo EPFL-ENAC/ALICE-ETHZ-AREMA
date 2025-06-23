@@ -9,14 +9,21 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
   const { locale } = useI18n({ useScope: 'global' });
 
   const taxonomies = ref<Taxonomy>();
+  const loading = ref(false);
 
   async function init() {
     if (taxonomies.value) {
       return Promise.resolve();
     }
-    return api.get('/taxonomy/').then((resp) => {
-      taxonomies.value = resp.data;
-    });
+    loading.value = true;
+    return api
+      .get('/taxonomy/')
+      .then((resp) => {
+        taxonomies.value = resp.data;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
   }
 
   function isNamespace(urn: string): boolean {
@@ -102,6 +109,7 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
 
   return {
     taxonomies,
+    loading,
     init,
     getTaxonomy,
     getTaxonomyNode,

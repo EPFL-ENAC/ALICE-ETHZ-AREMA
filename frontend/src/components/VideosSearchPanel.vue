@@ -17,7 +17,6 @@
     />
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
     <terms-selector @update:terms="onTermsUpdate" view="list" />
-    <q-separator size="2px" class="bg-primary q-mt-sm q-mb-md" />
     <q-spinner-dots v-if="searchService.searching" size="md" class="q-mb-md" />
     <videos-results />
   </div>

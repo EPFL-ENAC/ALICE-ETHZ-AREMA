@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!taxonomyStore.loading">
     <div>
       <q-btn
         v-for="taxoNode in nodes"
@@ -95,6 +95,7 @@
         </template>
       </div>
     </div>
+    <q-separator size="2px" class="bg-primary q-mt-sm q-mb-md" />
   </div>
 </template>
 
