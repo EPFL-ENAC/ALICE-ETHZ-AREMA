@@ -210,7 +210,6 @@ function init() {
     });
   if (props.document.entity_type === 'natural-resource') {
     searchService.getDocumentsFromTags(props.document.tags, fields).then((result) => {
-      console.log('Related documents from tags:', result);
       relatedResources.value = result.data?.filter((doc) => doc.id !== props.document.id) || [];
     });
   }
