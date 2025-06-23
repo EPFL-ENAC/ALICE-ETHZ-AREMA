@@ -93,6 +93,7 @@ export default {
   reaction_to_fire: 'Reaction to Fire',
   read_manifesto: 'Read the manifesto',
   relates_to: 'Relates to',
+  resource_potentials: 'Resource Potentials',
   resources: 'Resources',
   search: 'Search',
   settlement_symbol: 'mm/m',
