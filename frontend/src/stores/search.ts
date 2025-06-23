@@ -47,7 +47,23 @@ export const useSearchService = defineStore('search', () => {
     searching.value = true;
     return api
       .get('/search/_entities', {
-        params: { id, fields, relates: [id] },
+        params: { fields, relates: [id] },
+        paramsSerializer: {
+          indexes: null, // no brackets at all
+        },
+      })
+      .then((response) => {
+        const result = response.data;
+        return result;
+      })
+      .finally(() => (searching.value = false));
+  }
+
+  async function getDocumentsFromTags(tags: string[], fields: string[] = []): Promise<SearchResult> {
+    searching.value = true;
+    return api
+      .get('/search/_entities', {
+        params: { fields, tags },
         paramsSerializer: {
           indexes: null, // no brackets at all
         },
@@ -234,6 +250,7 @@ export const useSearchService = defineStore('search', () => {
     search_videos,
     getDocument,
     getRelatedDocuments,
+    getDocumentsFromTags,
     getSelectedNodes,
     isNodeSelected,
     selectNode,
