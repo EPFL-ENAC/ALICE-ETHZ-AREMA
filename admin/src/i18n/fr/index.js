@@ -114,7 +114,7 @@ export default {
   password: 'Mot de passe',
   phone: 'Téléphone',
   physical_characteristics: 'Caractéristiques physiques',
-  porosity_hint: 'ξ en [%vol]',
+  porosity_hint: 'ξ en %vol',
   porosity: 'Porosité',
   preview: 'Aperçu',
   professional_building_material_expertise_hint: 'Expertise en matériaux de construction.',

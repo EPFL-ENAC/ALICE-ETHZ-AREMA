@@ -82,7 +82,7 @@ export default {
   no_results: 'No results',
   page_not_found: 'Oops. Nothing here...',
   porosity_symbol: 'ξ',
-  porosity_unit: '',
+  porosity_unit: '%vol',
   porosity: 'Porosity',
   professional: 'Professional',
   purpose_text:
@@ -108,7 +108,7 @@ export default {
   sound_reduction_index: 'Sound Reduction Index',
   standard: 'Standard',
   structural: 'Structural',
-  tensile_strength_symbol: 'σc',
+  tensile_strength_symbol: 'σ',
   tensile_strength_unit: 'MPa',
   tensile_strength: 'Tensile Strength',
   thermal_capacity_symbol: 'c',
