@@ -44,28 +44,24 @@
             <text-input
               v-model="selected.description"
               :label="$t('description')"
-              :hint="$t('description_tc_hint')"
               help="technical-construction-description"
               class="q-mb-md"
             />
             <text-input
               v-model="selected.article_top"
               :label="$t('article_top')"
-              :hint="$t('article_top_tc_hint')"
               help="technical-construction-article-top"
               class="q-mb-md"
             />
             <text-input
               v-model="selected.article_bottom"
               :label="$t('article_bottom')"
-              :hint="$t('article_bottom_tc_hint')"
               help="technical-construction-article-bottom"
               class="q-mb-md"
             />
             <text-input
               v-model="selected.side_note"
               :label="$t('side_note')"
-              :hint="$t('side_note_tc_hint')"
               help="technical-construction-side-note"
               class="q-mb-md"
             />

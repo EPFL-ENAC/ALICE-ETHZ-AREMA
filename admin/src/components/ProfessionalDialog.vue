@@ -45,7 +45,6 @@
             <text-input
               v-model="selected.description"
               :label="$t('description')"
-              :hint="$t('description_pro_hint')"
               help="professional-description"
               class="q-mb-md"
             />
@@ -63,21 +62,18 @@
             <text-input
               v-model="selected.article_top"
               :label="$t('article_top')"
-              :hint="$t('article_top_pro_hint')"
               help="professional-article-top"
               class="q-mb-md"
             />
             <text-input
               v-model="selected.article_bottom"
               :label="$t('article_bottom')"
-              :hint="$t('article_bottom_pro_hint')"
               help="professional-article-bottom"
               class="q-mb-md"
             />
             <text-input
               v-model="selected.side_note"
               :label="$t('side_note')"
-              :hint="$t('side_note_pro_hint')"
               help="professional-side-note"
               class="q-mb-md"
             />
