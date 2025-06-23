@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <q-btn
-      :label="$t('resources')"
+      :label="$t('resource_potentials')"
       icon="layers"
       color="white"
       text-color="grey-10"

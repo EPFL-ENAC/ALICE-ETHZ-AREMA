@@ -49,9 +49,9 @@ taxonomy:
               de: "Andere Fasern"
               fr: "Autres fibres"
               it: "Altre fibre"
-          - id: demolition
+          - id: reused
             names:
-              en: Dismantling
-              de: Abbruch
-              fr: Démolition
-              it: Demolizione
+              en: Re-Used
+              de: Wiederverwendet
+              fr: Réutilisé
+              it: Riutilizzato
