@@ -6,7 +6,7 @@
           <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
             <q-card flat bordered class="q-ma-none">
               <q-card-section class="q-pa-md" style="cursor: pointer; height: 100%" @click="onDocument(row)">
-                <div class="text-primary">{{ $t(row.entity_type) }}</div>
+                <div class="text-primary text-uppercase">{{ $t(row.entity_type) }}</div>
                 <div class="text-h5">{{ row.name }}</div>
                 <div>
                   <tags-badges :item="row" />

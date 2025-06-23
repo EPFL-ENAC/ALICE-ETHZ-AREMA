@@ -85,6 +85,7 @@
 </template>
 
 <script setup lang="ts">
+import { marked } from 'marked';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import '@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -384,16 +385,18 @@ function displayFeatures() {
       divContainer.classList.add('cursor-pointer');
       divContainer.style.minWidth = '200px';
       const entyTypeContainer = document.createElement('div');
-      entyTypeContainer.classList.add('text-primary');
+      entyTypeContainer.classList.add('text-primary', 'text-uppercase');
       entyTypeContainer.textContent = t(feature.properties?.entity_type);
       divContainer.appendChild(entyTypeContainer);
       const nameContainer = document.createElement('div');
-      nameContainer.classList.add('text-bold');
+      nameContainer.classList.add('text-h6');
       nameContainer.textContent = feature.properties?.name;
       divContainer.appendChild(nameContainer);
       const descriptionContainer = document.createElement('div');
-      descriptionContainer.classList.add('ellipsis');
-      descriptionContainer.textContent = feature.properties?.description ? feature.properties?.description : '';
+      descriptionContainer.classList.add('fade-text', 'marked');
+      descriptionContainer.innerHTML = marked.parse(
+        feature.properties?.description ? feature.properties?.description : '',
+      );
       divContainer.appendChild(descriptionContainer);
 
       new Popup().setLngLat(coordinates).setDOMContent(divContainer).addTo(map.value);
