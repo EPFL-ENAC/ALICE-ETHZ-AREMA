@@ -12,6 +12,10 @@ export default {
     en: 'English',
     fr: 'Français',
   },
+  roles: {
+    administrator: 'Administrator',
+    contributor: 'Contributor',
+  },
   'content-manager': 'Gestionnaire de contenu',
   'content-reviewer': 'Réviseur de contenu',
   absorption_coefficient_hint: 'α',

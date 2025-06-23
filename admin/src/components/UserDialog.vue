@@ -57,11 +57,12 @@
             :rules="[(val) => !!val || t('field_required')]"
             class="q-mb-md"
           />
-          <div>
-            <q-checkbox v-model="isAdministrator" :label="t('administrator')" class="q-mb-md" />
+          <div class="q-mb-lg">
+            <div class="text-grey-8 q-mb-sm">{{ t('role') + ' *' }}</div>
+            <q-option-group v-model="role" dense :options="roleOptions" color="primary" inline />
           </div>
           <div>
-            <q-checkbox v-model="selected.enabled" :label="t('enabled')" class="q-mb-md" />
+            <q-checkbox v-model="selected.enabled" :label="t('enabled')" dense class="q-mb-md" />
           </div>
         </q-form>
       </q-card-section>
@@ -100,7 +101,12 @@ const selected = ref<AppUser>({
   email: '',
 } as AppUser);
 const editMode = ref(false);
-const isAdministrator = ref(false);
+const role = ref('app-contributor'); // Default role
+
+const roleOptions = [
+  { label: t('roles.contributor'), value: 'app-contributor' },
+  { label: t('roles.administrator'), value: 'app-administrator' },
+];
 
 watch(
   () => props.modelValue,
@@ -115,7 +121,7 @@ watch(
       if (!editMode.value) {
         onGeneratePassword();
       }
-      isAdministrator.value = selected.value.roles?.includes('app-administrator') ?? false;
+      role.value = selected.value.roles?.includes('app-administrator') ? 'app-administrator' : 'app-contributor';
     }
     showDialog.value = value;
   },
@@ -133,15 +139,18 @@ async function onSave() {
   if (selected.value.roles === undefined) {
     selected.value.roles = [];
   }
-  if (isAdministrator.value) {
-    if (!selected.value.roles.includes('app-administrator')) {
-      selected.value.roles.push('app-administrator');
-    }
+  let index = selected.value.roles.indexOf('app-administrator');
+  if (index !== -1) {
+    selected.value.roles.splice(index, 1);
+  }
+  index = selected.value.roles.indexOf('app-contributor');
+  if (index !== -1) {
+    selected.value.roles.splice(index, 1);
+  }
+  if (role.value === 'app-administrator') {
+    selected.value.roles.push('app-administrator');
   } else {
-    const index = selected.value.roles.indexOf('app-administrator');
-    if (index !== -1) {
-      selected.value.roles.splice(index, 1);
-    }
+    selected.value.roles.push('app-contributor');
   }
   if (selected.value.id) {
     usersStore

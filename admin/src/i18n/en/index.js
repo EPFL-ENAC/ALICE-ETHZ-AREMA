@@ -18,6 +18,10 @@ export default {
     en: 'English',
     fr: 'Français',
   },
+  roles: {
+    administrator: 'Administrator',
+    contributor: 'Contributor',
+  },
   'content-manager': 'Content manager',
   'content-reviewer': 'Content reviewer',
   absorption_coefficient_hint: 'α',

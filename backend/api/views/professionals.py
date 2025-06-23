@@ -45,7 +45,8 @@ async def delete(
 async def create(
     payload: ProfessionalDraft,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    user: User = Depends(kc_service.require_any_role(
+        ["app-administrator", "app-contributor"]))
 ) -> Professional:
     """Create a professional"""
     return await ProfessionalService(session).create(payload, user)
@@ -56,7 +57,8 @@ async def update(
     id: int,
     payload: ProfessionalDraft,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    user: User = Depends(kc_service.require_any_role(
+        ["app-administrator", "app-contributor"]))
 ) -> Professional:
     """Update a professional by id"""
     return await ProfessionalService(session).update(id, payload, user)
