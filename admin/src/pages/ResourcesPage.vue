@@ -18,7 +18,7 @@
       >
         <template v-slot:top>
           <q-btn
-            v-if="authStore.isAdmin"
+            v-if="authStore.isAdmin || authStore.isContrib"
             size="sm"
             color="primary"
             :disable="loading"
@@ -92,6 +92,7 @@
             >
             </q-btn>
             <q-btn
+              v-if="authStore.isAdmin"
               color="grey-8"
               size="12px"
               flat
@@ -103,6 +104,7 @@
             >
             </q-btn>
             <q-btn
+              v-if="authStore.isAdmin"
               color="grey-8"
               size="12px"
               flat
@@ -193,10 +195,10 @@ const columns = computed(() => {
     },
   ];
 
-  if (authStore.isAdmin) {
+  if (authStore.isAdmin || authStore.isContrib) {
     cols.splice(2, 0, {
       name: 'action',
-      align: 'left',
+      align: 'right',
       label: '',
       field: 'action',
       required: false,

@@ -53,6 +53,15 @@
             <div v-if="document.year" class="text-secondary text-caption">
               {{ $t('year', { year: document.year }) }}
             </div>
+            <div v-if="document.web" class="text-secondary text-caption">
+              <q-markdown :src="toUrlMd(document.web)" no-heading-anchor-links class="q-mb-none" />
+            </div>
+            <div v-if="document.tel" class="text-secondary text-caption">
+              {{ $t('tel', { tel: document.tel }) }}
+            </div>
+            <div v-if="document.email" class="text-secondary text-caption">
+              <q-markdown :src="`[${document.email}](mailto:${document.email})`" no-heading-anchor-links />
+            </div>
           </div>
           <q-markdown
             v-if="document.side_note"
@@ -86,7 +95,7 @@
         <div class="col-12 col-md-3"></div>
       </div>
 
-      <div v-if="relationSummaries.length" class="row q-col-gutter-md q-mt-md">
+      <div v-if="relationSummaries.length || relatedResources.length" class="row q-col-gutter-md q-mt-md">
         <div class="col-12 col-md-3"></div>
         <div class="col-12 col-md-6">
           <div class="text-primary text-uppercase q-mb-sm">
@@ -110,6 +119,21 @@
                 </q-card-section>
               </q-card>
             </template>
+            <q-card v-if="relatedResources.length" flat class="q-mb-md" style="min-width: 200px">
+              <q-card-section>
+                <div class="text-primary">{{ $t(document.entity_type) }}</div>
+                <ul class="q-mt-xs q-mb-none q-pl-md">
+                  <li
+                    v-for="doc in relatedResources"
+                    :key="doc.id"
+                    class="text-bold cursor-pointer"
+                    @click="onDocument(doc)"
+                  >
+                    {{ doc.name }}
+                  </li>
+                </ul>
+              </q-card-section>
+            </q-card>
           </div>
         </div>
         <div class="col-12 col-md-3"></div>
@@ -138,6 +162,7 @@ const props = defineProps<Props>();
 
 const slide = ref(0);
 const relationSummaries = ref<Document[]>([]);
+const relatedResources = ref<Document[]>([]);
 
 const relationSummariesPerEntityType = computed(() => {
   const relations: { [key: string]: Document[] } = {};
@@ -158,6 +183,7 @@ function init() {
   slide.value = 0;
   if (!props.document) return;
   relationSummaries.value = [];
+  relatedResources.value = [];
   const fields = ['id', 'entity_type', 'name', 'description'];
   searchService
     .getRelatedDocuments(toId(props.document.entity_type, props.document.id), fields)
@@ -168,7 +194,7 @@ function init() {
       // make sure relations in all directions are covered
       if (!props.document?.relates_to) return;
       const realtedIds = relationSummaries.value.map((doc) => toId(doc.entity_type, doc.id));
-      Promise.all(
+      return Promise.all(
         props.document?.relates_to
           .filter((id) => !realtedIds.includes(id))
           .map((rel) => {
@@ -182,6 +208,11 @@ function init() {
       // sort by entity type
       relationSummaries.value.sort((a, b) => a.entity_type.localeCompare(b.entity_type));
     });
+  if (props.document.entity_type === 'natural-resource') {
+    searchService.getDocumentsFromTags(props.document.tags, fields).then((result) => {
+      relatedResources.value = result.data?.filter((doc) => doc.id !== props.document.id) || [];
+    });
+  }
 }
 
 function onDocument(row: Document) {
@@ -190,5 +221,16 @@ function onDocument(row: Document) {
 
 function toId(entity_type: string, id: number | string) {
   return `${entity_type}:${id}`;
+}
+
+function toUrlMd(url: string) {
+  if (!url) return '';
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = `https://${url}`;
+  }
+  if (url.endsWith('/')) {
+    url = url.slice(0, -1);
+  }
+  return `[${url.replace(/^https?:\/\//, '')}](${url})`;
 }
 </script>

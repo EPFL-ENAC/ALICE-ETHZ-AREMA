@@ -31,11 +31,16 @@
         </template>
         <template v-slot:body-cell-roles="props">
           <q-td :props="props">
-            <q-icon
-              :name="props.row.roles.includes('app-administrator') ? 'check' : 'close'"
-              :color="props.row.roles.includes('app-administrator') ? 'positive' : 'negative'"
-              size="20px"
-            />
+            <q-chip
+              v-for="role in props.row.roles.filter((r: string) => r.startsWith('app-') && r !== 'app-user')"
+              :key="role"
+              class="q-ml-none q-mr-sm"
+              :color="role === 'app-administrator' ? 'primary' : 'secondary'"
+              text-color="white"
+              size="12px"
+            >
+              {{ $t(role.replace('app-', 'roles.')) }}
+            </q-chip>
           </q-td>
         </template>
         <template v-slot:body-cell-enabled="props">
@@ -110,6 +115,7 @@ import { notifyError } from 'src/utils/notify';
 
 const { t } = useI18n({ useScope: 'global' });
 const usersStore = useUsersStore();
+const authStore = useAuthStore();
 
 const filter = ref('');
 const showDialog = ref(false);
@@ -124,7 +130,7 @@ const initialPagination = ref({
 });
 
 const columns = computed(() => {
-  return [
+  const cols = [
     {
       name: 'email',
       required: true,
@@ -144,7 +150,7 @@ const columns = computed(() => {
     {
       name: 'roles',
       required: true,
-      label: t('administrator'),
+      label: t('role'),
       align: DefaultAlignment,
       field: 'roles',
       sortable: true,
@@ -157,15 +163,20 @@ const columns = computed(() => {
       field: 'enabled',
       sortable: true,
     },
-    {
-      name: 'action',
-      align: DefaultAlignment,
-      label: '',
-      required: false,
-      field: 'action',
-      sortable: false,
-    },
   ];
+
+  if (authStore.isAdmin) {
+    cols.splice(1, 0, {
+      name: 'action',
+      align: 'right',
+      label: '',
+      field: 'action',
+      required: false,
+      sortable: false,
+      style: 'width: 100px',
+    });
+  }
+  return cols;
 });
 
 onMounted(() => {

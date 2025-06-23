@@ -13,9 +13,8 @@ export const useAuthStore = defineStore('auth', () => {
   const profile = ref<Profile>();
   const realmRoles = ref<string[]>([]);
   const isAuthenticated = computed(() => profile.value !== undefined);
-  const isAdmin = computed(() =>
-    realmRoles.value.includes('app-administrator'),
-  );
+  const isAdmin = computed(() => realmRoles.value.includes('app-administrator'));
+  const isContrib = computed(() => realmRoles.value.includes('app-contributor'));
 
   const accessToken = computed(() => keycloak.token);
   //const accessToken = ref<string>();
@@ -71,6 +70,7 @@ export const useAuthStore = defineStore('auth', () => {
   return {
     isAuthenticated,
     isAdmin,
+    isContrib,
     profile,
     realmRoles,
     accessToken,

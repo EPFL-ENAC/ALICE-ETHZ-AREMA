@@ -12,11 +12,7 @@
             <q-card-section>
               <div class="row q-col-gutter-md">
                 <div class="col-2">
-                  <q-skeleton
-                    height="100px"
-                    class="q-pa-md bg-teal-1"
-                    style="margin-top: 650px"
-                  >
+                  <q-skeleton height="100px" class="q-pa-md bg-teal-1" style="margin-top: 650px">
                     {{ $t('external_links') }}
                   </q-skeleton>
                 </div>
@@ -36,27 +32,12 @@
                     {{ $t('article_top') }}
                   </q-skeleton>
 
-                  <div
-                    style="
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <q-skeleton
-                      width="300px"
-                      height="100px"
-                      class="q-mb-md q-pa-md bg-teal-1"
-                    >
+                  <div style="display: flex; justify-content: center; align-items: center; flex-direction: column">
+                    <q-skeleton width="300px" height="100px" class="q-mb-md q-pa-md bg-teal-1">
                       {{ $t('multimedia') }}
                     </q-skeleton>
 
-                    <q-skeleton
-                      type="rect"
-                      width="300px"
-                      class="q-mb-md q-pa-xs bg-teal-1"
-                    >
+                    <q-skeleton type="rect" width="300px" class="q-mb-md q-pa-xs bg-teal-1">
                       {{ $t('legend') }}
                     </q-skeleton>
                   </div>
@@ -66,11 +47,7 @@
                   </q-skeleton>
                 </div>
                 <div class="col-2">
-                  <q-skeleton
-                    height="100px"
-                    class="q-pa-md bg-teal-1"
-                    style="margin-top: 300px"
-                  >
+                  <q-skeleton height="100px" class="q-pa-md bg-teal-1" style="margin-top: 300px">
                     {{ $t('side_note') }}
                   </q-skeleton>
                 </div>
@@ -81,28 +58,28 @@
         </div>
         <div class="col-12 col-md-2"></div>
       </div>
-      <div class="text-h6 q-mb-md q-mt-lg">{{ $t('search_index') }}</div>
-      <div class="text-help q-mb-md">{{ $t('search_index_help') }}</div>
-      <div class="q-mb-md">
-        <q-btn
-          v-if="authStore.isAdmin"
-          size="sm"
-          color="primary"
-          :disable="searchService.indexing"
-          :label="$t('drop_index')"
-          icon="delete_sweep"
-          @click="onDropIndex"
-        />
-        <q-btn
-          v-if="authStore.isAdmin"
-          size="sm"
-          color="primary"
-          :disable="searchService.indexing"
-          :label="$t('index_all')"
-          icon="manage_search"
-          @click="onIndexAll"
-          class="on-right"
-        />
+      <div v-if="authStore.isAdmin">
+        <div class="text-h6 q-mb-md q-mt-lg">{{ $t('search_index') }}</div>
+        <div class="text-help q-mb-md">{{ $t('search_index_help') }}</div>
+        <div class="q-mb-md">
+          <q-btn
+            size="sm"
+            color="primary"
+            :disable="searchService.indexing"
+            :label="$t('drop_index')"
+            icon="delete_sweep"
+            @click="onDropIndex"
+          />
+          <q-btn
+            size="sm"
+            color="primary"
+            :disable="searchService.indexing"
+            :label="$t('index_all')"
+            icon="manage_search"
+            @click="onIndexAll"
+            class="on-right"
+          />
+        </div>
       </div>
     </div>
   </q-page>
@@ -120,9 +97,7 @@ function onIndexAll() {
   searchService
     .indexAll()
     .then((result) => {
-      const counts = Object.entries(result).map(
-        ([key, value]) => `${t(key)}: ${value}`,
-      );
+      const counts = Object.entries(result).map(([key, value]) => `${t(key)}: ${value}`);
       $q.notify({
         message: t('all_items_indexed', { count: counts.join(', ') }),
         type: 'positive',

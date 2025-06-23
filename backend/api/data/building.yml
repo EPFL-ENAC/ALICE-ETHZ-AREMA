@@ -15,7 +15,7 @@ taxonomy:
         children:
           - id: multi-storey-house
             names:
-              en: Multi-Storey House
+              en: Multi-Storey Housing
               de: Mehrfamilienhaus
               fr: Immeuble d'habitation
               it: Edificio plurifamiliare

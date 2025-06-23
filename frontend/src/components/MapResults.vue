@@ -18,7 +18,7 @@
           <template v-for="row in rows" :key="`${row.entity_type}:${row.id}`">
             <q-item clickable v-ripple @click="onDocument(row)">
               <q-item-section>
-                <q-item-label class="text-primary">{{ $t(row.entity_type) }}</q-item-label>
+                <q-item-label class="text-primary text-uppercase">{{ $t(row.entity_type) }}</q-item-label>
                 <q-item-label class="text-bold">{{ row.name }}</q-item-label>
                 <div>
                   <tags-badges :item="row" />

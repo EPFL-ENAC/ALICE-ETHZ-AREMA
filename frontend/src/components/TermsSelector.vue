@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!taxonomyStore.loading">
     <div>
       <q-btn
         v-for="taxoNode in nodes"
@@ -95,6 +95,7 @@
         </template>
       </div>
     </div>
+    <q-separator size="2px" class="bg-primary q-mt-sm q-mb-md" />
   </div>
 </template>
 
@@ -153,13 +154,37 @@ const resourceTagOptions = computed<TermOption[]>(() => {
 });
 
 function onTaxoNodeSelect(node: TaxonomyNodeOption) {
-  if (selectedNode.value && selectedNode.value.value === node.value) {
+  if (!node.children || node.children.length === 0) {
+    // if no children, just select the node
+    selectedNode.value = node;
     searchService.selectNode(node);
-    if (searchService.isNodeSelected(node)) {
-      selectedNode.value = node;
+    emit('update:terms');
+    return;
+  }
+  const selectedChildren = searchService.getSelectedNodes(node);
+  const allChildren = searchService.getAllChildren(node);
+  if (selectedNode.value?.value === node.value) {
+    // if the node is already selected
+    if (selectedChildren.length === allChildren.length) {
+      // if all children are selected, clear selection
+      searchService.unselectNodeChildren(node);
+    } else if (selectedChildren.length < allChildren.length) {
+      // if no children are selected, select all
+      searchService.selectNode(node);
+    } else {
+      // if some children are selected, do nothing
+      return;
     }
   } else {
+    // if the node is not selected
     selectedNode.value = node;
+    if (selectedChildren.length === 0) {
+      // if no children are selected, select all
+      searchService.selectNodeChildren(node);
+    } else {
+      // if some children are selected, do nothing
+      return;
+    }
   }
   emit('update:terms');
 }

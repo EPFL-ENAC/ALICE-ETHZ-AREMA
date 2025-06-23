@@ -44,7 +44,8 @@ async def delete(
 async def create(
     payload: BuildingMaterialDraft,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    user: User = Depends(kc_service.require_any_role(
+        ["app-administrator", "app-contributor"]))
 ) -> BuildingMaterial:
     """Create a building material"""
     return await BuildingMaterialService(session).create(payload, user)
@@ -54,7 +55,8 @@ async def create(
 async def update(
     id: int, payload: BuildingMaterialDraft,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    user: User = Depends(kc_service.require_any_role(
+        ["app-administrator", "app-contributor"]))
 ) -> BuildingMaterial:
     """Update a building material by id"""
     async with session:

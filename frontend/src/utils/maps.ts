@@ -10,7 +10,7 @@ export const style: StyleSpecification = {
   sources: {
     osm: {
       type: 'raster',
-      tiles: ['https://tile.osm.ch/osm-swiss-style/{z}/{x}/{y}.png'],
+      tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
       tileSize: 256,
       minzoom: 0,
       maxzoom: 20,

@@ -47,7 +47,23 @@ export const useSearchService = defineStore('search', () => {
     searching.value = true;
     return api
       .get('/search/_entities', {
-        params: { id, fields, relates: [id] },
+        params: { fields, relates: [id] },
+        paramsSerializer: {
+          indexes: null, // no brackets at all
+        },
+      })
+      .then((response) => {
+        const result = response.data;
+        return result;
+      })
+      .finally(() => (searching.value = false));
+  }
+
+  async function getDocumentsFromTags(tags: string[], fields: string[] = []): Promise<SearchResult> {
+    searching.value = true;
+    return api
+      .get('/search/_entities', {
+        params: { fields, tags },
         paramsSerializer: {
           indexes: null, // no brackets at all
         },
@@ -173,22 +189,16 @@ export const useSearchService = defineStore('search', () => {
 
   function selectNode(node: TaxonomyNodeOption) {
     if (node.children) {
-      // get node leafs recursively
-      const getLeafs = (n: TaxonomyNodeOption): string[] => {
-        if (!n.children || n.children.length === 0) {
-          return [n.value];
-        }
-        return n.children.flatMap((child) => getLeafs(child));
-      };
       // get all leafs of the node
-      const leafs = getLeafs(node);
+      const leafs = getAllChildren(node);
 
       // any selected child terms ?
-      if (leafs.some((child) => selectedTerms.value.includes(child))) {
+      if (leafs.every((child) => selectedTerms.value.includes(child))) {
         // clear all child terms
-        selectedTerms.value = selectedTerms.value.filter((urn) => !urn.startsWith(node.value));
+        selectedTerms.value = selectedTerms.value.filter((urn) => !leafs.includes(urn));
       } else {
         // select all child terms
+        selectedTerms.value = selectedTerms.value.filter((urn) => !leafs.includes(urn));
         selectedTerms.value.push(...leafs);
       }
     } else {
@@ -200,11 +210,43 @@ export const useSearchService = defineStore('search', () => {
     }
   }
 
+  function selectNodeChildren(node: TaxonomyNodeOption) {
+    if (node.children) {
+      // get all leafs of the node
+      const leafs = getAllChildren(node);
+
+      // select all child terms
+      selectedTerms.value = selectedTerms.value.filter((urn) => !leafs.includes(urn));
+      selectedTerms.value.push(...leafs);
+    }
+  }
+
+  function unselectNodeChildren(node: TaxonomyNodeOption) {
+    if (node.children) {
+      // get all leafs of the node
+      const leafs = getAllChildren(node);
+
+      // select all child terms
+      selectedTerms.value = selectedTerms.value.filter((urn) => !leafs.includes(urn));
+    }
+  }
+
+  // get node leafs recursively
+  function getAllChildren(n: TaxonomyNodeOption): string[] {
+    if (!n.children || n.children.length === 0) {
+      return [n.value];
+    }
+    return n.children.flatMap((child) => getAllChildren(child));
+  }
+
   function getSelectedNodes(node: TaxonomyNodeOption): string[] {
     if (!node || !node.value) {
       return [];
     }
-    return selectedTerms.value.filter((term) => term.startsWith(node.value)) || [];
+    // get all leafs of the node
+    const leafs = getAllChildren(node);
+
+    return selectedTerms.value.filter((term) => leafs.includes(term)) || [];
   }
 
   function isNodeSelected(node: TaxonomyNodeOption) {
@@ -234,9 +276,13 @@ export const useSearchService = defineStore('search', () => {
     search_videos,
     getDocument,
     getRelatedDocuments,
+    getDocumentsFromTags,
     getSelectedNodes,
+    getAllChildren,
     isNodeSelected,
     selectNode,
+    selectNodeChildren,
+    unselectNodeChildren,
     selectUrn,
   };
 });

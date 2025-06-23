@@ -2,9 +2,9 @@
   <div>
     <q-card bordered flat>
       <q-tabs v-model="tab" dense align="left" class="bg-grey-1 text-grey-6" active-color="grey-8">
+        <q-tab v-if="helpContent" name="help" :label="$t('instructions')" no-caps />
         <q-tab name="write" :label="$t('write')" no-caps />
         <q-tab name="preview" :label="$t('preview')" no-caps />
-        <q-tab v-if="helpContent" name="help" :label="$t('help')" no-caps />
       </q-tabs>
       <q-separator />
       <q-tab-panels v-model="tab">
@@ -14,7 +14,7 @@
         <q-tab-panel name="preview">
           <q-markdown :src="text" no-heading-anchor-links />
         </q-tab-panel>
-        <q-tab-panel v-if="helpContent" name="help">
+        <q-tab-panel v-if="helpContent" name="help" class="bg-grey-2">
           <q-markdown :src="helpContent" no-heading-anchor-links />
         </q-tab-panel>
       </q-tab-panels>
@@ -48,6 +48,7 @@ onMounted(() => {
     fetch(`/admin/help/en/${props.help}.md`).then((response) => {
       response.text().then((text) => {
         helpContent.value = text;
+        tab.value = text ? 'help' : 'write';
       });
     });
   }
