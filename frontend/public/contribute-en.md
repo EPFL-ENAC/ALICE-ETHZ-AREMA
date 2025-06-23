@@ -12,3 +12,5 @@ If you agree to contribute to the Atlas of Regenerative Materials you will also 
 ## Atlas Registration
 
 If you agree and are eager to contribute please send an email to [Shoshana Huber](mailto:shhuber@ethz.ch).
+
+Use the administration application to login and manage your contributions: [Atlas of Regenerative Materials - Admin](https://atlas-regenmat.ch/admin/)
