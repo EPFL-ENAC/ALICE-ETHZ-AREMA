@@ -5,7 +5,7 @@
         <div>
           <q-icon name="warning" class="on-left q-mb-xs" />Note: This is the <em>development</em> version of the
           <b>Atlas of Regenerative Materials</b>. If you are looking for the <em>production</em> version, please visit
-          <a href="https://atlas-regenmat.epfl.ch/admin/" target="_blank" class="text-bold epfl"
+          <a href="https://atlas-regenmat.ch/admin/" target="_blank" class="text-bold epfl"
             >atlas-regenmat.epfl.ch/admin <q-icon name="arrow_outward"
           /></a>
           instead.

@@ -93,6 +93,7 @@ export default {
   index_all: 'Tout indexer',
   index_drop_error: "Erreur lors de la suppression de l'index",
   index_dropped: 'Index supprimé',
+  instructions: 'Instructions',
   last_modification: 'Dernière modification',
   last_name: 'Nom de famille',
   layout_help: "Ceci est un exemple de disposition de page de chaque élément permettant de visualiser comment chaque champ est placé dans la page correspondante du portail web d'AREMA.",

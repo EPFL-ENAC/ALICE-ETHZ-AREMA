@@ -110,6 +110,7 @@ export default {
   index_all: 'Index all',
   index_drop_error: 'Index drop error',
   index_dropped: 'Index dropped',
+  instructions: 'Instructions',
   last_modification: 'Last modification',
   last_name: 'Last name',
   layout_help: "This is a preview of the layout of each item. It indicates how each field is placed in the item's page in the main web portal of AREMA.",
