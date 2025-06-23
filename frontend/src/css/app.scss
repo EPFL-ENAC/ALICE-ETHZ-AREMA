@@ -54,6 +54,18 @@ a {
   background-color: #f6f8fa;
 }
 
+.q-markdown.q-mb-none > p {
+  margin-bottom: 0;
+}
+
+.q-markdown.q-ma-none > p {
+  margin: 0;
+}
+
+.q-markdown--link-external {
+  text-decoration: underline !important;
+}
+
 .q-markdown--link-external:after {
   display: none !important;
 }

@@ -53,6 +53,15 @@
             <div v-if="document.year" class="text-secondary text-caption">
               {{ $t('year', { year: document.year }) }}
             </div>
+            <div v-if="document.web" class="text-secondary text-caption">
+              <q-markdown :src="toUrlMd(document.web)" no-heading-anchor-links class="q-mb-none" />
+            </div>
+            <div v-if="document.tel" class="text-secondary text-caption">
+              {{ $t('tel', { tel: document.tel }) }}
+            </div>
+            <div v-if="document.email" class="text-secondary text-caption">
+              <q-markdown :src="`[${document.email}](mailto:${document.email})`" no-heading-anchor-links />
+            </div>
           </div>
           <q-markdown
             v-if="document.side_note"
@@ -213,5 +222,16 @@ function onDocument(row: Document) {
 
 function toId(entity_type: string, id: number | string) {
   return `${entity_type}:${id}`;
+}
+
+function toUrlMd(url: string) {
+  if (!url) return '';
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = `https://${url}`;
+  }
+  if (url.endsWith('/')) {
+    url = url.slice(0, -1);
+  }
+  return `[${url.replace(/^https?:\/\//, '')}](${url})`;
 }
 </script>

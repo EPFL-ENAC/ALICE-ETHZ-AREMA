@@ -108,6 +108,7 @@ export default {
   sound_reduction_index: 'Sound Reduction Index',
   standard: 'Standard',
   structural: 'Structural',
+  tel: 'Tel: {tel}',
   tensile_strength_symbol: 'σ',
   tensile_strength_unit: 'MPa',
   tensile_strength: 'Tensile Strength',
