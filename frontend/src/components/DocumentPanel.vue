@@ -19,7 +19,7 @@
           <div class="q-mb-lg">
             <tags-badges :item="document" />
           </div>
-          <div class="text-h5 q-mb-lg">
+          <div class="q-mb-lg" style="font-size: 1.5rem">
             <q-markdown :src="document.description" no-heading-anchor-links />
           </div>
           <div class="q-mb-lg">
