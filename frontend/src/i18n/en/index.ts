@@ -119,7 +119,7 @@ export default {
   thermal_conductivity_symbol: 'λ',
   thermal_conductivity_unit: 'W/(m*K)',
   thermal_conductivity: 'Thermal Conductivity',
-  type_here: 'Type here...',
+  type_here: 'Search by keywords...',
   u_hint: 'U, W/(m²*K)',
   u: 'U',
   vapor_diffusion_resistance_symbol: 'µ',

@@ -1,20 +1,25 @@
 <template>
   <div>
-    <div class="text-h5 text-uppercase text-primary">
-      {{ $t('filters') }}
+    <div class="row">
+      <div class="text-h5 text-uppercase text-primary">
+        {{ $t('search') }}
+      </div>
+      <q-space />
+      <q-input
+        v-model="searchService.filterText"
+        dense
+        square
+        debounce="500"
+        input-class="text-secondary"
+        :placeholder="$t('type_here')"
+        @update:model-value="searchService.search_filtered_entities()"
+        class="search-input"
+      >
+        <template v-slot:append>
+          <q-icon name="search" />
+        </template>
+      </q-input>
     </div>
-    <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
-    <q-input
-      v-model="searchService.filterText"
-      borderless
-      clearable
-      debounce="500"
-      :input-style="`font-size: ${$q.screen.gt.sm ? 24 : 18}px;`"
-      input-class="text-secondary"
-      :placeholder="$t('type_here')"
-      class="q-mt-sm q-mb-sm"
-      @update:model-value="searchService.search_filtered_entities()"
-    />
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
     <terms-selector @update:terms="onTermsUpdate" :view="searchService.selectedView" />
     <div class="q-mt-md q-mb-md">
@@ -69,3 +74,9 @@ function onTermsUpdate() {
   searchService.search_filtered_entities();
 }
 </script>
+
+<style scoped>
+.search-input ::v-deep(.q-field__control) {
+  height: 32px;
+}
+</style>

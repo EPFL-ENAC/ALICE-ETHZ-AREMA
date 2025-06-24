@@ -54,6 +54,10 @@ a {
   background-color: #f6f8fa;
 }
 
+.q-markdown > ul {
+  padding-left: 1rem;
+}
+
 .q-markdown.q-mb-none > p {
   margin-bottom: 0;
 }
@@ -104,4 +108,8 @@ a {
   position: relative;
   mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+
+.text-body1 {
+  line-height: 2;
 }

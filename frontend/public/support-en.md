@@ -4,6 +4,7 @@
 - [La Matériauthèque MATILDA](https://materiautheque.ch/)
 - [Open Research Data Program of the ETH Board](https://ethrat.ch/en/eth-domain/open-research-data/)
 - [Innovation cheque by Innosuisse](https://www.innosuisse.admin.ch/en/innovation-cheque)
+- [The Swiss Data Science Center](https://www.datascience.ch/)
 
 <p>
   <a href="https://www.ricolafoundation.org/regeneratives-bauen" target="_blank">
@@ -16,6 +17,9 @@
     <img src="images/ethboard.png" alt="ETH Board" height="70" class="q-mr-lg q-mb-md" />
   </a>
   <a href="https://www.innosuisse.admin.ch/en/innovation-cheque" target="_blank">
-    <img src="images/innosuisse.svg" alt="Innosuisse" height="100" class="q-mr-lg" />
+    <img src="images/innosuisse.svg" alt="Innosuisse" height="150" class="q-mr-lg" />
+  </a>
+  <a href="https://www.datascience.ch/" target="_blank">
+    <img src="images/sdsc.png" alt="Swiss Data Science Center" height="100" class="q-mr-lg" />
   </a>
 </p>
