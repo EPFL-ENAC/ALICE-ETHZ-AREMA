@@ -4,18 +4,6 @@
       {{ $t('videos') }}
     </div>
     <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
-    <q-input
-      v-model="searchService.filterText"
-      borderless
-      clearable
-      debounce="500"
-      :input-style="`font-size: ${$q.screen.gt.sm ? 24 : 18}px;`"
-      input-class="text-secondary"
-      :placeholder="$t('type_here')"
-      class="q-mt-sm q-mb-sm"
-      @update:model-value="searchService.search_videos()"
-    />
-    <q-separator size="2px" class="bg-primary q-mt-md q-mb-md" />
     <terms-selector @update:terms="onTermsUpdate" view="list" />
     <q-spinner-dots v-if="searchService.searching" size="md" class="q-mb-md" />
     <videos-results />
