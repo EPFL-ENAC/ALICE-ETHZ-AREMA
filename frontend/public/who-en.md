@@ -8,4 +8,4 @@ The Atlas is currently developed in collaboration with Shoshana Huber, a mechani
 
 Additionally, the Atlas benefits from an External Advisory Board, composed of leading experts from industry, philanthropy, and academia. A dedicated expert community ensures the peer review of new contributions, maintaining the vision expressed in our Manifesto, rigor and quality of the Atlas.
 
-At last a warm thank you to students Christophe Schlesser, Despoina Minakaki, Emma Livio and Laura Ciak for their contributions.
+At last, a warm thank you to students Christophe Schlesser, Despoina Minakaki, Emma Livio and Laura Ciak for their contributions.
