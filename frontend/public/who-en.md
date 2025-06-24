@@ -7,3 +7,5 @@ The project was made possible thanks to the initial support of the Ricola Founda
 The Atlas is currently developed in collaboration with Shoshana Huber, a mechanical engineer and craftswoman specialized in sustainable construction, Alia Bengana, an architect, educator, author specialized in regenerative materials (EPFL, HEIA Fribourg, eav&t Paris-Est), and Rome Villa Medicis fellow 2025-2026, and web developer Yannick Marcon from ENAC-IT4R at EPFL.
 
 Additionally, the Atlas benefits from an External Advisory Board, composed of leading experts from industry, philanthropy, and academia. A dedicated expert community ensures the peer review of new contributions, maintaining the vision expressed in our Manifesto, rigor and quality of the Atlas.
+
+At last a warm thank you to students Christophe Schlesser, Despoina Minakaki, Emma Livio and Laura Ciak for their contributions.
