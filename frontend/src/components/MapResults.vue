@@ -54,8 +54,8 @@ function onDocument(row: Document) {
   router.push({ name: 'doc', params: { id: `${row.entity_type}:${row.id}` } });
 }
 
-function onFeature(feature: Feature) {
-  console.debug(feature);
+function onFeature(features: Feature[]) {
+  console.debug(features);
 }
 
 function onBoundingBox(bounds: [[number, number], [number, number]]) {

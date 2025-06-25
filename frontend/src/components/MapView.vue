@@ -372,44 +372,7 @@ function displayFeatures() {
     // the unclustered-point layer, open a popup at
     // the location of the feature, with
     // description HTML from its properties.
-    map.value.on('click', 'entities-unclustered-point', (e: MapMouseEvent) => {
-      if (!map.value) {
-        return;
-      }
-      const feature = e.features ? e.features[0] : null;
-      if (!feature) {
-        return;
-      }
-      emit('map:click', feature, map.value);
-      // Ensure that if the map is zoomed out such that
-      // multiple copies of the feature are visible, the
-      // popup appears over the copy being pointed to.
-      const coordinates = (feature.geometry as Point).coordinates.slice() as [number, number];
-      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-      }
-
-      const divContainer = document.createElement('div');
-      divContainer.onclick = () => onDocument(feature);
-      divContainer.classList.add('cursor-pointer');
-      divContainer.style.minWidth = '200px';
-      const entyTypeContainer = document.createElement('div');
-      entyTypeContainer.classList.add('text-primary', 'text-uppercase');
-      entyTypeContainer.textContent = t(feature.properties?.entity_type);
-      divContainer.appendChild(entyTypeContainer);
-      const nameContainer = document.createElement('div');
-      nameContainer.classList.add('text-h6');
-      nameContainer.textContent = feature.properties?.name;
-      divContainer.appendChild(nameContainer);
-      const descriptionContainer = document.createElement('div');
-      descriptionContainer.classList.add('fade-text', 'marked');
-      descriptionContainer.innerHTML = marked.parse(
-        feature.properties?.description ? feature.properties?.description : '',
-      );
-      divContainer.appendChild(descriptionContainer);
-
-      new Popup().setLngLat(coordinates).setDOMContent(divContainer).addTo(map.value);
-    });
+    map.value.on('click', 'entities-unclustered-point', showPopup);
 
     map.value.on('mouseenter', 'entities-clusters', () => {
       if (map.value) map.value.getCanvas().style.cursor = 'pointer';
@@ -427,6 +390,76 @@ function displayFeatures() {
       }
     });
   }
+}
+
+function showPopup(e: MapMouseEvent) {
+  if (!map.value) {
+    return;
+  }
+  const features = map.value.queryRenderedFeatures(e.point, {
+    layers: ['entities-unclustered-point'],
+  });
+  const clickedFeature = features ? features[0] : null;
+  if (!clickedFeature) {
+    return;
+  }
+  // filter props.features to points with nearest coordinates
+  const clickedCoordinates = (clickedFeature.geometry as Point).coordinates;
+  const sameLocationFeatures =
+    props.features?.features.filter((f) => {
+      if (f.geometry.type !== 'Point') {
+        return false;
+      }
+      const coordinates = (f.geometry as Point).coordinates;
+      const distance = Math.hypot(coordinates[0] - clickedCoordinates[0], coordinates[1] - clickedCoordinates[1]); // Rough Euclidean
+      if (distance < 0.00001) {
+        return true;
+      }
+      return false;
+    }) || [];
+  emit('map:click', sameLocationFeatures, map.value);
+  // Ensure that if the map is zoomed out such that
+  // multiple copies of the feature are visible, the
+  // popup appears over the copy being pointed to.
+  const coordinates = (clickedFeature.geometry as Point).coordinates.slice() as [number, number];
+  while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+  }
+
+  const makeFeatureContainer = (feature: Feature) => {
+    const divContainer = document.createElement('div');
+    divContainer.onclick = () => onDocument(feature);
+    divContainer.classList.add('cursor-pointer');
+    divContainer.style.minWidth = '200px';
+    const entyTypeContainer = document.createElement('div');
+    entyTypeContainer.classList.add('text-primary', 'text-uppercase');
+    entyTypeContainer.textContent = t(feature.properties?.entity_type);
+    divContainer.appendChild(entyTypeContainer);
+    const nameContainer = document.createElement('div');
+    nameContainer.classList.add('text-h6');
+    nameContainer.textContent = feature.properties?.name;
+    divContainer.appendChild(nameContainer);
+    const descriptionContainer = document.createElement('div');
+    descriptionContainer.classList.add('fade-text', 'marked');
+    descriptionContainer.innerHTML = marked.parse(
+      feature.properties?.description ? feature.properties?.description : '',
+    );
+    divContainer.appendChild(descriptionContainer);
+    return divContainer;
+  };
+
+  const featuresContainer = document.createElement('div');
+
+  sameLocationFeatures.forEach((feature, i) => {
+    const divContainer = makeFeatureContainer(feature);
+    featuresContainer.appendChild(divContainer);
+    if (i < sameLocationFeatures.length - 1) {
+      const separator = document.createElement('hr');
+      featuresContainer.appendChild(separator);
+    }
+  });
+
+  new Popup().setLngLat(coordinates).setDOMContent(featuresContainer).addTo(map.value);
 }
 
 function onDocument(feature: Feature) {
