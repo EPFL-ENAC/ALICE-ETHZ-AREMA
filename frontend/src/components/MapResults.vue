@@ -4,6 +4,7 @@
       <map-view
         :features="searchService.features"
         :height="'600px'"
+        :bbox="searchService.bbox"
         class="q-pr-md"
         @map:click="onFeature"
         @map:box="onBoundingBox"
@@ -55,7 +56,7 @@ function onDocument(row: Document) {
 }
 
 function onFeature(feature: Feature) {
-  console.log(feature);
+  console.debug(feature);
 }
 
 function onBoundingBox(bounds: [[number, number], [number, number]]) {
