@@ -6,7 +6,6 @@
         :height="'600px'"
         :bbox="searchService.bbox"
         :mark="mark"
-        @map:click="onFeature"
         @map:box="onBoundingBox"
       />
     </div>
@@ -50,7 +49,6 @@ import MapView from 'src/components/MapView.vue';
 import TagsBadges from 'src/components/TagsBadges.vue';
 import { Document } from 'src/models';
 import { getImageUrls } from 'src/utils/files';
-import { Feature } from 'geojson';
 
 const router = useRouter();
 const searchService = useSearchService();
@@ -71,10 +69,6 @@ function onEnterDocument(row: Document) {
 function onLeaveDocument() {
   hoverDocument.value = null;
   mark.value = undefined;
-}
-
-function onFeature(features: Feature[]) {
-  console.debug(features);
 }
 
 function onBoundingBox(bounds: [[number, number], [number, number]]) {

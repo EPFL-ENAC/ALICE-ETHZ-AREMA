@@ -402,7 +402,8 @@ function displayFeatures() {
     // the unclustered-point layer, open a popup at
     // the location of the feature, with
     // description HTML from its properties.
-    map.value.on('mouseover', 'entities-unclustered-point', showPopup);
+    //map.value.on('mouseover', 'entities-unclustered-point', showPopup);
+    map.value.on('click', 'entities-unclustered-point', showPopup);
 
     map.value.on('mouseenter', 'entities-clusters', () => {
       if (map.value) map.value.getCanvas().style.cursor = 'pointer';
@@ -442,18 +443,14 @@ function showPopup(e: MapMouseEvent) {
       }
       const coordinates = (f.geometry as Point).coordinates;
       const distance = Math.hypot(coordinates[0] - clickedCoordinates[0], coordinates[1] - clickedCoordinates[1]); // Rough Euclidean
-      if (distance < 0.00001) {
+      if (distance < 0.0001) {
         return true;
       }
       return false;
     }) || [];
-  emit('map:click', sameLocationFeatures, map.value);
-  // Ensure that if the map is zoomed out such that
-  // multiple copies of the feature are visible, the
-  // popup appears over the copy being pointed to.
-  const coordinates = (clickedFeature.geometry as Point).coordinates.slice() as [number, number];
-  while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+  if (sameLocationFeatures.length === 0) {
+    // if no features found nearby the clicked location, just show the clicked feature
+    sameLocationFeatures.push(clickedFeature);
   }
 
   const makeFeatureContainer = (feature: Feature) => {
@@ -489,7 +486,10 @@ function showPopup(e: MapMouseEvent) {
     }
   });
 
-  new Popup().setLngLat(coordinates).setDOMContent(featuresContainer).addTo(map.value);
+  new Popup()
+    .setLngLat(clickedCoordinates as [number, number])
+    .setDOMContent(featuresContainer)
+    .addTo(map.value);
 }
 
 function onDocument(feature: Feature) {
