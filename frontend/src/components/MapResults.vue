@@ -5,7 +5,6 @@
         :features="searchService.features"
         :height="'600px'"
         :bbox="searchService.bbox"
-        class="q-pr-md"
         @map:click="onFeature"
         @map:box="onBoundingBox"
       />

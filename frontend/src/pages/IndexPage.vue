@@ -12,13 +12,14 @@
         name="keyboard_arrow_down"
         :size="`${$q.screen.gt.sm ? 96 : 80}px`"
         :style="`opacity: ${1 - topPos / 100}`"
+        @click="scrollTo('#purpose-panel')"
       />
     </div>
-    <div>
+    <div id="purpose-panel">
       <purpose-panel class="q-pa-md bg-primary" style="min-height: 50vh" />
     </div>
     <div>
-      <search-panel class="q-pa-md" style="min-height: 80vh" />
+      <search-panel class="q-pa-md" style="min-height: 90vh" />
     </div>
   </q-page>
 </template>
@@ -37,5 +38,12 @@ const topPos = ref(0);
 function onScroll(info: { position: { top: number } }) {
   topPos.value = info.position.top;
   homeStore.update(topPos.value, $q.screen.height);
+}
+
+function scrollTo(selector: string) {
+  const element = document.querySelector(selector);
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 </script>

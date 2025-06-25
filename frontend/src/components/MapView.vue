@@ -73,7 +73,7 @@
       </q-menu>
     </q-btn>
     <div id="map-results" :style="`--t-width: ${width}; --t-height: ${height}`" class="mapview" />
-    <div v-if="hasLegend" class="colors q-mr-lg bg-white rounded-borders shadow-1 q-pa-xs">
+    <div v-if="hasLegend" class="colors q-mr-sm bg-white rounded-borders shadow-1 q-pa-xs">
       <template v-for="map in Object.keys(showMap)" :key="map">
         <q-icon v-if="showMap[map]" name="circle" :color="mapColors[map]" size="1.2rem" class="q-mr-xs" />
         <span v-if="showMap[map]" class="text-secondary text-caption on-left">
