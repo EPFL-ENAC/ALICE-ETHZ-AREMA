@@ -1,15 +1,20 @@
 import { RouteRecordRaw } from 'vue-router';
 
+const now = new Date();
+// is before 2025-06-27
+const isBeforeRelease = now < new Date('2025-06-27');
+
 const routes: RouteRecordRaw[] = [
   {
-    path: '/home',
-    component: () => import('layouts/HomeLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
-  },
-  {
     path: '/',
-    component: () => import('layouts/TempLayout.vue'),
-    children: [{ name: 'home', path: '', component: () => import('pages/ComingSoonPage.vue') }],
+    component: () => (isBeforeRelease ? import('layouts/TempLayout.vue') : import('layouts/HomeLayout.vue')),
+    children: [
+      {
+        name: 'home',
+        path: '',
+        component: () => (isBeforeRelease ? import('pages/ComingSoonPage.vue') : import('pages/IndexPage.vue')),
+      },
+    ],
   },
   {
     path: '/',
