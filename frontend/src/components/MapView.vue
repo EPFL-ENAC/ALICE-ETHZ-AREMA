@@ -103,6 +103,7 @@ import {
   Popup,
   GeoJSONSource,
   Feature,
+  Marker,
 } from 'maplibre-gl';
 
 const { t } = useI18n({ useScope: 'global' });
@@ -118,6 +119,7 @@ interface Props {
   width?: string;
   height?: string;
   bbox?: [[number, number], [number, number]];
+  mark?: [number, number];
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -136,6 +138,23 @@ interface MapNode {
   id: string;
   children?: MapNode[];
 }
+
+const color = '#dd4b39'; // accent color
+const el = document.createElement('div');
+el.innerHTML = `
+  <svg width="30" height="41" viewBox="0 0 27 41" xmlns="http://www.w3.org/2000/svg">
+    <g fill="none" fill-rule="evenodd">
+      <g transform="translate(3, 29)" fill="#000">
+        <ellipse cx="10.5" cy="5.25" rx="10.5" ry="5.25" opacity="0.2" />
+      </g>
+      <g fill="${color}"> <!-- Marker body color -->
+        <path d="M13.5,0 C6.044,0 0,6.044 0,13.5 C0,23.625 13.5,40.5 13.5,40.5 C13.5,40.5 27,23.625 27,13.5 C27,6.044 20.956,0 13.5,0 Z" />
+      </g>
+      <circle cx="13.5" cy="13.5" r="5.5" fill="white" />
+    </g>
+  </svg>
+`;
+const marker = new Marker({ element: el }).setLngLat([0, 0]);
 
 let map = shallowRef<Map>();
 const mapLoaded = ref(false);
@@ -279,6 +298,17 @@ watch(
   { immediate: true, deep: true },
 );
 
+watch(
+  () => props.mark,
+  () => {
+    marker.remove();
+    if (mapLoaded.value && props.mark) {
+      marker.setLngLat(props.mark).addTo(map.value!);
+    }
+  },
+  { immediate: true, deep: true },
+);
+
 function displayFeatures() {
   if (!map.value) {
     return;
@@ -372,44 +402,8 @@ function displayFeatures() {
     // the unclustered-point layer, open a popup at
     // the location of the feature, with
     // description HTML from its properties.
-    map.value.on('click', 'entities-unclustered-point', (e: MapMouseEvent) => {
-      if (!map.value) {
-        return;
-      }
-      const feature = e.features ? e.features[0] : null;
-      if (!feature) {
-        return;
-      }
-      emit('map:click', feature, map.value);
-      // Ensure that if the map is zoomed out such that
-      // multiple copies of the feature are visible, the
-      // popup appears over the copy being pointed to.
-      const coordinates = (feature.geometry as Point).coordinates.slice() as [number, number];
-      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-      }
-
-      const divContainer = document.createElement('div');
-      divContainer.onclick = () => onDocument(feature);
-      divContainer.classList.add('cursor-pointer');
-      divContainer.style.minWidth = '200px';
-      const entyTypeContainer = document.createElement('div');
-      entyTypeContainer.classList.add('text-primary', 'text-uppercase');
-      entyTypeContainer.textContent = t(feature.properties?.entity_type);
-      divContainer.appendChild(entyTypeContainer);
-      const nameContainer = document.createElement('div');
-      nameContainer.classList.add('text-h6');
-      nameContainer.textContent = feature.properties?.name;
-      divContainer.appendChild(nameContainer);
-      const descriptionContainer = document.createElement('div');
-      descriptionContainer.classList.add('fade-text', 'marked');
-      descriptionContainer.innerHTML = marked.parse(
-        feature.properties?.description ? feature.properties?.description : '',
-      );
-      divContainer.appendChild(descriptionContainer);
-
-      new Popup().setLngLat(coordinates).setDOMContent(divContainer).addTo(map.value);
-    });
+    //map.value.on('mouseover', 'entities-unclustered-point', showPopup);
+    map.value.on('click', 'entities-unclustered-point', showPopup);
 
     map.value.on('mouseenter', 'entities-clusters', () => {
       if (map.value) map.value.getCanvas().style.cursor = 'pointer';
@@ -427,6 +421,75 @@ function displayFeatures() {
       }
     });
   }
+}
+
+function showPopup(e: MapMouseEvent) {
+  if (!map.value) {
+    return;
+  }
+  const features = map.value.queryRenderedFeatures(e.point, {
+    layers: ['entities-unclustered-point'],
+  });
+  const clickedFeature = features ? features[0] : null;
+  if (!clickedFeature) {
+    return;
+  }
+  // filter props.features to points with nearest coordinates
+  const clickedCoordinates = (clickedFeature.geometry as Point).coordinates;
+  const sameLocationFeatures =
+    props.features?.features.filter((f) => {
+      if (f.geometry.type !== 'Point') {
+        return false;
+      }
+      const coordinates = (f.geometry as Point).coordinates;
+      const distance = Math.hypot(coordinates[0] - clickedCoordinates[0], coordinates[1] - clickedCoordinates[1]); // Rough Euclidean
+      if (distance < 0.0001) {
+        return true;
+      }
+      return false;
+    }) || [];
+  if (sameLocationFeatures.length === 0) {
+    // if no features found nearby the clicked location, just show the clicked feature
+    sameLocationFeatures.push(clickedFeature);
+  }
+
+  const makeFeatureContainer = (feature: Feature) => {
+    const divContainer = document.createElement('div');
+    divContainer.onclick = () => onDocument(feature);
+    divContainer.classList.add('cursor-pointer');
+    divContainer.style.minWidth = '200px';
+    const entyTypeContainer = document.createElement('div');
+    entyTypeContainer.classList.add('text-primary', 'text-uppercase');
+    entyTypeContainer.textContent = t(feature.properties?.entity_type);
+    divContainer.appendChild(entyTypeContainer);
+    const nameContainer = document.createElement('div');
+    nameContainer.classList.add('text-h6');
+    nameContainer.textContent = feature.properties?.name;
+    divContainer.appendChild(nameContainer);
+    const descriptionContainer = document.createElement('div');
+    descriptionContainer.classList.add('fade-text', 'marked');
+    descriptionContainer.innerHTML = marked.parse(
+      feature.properties?.description ? feature.properties?.description : '',
+    );
+    divContainer.appendChild(descriptionContainer);
+    return divContainer;
+  };
+
+  const featuresContainer = document.createElement('div');
+
+  sameLocationFeatures.forEach((feature, i) => {
+    const divContainer = makeFeatureContainer(feature);
+    featuresContainer.appendChild(divContainer);
+    if (i < sameLocationFeatures.length - 1) {
+      const separator = document.createElement('hr');
+      featuresContainer.appendChild(separator);
+    }
+  });
+
+  new Popup()
+    .setLngLat(clickedCoordinates as [number, number])
+    .setDOMContent(featuresContainer)
+    .addTo(map.value);
 }
 
 function onDocument(feature: Feature) {

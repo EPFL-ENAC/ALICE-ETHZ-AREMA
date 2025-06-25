@@ -5,7 +5,7 @@
         :features="searchService.features"
         :height="'600px'"
         :bbox="searchService.bbox"
-        @map:click="onFeature"
+        :mark="mark"
         @map:box="onBoundingBox"
       />
     </div>
@@ -16,7 +16,13 @@
       <q-scroll-area v-else style="height: 600px">
         <q-list separator>
           <template v-for="row in rows" :key="`${row.entity_type}:${row.id}`">
-            <q-item clickable v-ripple @click="onDocument(row)">
+            <q-item
+              clickable
+              v-ripple
+              @click="onDocument(row)"
+              @mouseenter="onEnterDocument(row)"
+              @mouseleave="onLeaveDocument"
+            >
               <q-item-section>
                 <q-item-label class="text-primary text-uppercase">{{ $t(row.entity_type) }}</q-item-label>
                 <q-item-label class="text-bold">{{ row.name }}</q-item-label>
@@ -43,19 +49,26 @@ import MapView from 'src/components/MapView.vue';
 import TagsBadges from 'src/components/TagsBadges.vue';
 import { Document } from 'src/models';
 import { getImageUrls } from 'src/utils/files';
-import { Feature } from 'geojson';
 
 const router = useRouter();
 const searchService = useSearchService();
 
+const hoverDocument = ref<Document | null>(null);
+const mark = ref<[number, number]>();
 const rows = computed(() => searchService.geoResults?.data || []);
 
 function onDocument(row: Document) {
   router.push({ name: 'doc', params: { id: `${row.entity_type}:${row.id}` } });
 }
 
-function onFeature(feature: Feature) {
-  console.debug(feature);
+function onEnterDocument(row: Document) {
+  hoverDocument.value = row;
+  mark.value = [row.location?.lon || 0, row.location?.lat || 0];
+}
+
+function onLeaveDocument() {
+  hoverDocument.value = null;
+  mark.value = undefined;
 }
 
 function onBoundingBox(bounds: [[number, number], [number, number]]) {

@@ -27,6 +27,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'contribute', component: () => import('pages/ContributePage.vue') },
       { path: 'search', component: () => import('pages/SearchPage.vue') },
       { path: 'videos', component: () => import('pages/VideosPage.vue') },
+      { path: 'contact', component: () => import('pages/ImprintPage.vue') },
     ],
   },
   {
