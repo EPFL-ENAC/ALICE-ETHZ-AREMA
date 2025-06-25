@@ -13,8 +13,8 @@
         dense
         flat
         round
-        :icon="rightDrawerOpen ? 'close' : 'menu'"
-        :size="home ? `${homeStore.toolbarRatio * ($q.screen.gt.sm ? 18 : 12)}px` : `${$q.screen.gt.sm ? 18 : 12}px`"
+        icon="menu"
+        :size="home ? `${homeStore.toolbarRatio * 18}px` : '18px'"
         @click="onToggleDrawer"
       />
     </q-toolbar>
