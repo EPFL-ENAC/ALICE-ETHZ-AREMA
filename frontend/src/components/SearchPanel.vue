@@ -12,7 +12,7 @@
         debounce="500"
         input-class="text-secondary"
         :placeholder="$t('type_here')"
-        @update:model-value="searchService.search_filtered_entities()"
+        @update:model-value="searchService.search_entities()"
         class="search-input"
       >
         <template v-slot:append>
@@ -56,12 +56,11 @@ const views = ['map', 'list'];
 onMounted(() => {
   if (!taxonomyStore.taxonomies) {
     taxonomyStore.init().then(() => {
-      searchService.bbox = [];
+      searchService.bbox = undefined;
       searchService.search_entities(1000);
     });
-  } else if (!searchService.results?.total) {
-    // do not search if was already done when coming back to this panel
-    searchService.bbox = [];
+  } else {
+    // refresh search results if taxonomies are already loaded
     searchService.search_entities(1000);
   }
 });
@@ -71,7 +70,7 @@ function onViewSelect(view: string) {
 }
 
 function onTermsUpdate() {
-  searchService.search_filtered_entities();
+  searchService.search_entities();
 }
 </script>
 

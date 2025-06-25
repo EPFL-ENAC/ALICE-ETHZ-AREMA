@@ -9,7 +9,7 @@ export const useSearchService = defineStore('search', () => {
   const selectedTerms = ref<string[]>([]);
   const selectedResourceTerms = ref<string[]>([]);
   const filterText = ref('');
-  const bbox = ref<number[][]>([]);
+  const bbox = ref<[[number, number], [number, number]]>();
   const searching = ref(false);
   const results = ref<SearchResult>();
   const geoResults = ref<SearchResult>();
@@ -75,11 +75,6 @@ export const useSearchService = defineStore('search', () => {
       .finally(() => (searching.value = false));
   }
 
-  async function search_filtered_entities() {
-    bbox.value = [];
-    return search_entities();
-  }
-
   async function search_entities(withLimit: number = limit.value) {
     searching.value = true;
     results.value = undefined;
@@ -122,9 +117,7 @@ export const useSearchService = defineStore('search', () => {
         })
         .then((response) => {
           geoResults.value = response.data;
-          if (bboxCriteria === undefined) {
-            features.value = asFeatureCollection();
-          }
+          features.value = asFeatureCollection();
         }),
     ]).finally(() => {
       searching.value = false;
@@ -272,7 +265,6 @@ export const useSearchService = defineStore('search', () => {
     limit,
     reset,
     search_entities,
-    search_filtered_entities,
     search_videos,
     getDocument,
     getRelatedDocuments,

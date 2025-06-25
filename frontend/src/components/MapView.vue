@@ -117,6 +117,7 @@ interface Props {
   maxZoom?: number;
   width?: string;
   height?: string;
+  bbox?: [[number, number], [number, number]];
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -256,6 +257,14 @@ function initMap() {
         }
       });
     });
+    if (props.bbox && props.bbox.length === 2 && map.value) {
+      // if bbox is set (from a previous search), apply it
+      map.value.fitBounds(props.bbox, {
+        padding: 0,
+        duration: 0,
+        linear: true,
+      });
+    }
     displayFeatures();
     emit('map:loaded', map.value);
     mapLoaded.value = true;
