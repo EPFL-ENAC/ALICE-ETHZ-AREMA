@@ -9,7 +9,7 @@ export default {
     kalkstein: 'Limestone',
     konglomerat: 'Conglomerate',
     other_fibers: 'Other Fibers',
-    rammed_earth: 'Rammed Earth',
+    ramming_earth: 'Ramming Earth',
     reynoutria_japonica: 'Reynoutria Japonica',
     rock: 'Rock',
     sandstein: 'Sandstone',

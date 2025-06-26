@@ -161,7 +161,7 @@ const mapLoaded = ref(false);
 const mapMenu = ref<MapNode[]>([
   {
     id: 'earth',
-    children: [{ id: 'rammed_earth' }, { id: 'adobe_earth' }],
+    children: [{ id: 'ramming_earth' }, { id: 'adobe_earth' }],
   },
   {
     id: 'rock',
@@ -183,7 +183,7 @@ const mapMenu = ref<MapNode[]>([
   { id: 'demolition' },
 ]);
 const showMap = ref<{ [key: string]: boolean }>({
-  rammed_earth: false,
+  ramming_earth: false,
   adobe_earth: false,
   hartgestein: false,
   kalkstein: false,
@@ -199,7 +199,7 @@ const showMap = ref<{ [key: string]: boolean }>({
   demolition: false,
 });
 const mapColors: { [key: string]: string } = {
-  rammed_earth: 'red-9',
+  ramming_earth: 'red-9',
   adobe_earth: 'purple-9',
   hartgestein: 'blue-8',
   kalkstein: 'blue-grey-7',

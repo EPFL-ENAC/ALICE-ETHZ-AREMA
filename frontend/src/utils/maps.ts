@@ -58,7 +58,7 @@ export const style: StyleSpecification = {
       ],
       tileSize: 256,
     },
-    rammed_earth: {
+    ramming_earth: {
       type: 'raster',
       tiles: [
         `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?rescale=0,254&colormap_name=reds_r&bidx=1&url=${mapsUrl}/raster/Stampflehm_2056_30-60_Clay_CEC_v10_4326_cog.tif`,
@@ -492,9 +492,9 @@ export const style: StyleSpecification = {
       },
     },
     {
-      id: 'rammed_earth',
+      id: 'ramming_earth',
       type: 'raster',
-      source: 'rammed_earth',
+      source: 'ramming_earth',
       paint: {
         'raster-opacity': 0.5,
       },
