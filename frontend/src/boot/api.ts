@@ -16,6 +16,10 @@ const api = axios.create({
   baseURL: baseUrl,
 });
 
+function trackPageView() {
+  window.umami?.track();
+}
+
 export default boot(({ app, router }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
@@ -38,11 +42,11 @@ export default boot(({ app, router }) => {
     script.src = `${umamiUrl}/script.js`;
     document.head.appendChild(script);
 
-    // Optional: Wait until script is loaded before tracking
+    // Wait for the script to load before setting up tracking
     script.onload = () => {
-      router.afterEach(() => {
-        window.umami?.track();
-      });
+      router.afterEach(trackPageView);
+      // Also listen to native hash changes (e.g. browser back/forward)
+      window.addEventListener('hashchange', trackPageView);
     };
   } else {
     console.warn('[Umami] Missing env vars: UMAMI_URL or UMAMI_WEBSITE_ID');
