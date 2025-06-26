@@ -4,7 +4,7 @@ install:
 	poetry install
 
 run:
-	poetry run dotenv -f "$(env_path)" run uvicorn api.main:app --reload
+	poetry run dotenv -f "$(env_path)" run uvicorn api.main:app
 
 lint:
 	poetry run pre-commit run --all-files
