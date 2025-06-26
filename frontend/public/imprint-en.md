@@ -2,8 +2,9 @@
 
 Atlas of Regenerative Materials
 
-Annette Walzer, walzer@ibi.baug.ethz.ch
-Shoshana Huber, shhuber@ethz.ch
+Annette Walzer
+Shoshana Huber
+atlas@ibi.baug.ethz.ch
 
 ETH Zürich
 Chair of Sustainable Construction
