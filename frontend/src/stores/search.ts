@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 import { api } from 'src/boot/api';
-import { SearchResult, Document, VideoResult } from 'src/models';
-import { TaxonomyNodeOption } from 'src/components/models';
-import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
+import type { SearchResult, Document, VideoResult } from 'src/models';
+import type { TaxonomyNodeOption } from 'src/components/models';
+import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 
 export const useSearchService = defineStore('search', () => {
   const selectedView = ref('map');
@@ -29,50 +29,56 @@ export const useSearchService = defineStore('search', () => {
 
   async function getDocument(id: string, fields: string[] = []): Promise<Document> {
     searching.value = true;
-    return api
-      .get('/search/_doc', {
+    try {
+      const response = await api.get('/search/_doc', {
         params: { id, fields, index: 'entities' },
         paramsSerializer: {
           indexes: null, // no brackets at all
         },
-      })
-      .then((response) => {
-        const result = response.data;
-        return result.data?.length ? result.data[0] : undefined;
-      })
-      .finally(() => (searching.value = false));
+      });
+      const result = response.data;
+      if (!result || !result.data || !result.data.length) {
+        throw new Error(`Document with id ${id} not found`);
+      }
+      return result.data[0];
+    } finally {
+      searching.value = false;
+    }
   }
 
   async function getRelatedDocuments(id: string, fields: string[] = []): Promise<SearchResult> {
     searching.value = true;
-    return api
-      .get('/search/_entities', {
+    try {
+      const response = await api.get('/search/_entities', {
         params: { fields, relates: [id] },
         paramsSerializer: {
           indexes: null, // no brackets at all
         },
-      })
-      .then((response) => {
-        const result = response.data;
-        return result;
-      })
-      .finally(() => (searching.value = false));
+      });
+      const result = response.data;
+      return result;
+    } finally {
+      searching.value = false;
+    }
   }
 
-  async function getDocumentsFromTags(tags: string[], fields: string[] = []): Promise<SearchResult> {
+  async function getDocumentsFromTags(
+    tags: string[],
+    fields: string[] = [],
+  ): Promise<SearchResult> {
     searching.value = true;
-    return api
-      .get('/search/_entities', {
+    try {
+      const response = await api.get('/search/_entities', {
         params: { fields, tags },
         paramsSerializer: {
           indexes: null, // no brackets at all
         },
-      })
-      .then((response) => {
-        const result = response.data;
-        return result;
-      })
-      .finally(() => (searching.value = false));
+      });
+      const result = response.data;
+      return result;
+    } finally {
+      searching.value = false;
+    }
   }
 
   async function search_entities(withLimit: number = limit.value) {
@@ -80,7 +86,8 @@ export const useSearchService = defineStore('search', () => {
     results.value = undefined;
     geoResults.value = undefined;
     limit.value = withLimit;
-    const bboxCriteria = bbox.value && bbox.value.length == 2 ? [...bbox.value[0], ...bbox.value[1]] : undefined;
+    const bboxCriteria =
+      bbox.value && bbox.value.length == 2 ? [...bbox.value[0], ...bbox.value[1]] : undefined;
     return Promise.all([
       api
         .get('/search/_entities', {
@@ -151,8 +158,8 @@ export const useSearchService = defineStore('search', () => {
     searching.value = true;
     videoResults.value = undefined;
     limit.value = withLimit;
-    return api
-      .get('/search/_videos', {
+    try {
+      const response = await api.get('/search/_videos', {
         params: {
           resources: selectedResourceTerms.value,
           tags: selectedTerms.value,
@@ -163,21 +170,21 @@ export const useSearchService = defineStore('search', () => {
         paramsSerializer: {
           indexes: null, // no brackets at all
         },
-      })
-      .then((response) => {
-        videoResults.value = response.data;
-      })
-      .finally(() => {
-        searching.value = false;
       });
+      videoResults.value = response.data;
+    } finally {
+      searching.value = false;
+    }
   }
 
   // selection utils
 
   function selectUrn(urn: string) {
-    selectedTerms.value.includes(urn)
-      ? selectedTerms.value.splice(selectedTerms.value.indexOf(urn), 1)
-      : selectedTerms.value.push(urn);
+    if (selectedTerms.value.includes(urn)) {
+      selectedTerms.value.splice(selectedTerms.value.indexOf(urn), 1);
+    } else {
+      selectedTerms.value.push(urn);
+    }
   }
 
   function selectNode(node: TaxonomyNodeOption) {
@@ -197,9 +204,11 @@ export const useSearchService = defineStore('search', () => {
     } else {
       // toggle term selection
       const urn = node.value;
-      selectedTerms.value.includes(urn)
-        ? selectedTerms.value.splice(selectedTerms.value.indexOf(urn), 1)
-        : selectedTerms.value.push(urn);
+      if (selectedTerms.value.includes(urn)) {
+        selectedTerms.value.splice(selectedTerms.value.indexOf(urn), 1);
+      } else {
+        selectedTerms.value.push(urn);
+      }
     }
   }
 

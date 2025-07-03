@@ -2,7 +2,12 @@
   <div v-if="document.files?.length">
     <div v-touch-swipe.mouse.right.left="onSwipe">
       <q-tab-panels v-model="slide" animated style="background-color: transparent">
-        <q-tab-panel v-for="(file, index) in document.files" :key="index" :name="index" class="q-pa-none">
+        <q-tab-panel
+          v-for="(file, index) in document.files"
+          :key="index"
+          :name="index"
+          class="q-pa-none"
+        >
           <div v-if="isImage(file)">
             <q-img
               :src="toFileUrl(file)"
@@ -19,7 +24,7 @@
           <div v-else-if="isPDF(file)">
             <object type="application/pdf" :data="toFileUrl(file)" width="100%" height="500px">
               <div class="q-pa-md text-center">
-                <div class="text-uppercase">{{ $t('download') }}</div>
+                <div class="text-uppercase">{{ t('download') }}</div>
                 <q-btn flat color="secondary" @click="onDownload(file)">
                   <q-icon name="picture_as_pdf" size="100px" />
                 </q-btn>
@@ -29,7 +34,7 @@
           </div>
           <div v-else class="column no-wrap flex-center">
             <div class="q-pa-md text-center">
-              <div class="text-uppercase">{{ $t('download') }}</div>
+              <div class="text-uppercase">{{ t('download') }}</div>
               <q-btn flat color="secondary" @click="onDownload(file)">
                 <q-icon name="file_download" size="100px" />
               </q-btn>
@@ -63,9 +68,10 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { Document, FileItem } from 'src/models';
+import type { Document, FileItem } from 'src/models';
 import { toFileUrl, isImage, isVideo, isPDF } from 'src/utils/files';
 
+const { t } = useI18n();
 const $q = useQuasar();
 
 interface Props {
@@ -80,7 +86,7 @@ function onDownload(file: FileItem) {
   window.open(toFileUrl(file), '_blank');
 }
 
-function onSwipe(event: TouchEvent) {
+function onSwipe(event: { direction: string }) {
   if (!props.document.files || props.document.files.length <= 1) return;
   if (event.direction === 'left') {
     slide.value = Math.min(slide.value + 1, props.document.files.length - 1);

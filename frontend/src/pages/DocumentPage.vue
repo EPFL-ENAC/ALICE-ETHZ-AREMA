@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import DocumentPanel from 'src/components/DocumentPanel.vue';
-import { Document } from 'src/models';
+import type { Document } from 'src/models';
 
 const route = useRoute();
 const searchService = useSearchService();

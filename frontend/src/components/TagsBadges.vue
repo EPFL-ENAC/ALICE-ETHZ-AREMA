@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { Document, Video } from 'src/models';
+import type { Document, Video } from 'src/models';
 const taxonomies = useTaxonomyStore();
 
 interface Props {
@@ -30,7 +30,7 @@ onMounted(init);
 watch(() => props.item, init);
 
 function init() {
-  taxonomies.init().then(() => {
+  void taxonomies.init().then(() => {
     labels.value = getTagLabels(props.item);
   });
 }

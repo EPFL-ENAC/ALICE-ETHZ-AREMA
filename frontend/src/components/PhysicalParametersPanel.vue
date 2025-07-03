@@ -2,15 +2,15 @@
   <div class="row q-col-gutter-md">
     <template v-for="section in sections" :key="section">
       <div class="col-12 col-lg-6" v-if="hasValues(section)">
-        <div class="text-h6">{{ $t(section) }}</div>
+        <div class="text-h6">{{ t(section) }}</div>
         <q-list dense class="q-mb-md">
           <template v-for="field in fields[section]" :key="field">
             <q-item v-if="hasFieldValue(field)" class="q-pa-none" style="padding: 0 !important">
               <q-item-section>
                 <q-item-label
-                  >{{ $t(field) }}
-                  <span v-if="$t(`${field}_symbol`)"
-                    >- <span class="text-bold">{{ $t(`${field}_symbol`) }}</span></span
+                  >{{ t(field) }}
+                  <span v-if="t(`${field}_symbol`)"
+                    >- <span class="text-bold">{{ t(`${field}_symbol`) }}</span></span
                   ></q-item-label
                 >
               </q-item-section>
@@ -19,12 +19,12 @@
                   <span
                     v-for="(value, index) in getFieldValue(field)"
                     :key="index"
-                    :title="index === 0 ? $t('low') : index === 1 ? $t('standard') : $t('high')"
+                    :title="index === 0 ? t('low') : index === 1 ? t('standard') : t('high')"
                   >
                     {{ value }}
                     <span v-if="index < getFieldValue(field).length - 1"> / </span>
                   </span>
-                  <span v-if="$t(`${field}_unit`)">[{{ $t(`${field}_unit`) }}]</span></q-item-label
+                  <span v-if="t(`${field}_unit`)">[{{ t(`${field}_unit`) }}]</span></q-item-label
                 >
               </q-item-section>
             </q-item>
@@ -37,13 +37,15 @@
 </template>
 
 <script setup lang="ts">
-import { Document } from 'src/models';
+import type { Document } from 'src/models';
 
 interface Props {
   document: Document;
 }
 
 const props = defineProps<Props>();
+
+const { t } = useI18n();
 
 const mechanicalParams = [
   'density',
@@ -78,7 +80,7 @@ const fields: { [key: string]: string[] } = {
 };
 
 function hasValues(section: string) {
-  return fields[section].some((param) => hasFieldValue(param));
+  return fields[section]?.some((param) => hasFieldValue(param));
 }
 
 function hasFieldValue(field: string) {
@@ -86,7 +88,9 @@ function hasFieldValue(field: string) {
 }
 
 function getFieldValues(field: string) {
-  return [props.document[`${field}_low`], props.document[field], props.document[`${field}_high`]];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const doc = props.document as { [key: string]: any };
+  return [doc[`${field}_low`], doc[field], doc[`${field}_high`]];
 }
 
 function getFieldValue(field: string) {

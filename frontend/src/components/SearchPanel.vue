@@ -2,7 +2,7 @@
   <div>
     <div class="row">
       <div class="text-h5 text-uppercase text-primary">
-        {{ $t('search') }}
+        {{ t('search') }}
       </div>
       <q-space />
       <q-input
@@ -11,7 +11,7 @@
         square
         debounce="500"
         input-class="text-secondary"
-        :placeholder="$t('type_here')"
+        :placeholder="t('type_here')"
         @update:model-value="searchService.search_entities()"
         class="search-input"
       >
@@ -33,7 +33,7 @@
         square
         no-caps
         size="md"
-        :title="$t(view)"
+        :title="t(view)"
         class="on-left"
         @click="onViewSelect(view)"
       />
@@ -49,19 +49,20 @@ import TermsSelector from 'src/components/TermsSelector.vue';
 import MapResults from 'src/components/MapResults.vue';
 import ListResults from 'src/components/ListResults.vue';
 
+const { t } = useI18n();
 const taxonomyStore = useTaxonomyStore();
 const searchService = useSearchService();
 
 const views = ['map', 'list'];
 onMounted(() => {
   if (!taxonomyStore.taxonomies) {
-    taxonomyStore.init().then(() => {
+    void taxonomyStore.init().then(() => {
       searchService.bbox = undefined;
-      searchService.search_entities(1000);
+      void searchService.search_entities(1000);
     });
   } else {
     // refresh search results if taxonomies are already loaded
-    searchService.search_entities(1000);
+    void searchService.search_entities(1000);
   }
 });
 
@@ -70,7 +71,7 @@ function onViewSelect(view: string) {
 }
 
 function onTermsUpdate() {
-  searchService.search_entities();
+  void searchService.search_entities();
 }
 </script>
 

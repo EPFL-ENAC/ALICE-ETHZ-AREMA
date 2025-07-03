@@ -2,7 +2,13 @@
   <q-header elevated class="bg-black">
     <q-toolbar>
       <img
-        :src="$q.screen.gt.sm ? '/arema-h-1.svg' : $q.screen.gt.xs ? '/arema-h-sm.svg' : '/arema-h-xs.svg'"
+        :src="
+          $q.screen.gt.sm
+            ? '/arema-h-1.svg'
+            : $q.screen.gt.xs
+              ? '/arema-h-sm.svg'
+              : '/arema-h-xs.svg'
+        "
         class="cursor-pointer"
         :style="home ? `height: ${homeStore.toolbarRatio * 30}px` : 'height: 30px'"
         style="filter: invert(100%)"
@@ -51,6 +57,6 @@ onBeforeRouteUpdate(() => {
 });
 
 function toHome() {
-  router.push('/');
+  void router.push('/');
 }
 </script>
