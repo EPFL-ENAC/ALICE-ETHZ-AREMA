@@ -6,33 +6,35 @@ const authStore = useAuthStore();
 export const useSearchService = defineStore('search', () => {
   const indexing = ref(false);
 
-  function dropIndex() {
+  async function dropIndex() {
     indexing.value = true;
-    return authStore.updateToken().then(() => {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${authStore.accessToken}`,
-        },
-      };
-      return api
-        .delete('/search/_index', config)
-        .finally(() => (indexing.value = false));
-    });
+    await authStore.updateToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${authStore.accessToken}`,
+      },
+    };
+    try {
+      return await api.delete('/search/_index', config);
+    } finally {
+      indexing.value = false;
+    }
   }
 
-  function indexAll() {
+  async function indexAll() {
     indexing.value = true;
-    return authStore.updateToken().then(() => {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${authStore.accessToken}`,
-        },
-      };
-      return api
-        .post('/search/_index', {}, config)
-        .then((res) => res.data)
-        .finally(() => (indexing.value = false));
-    });
+    await authStore.updateToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${authStore.accessToken}`,
+      },
+    };
+    try {
+      const res = await api.post('/search/_index', {}, config);
+      return res.data;
+    } finally {
+      indexing.value = false;
+    }
   }
 
   return {

@@ -1,10 +1,10 @@
 <template>
   <q-page>
-    <div class="text-h5 q-pa-md">{{ $t('dashboard') }}</div>
+    <div class="text-h5 q-pa-md">{{ t('dashboard') }}</div>
     <q-separator />
     <div class="q-pa-md">
-      <div class="text-h6 q-mb-md">{{ $t('layout') }}</div>
-      <div class="text-help q-mb-md">{{ $t('layout_help') }}</div>
+      <div class="text-h6 q-mb-md">{{ t('layout') }}</div>
+      <div class="text-help q-mb-md">{{ t('layout_help') }}</div>
       <div class="row">
         <div class="col-12 col-md-2"></div>
         <div class="col-12 col-md-8">
@@ -13,42 +13,49 @@
               <div class="row q-col-gutter-md">
                 <div class="col-2">
                   <q-skeleton height="100px" class="q-pa-md bg-teal-1" style="margin-top: 650px">
-                    {{ $t('external_links') }}
+                    {{ t('external_links') }}
                   </q-skeleton>
                 </div>
                 <div class="col-8">
                   <q-skeleton height="50px" class="q-mb-md q-pa-md bg-teal-1">
-                    {{ $t('name') }}
+                    {{ t('name') }}
                   </q-skeleton>
                   <q-skeleton height="100px" class="q-mb-md q-pa-md bg-teal-1">
-                    {{ $t('description') }}
+                    {{ t('description') }}
                   </q-skeleton>
 
                   <q-skeleton height="100px" class="q-mb-md q-pa-md bg-teal-1">
-                    {{ $t('physical_characteristics') }}
+                    {{ t('physical_characteristics') }}
                   </q-skeleton>
 
                   <q-skeleton height="150px" class="q-mb-md q-pa-md bg-teal-1">
-                    {{ $t('article_top') }}
+                    {{ t('article_top') }}
                   </q-skeleton>
 
-                  <div style="display: flex; justify-content: center; align-items: center; flex-direction: column">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                      flex-direction: column;
+                    "
+                  >
                     <q-skeleton width="300px" height="100px" class="q-mb-md q-pa-md bg-teal-1">
-                      {{ $t('multimedia') }}
+                      {{ t('multimedia') }}
                     </q-skeleton>
 
                     <q-skeleton type="rect" width="300px" class="q-mb-md q-pa-xs bg-teal-1">
-                      {{ $t('legend') }}
+                      {{ t('legend') }}
                     </q-skeleton>
                   </div>
 
                   <q-skeleton height="150px" class="q-pa-md bg-teal-1">
-                    {{ $t('article_bottom') }}
+                    {{ t('article_bottom') }}
                   </q-skeleton>
                 </div>
                 <div class="col-2">
                   <q-skeleton height="100px" class="q-pa-md bg-teal-1" style="margin-top: 300px">
-                    {{ $t('side_note') }}
+                    {{ t('side_note') }}
                   </q-skeleton>
                 </div>
               </div>
@@ -59,14 +66,14 @@
         <div class="col-12 col-md-2"></div>
       </div>
       <div v-if="authStore.isAdmin">
-        <div class="text-h6 q-mb-md q-mt-lg">{{ $t('search_index') }}</div>
-        <div class="text-help q-mb-md">{{ $t('search_index_help') }}</div>
+        <div class="text-h6 q-mb-md q-mt-lg">{{ t('search_index') }}</div>
+        <div class="text-help q-mb-md">{{ t('search_index_help') }}</div>
         <div class="q-mb-md">
           <q-btn
             size="sm"
             color="primary"
             :disable="searchService.indexing"
-            :label="$t('drop_index')"
+            :label="t('drop_index')"
             icon="delete_sweep"
             @click="onDropIndex"
           />
@@ -74,7 +81,7 @@
             size="sm"
             color="primary"
             :disable="searchService.indexing"
-            :label="$t('index_all')"
+            :label="t('index_all')"
             icon="manage_search"
             @click="onIndexAll"
             class="on-right"
@@ -97,7 +104,7 @@ function onIndexAll() {
   searchService
     .indexAll()
     .then((result) => {
-      const counts = Object.entries(result).map(([key, value]) => `${t(key)}: ${value}`);
+      const counts = Object.entries(result).map(([key, value]) => `${t(key)}: ${value as number}`);
       $q.notify({
         message: t('all_items_indexed', { count: counts.join(', ') }),
         type: 'positive',

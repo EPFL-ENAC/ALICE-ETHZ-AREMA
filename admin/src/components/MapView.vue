@@ -8,16 +8,9 @@ import { style, themes } from 'src/utils/maps';
 import * as MapboxDrawGeodesic from 'mapbox-gl-draw-geodesic';
 // import MaplibreGeocoder from '@maplibre/maplibre-gl-geocoder';
 import { ThemeSwitcherControl } from 'maplibregl-theme-switcher';
-import {
-  type Feature,
-  type MultiPolygon,
-  type Polygon,
-  type Point,
-  center,
-  circle,
-  FeatureCollection,
-  Units,
-} from '@turf/turf';
+import type { Units } from '@turf/turf';
+import type { FeatureCollection, Feature, Polygon, Point } from 'geojson';
+import { center, circle } from '@turf/turf';
 import {
   AttributionControl,
   FullscreenControl,
@@ -33,21 +26,18 @@ const { t /*locale*/ } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(
   defineProps<{
-    features: [Feature<Polygon | MultiPolygon>[] | Feature<Polygon | MultiPolygon>];
+    features: Feature<Polygon>[] | Feature<Point>[];
     centre?: [number, number];
-    zoom?: number;
-    aspectRatio?: number;
-    minZoom?: number;
-    maxZoom?: number;
-    width?: string;
-    height?: string;
+    zoom?: number | undefined;
+    aspectRatio?: number | undefined;
+    minZoom?: number | undefined;
+    maxZoom?: number | undefined;
+    width?: string | undefined;
+    height?: string | undefined;
   }>(),
   {
     centre: () => [8, 46.8],
     zoom: 4,
-    aspectRatio: undefined,
-    minZoom: undefined,
-    maxZoom: undefined,
     width: '100%',
     height: '800px',
   },
@@ -90,7 +80,7 @@ onMounted(() => {
   //   }),
   //   'top-left'
   // );
-  map.value.addControl(new ThemeSwitcherControl(themes, themes[0].id));
+  map.value.addControl(new ThemeSwitcherControl(themes, themes[0]?.id));
 
   map.value.on('load', function () {
     displayFeatures();
@@ -125,12 +115,14 @@ function displayFeatures() {
       .map((f) => unref(f))
       .forEach((feature) => {
         //console.log(feature);
-        if (feature.type === 'FeatureCollection') {
-          displayPolygons(feature);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const feat = feature as any;
+        if (feat['type'] === 'FeatureCollection') {
+          displayPolygons(feat as FeatureCollection);
         } else if (MapboxDrawGeodesic.isCircle(feature)) {
-          displayCircle(feature);
-        } else if (feature.type === 'Feature') {
-          displayPoint(feature);
+          displayCircle(feat as Feature<Polygon>);
+        } else if (feat['type'] === 'Feature') {
+          displayPoint(feat as Feature<Point>);
         }
       });
   }
@@ -138,6 +130,9 @@ function displayFeatures() {
 
 function displayCircle(feature: Feature<Polygon>) {
   if (map.value) {
+    if (!feature.properties) {
+      return;
+    }
     // a circle is not a geojson type, then prevent changes in representation using the geodesic API
     const center = MapboxDrawGeodesic.getCircleCenter(feature);
     const radius = MapboxDrawGeodesic.getCircleRadius(feature);
@@ -149,7 +144,9 @@ function displayCircle(feature: Feature<Polygon>) {
       <p>${feature.properties.description}</p>
       <p><b>${t('address')}</b>: ${feature.properties.address}</p>
       <p><b>${t('radius')}</b>: ${radius}km</p>`);
-    markers.push(new Marker({ color: '#FF0000' }).setLngLat(center).setPopup(popup).addTo(map.value));
+    markers.push(
+      new Marker({ color: '#FF0000' }).setLngLat(center).setPopup(popup).addTo(map.value),
+    );
 
     // Generate a polygon using turf.circle.
     // See https://turfjs.org/docs/#circle
@@ -181,6 +178,9 @@ function displayPoint(feature: Feature<Point>) {
   if (map.value) {
     // a circle is not a geojson type, then prevent changes in representation using the geodesic API
     const center = feature.geometry.coordinates;
+    if (!feature.properties) {
+      return;
+    }
     const popup = new Popup({
       closeButton: false,
       offset: 25,
@@ -188,22 +188,38 @@ function displayPoint(feature: Feature<Point>) {
       <div class="text-h6">${feature.properties.name}</div>
       <p>${feature.properties.description}</p>
       <p><b>${t('address')}</b>: ${feature.properties.address}</p>`);
-    markers.push(new Marker({ color: '#FF0000' }).setLngLat(center).setPopup(popup).addTo(map.value));
+    // Ensure center is a tuple of two numbers
+    if (Array.isArray(center) && center.length === 2) {
+      markers.push(
+        new Marker({ color: '#FF0000' })
+          .setLngLat(center as [number, number])
+          .setPopup(popup)
+          .addTo(map.value),
+      );
+    }
   }
 }
 
-function displayPolygons(featureCollection: Feature<FeatureCollection>) {
+function displayPolygons(featureCollection: FeatureCollection) {
+  if (!map.value) {
+    return;
+  }
   const ct = center(featureCollection);
   const popup = new Popup({
     closeButton: false,
     offset: 25,
   }).setHTML(`<b>Zones</b>: ${featureCollection.features.length}`);
-  markers.push(new Marker({ color: '#FF0000' }).setLngLat(ct.geometry.coordinates).setPopup(popup).addTo(map.value));
+  markers.push(
+    new Marker({ color: '#FF0000' })
+      .setLngLat(ct.geometry.coordinates)
+      .setPopup(popup)
+      .addTo(map.value),
+  );
 
   const color = randomColor();
-  layerIds.push(`${feature.id}`);
   featureCollection.features.forEach((feature) => {
     // Add a fill layer with some transparency.
+    layerIds.push(`${feature.id}`);
     map.value?.addLayer({
       id: `${feature.id}`,
       type: 'fill',

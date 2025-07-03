@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="text-h5 q-pa-md">{{ $t('technical_constructions') }}</div>
+    <div class="text-h5 q-pa-md">{{ t('technical_constructions') }}</div>
     <q-separator />
     <div class="q-pa-md">
       <q-table
@@ -22,7 +22,7 @@
             size="sm"
             color="primary"
             :disable="loading"
-            :label="$t('add')"
+            :label="t('add')"
             icon="add"
             @click="onAdd"
           />
@@ -31,7 +31,7 @@
             size="sm"
             color="primary"
             :disable="loading"
-            :label="$t('index_all')"
+            :label="t('index_all')"
             icon="manage_search"
             @click="onIndex"
             class="on-right"
@@ -45,7 +45,13 @@
         </template>
         <template v-slot:body-cell-types="props">
           <q-td :props="props">
-            <q-badge color="accent" v-for="type in props.value" :key="type" :label="type" class="q-mr-sm" />
+            <q-badge
+              color="accent"
+              v-for="type in props.value"
+              :key="type"
+              :label="type"
+              class="q-mr-sm"
+            />
           </q-td>
         </template>
         <template v-slot:body-cell-published="props">
@@ -109,6 +115,7 @@
       </q-table>
 
       <construction-technique-dialog
+        v-if="selected"
         v-model="showEditDialog"
         :item="selected"
         @saved="onSaved"
@@ -124,14 +131,15 @@
 </template>
 
 <script setup lang="ts">
-import { Option, Query } from 'src/components/models';
-import { TechnicalConstruction } from 'src/models';
+import type { Option, Query } from 'src/components/models';
+import type { TechnicalConstruction } from 'src/models';
 import ConstructionTechniqueDialog from 'src/components/ConstructionTechniqueDialog.vue';
 import ConfirmDialog from 'src/components/ConfirmDialog.vue';
 import { makePaginationRequestHandler } from 'src/utils/pagination';
 import type { PaginationOptions } from 'src/utils/pagination';
 import { toDatetimeString, isDatetimeBefore } from 'src/utils/time';
 import { notifyError, notifySuccess } from 'src/utils/notify';
+import type { Alignment } from 'src/components/models';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
@@ -145,7 +153,7 @@ const columns = computed(() => {
       name: 'id',
       required: true,
       label: 'ID',
-      align: 'left',
+      align: 'left' as Alignment,
       field: 'id',
       style: 'width: 20px',
       sortable: true,
@@ -154,7 +162,7 @@ const columns = computed(() => {
       name: 'name',
       required: true,
       label: t('name'),
-      align: 'left',
+      align: 'left' as Alignment,
       field: 'name',
       sortable: true,
     },
@@ -162,7 +170,7 @@ const columns = computed(() => {
       name: 'published',
       required: true,
       label: t('published'),
-      align: 'left',
+      align: 'left' as Alignment,
       field: 'published_at',
       sortable: false,
       style: 'width: 50px',
@@ -171,7 +179,7 @@ const columns = computed(() => {
       name: 'types',
       required: true,
       label: t('types'),
-      align: 'left',
+      align: 'left' as Alignment,
       field: 'types',
       format: (val: string[] | undefined) => (val ? val.map(getTypeLabel) : []),
       sortable: true,
@@ -180,9 +188,11 @@ const columns = computed(() => {
       name: 'building_materials',
       required: true,
       label: t('building_materials'),
-      align: 'left',
+      align: 'left' as Alignment,
       field: (row: TechnicalConstruction) => {
-        return row.building_materials ? row.building_materials.map((bm) => bm.name).join(', ') : '-';
+        return row.building_materials
+          ? row.building_materials.map((bm) => bm.name).join(', ')
+          : '-';
       },
       sortable: false,
     },
@@ -190,7 +200,7 @@ const columns = computed(() => {
       name: 'lastModification',
       required: true,
       label: t('last_modification'),
-      align: 'left',
+      align: 'left' as Alignment,
       field: 'updated_at',
       format: toDatetimeString,
       sortable: false,
@@ -200,7 +210,7 @@ const columns = computed(() => {
   if (authStore.isAdmin || authStore.isContrib) {
     cols.splice(2, 0, {
       name: 'action',
-      align: 'right',
+      align: 'right' as Alignment,
       label: '',
       field: 'action',
       required: false,
@@ -230,12 +240,22 @@ const tcTypes = ref<Option[]>([]);
 onMounted(() => {
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction();
-  taxonomyStore.getTaxonomyNode('technical-construction', 'type').then((types) => {
+  void taxonomyStore.getTaxonomyNode('technical-construction', 'type').then((types) => {
+    if (!types) {
+      console.warn('No taxonomy found for technical-construction type');
+      return;
+    }
     tcTypes.value = taxonomyStore.asOptions('technical-construction', types, 'type');
   });
 });
 
-function fetchFromServer(startRow: number, count: number, filter: string, sortBy: string, descending: boolean) {
+function fetchFromServer(
+  startRow: number,
+  count: number,
+  sortBy: string,
+  descending: boolean,
+  filter?: string,
+) {
   const query: Query = {
     $skip: startRow,
     $limit: count,
@@ -260,7 +280,7 @@ const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
 
 function onIndex() {
   loading.value = true;
-  service
+  void service
     .index()
     .then((result) => {
       notifySuccess(t('all_items_indexed', { count: result }));
@@ -284,7 +304,7 @@ function onEdit(item: TechnicalConstruction) {
 
 function onTogglePublish(item: TechnicalConstruction) {
   if (!item.id) return;
-  service
+  void service
     .togglePublish(item.id)
     .then(() => {
       tableRef.value.requestServerInteraction();
@@ -303,7 +323,7 @@ function onRemove(item: TechnicalConstruction) {
 
 function remove() {
   if (!selected.value?.id) return;
-  service
+  void service
     .remove(selected.value?.id)
     .then(() => {
       tableRef.value.requestServerInteraction();

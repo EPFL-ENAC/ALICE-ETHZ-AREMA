@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="text-h5 q-pa-md">{{ $t('buildings') }}</div>
+    <div class="text-h5 q-pa-md">{{ t('buildings') }}</div>
     <q-separator />
     <div class="q-pa-md">
       <q-table
@@ -22,7 +22,7 @@
             size="sm"
             color="primary"
             :disable="loading"
-            :label="$t('add')"
+            :label="t('add')"
             icon="add"
             @click="onAdd"
           />
@@ -31,7 +31,7 @@
             size="sm"
             color="primary"
             :disable="loading"
-            :label="$t('index_all')"
+            :label="t('index_all')"
             icon="manage_search"
             @click="onIndex"
             class="on-right"
@@ -118,7 +118,7 @@
         </template>
       </q-table>
 
-      <building-dialog v-model="showEditDialog" :item="selected" @saved="onSaved" />
+      <building-dialog v-if="selected" v-model="showEditDialog" :item="selected" @saved="onSaved" />
       <confirm-dialog
         v-model="showConfirmDialog"
         :title="t('remove')"
@@ -130,8 +130,8 @@
 </template>
 
 <script setup lang="ts">
-import { Option, Query } from 'src/components/models';
-import { Building } from 'src/models';
+import type { Option, Query } from 'src/components/models';
+import type { Building } from 'src/models';
 import { makePaginationRequestHandler } from 'src/utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
 import MapView from 'src/components/MapView.vue';
@@ -139,6 +139,8 @@ import BuildingDialog from 'src/components/BuildingDialog.vue';
 import ConfirmDialog from 'src/components/ConfirmDialog.vue';
 import { toDatetimeString, isDatetimeBefore } from 'src/utils/time';
 import { notifyError, notifySuccess } from 'src/utils/notify';
+import type { Alignment } from 'src/components/models';
+import type { Feature, Point, GeoJsonProperties } from 'geojson';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
@@ -152,7 +154,7 @@ const columns = computed(() => {
       name: 'id',
       required: true,
       label: 'ID',
-      align: 'left',
+      align: 'left' as Alignment,
       field: 'id',
       style: 'width: 20px',
       sortable: true,
@@ -161,7 +163,7 @@ const columns = computed(() => {
       name: 'name',
       required: true,
       label: t('name'),
-      align: 'left',
+      align: 'left' as Alignment,
       field: 'name',
       sortable: true,
     },
@@ -169,7 +171,7 @@ const columns = computed(() => {
       name: 'published',
       required: true,
       label: t('published'),
-      align: 'left',
+      align: 'left' as Alignment,
       field: 'published_at',
       sortable: false,
       style: 'width: 50px',
@@ -178,7 +180,7 @@ const columns = computed(() => {
       name: 'type',
       required: true,
       label: t('type'),
-      align: 'left',
+      align: 'left' as Alignment,
       field: 'type',
       format: getTypeLabel,
       sortable: true,
@@ -187,7 +189,7 @@ const columns = computed(() => {
       name: 'address',
       required: true,
       label: t('address'),
-      align: 'left',
+      align: 'left' as Alignment,
       field: 'address',
       sortable: false,
     },
@@ -195,9 +197,11 @@ const columns = computed(() => {
       name: 'building_materials',
       required: true,
       label: t('building_materials'),
-      align: 'left',
+      align: 'left' as Alignment,
       field: (row: Building) => {
-        return row.building_materials ? row.building_materials.map((bm) => bm.name).join(', ') : '-';
+        return row.building_materials
+          ? row.building_materials.map((bm) => bm.name).join(', ')
+          : '-';
       },
       sortable: false,
     },
@@ -205,7 +209,7 @@ const columns = computed(() => {
       name: 'building_elements',
       required: true,
       label: t('building_elements'),
-      align: 'left',
+      align: 'left' as Alignment,
       field: (row: Building) => {
         return row.building_elements?.length;
       },
@@ -215,7 +219,7 @@ const columns = computed(() => {
       name: 'professionals',
       required: true,
       label: t('professionals'),
-      align: 'left',
+      align: 'left' as Alignment,
       field: (row: Building) => {
         return row.professionals ? row.professionals.map((pro) => pro.name).join(', ') : '-';
       },
@@ -225,7 +229,7 @@ const columns = computed(() => {
       name: 'lastModification',
       required: true,
       label: t('last_modification'),
-      align: 'left',
+      align: 'left' as Alignment,
       field: 'updated_at',
       format: toDatetimeString,
       sortable: false,
@@ -235,7 +239,7 @@ const columns = computed(() => {
   if (authStore.isAdmin || authStore.isContrib) {
     cols.splice(2, 0, {
       name: 'action',
-      align: 'right',
+      align: 'right' as Alignment,
       label: '',
       field: 'action',
       required: false,
@@ -264,7 +268,11 @@ const bldTypes = ref<Option[]>([]);
 
 onMounted(() => {
   tableRef.value.requestServerInteraction();
-  taxonomyStore.getTaxonomyNode('building', 'type').then((types) => {
+  void taxonomyStore.getTaxonomyNode('building', 'type').then((types) => {
+    if (!types) {
+      console.warn('No taxonomy found for building type');
+      return;
+    }
     bldTypes.value = taxonomyStore.asOptions('building', types, 'type');
   });
 });
@@ -278,16 +286,22 @@ const features = computed(() => {
         name: row.name,
         description: row.description,
         address: row.address,
-      },
+      } as GeoJsonProperties,
       geometry: {
         type: 'Point',
         coordinates: [row.long, row.lat],
-      },
+      } as Point,
     };
-  });
+  }) as Feature<Point>[];
 });
 
-function fetchFromServer(startRow: number, count: number, filter: string, sortBy: string, descending: boolean) {
+function fetchFromServer(
+  startRow: number,
+  count: number,
+  sortBy: string,
+  descending: boolean,
+  filter?: string,
+) {
   loading.value = true;
   const query: Query = {
     $skip: startRow,
@@ -323,7 +337,7 @@ const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
 
 function onIndex() {
   loading.value = true;
-  service
+  void service
     .index()
     .then((result) => {
       notifySuccess(t('all_items_indexed', { count: result }));
@@ -347,7 +361,7 @@ function onEdit(resource: Building) {
 
 function onTogglePublish(item: Building) {
   if (!item.id) return;
-  service
+  void service
     .togglePublish(item.id)
     .then(() => {
       tableRef.value.requestServerInteraction();
@@ -366,7 +380,7 @@ function onRemove(item: Building) {
 
 function remove() {
   if (!selected.value?.id) return;
-  service
+  void service
     .remove(selected.value?.id)
     .then(() => {
       tableRef.value.requestServerInteraction();

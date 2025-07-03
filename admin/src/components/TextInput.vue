@@ -2,14 +2,20 @@
   <div>
     <q-card bordered flat>
       <q-tabs v-model="tab" dense align="left" class="bg-grey-1 text-grey-6" active-color="grey-8">
-        <q-tab v-if="helpContent" name="help" :label="$t('instructions')" no-caps />
-        <q-tab name="write" :label="$t('write')" no-caps />
-        <q-tab name="preview" :label="$t('preview')" no-caps />
+        <q-tab v-if="helpContent" name="help" :label="t('instructions')" no-caps />
+        <q-tab name="write" :label="t('write')" no-caps />
+        <q-tab name="preview" :label="t('preview')" no-caps />
       </q-tabs>
       <q-separator />
       <q-tab-panels v-model="tab">
         <q-tab-panel name="write" class="q-pa-none">
-          <q-input filled v-model="text" type="textarea" :label="label" @update:model-value="onUpdate" />
+          <q-input
+            filled
+            v-model="text"
+            type="textarea"
+            :label="label"
+            @update:model-value="onUpdate"
+          />
         </q-tab-panel>
         <q-tab-panel name="preview">
           <q-markdown :src="text" no-heading-anchor-links />
@@ -23,11 +29,6 @@
   </div>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  name: 'TextInput',
-});
-</script>
 <script setup lang="ts">
 interface Props {
   modelValue: string | undefined;
@@ -39,14 +40,16 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits(['update:modelValue']);
 
+const { t } = useI18n();
+
 const text = ref(props.modelValue);
 const tab = ref('write');
 const helpContent = ref('');
 
 onMounted(() => {
   if (props.help) {
-    fetch(`/admin/help/en/${props.help}.md`).then((response) => {
-      response.text().then((text) => {
+    void fetch(`/admin/help/en/${props.help}.md`).then((response) => {
+      void response.text().then((text) => {
         helpContent.value = text;
         tab.value = text ? 'help' : 'write';
       });
