@@ -9,9 +9,9 @@
 <script setup lang="ts">
 const content = ref('');
 
-onMounted(async () => {
-  fetch('imprint-en.md').then((response) => {
-    response.text().then((text) => {
+onMounted(() => {
+  void fetch('imprint-en.md').then((response) => {
+    void response.text().then((text) => {
       content.value = text;
     });
   });

@@ -11,7 +11,7 @@
     </div>
     <div class="col-12 col-md-4">
       <div v-if="!searchService.searching && rows.length === 0">
-        {{ $t('no_results') }}
+        {{ t('no_results') }}
       </div>
       <q-scroll-area v-else style="height: 600px">
         <q-list separator>
@@ -24,7 +24,9 @@
               @mouseleave="onLeaveDocument"
             >
               <q-item-section>
-                <q-item-label class="text-primary text-uppercase">{{ $t(row.entity_type) }}</q-item-label>
+                <q-item-label class="text-primary text-uppercase">{{
+                  t(row.entity_type)
+                }}</q-item-label>
                 <q-item-label class="text-bold">{{ row.name }}</q-item-label>
                 <div>
                   <tags-badges :item="row" />
@@ -34,7 +36,12 @@
                 </q-item-label>
               </q-item-section>
               <q-item-section v-if="getImageUrls(row).length" avatar>
-                <q-img :src="getImageUrls(row)[0]" height="100px" fit="cover" style="min-width: 100px" />
+                <q-img
+                  :src="getImageUrls(row)[0]"
+                  height="100px"
+                  fit="cover"
+                  style="min-width: 100px"
+                />
               </q-item-section>
             </q-item>
           </template>
@@ -47,18 +54,20 @@
 <script setup lang="ts">
 import MapView from 'src/components/MapView.vue';
 import TagsBadges from 'src/components/TagsBadges.vue';
-import { Document } from 'src/models';
+import type { Document } from 'src/models';
 import { getImageUrls } from 'src/utils/files';
 
+const { t } = useI18n();
 const router = useRouter();
 const searchService = useSearchService();
 
-const hoverDocument = ref<Document | null>(null);
+const hoverDocument = ref<Document>();
 const mark = ref<[number, number]>();
+
 const rows = computed(() => searchService.geoResults?.data || []);
 
 function onDocument(row: Document) {
-  router.push({ name: 'doc', params: { id: `${row.entity_type}:${row.id}` } });
+  void router.push({ name: 'doc', params: { id: `${row.entity_type}:${row.id}` } });
 }
 
 function onEnterDocument(row: Document) {
@@ -67,12 +76,12 @@ function onEnterDocument(row: Document) {
 }
 
 function onLeaveDocument() {
-  hoverDocument.value = null;
+  hoverDocument.value = undefined;
   mark.value = undefined;
 }
 
 function onBoundingBox(bounds: [[number, number], [number, number]]) {
   searchService.bbox = bounds;
-  searchService.search_entities();
+  void searchService.search_entities();
 }
 </script>

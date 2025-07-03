@@ -13,7 +13,7 @@
         no-caps
         size="md"
         :label="taxoNode.label"
-        :title="$t('click_twice_to_select')"
+        :title="t('click_twice_to_select')"
         class="on-left q-mb-sm"
         @click="onTaxoNodeSelect(taxoNode)"
       >
@@ -44,7 +44,11 @@
         >
           <template v-slot:label>
             {{ node.label }}
-            <q-badge v-if="getSelectedNodes(node).length" color="white" class="text-primary q-ml-xs">
+            <q-badge
+              v-if="getSelectedNodes(node).length"
+              color="white"
+              class="text-primary q-ml-xs"
+            >
               {{ getSelectedNodes(node).length }}
             </q-badge>
           </template>
@@ -100,8 +104,9 @@
 </template>
 
 <script setup lang="ts">
-import { TermOption, TaxonomyNodeOption } from 'src/components/models';
+import type { TermOption, TaxonomyNodeOption } from 'src/components/models';
 
+const { t } = useI18n();
 const taxonomyStore = useTaxonomyStore();
 const searchService = useSearchService();
 
@@ -122,7 +127,7 @@ const nodes = computed<TaxonomyNodeOption[]>(() => {
       return {
         value: taxonomyStore.toUrn(tx.id, []),
         label: taxonomyStore.getLabel(tx.names),
-        children: children.length > 1 ? children : children[0].children,
+        children: children.length > 1 ? children : children[0]?.children || [],
       } as TaxonomyNodeOption;
     }) || []
   );
@@ -216,7 +221,11 @@ function isNodeSelected(node: TaxonomyNodeOption) {
 
 function isNodeHidden(node: TaxonomyNodeOption | undefined) {
   if (!node) return true;
-  return props.view === 'map' && node.value !== 'urn:arema:building' && node.value !== 'urn:arema:professional';
+  return (
+    props.view === 'map' &&
+    node.value !== 'urn:arema:building' &&
+    node.value !== 'urn:arema:professional'
+  );
 }
 
 function onResourceTag() {

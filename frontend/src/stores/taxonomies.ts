@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { api } from 'src/boot/api';
-import { Option } from 'src/components/models';
-import { Taxonomy, TaxonomyNode } from 'src/models';
+import type { Option } from 'src/components/models';
+import type { Taxonomy, TaxonomyNode } from 'src/models';
 
 const URN_PREFIX = 'urn:arema';
 
@@ -48,7 +48,10 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return taxonomies.value?.taxonomy.find((tx) => tx.id === entityType);
   }
 
-  function getTaxonomyNode(entityType: string, path: string | string[] = []): TaxonomyNode | undefined {
+  function getTaxonomyNode(
+    entityType: string,
+    path: string | string[] = [],
+  ): TaxonomyNode | undefined {
     const tx = getTaxonomy(entityType);
     if (!tx) return undefined;
     return getNodeFromPath(tx, path);
@@ -64,7 +67,10 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return getNodeFromPath(root, tokens[1]);
   }
 
-  function getNodeFromPath(node: TaxonomyNode, path: string | string[] = []): TaxonomyNode | undefined {
+  function getNodeFromPath(
+    node: TaxonomyNode,
+    path: string | string[] = [],
+  ): TaxonomyNode | undefined {
     const elements = Array.isArray(path) ? path : path.split('.');
     if (!elements || elements.length === 0) return node;
     if (!node.children || node.children.length === 0) return node;
@@ -92,15 +98,17 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     const options = [];
     const prefix = Array.isArray(path) ? path : path.split('.');
 
-    for (const child of node?.children) {
-      const opt = {
-        value: toUrn(entityType, [...prefix, child.id]),
-        label: getLabel(child.names) || child.id,
-      } as Option;
-      options.push(opt);
-      if (child.children?.length) {
-        const opts = asOptions(entityType, child, [...prefix, child.id], level + 1);
-        opt.children = opts;
+    if (node && node.children) {
+      for (const child of node.children) {
+        const opt = {
+          value: toUrn(entityType, [...prefix, child.id]),
+          label: getLabel(child.names) || child.id,
+        } as Option;
+        options.push(opt);
+        if (child.children?.length) {
+          const opts = asOptions(entityType, child, [...prefix, child.id], level + 1);
+          opt.children = opts;
+        }
       }
     }
 

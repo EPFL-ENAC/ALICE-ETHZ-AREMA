@@ -5,8 +5,12 @@
         <template v-for="row in rows" :key="`${row.entity_type}:${row.id}`">
           <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
             <q-card flat bordered class="q-ma-none" style="min-height: 360px">
-              <q-card-section class="q-pa-md" style="cursor: pointer; height: 100%" @click="onDocument(row)">
-                <div class="text-primary">{{ $t(row.entity_type) }}</div>
+              <q-card-section
+                class="q-pa-md"
+                style="cursor: pointer; height: 100%"
+                @click="onDocument(row)"
+              >
+                <div class="text-primary">{{ t(row.entity_type) }}</div>
                 <div class="text-h5">{{ row.name }}</div>
                 <div>
                   <tags-badges :item="row" />
@@ -22,7 +26,7 @@
                   flat
                   no-caps
                   size="sm"
-                  :label="$t('watch')"
+                  :label="t('watch')"
                   icon-right="open_in_new"
                   class="full-width"
                   @click="onVideo(row)"
@@ -32,21 +36,30 @@
           </div>
         </template>
         <div v-if="rows.length === 0">
-          {{ $t('no_results') }}
+          {{ t('no_results') }}
         </div>
       </div>
     </div>
     <div v-if="count < total" class="q-mt-md">
-      <q-btn color="primary" unelevated square no-caps size="md" :label="$t('show_more')" @click="loadMore" />
+      <q-btn
+        color="primary"
+        unelevated
+        square
+        no-caps
+        size="md"
+        :label="t('show_more')"
+        @click="loadMore"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Video } from 'src/models';
+import type { Video } from 'src/models';
 import TagsBadges from 'src/components/TagsBadges.vue';
 import { toEmbededVideoUrl } from 'src/utils/files';
 
+const { t } = useI18n();
 const searchService = useSearchService();
 const router = useRouter();
 
@@ -61,10 +74,10 @@ function onVideo(row: Video) {
 }
 
 function onDocument(row: Video) {
-  router.push({ name: 'doc', params: { id: row.parent_id } });
+  void router.push({ name: 'doc', params: { id: row.parent_id } });
 }
 
 function loadMore() {
-  searchService.search_videos(searchService.limit + 100);
+  void searchService.search_videos(searchService.limit + 100);
 }
 </script>

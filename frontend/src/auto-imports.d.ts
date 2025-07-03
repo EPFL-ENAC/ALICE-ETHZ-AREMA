@@ -58,6 +58,7 @@ declare global {
   const onServerPrefetch: typeof import('vue')['onServerPrefetch']
   const onUnmounted: typeof import('vue')['onUnmounted']
   const onUpdated: typeof import('vue')['onUpdated']
+  const onWatcherCleanup: typeof import('vue')['onWatcherCleanup']
   const provide: typeof import('vue')['provide']
   const reactive: typeof import('vue')['reactive']
   const readonly: typeof import('vue')['readonly']
@@ -87,8 +88,10 @@ declare global {
   const useFeathersService: (typeof import('./composables/feathers'))['useFeathersService']
   const useHome: typeof import('./stores/home')['useHome']
   const useI18n: typeof import('vue-i18n')['useI18n']
+  const useId: typeof import('vue')['useId']
   const useInstanceDefaults: (typeof import('feathers-pinia'))['useInstanceDefaults']
   const useLink: typeof import('vue-router')['useLink']
+  const useModel: typeof import('vue')['useModel']
   const useRoute: typeof import('vue-router')['useRoute']
   const useRouter: typeof import('vue-router')['useRouter']
   const useSearch: (typeof import('./stores/search'))['useSearch']
@@ -96,6 +99,7 @@ declare global {
   const useServiceInstance: (typeof import('feathers-pinia'))['useServiceInstance']
   const useSlots: typeof import('vue')['useSlots']
   const useTaxonomyStore: typeof import('./stores/taxonomies')['useTaxonomyStore']
+  const useTemplateRef: typeof import('vue')['useTemplateRef']
   const watch: typeof import('vue')['watch']
   const watchEffect: typeof import('vue')['watchEffect']
   const watchPostEffect: typeof import('vue')['watchPostEffect']
@@ -104,7 +108,7 @@ declare global {
 // for type re-export
 declare global {
   // @ts-ignore
-  export type { Component, ComponentPublicInstance, ComputedRef, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, VNode, WritableComputedRef } from 'vue'
+  export type { Component, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
 }
 // for vue template auto import
@@ -160,6 +164,7 @@ declare module 'vue' {
     readonly onServerPrefetch: UnwrapRef<typeof import('vue')['onServerPrefetch']>
     readonly onUnmounted: UnwrapRef<typeof import('vue')['onUnmounted']>
     readonly onUpdated: UnwrapRef<typeof import('vue')['onUpdated']>
+    readonly onWatcherCleanup: UnwrapRef<typeof import('vue')['onWatcherCleanup']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
     readonly reactive: UnwrapRef<typeof import('vue')['reactive']>
     readonly readonly: UnwrapRef<typeof import('vue')['readonly']>
@@ -183,98 +188,15 @@ declare module 'vue' {
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
     readonly useHome: UnwrapRef<typeof import('./stores/home')['useHome']>
     readonly useI18n: UnwrapRef<typeof import('vue-i18n')['useI18n']>
+    readonly useId: UnwrapRef<typeof import('vue')['useId']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
+    readonly useModel: UnwrapRef<typeof import('vue')['useModel']>
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
     readonly useRouter: UnwrapRef<typeof import('vue-router')['useRouter']>
     readonly useSearchService: UnwrapRef<typeof import('./stores/search')['useSearchService']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
     readonly useTaxonomyStore: UnwrapRef<typeof import('./stores/taxonomies')['useTaxonomyStore']>
-    readonly watch: UnwrapRef<typeof import('vue')['watch']>
-    readonly watchEffect: UnwrapRef<typeof import('vue')['watchEffect']>
-    readonly watchPostEffect: UnwrapRef<typeof import('vue')['watchPostEffect']>
-    readonly watchSyncEffect: UnwrapRef<typeof import('vue')['watchSyncEffect']>
-  }
-}
-declare module '@vue/runtime-core' {
-  interface GlobalComponents {}
-  interface ComponentCustomProperties {
-    readonly $$: UnwrapRef<typeof import('vue/macros')['$$']>
-    readonly $: UnwrapRef<typeof import('vue/macros')['$']>
-    readonly $computed: UnwrapRef<typeof import('vue/macros')['$computed']>
-    readonly $customRef: UnwrapRef<typeof import('vue/macros')['$customRef']>
-    readonly $ref: UnwrapRef<typeof import('vue/macros')['$ref']>
-    readonly $shallowRef: UnwrapRef<typeof import('vue/macros')['$shallowRef']>
-    readonly $toRef: UnwrapRef<typeof import('vue/macros')['$toRef']>
-    readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
-    readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
-    readonly computed: UnwrapRef<typeof import('vue')['computed']>
-    readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
-    readonly createPinia: UnwrapRef<typeof import('pinia')['createPinia']>
-    readonly customRef: UnwrapRef<typeof import('vue')['customRef']>
-    readonly defineAsyncComponent: UnwrapRef<typeof import('vue')['defineAsyncComponent']>
-    readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
-    readonly defineStore: UnwrapRef<typeof import('pinia')['defineStore']>
-    readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
-    readonly getActivePinia: UnwrapRef<typeof import('pinia')['getActivePinia']>
-    readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
-    readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
-    readonly h: UnwrapRef<typeof import('vue')['h']>
-    readonly inject: UnwrapRef<typeof import('vue')['inject']>
-    readonly isProxy: UnwrapRef<typeof import('vue')['isProxy']>
-    readonly isReactive: UnwrapRef<typeof import('vue')['isReactive']>
-    readonly isReadonly: UnwrapRef<typeof import('vue')['isReadonly']>
-    readonly isRef: UnwrapRef<typeof import('vue')['isRef']>
-    readonly mapActions: UnwrapRef<typeof import('pinia')['mapActions']>
-    readonly mapGetters: UnwrapRef<typeof import('pinia')['mapGetters']>
-    readonly mapState: UnwrapRef<typeof import('pinia')['mapState']>
-    readonly mapStores: UnwrapRef<typeof import('pinia')['mapStores']>
-    readonly mapWritableState: UnwrapRef<typeof import('pinia')['mapWritableState']>
-    readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
-    readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
-    readonly onActivated: UnwrapRef<typeof import('vue')['onActivated']>
-    readonly onBeforeMount: UnwrapRef<typeof import('vue')['onBeforeMount']>
-    readonly onBeforeRouteLeave: UnwrapRef<typeof import('vue-router')['onBeforeRouteLeave']>
-    readonly onBeforeRouteUpdate: UnwrapRef<typeof import('vue-router')['onBeforeRouteUpdate']>
-    readonly onBeforeUnmount: UnwrapRef<typeof import('vue')['onBeforeUnmount']>
-    readonly onBeforeUpdate: UnwrapRef<typeof import('vue')['onBeforeUpdate']>
-    readonly onDeactivated: UnwrapRef<typeof import('vue')['onDeactivated']>
-    readonly onErrorCaptured: UnwrapRef<typeof import('vue')['onErrorCaptured']>
-    readonly onMounted: UnwrapRef<typeof import('vue')['onMounted']>
-    readonly onRenderTracked: UnwrapRef<typeof import('vue')['onRenderTracked']>
-    readonly onRenderTriggered: UnwrapRef<typeof import('vue')['onRenderTriggered']>
-    readonly onScopeDispose: UnwrapRef<typeof import('vue')['onScopeDispose']>
-    readonly onServerPrefetch: UnwrapRef<typeof import('vue')['onServerPrefetch']>
-    readonly onUnmounted: UnwrapRef<typeof import('vue')['onUnmounted']>
-    readonly onUpdated: UnwrapRef<typeof import('vue')['onUpdated']>
-    readonly provide: UnwrapRef<typeof import('vue')['provide']>
-    readonly reactive: UnwrapRef<typeof import('vue')['reactive']>
-    readonly readonly: UnwrapRef<typeof import('vue')['readonly']>
-    readonly ref: UnwrapRef<typeof import('vue')['ref']>
-    readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
-    readonly setActivePinia: UnwrapRef<typeof import('pinia')['setActivePinia']>
-    readonly setMapStoreSuffix: UnwrapRef<typeof import('pinia')['setMapStoreSuffix']>
-    readonly shallowReactive: UnwrapRef<typeof import('vue')['shallowReactive']>
-    readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
-    readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
-    readonly storeToRefs: UnwrapRef<typeof import('pinia')['storeToRefs']>
-    readonly stores: UnwrapRef<typeof import('./stores/index')['default']>
-    readonly toRaw: UnwrapRef<typeof import('vue')['toRaw']>
-    readonly toRef: UnwrapRef<typeof import('vue')['toRef']>
-    readonly toRefs: UnwrapRef<typeof import('vue')['toRefs']>
-    readonly toValue: UnwrapRef<typeof import('vue')['toValue']>
-    readonly triggerRef: UnwrapRef<typeof import('vue')['triggerRef']>
-    readonly unref: UnwrapRef<typeof import('vue')['unref']>
-    readonly useAttrs: UnwrapRef<typeof import('vue')['useAttrs']>
-    readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
-    readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
-    readonly useHome: UnwrapRef<typeof import('./stores/home')['useHome']>
-    readonly useI18n: UnwrapRef<typeof import('vue-i18n')['useI18n']>
-    readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
-    readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
-    readonly useRouter: UnwrapRef<typeof import('vue-router')['useRouter']>
-    readonly useSearchService: UnwrapRef<typeof import('./stores/search')['useSearchService']>
-    readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
-    readonly useTaxonomyStore: UnwrapRef<typeof import('./stores/taxonomies')['useTaxonomyStore']>
+    readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly watch: UnwrapRef<typeof import('vue')['watch']>
     readonly watchEffect: UnwrapRef<typeof import('vue')['watchEffect']>
     readonly watchPostEffect: UnwrapRef<typeof import('vue')['watchPostEffect']>

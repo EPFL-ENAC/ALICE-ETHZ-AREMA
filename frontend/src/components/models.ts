@@ -1,6 +1,7 @@
-import { TaxonomyNode } from 'src/models';
+import type { TaxonomyNode } from 'src/models';
 
 export interface Filter {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 

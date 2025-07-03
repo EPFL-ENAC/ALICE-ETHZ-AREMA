@@ -7,13 +7,17 @@
       <div class="row q-col-gutter-md">
         <div class="col-12 col-md-1"></div>
         <div class="col-12 col-md-2">
-          <router-link to="/search" class="text-primary text-caption q-pa-xs" style="border: solid 1px">
-            <q-icon name="arrow_back" /> {{ $t('search') }}
+          <router-link
+            to="/search"
+            class="text-primary text-caption q-pa-xs"
+            style="border: solid 1px"
+          >
+            <q-icon name="arrow_back" /> {{ t('search') }}
           </router-link>
         </div>
         <div class="col-12 col-md-6">
           <div class="text-primary text-uppercase q-mb-sm">
-            {{ $t(document.entity_type) }}
+            {{ t(document.entity_type) }}
           </div>
           <div class="text-h2 q-mb-md">{{ document.name }}</div>
           <div class="q-mb-lg">
@@ -45,22 +49,25 @@
         <div class="col-12 col-md-2">
           <div class="q-mb-md">
             <div v-if="document.client" class="text-secondary text-caption">
-              {{ $t('client', { client: document.client }) }}
+              {{ t('client', { client: document.client }) }}
             </div>
             <div v-if="document.gross_internal_area" class="text-secondary text-caption">
-              {{ $t('gross_internal_area', { area: document.gross_internal_area }) }}
+              {{ t('gross_internal_area', { area: document.gross_internal_area }) }}
             </div>
             <div v-if="document.year" class="text-secondary text-caption">
-              {{ $t('year', { year: document.year }) }}
+              {{ t('year', { year: document.year }) }}
             </div>
             <div v-if="document.web" class="text-secondary text-caption">
               <q-markdown :src="toUrlMd(document.web)" no-heading-anchor-links class="q-mb-none" />
             </div>
             <div v-if="document.tel" class="text-secondary text-caption">
-              {{ $t('tel', { tel: document.tel }) }}
+              {{ t('tel', { tel: document.tel }) }}
             </div>
             <div v-if="document.email" class="text-secondary text-caption">
-              <q-markdown :src="`[${document.email}](mailto:${document.email})`" no-heading-anchor-links />
+              <q-markdown
+                :src="`[${document.email}](mailto:${document.email})`"
+                no-heading-anchor-links
+              />
             </div>
           </div>
           <q-markdown
@@ -78,7 +85,7 @@
         <div class="col-12 col-md-3"></div>
         <div class="col-12 col-md-6">
           <div class="text-primary text-uppercase q-mb-sm">
-            {{ $t('address') }}
+            {{ t('address') }}
           </div>
           <div class="row q-gutter-md">
             <template v-for="addr in [document.address, ...(document.addresses || [])]" :key="addr">
@@ -95,17 +102,23 @@
         <div class="col-12 col-md-3"></div>
       </div>
 
-      <div v-if="relationSummaries.length || relatedResources.length" class="row q-col-gutter-md q-mt-md">
+      <div
+        v-if="relationSummaries.length || relatedResources.length"
+        class="row q-col-gutter-md q-mt-md"
+      >
         <div class="col-12 col-md-3"></div>
         <div class="col-12 col-md-6">
           <div class="text-primary text-uppercase q-mb-sm">
-            {{ $t('relates_to') }}
+            {{ t('relates_to') }}
           </div>
           <div class="row q-gutter-md">
-            <template v-for="entity_type in Object.keys(relationSummariesPerEntityType)" :key="entity_type">
+            <template
+              v-for="entity_type in Object.keys(relationSummariesPerEntityType)"
+              :key="entity_type"
+            >
               <q-card flat class="q-mb-md" style="min-width: 200px">
                 <q-card-section>
-                  <div class="text-primary">{{ $t(entity_type) }}</div>
+                  <div class="text-primary">{{ t(entity_type) }}</div>
                   <ul class="q-mt-xs q-mb-none q-pl-md">
                     <li
                       v-for="doc in relationSummariesPerEntityType[entity_type]"
@@ -121,7 +134,7 @@
             </template>
             <q-card v-if="relatedResources.length" flat class="q-mb-md" style="min-width: 200px">
               <q-card-section>
-                <div class="text-primary">{{ $t(document.entity_type) }}</div>
+                <div class="text-primary">{{ t(document.entity_type) }}</div>
                 <ul class="q-mt-xs q-mb-none q-pl-md">
                   <li
                     v-for="doc in relatedResources"
@@ -148,8 +161,9 @@ import TagsBadges from 'src/components/TagsBadges.vue';
 import PhysicalParametersPanel from 'src/components/PhysicalParametersPanel.vue';
 import MultimediaPanel from 'src/components/MultimediaPanel.vue';
 import ExternalLinksPanel from 'src/components/ExternalLinksPanel.vue';
-import { Document } from 'src/models';
+import type { Document } from 'src/models';
 
+const { t } = useI18n();
 const searchService = useSearchService();
 const router = useRouter();
 const $q = useQuasar();
@@ -167,10 +181,11 @@ const relatedResources = ref<Document[]>([]);
 const relationSummariesPerEntityType = computed(() => {
   const relations: { [key: string]: Document[] } = {};
   relationSummaries.value.forEach((doc) => {
-    if (!relations[doc.entity_type]) {
-      relations[doc.entity_type] = [];
+    const entityType = doc.entity_type;
+    if (!relations[entityType]) {
+      relations[entityType] = [];
     }
-    relations[doc.entity_type].push(doc);
+    relations[entityType].push(doc);
   });
   return relations;
 });
@@ -185,7 +200,7 @@ function init() {
   relationSummaries.value = [];
   relatedResources.value = [];
   const fields = ['id', 'entity_type', 'name', 'description'];
-  searchService
+  void searchService
     .getRelatedDocuments(toId(props.document.entity_type, props.document.id), fields)
     .then((result) => {
       relationSummaries.value = result.data || [];
@@ -201,7 +216,9 @@ function init() {
             return searchService.getDocument(rel, fields);
           }),
       ).then((docs) => {
-        relationSummaries.value = relationSummaries.value.concat(docs).filter((doc) => doc !== undefined);
+        relationSummaries.value = relationSummaries.value
+          .concat(docs)
+          .filter((doc) => doc !== undefined);
       });
     })
     .then(() => {
@@ -209,14 +226,14 @@ function init() {
       relationSummaries.value.sort((a, b) => a.entity_type.localeCompare(b.entity_type));
     });
   if (props.document.entity_type === 'natural-resource') {
-    searchService.getDocumentsFromTags(props.document.tags, fields).then((result) => {
+    void searchService.getDocumentsFromTags(props.document.tags || [], fields).then((result) => {
       relatedResources.value = result.data?.filter((doc) => doc.id !== props.document.id) || [];
     });
   }
 }
 
 function onDocument(row: Document) {
-  router.push({ name: 'doc', params: { id: toId(row.entity_type, row.id) } });
+  void router.push({ name: 'doc', params: { id: toId(row.entity_type, row.id) } });
 }
 
 function toId(entity_type: string, id: number | string) {
