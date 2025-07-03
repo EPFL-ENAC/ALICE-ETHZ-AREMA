@@ -20,7 +20,7 @@ export default {
     woods: 'Wood',
   },
   'building-material': 'Building Material',
-  'natural-resource': 'Natural Resource',
+  'natural-resource': 'Resource',
   'technical-construction': 'Construction Techniques',
   about: 'About',
   absorption_coefficient_symbol: 'α',
