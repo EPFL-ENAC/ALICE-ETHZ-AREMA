@@ -9,9 +9,9 @@
 <script setup lang="ts">
 const content = ref('');
 
-onMounted(async () => {
-  fetch('contribute-en.md').then((response) => {
-    response.text().then((text) => {
+onMounted(() => {
+  void fetch('contribute-en.md').then((response) => {
+    void response.text().then((text) => {
       content.value = text;
     });
   });

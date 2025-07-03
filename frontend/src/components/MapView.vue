@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <q-btn
-      :label="$t('resource_potentials')"
+      :label="t('resource_potentials')"
       icon="layers"
       color="white"
       text-color="grey-10"
@@ -35,7 +35,7 @@
               </q-item-section>
             </q-item>
             <q-item v-else clickable>
-              <q-item-section>{{ $t(`maps.${node.id}`) }}</q-item-section>
+              <q-item-section>{{ t(`maps.${node.id}`) }}</q-item-section>
               <q-item-section side>
                 <q-icon name="keyboard_arrow_right" />
               </q-item-section>
@@ -75,9 +75,15 @@
     <div id="map-results" :style="`--t-width: ${width}; --t-height: ${height}`" class="mapview" />
     <div v-if="hasLegend" class="colors q-mr-sm bg-white rounded-borders shadow-1 q-pa-xs">
       <template v-for="map in Object.keys(showMap)" :key="map">
-        <q-icon v-if="showMap[map]" name="circle" :color="mapColors[map]" size="1.2rem" class="q-mr-xs" />
+        <q-icon
+          v-if="showMap[map]"
+          name="circle"
+          :color="mapColors[map]"
+          size="1.2rem"
+          class="q-mr-xs"
+        />
         <span v-if="showMap[map]" class="text-secondary text-caption on-left">
-          {{ $t(`maps.${map}`) }}
+          {{ t(`maps.${map}`) }}
         </span>
       </template>
     </div>
@@ -91,18 +97,18 @@ import '@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import 'maplibregl-theme-switcher/styles.css';
 import { style } from '../utils/maps';
-import { type FeatureCollection, Point } from 'geojson';
+import type { Point } from 'geojson';
+import { type FeatureCollection } from 'geojson';
+import type { MapMouseEvent } from 'maplibre-gl';
+import type { Feature } from 'geojson';
 import {
   AttributionControl,
   //FullscreenControl,
   GeolocateControl,
   Map,
-  MapMouseEvent,
   NavigationControl,
   //ScaleControl,
   Popup,
-  GeoJSONSource,
-  Feature,
   Marker,
 } from 'maplibre-gl';
 
@@ -110,7 +116,7 @@ const { t } = useI18n({ useScope: 'global' });
 const router = useRouter();
 
 interface Props {
-  features?: FeatureCollection;
+  features: FeatureCollection | undefined;
   centre?: [number, number];
   zoom?: number;
   aspectRatio?: number;
@@ -118,16 +124,13 @@ interface Props {
   maxZoom?: number;
   width?: string;
   height?: string;
-  bbox?: [[number, number], [number, number]];
-  mark?: [number, number];
+  bbox?: [[number, number], [number, number]] | undefined;
+  mark?: [number, number] | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   centre: () => [8, 46.8],
   zoom: 6,
-  aspectRatio: undefined,
-  minZoom: undefined,
-  maxZoom: undefined,
   width: '100%',
   height: '800px',
 });
@@ -156,7 +159,7 @@ el.innerHTML = `
 `;
 const marker = new Marker({ element: el }).setLngLat([0, 0]);
 
-let map = shallowRef<Map>();
+const map = shallowRef<Map>();
 const mapLoaded = ref(false);
 const mapMenu = ref<MapNode[]>([
   {
@@ -270,7 +273,8 @@ function initMap() {
 
   map.value.on('load', () => {
     Object.keys(EntityTypeSymbols).forEach((entityType) => {
-      map.value?.loadImage(`/symbols/${EntityTypeSymbols[entityType].image}`).then((image) => {
+      if (!EntityTypeSymbols[entityType]) return;
+      void map.value?.loadImage(`/symbols/${EntityTypeSymbols[entityType].image}`).then((image) => {
         if (image?.data) {
           map.value?.addImage(entityType, image.data);
         }
@@ -302,8 +306,8 @@ watch(
   () => props.mark,
   () => {
     marker.remove();
-    if (mapLoaded.value && props.mark) {
-      marker.setLngLat(props.mark).addTo(map.value!);
+    if (mapLoaded.value && props.mark && map.value) {
+      marker.setLngLat(props.mark).addTo(map.value);
     }
   },
   { immediate: true, deep: true },
@@ -316,7 +320,13 @@ function displayFeatures() {
 
   if (map.value.getSource('entities')) {
     // update source
-    (map.value.getSource('entities') as GeoJSONSource)?.setData(
+    const geoSource = map.value.getSource('entities');
+    // Cast to GeoJSONSource for setData
+    if (!geoSource || geoSource.type !== 'geojson') {
+      console.warn('Source "entities" is not a GeoJSON source, cannot update data.');
+      return;
+    }
+    (geoSource as maplibregl.GeoJSONSource).setData(
       props.features || {
         type: 'FeatureCollection',
         features: [],
@@ -383,19 +393,34 @@ function displayFeatures() {
     layerIds.push('entities-unclustered-point');
 
     // inspect a cluster on click
-    map.value.on('click', 'entities-clusters', async (e) => {
+    map.value.on('click', 'entities-clusters', (e) => {
       if (!map.value) {
         return;
       }
       const features = map.value.queryRenderedFeatures(e.point, {
         layers: ['entities-clusters'],
       });
-      const clusterId = features[0].properties.cluster_id;
-      const zoom = await (map.value.getSource('entities') as GeoJSONSource).getClusterExpansionZoom(clusterId);
-      map.value.easeTo({
-        center: (features[0].geometry as Point).coordinates as [number, number],
-        zoom,
-      });
+      const clusterId = features[0]?.properties.cluster_id;
+      if (typeof clusterId === 'undefined') {
+        return;
+      }
+      const geoSource = map.value.getSource('entities');
+      if (!geoSource || geoSource.type !== 'geojson') {
+        console.warn('Source "entities" is not a GeoJSON source, cannot get cluster zoom.');
+        return;
+      }
+      // Cast to GeoJSONSource for getClusterExpansionZoom
+      void (geoSource as maplibregl.GeoJSONSource)
+        .getClusterExpansionZoom(clusterId)
+        .then((zoom: number) => {
+          if (!map.value) {
+            return;
+          }
+          map.value.easeTo({
+            center: (features[0]?.geometry as Point).coordinates as [number, number],
+            zoom,
+          });
+        });
     });
 
     // When a click event occurs on a feature in
@@ -436,13 +461,38 @@ function showPopup(e: MapMouseEvent) {
   }
   // filter props.features to points with nearest coordinates
   const clickedCoordinates = (clickedFeature.geometry as Point).coordinates;
+  if (
+    !clickedCoordinates ||
+    clickedCoordinates.length !== 2 ||
+    clickedCoordinates[0] === undefined ||
+    clickedCoordinates[1] === undefined
+  ) {
+    console.warn('Clicked feature does not have valid coordinates:', clickedFeature);
+    return;
+  }
   const sameLocationFeatures =
     props.features?.features.filter((f) => {
       if (f.geometry.type !== 'Point') {
         return false;
       }
-      const coordinates = (f.geometry as Point).coordinates;
-      const distance = Math.hypot(coordinates[0] - clickedCoordinates[0], coordinates[1] - clickedCoordinates[1]); // Rough Euclidean
+      const coordinates = f.geometry.coordinates;
+      if (
+        !coordinates ||
+        coordinates.length !== 2 ||
+        coordinates[0] === undefined ||
+        coordinates[1] === undefined ||
+        !clickedCoordinates ||
+        clickedCoordinates.length !== 2 ||
+        clickedCoordinates[0] === undefined ||
+        clickedCoordinates[1] === undefined
+      ) {
+        console.warn('Feature does not have valid coordinates:', f);
+        return false;
+      }
+      const distance = Math.hypot(
+        coordinates[0] - clickedCoordinates[0],
+        coordinates[1] - clickedCoordinates[1],
+      ); // Rough Euclidean
       if (distance < 0.0001) {
         return true;
       }
@@ -493,7 +543,14 @@ function showPopup(e: MapMouseEvent) {
 }
 
 function onDocument(feature: Feature) {
-  router.push({ name: 'doc', params: { id: `${feature.properties.entity_type}:${feature.properties.id}` } });
+  if (!feature.properties || !feature.properties.entity_type || !feature.properties.id) {
+    console.warn('Feature does not have valid properties:', feature);
+    return;
+  }
+  void router.push({
+    name: 'doc',
+    params: { id: `${feature.properties?.entity_type}:${feature.properties?.id}` },
+  });
 }
 
 function onShowMap(name: string) {

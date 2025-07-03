@@ -15,24 +15,24 @@ const who = ref('');
 const support = ref('');
 const inspiration = ref('');
 
-onMounted(async () => {
-  fetch('manifesto-en.md').then((response) => {
-    response.text().then((text) => {
+onMounted(() => {
+  void fetch('manifesto-en.md').then((response) => {
+    void response.text().then((text) => {
       manifesto.value = text;
     });
   });
-  fetch('who-en.md').then((response) => {
-    response.text().then((text) => {
+  void fetch('who-en.md').then((response) => {
+    void response.text().then((text) => {
       who.value = text;
     });
   });
-  fetch('support-en.md').then((response) => {
-    response.text().then((text) => {
+  void fetch('support-en.md').then((response) => {
+    void response.text().then((text) => {
       support.value = text;
     });
   });
-  fetch('inspiration-en.md').then((response) => {
-    response.text().then((text) => {
+  void fetch('inspiration-en.md').then((response) => {
+    void response.text().then((text) => {
       inspiration.value = text;
     });
   });

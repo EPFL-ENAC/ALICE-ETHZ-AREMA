@@ -36,6 +36,9 @@ export interface Entity {
   client?: string;
   gross_internal_area?: number;
   year?: number;
+  web?: string;
+  tel?: string;
+  email?: string;
   description?: string;
   article_top?: string;
   article_bottom?: string;
