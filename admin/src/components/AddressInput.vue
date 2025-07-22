@@ -3,7 +3,7 @@
     filled
     dense
     v-model="address"
-    :label="$t('address')"
+    :label="t('address')"
     :hint="hint"
     debounce="300"
     @keyup.enter="onSuggestAddress"
@@ -23,7 +23,7 @@
         </q-item>
         <q-item v-if="suggestions.length === 0">
           <q-item-section class="text-grey">
-            {{ $t('no_results') }}
+            {{ t('no_results') }}
           </q-item-section>
         </q-item>
       </q-list>
@@ -31,11 +31,6 @@
   </q-input>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  name: 'AddressInput',
-});
-</script>
 <script setup lang="ts">
 import { geocoderApi, toAddress } from 'src/utils/geocoder';
 import type { Feature } from '@turf/turf';
@@ -52,6 +47,8 @@ interface Suggestion {
   value: string;
   feature: Feature;
 }
+
+const { t } = useI18n();
 
 const address = ref(props.modelValue);
 const suggestions = ref<Suggestion[]>([]);
@@ -76,8 +73,8 @@ function onSuggestAddress() {
   }
   loading.value = true;
   showSuggestions.value = false;
-  geocoderApi
-    .forwardGeocode({ query: address.value, limit: 5 })
+  void geocoderApi
+    .forwardGeocode({ query: address.value, limit: 5, countries: [] })
     .then((collection) => {
       if (collection && collection.features && collection.features.length) {
         suggestions.value = collection.features

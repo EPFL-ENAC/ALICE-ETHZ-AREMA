@@ -46,63 +46,63 @@
 </template>
 
 <script setup lang="ts">
-import { copyToClipboard } from 'quasar'
-import type { AppUser } from 'src/models'
-import { notifyError, notifySuccess } from 'src/utils/notify'
-import { generateToken } from 'src/utils/generate'
+import { copyToClipboard } from 'quasar';
+import type { AppUser } from 'src/models';
+import { notifyError, notifySuccess } from 'src/utils/notify';
+import { generateToken } from 'src/utils/generate';
 
 interface DialogProps {
-  modelValue: boolean
-  item: AppUser
+  modelValue: boolean;
+  item: AppUser;
 }
 
-const props = defineProps<DialogProps>()
-const emit = defineEmits(['update:modelValue', 'saved'])
+const props = defineProps<DialogProps>();
+const emit = defineEmits(['update:modelValue', 'saved']);
 
-const { t } = useI18n()
-const usersStore = useUsersStore()
+const { t } = useI18n();
+const usersStore = useUsersStore();
 
-const showDialog = ref(props.modelValue)
-const showPassword = ref(false)
-const password = ref('')
+const showDialog = ref(props.modelValue);
+const showPassword = ref(false);
+const password = ref('');
 const isValid = computed(() => {
-  return password.value?.trim().length > 0
-})
+  return password.value?.trim().length > 0;
+});
 
 watch(
   () => props.modelValue,
   (value) => {
-    showDialog.value = value
-    onGeneratePassword()
+    showDialog.value = value;
+    onGeneratePassword();
   },
-)
+);
 
 function onHide() {
-  showDialog.value = false
-  emit('update:modelValue', false)
+  showDialog.value = false;
+  emit('update:modelValue', false);
 }
 
-async function onSave() {
+function onSave() {
   if (password.value) {
-    usersStore
+    void usersStore
       .update_password(props.item, password.value)
       .then(() => {
-        emit('saved')
-        onHide()
+        emit('saved');
+        onHide();
       })
-      .catch(notifyError)
+      .catch(notifyError);
   }
 }
 
 function onGeneratePassword() {
-  password.value = generateToken(12)
+  password.value = generateToken(12);
 }
 
 function onCopyPassword() {
-  copyToClipboard(password.value)
+  void copyToClipboard(password.value)
     .then(() => {
-      notifySuccess('password_copied')
+      notifySuccess('password_copied');
     })
-    .catch(notifyError)
+    .catch(notifyError);
 }
 </script>

@@ -3,8 +3,9 @@
     <q-header bordered class="bg-white text-grey-10">
       <q-toolbar v-if="isDevelopment" class="bg-warning">
         <div>
-          <q-icon name="warning" class="on-left q-mb-xs" />Note: This is the <em>development</em> version of the
-          <b>Atlas of Regenerative Materials</b>. If you are looking for the <em>production</em> version, please visit
+          <q-icon name="warning" class="on-left q-mb-xs" />Note: This is the
+          <em>development</em> version of the <b>Atlas of Regenerative Materials</b>. If you are
+          looking for the <em>production</em> version, please visit
           <a href="https://atlas-regenmat.ch/admin/" target="_blank" class="text-bold epfl"
             >atlas-regenmat.ch/admin <q-icon name="arrow_outward"
           /></a>
@@ -15,7 +16,7 @@
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          {{ $t('main.brand') }}
+          {{ t('main.brand') }}
         </q-toolbar-title>
 
         <q-btn-dropdown flat no-caps :label="username">
@@ -25,7 +26,7 @@
                 <q-icon name="logout" size="xs" />
               </q-item-section>
               <q-item-section>
-                <q-item-label>{{ $t('logout') }}</q-item-label>
+                <q-item-label>{{ t('logout') }}</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -40,17 +41,17 @@
             <q-icon name="dashboard" />
           </q-item-section>
           <q-item-section>
-            <q-item-label header>{{ $t('dashboard') }}</q-item-label>
+            <q-item-label header>{{ t('dashboard') }}</q-item-label>
           </q-item-section>
         </q-item>
 
-        <q-item-label class="text-h6" header>{{ $t('content') }}</q-item-label>
+        <q-item-label class="text-h6" header>{{ t('content') }}</q-item-label>
         <q-item clickable v-close-popup :to="'/resources'">
           <q-item-section avatar>
             <q-icon name="fa-solid fa-gem" size="xs" />
           </q-item-section>
           <q-item-section>
-            <q-item-label header>{{ $t('natural_resources') }}</q-item-label>
+            <q-item-label header>{{ t('natural_resources') }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable v-close-popup :to="'/building-materials'">
@@ -58,7 +59,7 @@
             <q-icon name="fa-solid fa-memory" size="xs" />
           </q-item-section>
           <q-item-section>
-            <q-item-label header>{{ $t('building_materials') }}</q-item-label>
+            <q-item-label header>{{ t('building_materials') }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable v-close-popup :to="'/construction-techniques'">
@@ -66,7 +67,7 @@
             <q-icon name="fa-solid fa-trowel-bricks" size="xs" />
           </q-item-section>
           <q-item-section>
-            <q-item-label header>{{ $t('technical_constructions') }}</q-item-label>
+            <q-item-label header>{{ t('technical_constructions') }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable v-close-popup :to="'/buildings'">
@@ -74,7 +75,7 @@
             <q-icon name="fa-solid fa-building" size="xs" />
           </q-item-section>
           <q-item-section>
-            <q-item-label header>{{ $t('buildings') }}</q-item-label>
+            <q-item-label header>{{ t('buildings') }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable v-close-popup :to="'/professionals'">
@@ -82,27 +83,33 @@
             <q-icon name="fa-solid fa-compass-drafting" size="xs" />
           </q-item-section>
           <q-item-section>
-            <q-item-label header>{{ $t('professionals') }}</q-item-label>
+            <q-item-label header>{{ t('professionals') }}</q-item-label>
           </q-item-section>
         </q-item>
 
-        <q-item-label v-if="authStore.isAdmin" class="text-h6" header>{{ $t('administration') }}</q-item-label>
+        <q-item-label v-if="authStore.isAdmin" class="text-h6" header>{{
+          t('administration')
+        }}</q-item-label>
         <q-item v-if="authStore.isAdmin" clickable :to="'/users'">
           <q-item-section avatar>
             <q-icon name="fa-solid fa-users" size="xs" />
           </q-item-section>
           <q-item-section>
-            <q-item-label header>{{ $t('users') }}</q-item-label>
+            <q-item-label header>{{ t('users') }}</q-item-label>
           </q-item-section>
         </q-item>
 
-        <q-item-label class="text-h6" header>{{ $t('help') }}</q-item-label>
-        <q-item clickable v-close-popup @click="onOpenUrl('https://www.markdownguide.org/cheat-sheet/')">
+        <q-item-label class="text-h6" header>{{ t('help') }}</q-item-label>
+        <q-item
+          clickable
+          v-close-popup
+          @click="onOpenUrl('https://www.markdownguide.org/cheat-sheet/')"
+        >
           <q-item-section avatar>
             <q-icon name="fa-brands fa-markdown" size="xs" />
           </q-item-section>
           <q-item-section>
-            <q-item-label header>{{ $t('markdown_guide') }}</q-item-label>
+            <q-item-label header>{{ t('markdown_guide') }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
@@ -120,6 +127,7 @@
 import LoginDialog from 'src/components/LoginDialog.vue';
 import { isDevelopment } from 'src/boot/api';
 
+const { t } = useI18n();
 const authStore = useAuthStore();
 
 const leftDrawerOpen = ref(false);
@@ -128,7 +136,7 @@ const showLogin = ref(false);
 const username = computed(() => authStore.profile?.email);
 
 onMounted(() => {
-  authStore.init().then(() => {
+  void authStore.init().then(() => {
     if (!authStore.isAuthenticated) {
       showLogin.value = true;
     }
@@ -149,7 +157,7 @@ function toggleLeftDrawer() {
 }
 
 function onLogout() {
-  authStore.logout();
+  void authStore.logout();
 }
 
 function onOpenUrl(url: string) {

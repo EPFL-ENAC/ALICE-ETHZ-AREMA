@@ -2,7 +2,7 @@
   <q-dialog v-model="showDialog" persistent @hide="onHide">
     <q-card class="dialog-lg">
       <q-card-actions>
-        <div class="text-h6 q-ml-sm">{{ $t(editMode ? 'edit' : 'add') }}</div>
+        <div class="text-h6 q-ml-sm">{{ t(editMode ? 'edit' : 'add') }}</div>
         <q-space />
         <q-btn flat icon="close" color="primary" v-close-popup />
       </q-card-actions>
@@ -10,10 +10,10 @@
 
       <q-card-section>
         <q-tabs v-model="tab" dense align="left" no-caps>
-          <q-tab name="general" :label="$t('general') + ' *'" />
-          <q-tab name="location" :label="$t('location') + ' *'" />
-          <q-tab name="multimedia" :label="$t('multimedia')" />
-          <q-tab name="relations" :label="$t('relations')" />
+          <q-tab name="general" :label="t('general') + ' *'" />
+          <q-tab name="location" :label="t('location') + ' *'" />
+          <q-tab name="multimedia" :label="t('multimedia')" />
+          <q-tab name="relations" :label="t('relations')" />
         </q-tabs>
         <q-separator />
 
@@ -21,73 +21,83 @@
           <q-tab-panel name="general" class="q-pl-none q-pr-none">
             <div class="row q-mb-md q-col-gutter-md">
               <div class="col-12 col-sm-3">
-                <q-input filled v-model="selected.name" :label="$t('name') + ' *'" />
+                <q-input filled v-model="selected.name" :label="t('name') + ' *'" />
               </div>
               <div class="col-12 col-sm-3">
                 <taxonomy-select
                   v-model="selected.type"
                   entity-type="building"
                   path="type"
-                  :label="$t('type') + ' *'"
+                  :label="t('type') + ' *'"
                 />
               </div>
               <div class="col-12 col-sm-3">
-                <taxonomy-select v-model="selected.status" entity-type="building" path="status" :label="$t('status')" />
+                <taxonomy-select
+                  v-model="selected.status"
+                  entity-type="building"
+                  path="status"
+                  :label="t('status')"
+                />
               </div>
               <div class="col-12 col-sm-3">
                 <taxonomy-select
                   v-model="selected.materials"
                   entity-type="natural-resource"
                   path="type"
-                  :label="$t('materials')"
+                  :label="t('materials')"
                   multiple
                 />
               </div>
             </div>
             <div class="row q-mb-md q-col-gutter-md">
               <div class="col-12 col-sm-4">
-                <q-input filled v-model="selected.client" :label="$t('client')" />
+                <q-input filled v-model="selected.client" :label="t('client')" />
               </div>
               <div class="col-12 col-sm-4">
                 <q-input
                   filled
                   v-model.number="selected.gross_internal_area"
                   type="number"
-                  :label="$t('gross_internal_area')"
-                  :hint="$t('gross_internal_area_hint')"
+                  :label="t('gross_internal_area')"
+                  :hint="t('gross_internal_area_hint')"
                 />
               </div>
               <div class="col-12 col-sm-4">
-                <q-input filled v-model.number="selected.year" type="number" :label="$t('year_of_construction')" />
+                <q-input
+                  filled
+                  v-model.number="selected.year"
+                  type="number"
+                  :label="t('year_of_construction')"
+                />
               </div>
             </div>
             <text-input
               v-model="selected.description"
-              :label="$t('description')"
+              :label="t('description')"
               help="building-description"
               class="q-mb-md"
             />
             <text-input
               v-model="selected.article_top"
-              :label="$t('article_top')"
+              :label="t('article_top')"
               help="building-article-top"
               class="q-mb-md"
             />
             <text-input
               v-model="selected.article_bottom"
-              :label="$t('article_bottom')"
+              :label="t('article_bottom')"
               help="building-article-bottom"
               class="q-mb-md"
             />
             <text-input
               v-model="selected.side_note"
-              :label="$t('side_note')"
+              :label="t('side_note')"
               help="building-side-note"
               class="q-mb-md"
             />
             <text-input
               v-model="selected.external_links"
-              :label="$t('external_links')"
+              :label="t('external_links')"
               help="building-links"
               class="q-mb-md"
             />
@@ -100,7 +110,7 @@
             ></point-map-input>
           </q-tab-panel>
           <q-tab-panel name="multimedia" class="q-pl-none q-pr-none">
-            <files-input v-model="selected.files" />
+            <files-input v-if="selected.files" v-model="selected.files" />
           </q-tab-panel>
           <q-tab-panel name="relations" class="q-pl-none q-pr-none">
             <q-select
@@ -111,8 +121,8 @@
               map-options
               emit-value
               use-chips
-              :label="$t('building_materials')"
-              :hint="$t('building_building_material_used_hint')"
+              :label="t('building_materials')"
+              :hint="t('building_building_material_used_hint')"
               class="q-mb-md"
             />
             <q-select
@@ -123,21 +133,25 @@
               map-options
               emit-value
               use-chips
-              :label="$t('professionals')"
-              :hint="$t('building_professionals_hint')"
+              :label="t('professionals')"
+              :hint="t('building_professionals_hint')"
               class="q-mb-md"
             />
 
-            <div class="text-bold q-mb-sm">{{ $t('building_elements') }}</div>
+            <div class="text-bold q-mb-sm">{{ t('building_elements') }}</div>
             <q-card flat bordered class="bg-grey-2">
               <q-card-section class="q-pa-none">
-                <div v-if="buildingElements?.length === 0" class="text-help q-pt-sm q-pr-md q-pl-md">
-                  {{ $t('no_building_elements') }}
+                <div
+                  v-if="buildingElements?.length === 0"
+                  class="text-help q-pt-sm q-pr-md q-pl-md"
+                >
+                  {{ t('no_building_elements') }}
                 </div>
                 <q-list separator>
                   <q-item v-for="(element, index) in buildingElements" :key="index">
                     <q-item-section>
                       <building-element-form
+                        v-if="buildingElements[index]"
                         v-model="buildingElements[index]"
                         :technical-constructions-options="technicalConstructionsOptions"
                         :professionals-options="professionalsOptions"
@@ -149,7 +163,7 @@
                         dense
                         flat
                         color="negative"
-                        :title="$t('delete')"
+                        :title="t('delete')"
                         icon="delete"
                         @click="onRemoveBuildingElement(index)"
                       />
@@ -168,26 +182,27 @@
       <q-separator />
 
       <q-card-actions align="right" class="bg-grey-3">
-        <q-btn flat :label="$t('cancel')" color="secondary" @click="onCancel" v-close-popup />
-        <q-btn :label="$t('save')" color="primary" @click="onSave" :disable="!isValid" />
+        <q-btn flat :label="t('cancel')" color="secondary" @click="onCancel" v-close-popup />
+        <q-btn :label="t('save')" color="primary" @click="onSave" :disable="!isValid" />
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  name: 'BuildingDialog',
-});
-</script>
 <script setup lang="ts">
-import { BuildingMaterial, Building, Professional, TechnicalConstruction, BuildingElement } from 'src/models';
+import type {
+  BuildingMaterial,
+  Building,
+  Professional,
+  TechnicalConstruction,
+  BuildingElement,
+} from 'src/models';
 import { notifyError } from 'src/utils/notify';
 import PointMapInput from 'src/components/PointMapInput.vue';
 import FilesInput from 'src/components/FilesInput.vue';
 import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 import BuildingElementForm from 'src/components/BuildingElementForm.vue';
-import { Option } from 'src/components/models';
+import type { Option } from 'src/components/models';
 import TextInput from 'src/components/TextInput.vue';
 import type { Feature } from '@turf/turf';
 
@@ -199,6 +214,7 @@ interface DialogProps {
 const props = defineProps<DialogProps>();
 const emit = defineEmits(['update:modelValue', 'saved']);
 
+const { t } = useI18n();
 const filesStore = useFilesStore();
 const services = useServices();
 const service = services.make('building');
@@ -216,11 +232,11 @@ const selected = ref<Building>({
 const location = ref<Feature>({} as Feature);
 const editMode = ref(false);
 const tab = ref('general');
-const buildingMaterials = ref([]);
+const buildingMaterials = ref<number[]>([]);
 const buildingMaterialsOptions = ref<Option[]>([]);
 const technicalConstructions = ref([]);
 const technicalConstructionsOptions = ref<Option[]>([]);
-const professionals = ref([]);
+const professionals = ref<number[]>([]);
 const professionalsOptions = ref<Option[]>([]);
 const buildingElements = ref<BuildingElement[]>([]);
 
@@ -228,104 +244,110 @@ const isValid = computed(() => {
   return selected.value.name && selected.value.type && selected.value.address;
 });
 
+onMounted(() => {
+  init(props.modelValue);
+});
+
 watch(
   () => props.modelValue,
-  (value) => {
-    tab.value = 'general';
-    if (value) {
-      // deep copy
-      selected.value = JSON.parse(JSON.stringify(props.item));
-      editMode.value = selected.value.id !== undefined;
-      location.value = {} as Feature;
-      if (editMode.value) {
-        location.value = {
-          type: 'Feature',
-          properties: {
-            addressInput: selected.value.address,
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: [selected.value.long || 0, selected.value.lat || 0],
-          },
-        };
-      }
-
-      buildingMaterials.value = [];
-      bmService
-        .find({
-          $limit: 100,
-          $select: ['id', 'name'],
-          filter: {},
-        })
-        .then((res) => {
-          buildingMaterialsOptions.value = res.data.map((item: BuildingMaterial) => ({
-            label: item.name,
-            value: item.id,
-          }));
-        });
-      if (editMode.value) {
-        buildingMaterials.value = selected.value.building_materials
-          ? selected.value.building_materials.map((item: BuildingMaterial) => item.id)
-          : [];
-      }
-
-      technicalConstructions.value = [];
-      tcService
-        .find({
-          $limit: 100,
-          $select: ['id', 'name'],
-          filter: {},
-        })
-        .then((res) => {
-          technicalConstructionsOptions.value = res.data.map((item: TechnicalConstruction) => ({
-            label: item.name,
-            value: item.id,
-          }));
-        });
-
-      professionals.value = [];
-      proService
-        .find({
-          $limit: 100,
-          $select: ['id', 'name'],
-          filter: {},
-        })
-        .then((res) => {
-          professionalsOptions.value = res.data.map((item: Professional) => ({
-            label: item.name,
-            value: item.id,
-          }));
-        });
-      if (editMode.value) {
-        professionals.value = selected.value.professionals
-          ? selected.value.professionals.map((item: Professional) => item.id)
-          : [];
-      }
-
-      buildingElements.value = [];
-      if (editMode.value) {
-        beService
-          .find({
-            $limit: 100,
-            $select: [],
-            filter: { building_id: selected.value.id },
-          })
-          .then((res) => {
-            buildingElements.value =
-              res.data?.map((be: BuildingElement) => {
-                be.professional_ids = be.professionals?.map((item: Professional) => item.id) || [];
-                delete be.professionals;
-                return be;
-              }) || [];
-          });
-      }
-    }
-    if (selected.value.files === undefined) {
-      selected.value.files = [];
-    }
-    showDialog.value = value;
-  },
+  (value) => init(value),
+  { immediate: true },
 );
+
+function init(value: boolean) {
+  tab.value = 'general';
+  if (value) {
+    // deep copy
+    selected.value = JSON.parse(JSON.stringify(props.item));
+    editMode.value = selected.value.id !== undefined;
+    location.value = {} as Feature;
+    if (editMode.value) {
+      location.value = {
+        type: 'Feature',
+        properties: {
+          addressInput: selected.value.address,
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: [selected.value.long || 0, selected.value.lat || 0],
+        },
+      };
+    }
+
+    buildingMaterials.value = [];
+    void bmService
+      .find({
+        $limit: 100,
+        $select: ['id', 'name'],
+        filter: {},
+      })
+      .then((res) => {
+        buildingMaterialsOptions.value = res.data.map((item: BuildingMaterial) => ({
+          label: item.name,
+          value: item.id,
+        }));
+      });
+    if (editMode.value) {
+      buildingMaterials.value =
+        selected.value.building_materials?.map((item: BuildingMaterial) => item.id || 0) || [];
+    }
+
+    technicalConstructions.value = [];
+    void tcService
+      .find({
+        $limit: 100,
+        $select: ['id', 'name'],
+        filter: {},
+      })
+      .then((res) => {
+        technicalConstructionsOptions.value = res.data.map((item: TechnicalConstruction) => ({
+          label: item.name,
+          value: item.id,
+        }));
+      });
+
+    professionals.value = [];
+    void proService
+      .find({
+        $limit: 100,
+        $select: ['id', 'name'],
+        filter: {},
+      })
+      .then((res) => {
+        professionalsOptions.value = res.data.map((item: Professional) => ({
+          label: item.name,
+          value: item.id,
+        }));
+      });
+    if (editMode.value) {
+      professionals.value =
+        selected.value.professionals?.map((item: Professional) => item.id || 0) || [];
+    }
+
+    buildingElements.value = [];
+    if (editMode.value) {
+      void beService
+        .find({
+          $limit: 100,
+          $select: [],
+          filter: { building_id: selected.value.id },
+        })
+        .then((res) => {
+          buildingElements.value =
+            res.data?.map((be: BuildingElement) => {
+              be.professional_ids =
+                be.professionals?.map((item: Professional) => item.id || 0) || [];
+              delete be.professionals;
+              return be;
+            }) || [];
+        });
+    }
+  }
+  if (selected.value.files === undefined) {
+    selected.value.files = [];
+  }
+  showDialog.value = value;
+}
 
 function onHide() {
   showDialog.value = false;
@@ -336,7 +358,7 @@ function onCancel() {
   filesStore.clearFilesToDelete();
 }
 
-async function onSave() {
+function onSave() {
   if (selected.value === undefined) return;
   delete selected.value.building_materials;
   selected.value.building_material_ids = buildingMaterials.value;
@@ -353,7 +375,7 @@ async function onSave() {
             .map((m) => {
               return {
                 ...m,
-                building_element_id: be.id,
+                building_element_id: be.id || 0,
               };
             }) || [],
       };
@@ -363,7 +385,7 @@ async function onSave() {
     service
       .update(selected.value.id, selected.value)
       .then(() => {
-        filesStore.deleteFiles();
+        void filesStore.deleteFiles();
         emit('saved', selected.value);
         onHide();
       })
@@ -374,7 +396,7 @@ async function onSave() {
     service
       .create(selected.value)
       .then(() => {
-        filesStore.deleteFiles();
+        void filesStore.deleteFiles();
         emit('saved', selected.value);
         onHide();
       })

@@ -37,7 +37,12 @@
                 class="cursor-pointer on-left"
                 @click="showPassword = !showPassword"
               />
-              <q-icon name="content_copy" size="xs" class="cursor-pointer on-left" @click="onCopyPassword" />
+              <q-icon
+                name="content_copy"
+                size="xs"
+                class="cursor-pointer on-left"
+                @click="onCopyPassword"
+              />
               <q-icon name="electric_bolt" class="cursor-pointer" @click="onGeneratePassword" />
             </template>
           </q-input>
@@ -121,7 +126,9 @@ watch(
       if (!editMode.value) {
         onGeneratePassword();
       }
-      role.value = selected.value.roles?.includes('app-administrator') ? 'app-administrator' : 'app-contributor';
+      role.value = selected.value.roles?.includes('app-administrator')
+        ? 'app-administrator'
+        : 'app-contributor';
     }
     showDialog.value = value;
   },
@@ -153,7 +160,7 @@ async function onSave() {
     selected.value.roles.push('app-contributor');
   }
   if (selected.value.id) {
-    usersStore
+    void usersStore
       .update(selected.value)
       .then(() => {
         emit('saved', selected.value);
@@ -161,7 +168,7 @@ async function onSave() {
       })
       .catch(notifyError);
   } else {
-    usersStore
+    void usersStore
       .create(selected.value)
       .then(() => {
         emit('saved', selected.value);
@@ -177,7 +184,7 @@ function onGeneratePassword() {
 
 function onCopyPassword() {
   if (selected.value.password === undefined) return;
-  copyToClipboard(selected.value.password)
+  void copyToClipboard(selected.value.password)
     .then(() => {
       notifySuccess('password_copied');
     })

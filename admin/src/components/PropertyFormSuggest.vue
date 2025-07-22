@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="q-mb-sm">
-      {{ $t(property) }}
+      {{ t(property) }}
     </div>
 
     <div class="row q-col-gutter-sm q-mb-sm">
@@ -9,11 +9,11 @@
         <q-input
           filled
           v-model="selected[`${property}_low`]"
-          :label="$t('low')"
+          :label="t('low')"
           @update:model-value="onUpdate(`${property}_low`)"
         >
           <q-menu v-model="showLowSuggestions" no-parent-event no-focus auto-close>
-            <q-list style="min-width: 100px">
+            <q-list v-if="suggestions" style="min-width: 100px">
               <q-item
                 clickable
                 v-close-popup
@@ -28,9 +28,14 @@
         </q-input>
       </div>
       <div class="col">
-        <q-input filled v-model="selected[property]" :label="$t('std')" @update:model-value="onUpdate(property)">
+        <q-input
+          filled
+          v-model="selected[property]"
+          :label="t('std')"
+          @update:model-value="onUpdate(property)"
+        >
           <q-menu v-model="showStdSuggestions" no-parent-event no-focus auto-close>
-            <q-list style="min-width: 100px">
+            <q-list v-if="suggestions" style="min-width: 100px">
               <q-item
                 clickable
                 v-close-popup
@@ -48,11 +53,11 @@
         <q-input
           filled
           v-model="selected[`${property}_high`]"
-          :label="$t('high')"
+          :label="t('high')"
           @update:model-value="onUpdate(`${property}_high`)"
         >
           <q-menu v-model="showHighSuggestions" no-parent-event no-focus auto-close>
-            <q-list style="min-width: 100px">
+            <q-list v-if="suggestions" style="min-width: 100px">
               <q-item
                 clickable
                 v-close-popup
@@ -68,28 +73,25 @@
       </div>
     </div>
     <div class="q-mb-md text-hint">
-      {{ $t(`${property}_hint`) }}
+      {{ t(`${property}_hint`) }}
     </div>
   </div>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  name: 'PropertyFormSuggest',
-});
-</script>
 <script setup lang="ts">
-import { PhysicalEntity } from 'src/models';
-import { Suggestions } from 'src/components/models';
+import type { Suggestions } from 'src/components/models';
 
 interface Props {
-  modelValue: PhysicalEntity;
+  modelValue: { [key: string]: string | number | null };
   property: string;
   suggestions?: Suggestions;
 }
 
 const props = defineProps<Props>();
 const emits = defineEmits(['suggest']);
+
+const { t } = useI18n();
+
 const showLowSuggestions = ref(false);
 const showStdSuggestions = ref(false);
 const showHighSuggestions = ref(false);

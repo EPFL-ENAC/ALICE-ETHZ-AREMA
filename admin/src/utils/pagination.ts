@@ -2,15 +2,15 @@ import { Notify } from 'quasar';
 
 type PaginationProperties = {
   pagination: PaginationOptions;
-  filter: string;
+  filter?: string;
 };
 type PaginationRequestHandler = (props: PaginationProperties) => void;
 type PaginationRequestFetcher = (
   startRow: number,
   fetchCount: number,
-  filter: string,
   sortBy: string,
   descending: boolean,
+  filter?: string,
 ) => Promise<PaginationFetchResult>;
 export type PaginationOptions = {
   sortBy: string;
@@ -38,7 +38,7 @@ export function makePaginationRequestHandler(
     const startRow = (page - 1) * rowsPerPage;
 
     // fetch data from "server"
-    fetchFromServer(startRow, fetchCount, filter, sortBy, descending)
+    fetchFromServer(startRow, fetchCount, sortBy, descending, filter)
       .then((result: PaginationFetchResult) => {
         pagination.value = { ...props.pagination, rowsNumber: result.total };
       })

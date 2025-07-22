@@ -1,5 +1,5 @@
-import { StyleSpecification } from 'maplibre-gl';
-import { ThemeDefinition } from 'maplibregl-theme-switcher';
+import type { StyleSpecification } from 'maplibre-gl';
+import type { ThemeDefinition } from 'maplibregl-theme-switcher';
 import { t } from '../boot/i18n';
 
 export const style: StyleSpecification = {
