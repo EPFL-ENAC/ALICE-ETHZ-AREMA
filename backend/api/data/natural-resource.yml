@@ -21,10 +21,10 @@ taxonomy:
               it: Terra
           - id: rock
             names:
-              en: Rock
-              de: Gestein
-              fr: Roche
-              it: Rocce
+              en: Stone
+              de: Stein
+              fr: Pierre
+              it: Pietra
           - id: straw
             names:
               en: Straw
@@ -45,7 +45,7 @@ taxonomy:
               it: Legno
           - id: other-fibers
             names:
-              en: "Other Fibers"
+              en: "Other Fibres"
               de: "Andere Fasern"
               fr: "Autres fibres"
               it: "Altre fibre"
