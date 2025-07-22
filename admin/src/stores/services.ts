@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { api } from 'src/boot/api';
-import {
+import type {
   NaturalResource,
   TechnicalConstruction,
   BuildingMaterial,
@@ -8,12 +8,18 @@ import {
   Professional,
   BuildingElement,
 } from 'src/models';
-import { Query } from 'src/components/models';
+import type { Query } from 'src/components/models';
 
 const authStore = useAuthStore();
 
 export class Service<
-  Type extends NaturalResource | TechnicalConstruction | BuildingMaterial | Building | Professional | BuildingElement,
+  Type extends
+    | NaturalResource
+    | TechnicalConstruction
+    | BuildingMaterial
+    | Building
+    | Professional
+    | BuildingElement,
 > {
   constructor(
     public entityType: Type,
@@ -21,19 +27,19 @@ export class Service<
   ) {}
 
   async create(payload: Type) {
-    if (!authStore.isAuthenticated) return Promise.reject('Not authenticated');
-    return authStore.updateToken().then(() => {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${authStore.accessToken}`,
-        },
-      };
-      return api.post(`/${this.entityName}/`, payload, config);
-    });
+    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
+    await authStore.updateToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${authStore.accessToken}`,
+      },
+    };
+    return await api.post(`/${this.entityName}/`, payload, config);
   }
 
   async get(id: string): Promise<Type> {
-    return api.get(`/${this.entityName}/${id}`).then((res) => res.data);
+    const res = await api.get(`/${this.entityName}/${id}`);
+    return res.data;
   }
 
   async find(query: Query | undefined) {
@@ -41,78 +47,85 @@ export class Service<
     const limit = query?.$limit || 10;
     const range = [skip, skip + limit - 1];
     const sort = query?.$sort ? [query?.$sort[0], query?.$sort[1] ? 'DESC' : 'ASC'] : ['id', 'ASC'];
-    return api
-      .get(`/${this.entityName}/`, {
-        params: {
-          select: query?.$select ? JSON.stringify(query?.$select) : undefined,
-          range: JSON.stringify(range),
-          sort: JSON.stringify(sort),
-          filter: JSON.stringify(query?.filter),
-        },
-      })
-      .then((res) => res.data);
+    const res = await api.get(`/${this.entityName}/`, {
+      params: {
+        select: query?.$select ? JSON.stringify(query?.$select) : undefined,
+        range: JSON.stringify(range),
+        sort: JSON.stringify(sort),
+        filter: JSON.stringify(query?.filter),
+      },
+    });
+    return res.data;
   }
 
   async update(id: string | number, payload: Type) {
-    if (!authStore.isAuthenticated) return Promise.reject('Not authenticated');
-    delete payload.created_at;
-    delete payload.updated_at;
-    delete payload.created_by;
-    delete payload.updated_by;
-    return authStore.updateToken().then(() => {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${authStore.accessToken}`,
-        },
-      };
-      return api.put(`/${this.entityName}/${id}`, payload, config);
-    });
+    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (payload as any)?.created_at;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (payload as any)?.updated_at;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (payload as any)?.created_by;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (payload as any)?.updated_by;
+    await authStore.updateToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${authStore.accessToken}`,
+      },
+    };
+    return await api.put(`/${this.entityName}/${id}`, payload, config);
   }
 
   async togglePublish(id: string | number) {
-    if (!authStore.isAuthenticated) return Promise.reject('Not authenticated');
-    return authStore.updateToken().then(() => {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${authStore.accessToken}`,
-        },
-      };
-      return api.put(`/${this.entityName}/${id}/_index`, {}, config);
-    });
+    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
+    await authStore.updateToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${authStore.accessToken}`,
+      },
+    };
+    return await api.put(`/${this.entityName}/${id}/_index`, {}, config);
   }
 
   async remove(id: string | number) {
-    if (!authStore.isAuthenticated) return Promise.reject('Not authenticated');
-    return authStore.updateToken().then(() => {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${authStore.accessToken}`,
-        },
-      };
-      return api.delete(`/${this.entityName}/${id}`, config);
-    });
+    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
+    await authStore.updateToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${authStore.accessToken}`,
+      },
+    };
+    return await api.delete(`/${this.entityName}/${id}`, config);
   }
 
   async index() {
-    if (!authStore.isAuthenticated) return Promise.reject('Not authenticated');
-    return authStore.updateToken().then(() => {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${authStore.accessToken}`,
-        },
-        params: {
-          type: this.entityName,
-        },
-      };
-      return api.post('/search/_index', {}, config).then((res) => res.data[this.entityName]);
-    });
+    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
+    await authStore.updateToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${authStore.accessToken}`,
+      },
+      params: {
+        type: this.entityName,
+      },
+    };
+    const res = await api.post('/search/_index', {}, config);
+    return res.data[this.entityName];
   }
 }
 
 export const useServices = defineStore('services', () => {
   function make(
     entityName: string,
-  ): Service<NaturalResource | TechnicalConstruction | BuildingMaterial | Building | Professional | BuildingElement> {
+  ): Service<
+    | NaturalResource
+    | TechnicalConstruction
+    | BuildingMaterial
+    | Building
+    | Professional
+    | BuildingElement
+  > {
     let entityType;
     switch (entityName) {
       case 'natural-resource':

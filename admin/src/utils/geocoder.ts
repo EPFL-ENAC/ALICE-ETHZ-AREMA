@@ -1,4 +1,4 @@
-import { type Feature, type FeatureCollection } from '@turf/turf';
+import type { Feature, FeatureCollection } from '@turf/turf';
 
 const COUNTRIES = ['ch', 'fr', 'it', 'de', 'at'];
 
@@ -8,7 +8,11 @@ function handleNominatimResponse(geojson: FeatureCollection): Feature[] {
   for (const feature of geojson.features.filter((f: Feature) =>
     COUNTRIES.includes(f.properties?.address.country_code),
   )) {
-    if (feature.properties && !place_names.includes(feature.properties.display_name) && feature.bbox) {
+    if (
+      feature.properties &&
+      !place_names.includes(feature.properties.display_name) &&
+      feature.bbox
+    ) {
       const center = [
         feature.bbox[0] + (feature.bbox[2] - feature.bbox[0]) / 2,
         feature.bbox[1] + (feature.bbox[3] - feature.bbox[1]) / 2,
@@ -45,7 +49,8 @@ export const geocoderApi = {
     let features: Feature[] = [];
     try {
       let countrycodes = COUNTRIES.join(',');
-      if (config.countries && config.countries.length > 0) countrycodes = config.countries.join(',');
+      if (config.countries && config.countries.length > 0)
+        countrycodes = config.countries.join(',');
       const request = `https://nominatim.openstreetmap.org/search?q=${config.query}&limit=${config.limit}&format=geojson&polygon_geojson=1&addressdetails=1&countrycodes=${countrycodes}`;
       if (searchController) searchController.abort();
       searchController = new AbortController();
@@ -55,7 +60,7 @@ export const geocoderApi = {
       const geojson = await response.json();
       features = handleNominatimResponse(geojson);
     } catch (e: unknown) {
-      console.error(`Failed to forwardGeocode with error: ${e}`);
+      console.error('Failed to forwardGeocode with error:', e);
     }
     return {
       features,
@@ -73,7 +78,7 @@ export const geocoderApi = {
       const geojson = await response.json();
       features = handleNominatimResponse(geojson);
     } catch (e: unknown) {
-      console.error(`Failed to reverseGeocode with error: ${e}`);
+      console.error('Failed to reverseGeocode with error:', e);
     }
     return {
       features,
@@ -85,16 +90,26 @@ export function toAddress(feature: Feature) {
   let text = '';
   if (feature.properties?.address) {
     const withHouseNumber = Object.keys(feature.properties.address).includes('house_number');
-    ['amenity', 'office', 'road', 'house_number', 'postcode', 'village', 'town', 'city', 'country_code'].forEach(
-      (key) => {
-        if (feature.properties?.address[key]) {
-          const val = feature.properties.address[key];
-          text +=
-            (['country_code'].includes(key) ? val.toUpperCase() : val) +
-            (['amenity', 'office', withHouseNumber ? 'house_number' : 'road'].includes(key) ? ', ' : ' ');
-        }
-      },
-    );
+    [
+      'amenity',
+      'office',
+      'road',
+      'house_number',
+      'postcode',
+      'village',
+      'town',
+      'city',
+      'country_code',
+    ].forEach((key) => {
+      if (feature.properties?.address[key]) {
+        const val = feature.properties.address[key];
+        text +=
+          (['country_code'].includes(key) ? val.toUpperCase() : val) +
+          (['amenity', 'office', withHouseNumber ? 'house_number' : 'road'].includes(key)
+            ? ', '
+            : ' ');
+      }
+    });
   }
   return text.trim();
 }

@@ -33,4 +33,4 @@ export interface Suggestions {
   options: string[];
 }
 
-export const DefaultAlignment: 'left' | 'right' | 'center' = 'left';
+export type Alignment = 'left' | 'right' | 'center';

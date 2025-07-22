@@ -13,7 +13,14 @@
         :rows-per-page-options="[10, 25, 50, 0]"
       >
         <template v-slot:top>
-          <q-btn size="sm" color="primary" :disable="usersStore.loading" :label="t('add')" icon="add" @click="onAdd" />
+          <q-btn
+            size="sm"
+            color="primary"
+            :disable="usersStore.loading"
+            :label="t('add')"
+            icon="add"
+            @click="onAdd"
+          />
           <q-space />
           <q-input dense debounce="300" v-model="filter" clearable>
             <template v-slot:append>
@@ -32,14 +39,16 @@
         <template v-slot:body-cell-roles="props">
           <q-td :props="props">
             <q-chip
-              v-for="role in props.row.roles.filter((r: string) => r.startsWith('app-') && r !== 'app-user')"
+              v-for="role in props.row.roles.filter(
+                (r: string) => r.startsWith('app-') && r !== 'app-user',
+              )"
               :key="role"
               class="q-ml-none q-mr-sm"
               :color="role === 'app-administrator' ? 'primary' : 'secondary'"
               text-color="white"
               size="12px"
             >
-              {{ $t(role.replace('app-', 'roles.')) }}
+              {{ t(role.replace('app-', 'roles.')) }}
             </q-chip>
           </q-td>
         </template>
@@ -106,7 +115,7 @@
 </template>
 
 <script setup lang="ts">
-import { DefaultAlignment } from 'src/components/models';
+import type { Alignment } from 'src/components/models';
 import type { AppUser } from 'src/models';
 import UserDialog from 'src/components/UserDialog.vue';
 import UserPasswordDialog from 'src/components/UserPasswordDialog.vue';
@@ -135,15 +144,16 @@ const columns = computed(() => {
       name: 'email',
       required: true,
       label: t('email'),
-      align: DefaultAlignment,
+      align: 'left' as Alignment,
       field: 'email',
       sortable: true,
+      style: '',
     },
     {
       name: 'name',
       required: true,
       label: t('name'),
-      align: DefaultAlignment,
+      align: 'left' as Alignment,
       field: 'name',
       sortable: true,
     },
@@ -151,7 +161,7 @@ const columns = computed(() => {
       name: 'roles',
       required: true,
       label: t('role'),
-      align: DefaultAlignment,
+      align: 'left' as Alignment,
       field: 'roles',
       sortable: true,
     },
@@ -159,7 +169,7 @@ const columns = computed(() => {
       name: 'enabled',
       required: true,
       label: t('enabled'),
-      align: DefaultAlignment,
+      align: 'left' as Alignment,
       field: 'enabled',
       sortable: true,
     },
@@ -168,7 +178,7 @@ const columns = computed(() => {
   if (authStore.isAdmin) {
     cols.splice(1, 0, {
       name: 'action',
-      align: 'right',
+      align: 'right' as Alignment,
       label: '',
       field: 'action',
       required: false,
@@ -180,7 +190,7 @@ const columns = computed(() => {
 });
 
 onMounted(() => {
-  usersStore.init();
+  void usersStore.init();
 });
 
 function onAdd() {
@@ -205,9 +215,9 @@ function onConfirmRemove(user: AppUser) {
 
 function onRemove() {
   if (selected.value?.id)
-    usersStore
+    void usersStore
       .remove(selected.value.id)
       .catch(notifyError)
-      .finally(() => usersStore.init());
+      .finally(() => void usersStore.init());
 }
 </script>

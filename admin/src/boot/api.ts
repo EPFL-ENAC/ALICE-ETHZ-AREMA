@@ -1,5 +1,5 @@
-import { boot } from 'quasar/wrappers';
-import axios, { AxiosInstance } from 'axios';
+import { defineBoot } from '#q-app/wrappers';
+import axios, { type AxiosInstance } from 'axios';
 import Keycloak from 'keycloak-js';
 
 declare module '@vue/runtime-core' {
@@ -9,7 +9,15 @@ declare module '@vue/runtime-core' {
   }
 }
 
-const appEnv = window.env;
+interface CustomWindow extends Window {
+  env: {
+    AUTH_CLIENT_ID: string;
+    API_URL: string;
+    API_PATH: string;
+  };
+}
+
+const appEnv = (window as unknown as CustomWindow).env;
 
 const keycloak = new Keycloak({
   url: 'https://enac-it-sso.epfl.ch/',
@@ -22,9 +30,10 @@ const api = axios.create({
   baseURL: baseUrl,
 });
 
-const isDevelopment = appEnv.API_URL.includes('localhost') || appEnv.API_URL.includes('arema-dev.epfl.ch');
+const isDevelopment =
+  appEnv.API_URL.includes('localhost') || appEnv.API_URL.includes('arema-dev.epfl.ch');
 
-export default boot(({ app }) => {
+export default defineBoot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
   app.config.globalProperties.$axios = axios;

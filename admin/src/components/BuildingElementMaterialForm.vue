@@ -7,8 +7,8 @@
       map-options
       emit-value
       clearable
-      :label="$t('building_material')"
-      :hint="$t('building_element_building_material_used_hint')"
+      :label="t('building_material')"
+      :hint="t('building_element_building_material_used_hint')"
       class="q-mb-md"
       @update:model-value="onBuildingMaterialChange"
     />
@@ -20,8 +20,8 @@
           filled
           min="0"
           :disable="!entity.building_material_id"
-          :label="$t('distance')"
-          :hint="$t('building_element_building_material_distance_hint')"
+          :label="t('distance')"
+          :hint="t('building_element_building_material_distance_hint')"
         />
       </div>
       <div class="col">
@@ -31,23 +31,19 @@
           filled
           min="0"
           :disable="!entity.building_material_id"
-          :label="$t('weight')"
-          :hint="$t('building_element_building_material_weight_hint')"
+          :label="t('weight')"
+          :hint="t('building_element_building_material_weight_hint')"
         />
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  name: 'BuildingElementMaterialForm',
-});
-</script>
 <script setup lang="ts">
-import { BuildingElementMaterial, TechnicalConstruction } from 'src/models';
-import { OptionNumber } from './models';
+import type { BuildingElementMaterial, TechnicalConstruction } from 'src/models';
+import type { OptionNumber } from './models';
 
+const { t } = useI18n();
 const services = useServices();
 const tcService = services.make('technical-construction');
 
@@ -75,9 +71,9 @@ function initBuildingMaterialsOptions() {
   if (!props.technicalContructionId) {
     return;
   }
-  tcService.get(props.technicalContructionId).then((response: TechnicalConstruction) => {
+  void tcService.get(`${props.technicalContructionId}`).then((response) => {
     buildingMaterialsOptions.value =
-      response.building_materials?.map(
+      (response as TechnicalConstruction).building_materials?.map(
         (bm) =>
           ({
             label: bm.name,
@@ -85,7 +81,7 @@ function initBuildingMaterialsOptions() {
           }) as OptionNumber,
       ) || [];
     if (!entity.value.building_material_id) {
-      entity.value.building_material_id = buildingMaterialsOptions.value[0]?.value;
+      entity.value.building_material_id = buildingMaterialsOptions.value[0]?.value || 0;
     }
   });
 }

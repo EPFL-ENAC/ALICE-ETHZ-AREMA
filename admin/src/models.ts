@@ -145,8 +145,8 @@ export interface TechnicalConstruction extends PhysicalEntity {
 
 export interface BuildingElementMaterial {
   id?: number;
-  distance?: number;
-  weight?: number;
+  distance?: number | undefined;
+  weight?: number | undefined;
 
   // draft
   building_element_id?: number;
@@ -161,8 +161,8 @@ export interface BuildingElement {
   materials?: BuildingElementMaterial[];
 
   // draft
-  building_id?: number;
-  technical_construction_id?: number;
+  building_id?: number | undefined;
+  technical_construction_id?: number | undefined;
   professional_ids?: number[];
 }
 
@@ -173,11 +173,11 @@ export interface Building extends Entity {
   client?: string;
   gross_internal_area?: number;
   year?: number;
-  address?: string;
-  long?: number;
-  lat?: number;
-  radius?: number;
-  geom?: Geometry;
+  address?: string | undefined;
+  long?: number | undefined;
+  lat?: number | undefined;
+  radius?: number | undefined;
+  geom?: Geometry | undefined;
   files?: FileItem[];
 
   building_materials?: BuildingMaterial[];
@@ -193,15 +193,15 @@ export interface Building extends Entity {
 export interface Professional extends Entity {
   types?: string[];
   materials?: string[];
-  address?: string;
+  address?: string | undefined;
   addresses?: string[];
   web?: string;
   tel?: string;
   email?: string;
-  long?: number;
-  lat?: number;
-  radius?: number;
-  geom?: Geometry;
+  long?: number | undefined;
+  lat?: number | undefined;
+  radius?: number | undefined;
+  geom?: Geometry | undefined;
   files?: FileItem[];
 
   buildings?: Building[];

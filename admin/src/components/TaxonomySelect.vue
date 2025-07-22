@@ -16,7 +16,9 @@
       <template v-slot:option="scope">
         <q-item v-bind="scope.itemProps">
           <q-item-section>
-            <q-item-label :class="`option-${scope.opt.level} ${scope.opt.selectable ? '' : 'text-grey-6 text-bold'}`">
+            <q-item-label
+              :class="`option-${scope.opt.level} ${scope.opt.selectable ? '' : 'text-grey-6 text-bold'}`"
+            >
               {{ scope.opt.label }}
             </q-item-label>
           </q-item-section>
@@ -26,13 +28,8 @@
   </div>
 </template>
 
-<script lang="ts">
-export default defineComponent({
-  name: 'TaxonomySelect',
-});
-</script>
 <script setup lang="ts">
-import { Option } from 'src/components/models';
+import type { Option } from 'src/components/models';
 
 interface Props {
   modelValue: string | string[] | null | undefined;
@@ -62,16 +59,24 @@ function loadOptions() {
   if (options.value.length > 0) {
     return;
   }
-  taxonomyStore.getTaxonomyNode(props.entityType, props.path).then((node) => {
+  void taxonomyStore.getTaxonomyNode(props.entityType, props.path).then((node) => {
+    if (!node) {
+      console.warn(`No taxonomy found for ${props.entityType} at path ${props.path}`);
+      return;
+    }
     options.value = taxonomyStore.asOptions(props.entityType, node, props.path);
   });
 }
 
 function onSelection() {
   if (Array.isArray(selected.value)) {
-    selected.value = selected.value.filter((v) => options.value.find((o) => o.value === v)?.selectable);
+    selected.value = selected.value.filter(
+      (v) => options.value.find((o) => o.value === v)?.selectable,
+    );
   } else {
-    selected.value = options.value.find((o) => o.value === selected.value)?.selectable ? selected.value : null;
+    selected.value = options.value.find((o) => o.value === selected.value)?.selectable
+      ? selected.value
+      : null;
   }
   emit('update:modelValue', selected.value);
 }

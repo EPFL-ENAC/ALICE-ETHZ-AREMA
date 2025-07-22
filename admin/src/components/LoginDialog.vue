@@ -35,7 +35,7 @@ function onHide() {
   emit('update:modelValue', false);
 }
 
-async function onLogin() {
-  authStore.login();
+function onLogin() {
+  void authStore.login();
 }
 </script>
