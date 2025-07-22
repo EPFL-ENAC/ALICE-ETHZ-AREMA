@@ -5,7 +5,6 @@
         v-model="address"
         :hint="t('address_input_hint')"
         @feature="updateWithLocation"
-        @update:model-value="onAddressUpdate"
         style="width: 400px"
       />
       <div class="q-ml-sm">
@@ -179,17 +178,6 @@ function updateWithLocation(location: Feature<Point | Polygon | MultiPolygon>) {
     marker = new Marker({ color: '#FF0000' }).setLngLat(coordinates).addTo(map);
   }
   emit('update:modelValue', location);
-}
-
-function onAddressUpdate() {
-  const feature = unref(props.modelValue);
-  if (feature && feature.properties?.addressInput !== address.value) {
-    feature.properties = {
-      ...feature.properties,
-      addressInput: address.value,
-    };
-    emit('update:modelValue', feature);
-  }
 }
 </script>
 

@@ -1,17 +1,12 @@
 <template>
   <div>
-    <div class="row q-col-gutter-md q-mb-sm">
-      <div>
-        <q-btn color="primary" @click="edit()" icon="edit" size="sm" />
-        <q-btn
-          flat
-          class="q-ml-sm"
-          color="red"
-          :disable="modelValue === null"
-          @click="deleteAll()"
-          icon="delete"
-        />
-      </div>
+    <div class="row q-mb-sm">
+      <address-input
+        v-model="address"
+        :hint="t('address_input_hint')"
+        @feature="updateWithLocation"
+        style="width: 400px"
+      />
       <q-input
         filled
         dense
@@ -21,28 +16,31 @@
         :rules="rules"
         :disable="modelValue === null"
         v-model.number="radius"
-        @change="onRadiusUpdate"
+        @update:model-value="onRadiusUpdate"
         style="width: 150px"
-        class="q-mb-sm"
+        class="q-mb-sm q-ml-sm"
       />
-      <address-input
-        v-model="address"
-        :hint="t('address_input_hint')"
-        @feature="updateWithLocation"
-        @update:model-value="onAddressUpdate"
-        style="width: 400px"
-      />
+      <div>
+        <q-btn
+          flat
+          class="q-ml-sm"
+          color="red"
+          :disable="modelValue === null"
+          @click="deleteAll()"
+          icon="delete"
+        />
+      </div>
     </div>
 
     <div class="row">
       <div class="col-12">
         <map-input
           :feature="modelValue"
-          :mode="mode"
+          mode="draw_circle"
           :center="center"
           :zoom="zoom"
           :height="height"
-          @update:selected-features="onFeatureSelected($event)"
+          @update:selectedFeatures="onFeatureSelected"
         />
       </div>
     </div>
@@ -76,7 +74,6 @@ const { t } = useI18n();
 const address = ref<string>();
 const search = ref<string>();
 const suggestions = ref<string[]>([]);
-const mode = ref<string | undefined | null>('draw_circle');
 
 const radius = ref<number>(10);
 const minRadius = 1;
@@ -94,6 +91,22 @@ onMounted(() => {
     radius.value = feature.properties.circleRadius;
   }
 });
+
+watch(
+  () => props.modelValue,
+  (val) => {
+    if (val) {
+      const feature = toFeature();
+      if (feature && feature.properties) {
+        address.value = feature.properties.addressInput;
+        radius.value = feature.properties.circleRadius;
+      }
+    } else {
+      address.value = undefined;
+      radius.value = 10;
+    }
+  },
+);
 
 function onFeatureSelected(selectedFeatures: Feature<Polygon | MultiPolygon>[]) {
   if (selectedFeatures && selectedFeatures.length > 0) {
@@ -135,25 +148,20 @@ function onRadiusUpdate() {
   }
 }
 
-function onAddressUpdate() {
-  const feature = toFeature();
-  if (feature && feature.properties && feature.properties.addressInput !== address.value) {
-    feature.properties.circleRadius = radius.value;
-    feature.properties.addressInput = address.value;
-    emit('update:modelValue', feature);
-  }
-}
-
-function edit() {
-  mode.value = 'draw_circle';
-  address.value = undefined;
-}
+// function onAddressUpdate() {
+//   const feature = toFeature();
+//   if (feature && feature.properties && feature.properties.addressInput !== address.value) {
+//     feature.properties.circleRadius = radius.value;
+//     feature.properties.addressInput = address.value;
+//     emit('update:modelValue', feature);
+//   }
+// }
 
 function deleteAll() {
-  mode.value = undefined;
   address.value = undefined;
   search.value = undefined;
   suggestions.value = [];
+  emit('update:modelValue', null);
 }
 
 function updateWithLocation(location: Feature) {

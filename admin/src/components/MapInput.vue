@@ -20,6 +20,7 @@ import {
   FullscreenControl,
   GeolocateControl,
   Map,
+  Marker,
   NavigationControl,
   ScaleControl,
   type IControl,
@@ -47,6 +48,7 @@ const emit = defineEmits(['update:selectedFeatures']);
 const containerId = 'map-input-' + Math.random().toString(36).slice(2);
 let map: Map | undefined = undefined;
 let draw: MapboxDraw | undefined = undefined;
+let marker: Marker | undefined = undefined;
 
 onMounted(() => {
   map = new Map({
@@ -92,13 +94,19 @@ onMounted(() => {
   }
 });
 
-watch(() => props.mode, applyMode, { immediate: true });
+watch(
+  () => props.feature,
+  (newFeature) => {
+    if (newFeature) {
+      drawFeature(newFeature);
+    } else {
+      deleteAll();
+    }
+  },
+  { immediate: true },
+);
 
 function applyMode() {
-  if (!props.mode) {
-    deleteAll();
-    return;
-  }
   switch (props.mode) {
     case 'draw_polygon':
       drawPolygon();
@@ -135,7 +143,11 @@ function drawFeature(feature: Feature<Point | Polygon | MultiPolygon>) {
     console.error('Map or draw instance is not initialized');
     return;
   }
-  if (!feature) {
+  if (marker) {
+    marker.remove();
+    marker = undefined;
+  }
+  if (!feature || !feature.geometry || !feature.geometry.coordinates) {
     deleteAll();
     return;
   }
@@ -147,8 +159,14 @@ function drawFeature(feature: Feature<Point | Polygon | MultiPolygon>) {
     draw?.deleteAll(); // single circle
     draw?.add(circle);
     map?.setCenter(circle.geometry.coordinates[0][0]);
+    marker = new Marker({ color: '#FF0000' }).setLngLat(center).addTo(map);
   } else {
     draw?.add(feature);
+    if (feature.geometry.type === 'Point') {
+      marker = new Marker({ color: '#FF0000' })
+        .setLngLat(feature.geometry.coordinates as [number, number])
+        .addTo(map);
+    }
   }
 }
 
@@ -173,7 +191,11 @@ function drawPoint() {
 
 function deleteAll() {
   draw?.trash().deleteAll();
-  updateArea();
+  applyMode();
+  if (marker) {
+    marker.remove();
+    marker = undefined;
+  }
 }
 
 function drawTrash() {
