@@ -11,7 +11,7 @@ export const useSearchService = defineStore('search', () => {
     await authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
     };
     try {
@@ -26,7 +26,7 @@ export const useSearchService = defineStore('search', () => {
     await authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
     };
     try {

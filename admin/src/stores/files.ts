@@ -15,7 +15,7 @@ export const useFilesStore = defineStore('files', () => {
     const res = await api.post('/files/tmp', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${authStore.accessToken}`,
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
     });
     if (res.data && res.data.length) return res.data[0];
@@ -35,7 +35,7 @@ export const useFilesStore = defineStore('files', () => {
     if (!file.path) return Promise.resolve();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
     };
     const promises = [];

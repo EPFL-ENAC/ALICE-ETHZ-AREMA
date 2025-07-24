@@ -16,7 +16,7 @@ export const useUsersStore = defineStore('users', () => {
       await authStore.updateToken();
       const config = {
         headers: {
-          Authorization: `Bearer ${authStore.accessToken}`,
+          Authorization: `Bearer ${authStore.getAccessToken()}`,
         },
       };
       try {
@@ -35,7 +35,7 @@ export const useUsersStore = defineStore('users', () => {
     await authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
     };
     if (payload.enabled === undefined) {
@@ -63,7 +63,7 @@ export const useUsersStore = defineStore('users', () => {
     await authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
     };
     return await api.put(`/user/${payload.id}`, payload, config);
@@ -74,7 +74,7 @@ export const useUsersStore = defineStore('users', () => {
     await authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
     };
     return await api.put(`/user/${payload.id}/password`, { password }, config);
@@ -85,7 +85,7 @@ export const useUsersStore = defineStore('users', () => {
     await authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
     };
     return await api.delete(`/user/${id}`, config);

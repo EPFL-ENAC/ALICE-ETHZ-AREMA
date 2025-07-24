@@ -31,7 +31,7 @@ export class Service<
     await authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
     };
     return await api.post(`/${this.entityName}/`, payload, config);
@@ -71,7 +71,7 @@ export class Service<
     await authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
     };
     return await api.put(`/${this.entityName}/${id}`, payload, config);
@@ -82,7 +82,7 @@ export class Service<
     await authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
     };
     return await api.put(`/${this.entityName}/${id}/_index`, {}, config);
@@ -93,7 +93,7 @@ export class Service<
     await authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
     };
     return await api.delete(`/${this.entityName}/${id}`, config);
@@ -104,7 +104,7 @@ export class Service<
     await authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.accessToken}`,
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
       params: {
         type: this.entityName,
