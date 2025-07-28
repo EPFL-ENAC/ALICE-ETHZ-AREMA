@@ -7,7 +7,8 @@ export const useAuthStore = defineStore('auth', () => {
   const realmRoles = ref<string[]>([]);
   const isAuthenticated = computed(() => profile.value !== undefined);
   const isAdmin = computed(() => realmRoles.value.includes('app-administrator'));
-  const isContrib = computed(() => realmRoles.value.includes('app-contributor'));
+  const isReviewer = computed(() => realmRoles.value.includes('app-reviewer'));
+  const isContributor = computed(() => realmRoles.value.includes('app-contributor'));
 
   async function init() {
     if (isAuthenticated.value) return Promise.resolve(true);
@@ -63,7 +64,8 @@ export const useAuthStore = defineStore('auth', () => {
   return {
     isAuthenticated,
     isAdmin,
-    isContrib,
+    isReviewer,
+    isContributor,
     profile,
     realmRoles,
     keycloak,

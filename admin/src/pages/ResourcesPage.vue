@@ -18,7 +18,7 @@
       >
         <template v-slot:top>
           <q-btn
-            v-if="authStore.isAdmin || authStore.isContrib"
+            v-if="authStore.isAdmin || authStore.isReviewer || authStore.isContributor"
             size="sm"
             color="primary"
             :disable="loading"
@@ -191,6 +191,14 @@ const columns = computed(() => {
       sortable: true,
     },
     {
+      name: 'createdBy',
+      required: true,
+      label: t('created_by'),
+      align: 'left' as Alignment,
+      field: 'created_by',
+      sortable: true,
+    },
+    {
       name: 'lastModification',
       required: true,
       label: t('last_modification'),
@@ -201,7 +209,7 @@ const columns = computed(() => {
     },
   ];
 
-  if (authStore.isAdmin || authStore.isContrib) {
+  if (authStore.isAdmin || authStore.isReviewer || authStore.isContributor) {
     cols.splice(2, 0, {
       name: 'action',
       align: 'right' as Alignment,

@@ -46,7 +46,7 @@ async def create(
     natural_resource: NaturalResource,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-contributor"]))
+        ["app-administrator", "app-reviewer", "app-contributor"]))
 ) -> NaturalResource:
     """Create a natural resource"""
     return await NaturalResourceService(session).create(natural_resource, user)
@@ -58,7 +58,7 @@ async def update(
     natural_resource: NaturalResource,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-contributor"]))
+        ["app-administrator", "app-reviewer", "app-contributor"]))
 ) -> NaturalResource:
     """Update a natural resource by id"""
     return await NaturalResourceService(session).update(id, natural_resource, user)

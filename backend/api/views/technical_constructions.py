@@ -46,7 +46,7 @@ async def create(
     payload: TechnicalConstructionDraft,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-contributor"]))
+        ["app-administrator", "app-reviewer", "app-contributor"]))
 ) -> TechnicalConstruction:
     """Create a technical construction"""
     return await TechnicalConstructionService(session).create(payload, user)
@@ -58,7 +58,7 @@ async def update(
     payload: TechnicalConstructionDraft,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-contributor"]))
+        ["app-administrator", "app-reviewer", "app-contributor"]))
 ) -> TechnicalConstruction:
     """Update a technical construction by id"""
     return await TechnicalConstructionService(session).update(id, payload, user)

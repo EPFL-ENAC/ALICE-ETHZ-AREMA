@@ -21,7 +21,10 @@ export default {
   roles: {
     administrator: 'Administrator',
     contributor: 'Contributor',
+    reviewer: 'Reviewer',
   },
+  roles_hint:
+    'A contributor can create and edit own items, a reviewer can edit all items but cannot publish them, and an administrator can do all operations including users management.',
   'content-manager': 'Content manager',
   'content-reviewer': 'Content reviewer',
   absorption_coefficient_hint: 'α',
@@ -43,10 +46,13 @@ export default {
   article_bottom: 'Article (bottom)',
   article_top: 'Article (top)',
   building_building_material_used_hint: 'Building material used.',
-  building_element_building_material_distance_hint: 'Distance to fetch the building materials in kilometers.',
-  building_element_building_material_used_hint: 'Building material used in the selected construction technique.',
+  building_element_building_material_distance_hint:
+    'Distance to fetch the building materials in kilometers.',
+  building_element_building_material_used_hint:
+    'Building material used in the selected construction technique.',
   building_element_building_material_weight_hint: 'Weight of the building material in kilograms.',
-  building_element_materials_hint: 'Provide some details about the materials used in this building element.',
+  building_element_materials_hint:
+    'Provide some details about the materials used in this building element.',
   building_element_materials: 'Materials used',
   building_element_professionals_hint: 'Professionals involved.',
   building_element_technical_construction_used_hint: 'Construction techniques used.',
@@ -67,6 +73,7 @@ export default {
   confirm_remove: 'Are you sure you want to remove the item "{name}"?',
   constituants: 'Constituants',
   content: 'Content',
+  created_by: 'Created by',
   dark: 'Dark',
   dashboard: 'Dashboard',
   density_hint: 'ρ, kg/m³',
@@ -105,7 +112,8 @@ export default {
   instructions: 'Instructions',
   last_modification: 'Last modification',
   last_name: 'Last name',
-  layout_help: "This is a preview of the layout of each item. It indicates how each field is placed in the item's page in the main web portal of AREMA.",
+  layout_help:
+    "This is a preview of the layout of each item. It indicates how each field is placed in the item's page in the main web portal of AREMA.",
   layout: 'Layout',
   legend: 'Legend',
   light: 'Light',
@@ -160,7 +168,8 @@ export default {
   reset_password: 'Reset Password',
   role: 'Role',
   save: 'Save',
-  search_index_help: 'The search index is used to search for items by free text and tags. It is an essential functionality of the main web portal of AREMA. Each item is automatically indexed, as soon as it is created or updated; your intervention is normally not needed. Nevertheless, for advanced administration purpose, it is possible to drop the index at any anytime and then re-index all the items.',
+  search_index_help:
+    'The search index is used to search for items by free text and tags. It is an essential functionality of the main web portal of AREMA. Each item is automatically indexed, as soon as it is created or updated; your intervention is normally not needed. Nevertheless, for advanced administration purpose, it is possible to drop the index at any anytime and then re-index all the items.',
   search_index: 'Search index',
   settlement_hint: 'mm/m',
   settlement: 'Settlement',
@@ -172,8 +181,10 @@ export default {
   status: 'Status',
   std: 'Standard',
   structural: 'Structural',
-  technical_construction_building_material_constituants_hint: 'Construction techniques are made of building materials.',
-  technical_construction_natural_resource_constituants_hint: 'Construction techniques are made of resources.',
+  technical_construction_building_material_constituants_hint:
+    'Construction techniques are made of building materials.',
+  technical_construction_natural_resource_constituants_hint:
+    'Construction techniques are made of resources.',
   technical_construction: 'Construction techniques',
   technical_constructions: 'Construction techniques',
   tensile_strength_hint: 'σ, MPa',

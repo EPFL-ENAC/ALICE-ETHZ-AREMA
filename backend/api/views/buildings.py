@@ -46,7 +46,7 @@ async def create(
     payload: BuildingDraft,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-contributor"]))
+        ["app-administrator", "app-reviewer", "app-contributor"]))
 ) -> Building:
     """Create a building"""
     return await BuildingService(session).create(payload, user)
@@ -57,7 +57,7 @@ async def update(
     id: int, payload: BuildingDraft,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-contributor"]))
+        ["app-administrator", "app-reviewer", "app-contributor"]))
 ) -> Building:
     """Update a building by id"""
     return await BuildingService(session).update(id, payload, user)
