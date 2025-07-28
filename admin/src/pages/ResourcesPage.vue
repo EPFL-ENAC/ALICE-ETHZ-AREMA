@@ -81,6 +81,7 @@
         <template v-slot:body-cell-action="props">
           <q-td :props="props">
             <q-btn
+              v-if="authStore.canEdit(props.row)"
               color="grey-8"
               size="12px"
               flat
@@ -92,7 +93,7 @@
             >
             </q-btn>
             <q-btn
-              v-if="authStore.isAdmin"
+              v-if="authStore.canPublish(props.row)"
               color="grey-8"
               size="12px"
               flat
@@ -104,7 +105,7 @@
             >
             </q-btn>
             <q-btn
-              v-if="authStore.isAdmin"
+              v-if="authStore.canDelete(props.row)"
               color="grey-8"
               size="12px"
               flat

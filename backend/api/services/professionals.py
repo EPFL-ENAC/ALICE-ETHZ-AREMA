@@ -8,6 +8,7 @@ from api.models.domain import FileItem, Professional, Building, BuildingMaterial
 from api.models.query import ProfessionalDraft, ProfessionalResult
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
+from api.services.entity import EntityService
 from api.services.s3 import s3_client
 from api.utils.files import moveTempFile
 from api.auth import User
@@ -34,7 +35,7 @@ class ProfessionalQueryBuilder(QueryBuilder):
         return query
 
 
-class ProfessionalService:
+class ProfessionalService(EntityService):
 
     def __init__(self, session: AsyncSession):
         self.session = session
@@ -165,13 +166,16 @@ class ProfessionalService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Professional not found")
+        # check edit permission
+        if not self.can_edit(entity, user):
+            raise HTTPException(
+                status_code=403, detail="Not enough permissions")
         for key, value in payload.model_dump().items():
             debug(key, value)
             if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "published_at", "published_by", "building_material_ids", "technical_construction_ids"]:
                 setattr(entity, key, value)
         entity.updated_at = datetime.now()
-        if user:
-            entity.updated_by = user.username
+        entity.updated_by = user.username
         # handle tmp files
         if entity.files:
             s3_folder = f"{self.folder}/{entity.id}"

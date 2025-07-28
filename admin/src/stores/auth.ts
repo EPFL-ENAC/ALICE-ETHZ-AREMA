@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { keycloak } from 'src/boot/api';
 import type { KeycloakProfile } from 'keycloak-js';
+import type { Entity } from 'src/models';
 
 export const useAuthStore = defineStore('auth', () => {
   const profile = ref<KeycloakProfile>();
@@ -61,6 +62,29 @@ export const useAuthStore = defineStore('auth', () => {
     });
   }
 
+  function canEdit(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    const userName = profile.value?.username;
+    return (
+      entity.created_by === userName ||
+      entity.updated_by === userName ||
+      isAdmin.value ||
+      isReviewer.value
+    );
+  }
+
+  function canPublish(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    console.debug('TODO check publish permissions for entity:', entity);
+    return isAdmin.value;
+  }
+
+  function canDelete(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    console.debug('TODO check delete permissions for entity:', entity);
+    return isAdmin.value;
+  }
+
   return {
     isAuthenticated,
     isAdmin,
@@ -74,5 +98,8 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
     updateToken,
     getAccessToken,
+    canEdit,
+    canPublish,
+    canDelete,
   };
 });
