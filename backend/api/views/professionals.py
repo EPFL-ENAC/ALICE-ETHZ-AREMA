@@ -46,7 +46,7 @@ async def create(
     payload: ProfessionalDraft,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-contributor"]))
+        ["app-administrator", "app-reviewer", "app-contributor"]))
 ) -> Professional:
     """Create a professional"""
     return await ProfessionalService(session).create(payload, user)
@@ -58,7 +58,7 @@ async def update(
     payload: ProfessionalDraft,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-contributor"]))
+        ["app-administrator", "app-reviewer", "app-contributor"]))
 ) -> Professional:
     """Update a professional by id"""
     return await ProfessionalService(session).update(id, payload, user)
@@ -70,5 +70,28 @@ async def publish(
     session: AsyncSession = Depends(get_session),
     user: User = Depends(kc_service.require_admin())
 ) -> None:
-    """Publish/unpublish a professional by id"""
+    """Publish a professional by id"""
     return await ProfessionalService(session).index(id, user)
+
+
+@router.delete("/{id}/_index", response_model_exclude_none=True)
+async def unpublish(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
+) -> None:
+    """Unpublish a professional by id"""
+    return await ProfessionalService(session).remove_index(id, user)
+
+
+@router.put("/{id}/_state", response_model_exclude_none=True)
+async def set_state(
+    id: int,
+    s: str,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_any_role(
+        ["app-administrator", "app-reviewer", "app-contributor"])
+    )
+) -> None:
+    """Set the state of a professional by id"""
+    return await ProfessionalService(session).set_state(id, s, user)

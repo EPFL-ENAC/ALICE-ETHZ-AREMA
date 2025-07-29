@@ -15,6 +15,7 @@ from api.views.building_elements import router as building_elements_router
 from api.views.taxonomy import router as taxonomy_router
 from api.views.search import router as search_router
 from api.views.users import router as users_router
+from api.views.authz import router as authz_router
 from titiler.core.factory import TilerFactory
 
 basicConfig(level=DEBUG)
@@ -60,65 +61,28 @@ async def get_health(
 
     return HealthCheck(status="OK")
 
-app.include_router(
-    files_router,
-    prefix="/files",
-    tags=["Files"],
-)
-
-app.include_router(
-    natural_resources_router,
-    prefix="/natural-resource",
-    tags=["Natural Resources"],
-)
-
-app.include_router(
-    building_materials_router,
-    prefix="/building-material",
-    tags=["Building Materials"],
-)
-
-app.include_router(
-    technical_constructions_router,
-    prefix="/technical-construction",
-    tags=["Technical Constructions"],
-)
-
-app.include_router(
-    buildings_router,
-    prefix="/building",
-    tags=["Buildings"],
-)
-
-app.include_router(
-    professionals_router,
-    prefix="/professional",
-    tags=["Professionals"],
-)
-
-app.include_router(
-    building_elements_router,
-    prefix="/building-element",
-    tags=["Building Elements"],
-)
-
-app.include_router(
-    taxonomy_router,
-    prefix="/taxonomy",
-    tags=["Taxonomies"],
-)
-
-app.include_router(
-    search_router,
-    prefix="/search",
-    tags=["Search"],
-)
-
-app.include_router(
-    users_router,
-    prefix="/user",
-    tags=["Users"],
-)
+app.include_router(files_router,
+                   prefix="/files", tags=["Files"])
+app.include_router(natural_resources_router,
+                   prefix="/natural-resource", tags=["Natural Resources"])
+app.include_router(building_materials_router,
+                   prefix="/building-material", tags=["Building Materials"])
+app.include_router(technical_constructions_router,
+                   prefix="/technical-construction", tags=["Technical Constructions"])
+app.include_router(buildings_router,
+                   prefix="/building", tags=["Buildings"])
+app.include_router(professionals_router,
+                   prefix="/professional", tags=["Professionals"])
+app.include_router(building_elements_router,
+                   prefix="/building-element", tags=["Building Elements"])
+app.include_router(taxonomy_router,
+                   prefix="/taxonomy", tags=["Taxonomies"])
+app.include_router(search_router,
+                   prefix="/search", tags=["Search"])
+app.include_router(users_router,
+                   prefix="/user", tags=["Users"])
+app.include_router(authz_router,
+                   prefix="/authz", tags=["Authorization"])
 
 # Create TilerFactory instance for COGs
 cog = TilerFactory()

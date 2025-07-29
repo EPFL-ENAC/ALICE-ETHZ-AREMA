@@ -20,24 +20,24 @@ async def populate_index(
     session: AsyncSession = Depends(get_session),
     user: User = Depends(kc_service.require_admin())
 ):
-    """Index all or specific entity type"""
+    """Reindex all or of a specific entity type"""
     try:
         indexCounts = {}
         if type is None or type == "natural-resource":
             service = NaturalResourceService(session)
-            indexCounts["natural-resource"] = await service.indexAll()
+            indexCounts["natural-resource"] = await service.reIndexAll()
         if type is None or type == "building-material":
             service = BuildingMaterialService(session)
-            indexCounts["building-material"] = await service.indexAll()
+            indexCounts["building-material"] = await service.reIndexAll()
         if type is None or type == "technical-construction":
             service = TechnicalConstructionService(session)
-            indexCounts["technical-construction"] = await service.indexAll()
+            indexCounts["technical-construction"] = await service.reIndexAll()
         if type is None or type == "building":
             service = BuildingService(session)
-            indexCounts["building"] = await service.indexAll()
+            indexCounts["building"] = await service.reIndexAll()
         if type is None or type == "professional":
             service = ProfessionalService(session)
-            indexCounts["professional"] = await service.indexAll()
+            indexCounts["professional"] = await service.reIndexAll()
         return indexCounts
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

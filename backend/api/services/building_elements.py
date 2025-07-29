@@ -99,7 +99,6 @@ class BuildingElementService:
 
     async def create(self, payload: BuildingElementDraft) -> BuildingElement:
         """Create a new building element"""
-        materials = [*payload.materials]
         payload.materials.clear()
         entity = BuildingElement(**payload.model_dump())
         # handle relationships

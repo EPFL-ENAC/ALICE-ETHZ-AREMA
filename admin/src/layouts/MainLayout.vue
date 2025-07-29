@@ -136,11 +136,17 @@ const showLogin = ref(false);
 const username = computed(() => authStore.profile?.email);
 
 onMounted(() => {
-  void authStore.init().then(() => {
-    if (!authStore.isAuthenticated) {
-      showLogin.value = true;
-    }
-  });
+  void authStore
+    .init()
+    .then(() => {
+      if (!authStore.isAuthenticated) {
+        showLogin.value = true;
+      }
+    })
+    .catch((error) => {
+      console.error('Error initializing auth store:', error);
+      onLogout();
+    });
 });
 
 watch(

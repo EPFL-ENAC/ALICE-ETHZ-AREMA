@@ -8,6 +8,7 @@ from api.models.domain import FileItem, Professional, Building, BuildingMaterial
 from api.models.query import ProfessionalDraft, ProfessionalResult
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
+from api.services.entity import EntityService
 from api.services.s3 import s3_client
 from api.utils.files import moveTempFile
 from api.auth import User
@@ -34,27 +35,30 @@ class ProfessionalQueryBuilder(QueryBuilder):
         return query
 
 
-class ProfessionalService:
+class ProfessionalService(EntityService):
 
     def __init__(self, session: AsyncSession):
         self.session = session
         self.entityType = "professional"
         self.folder = f"{self.entityType}s"
 
-    async def indexAll(self) -> int:
-        """Index all professionals"""
+    async def reIndexAll(self) -> int:
+        """Index all professionals that were published"""
         indexService = EntityIndexer()
         # delete documents of this type
         indexService.deleteEntities(self.entityType)
         # add all documents
         count = 0
         for entity in (await self.session.exec(select(Professional))).all():
-            indexService.addEntity(
-                self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
-            count += 1
-            entity.published_at = datetime.now()
+            if entity.published_at is not None or entity.state == "to-publish":
+                indexService.addEntity(
+                    self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
+                count += 1
+                entity.published_at = datetime.now()
+                if entity.state == "to-publish":
+                    entity.state = "draft"
         await self.session.commit()
-        debug(f"Indexed {count} professionals")
+        debug(f"Published {count} professionals")
         return count
 
     async def count(self) -> int:
@@ -165,13 +169,16 @@ class ProfessionalService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Professional not found")
+        # check edit permission
+        if not self.can_edit(entity, user):
+            raise HTTPException(
+                status_code=403, detail="Not enough permissions")
         for key, value in payload.model_dump().items():
             debug(key, value)
             if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "published_at", "published_by", "building_material_ids", "technical_construction_ids"]:
                 setattr(entity, key, value)
         entity.updated_at = datetime.now()
-        if user:
-            entity.updated_by = user.username
+        entity.updated_by = user.username
         # handle tmp files
         if entity.files:
             s3_folder = f"{self.folder}/{entity.id}"
@@ -194,8 +201,8 @@ class ProfessionalService:
         await self.session.commit()
         return entity
 
-    async def index(self, id: int, user: User = None) -> None:
-        """Toggle publication of a professional"""
+    async def set_state(self, id: int, state: str, user: User = None) -> None:
+        """Set the state of a professional by id"""
         res = await self.session.exec(
             select(Professional).where(Professional.id == id)
         )
@@ -203,16 +210,39 @@ class ProfessionalService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Professional not found")
-        if not entity.published_at or entity.published_at < entity.updated_at:
-            EntityIndexer().updateEntity(
-                self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
-            entity.published_at = datetime.now()
-            if user:
-                entity.published_by = user.username
-        else:
-            EntityIndexer().deleteEntity(self.entityType, entity.id)
-            entity.published_at = None
-            entity.published_by = None
+        entity = self.apply_state(entity, state, user)
+        await self.session.commit()
+
+    async def index(self, id: int, user: User = None) -> None:
+        """Publish a professional by id"""
+        res = await self.session.exec(
+            select(Professional).where(Professional.id == id)
+        )
+        entity = res.one_or_none()
+        if not entity:
+            raise HTTPException(
+                status_code=404, detail="Professional not found")
+        EntityIndexer().updateEntity(
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
+        entity.published_at = datetime.now()
+        if user:
+            entity.published_by = user.username
+        entity.state = "draft"
+        await self.session.commit()
+
+    async def remove_index(self, id: int, user: User = None) -> None:
+        """Unpublish a professional by id"""
+        res = await self.session.exec(
+            select(Professional).where(Professional.id == id)
+        )
+        entity = res.one_or_none()
+        if not entity:
+            raise HTTPException(
+                status_code=404, detail="Professional not found")
+        EntityIndexer().deleteEntity(self.entityType, entity.id)
+        entity.published_at = None
+        entity.published_by = None
+        entity.state = "draft"
         await self.session.commit()
 
     def _makeTags(self, entity: Professional) -> list[str]:

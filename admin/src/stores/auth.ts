@@ -1,13 +1,15 @@
 import { defineStore } from 'pinia';
 import { keycloak } from 'src/boot/api';
 import type { KeycloakProfile } from 'keycloak-js';
+import type { Entity } from 'src/models';
 
 export const useAuthStore = defineStore('auth', () => {
   const profile = ref<KeycloakProfile>();
   const realmRoles = ref<string[]>([]);
   const isAuthenticated = computed(() => profile.value !== undefined);
   const isAdmin = computed(() => realmRoles.value.includes('app-administrator'));
-  const isContrib = computed(() => realmRoles.value.includes('app-contributor'));
+  const isReviewer = computed(() => realmRoles.value.includes('app-reviewer'));
+  const isContributor = computed(() => realmRoles.value.includes('app-contributor'));
 
   async function init() {
     if (isAuthenticated.value) return Promise.resolve(true);
@@ -60,10 +62,94 @@ export const useAuthStore = defineStore('auth', () => {
     });
   }
 
+  function canEdit(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    if (['locked', 'to-delete', 'to-unpublish'].includes(entity.state || '')) return false;
+    if (isAdmin.value || isReviewer.value) return true;
+    if (entity.state !== 'draft') return false;
+    const userName = profile.value?.username;
+    return entity.created_by === userName || entity.updated_by === userName;
+  }
+
+  function canPublish(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    if (entity.state !== 'to-publish') return false;
+    return isAdmin.value;
+  }
+
+  function canUnpublish(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    if (entity.state !== 'to-unpublish') return false;
+    return isAdmin.value;
+  }
+
+  function canDelete(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    if (entity.state !== 'to-delete') return false;
+    return isAdmin.value;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function canLock(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    return isAdmin.value;
+  }
+
+  function canInReview(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    if (entity.state !== 'draft') return false;
+    const userName = profile.value?.username;
+    return (
+      entity.created_by === userName ||
+      entity.updated_by === userName ||
+      isAdmin.value ||
+      isReviewer.value
+    );
+  }
+
+  function canToPublish(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    if (entity.state !== 'in-review') return false;
+    return isAdmin.value || isReviewer.value;
+  }
+
+  function canToUnpublish(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    if (entity.state === 'to-unpublish') return false;
+    if (entity.published_at === undefined) return false;
+    const userName = profile.value?.username;
+    return (
+      entity.created_by === userName ||
+      entity.updated_by === userName ||
+      isAdmin.value ||
+      isReviewer.value
+    );
+  }
+
+  function canToDelete(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    if (entity.state === 'to-delete') return false;
+    const userName = profile.value?.username;
+    return (
+      entity.created_by === userName ||
+      entity.updated_by === userName ||
+      isAdmin.value ||
+      isReviewer.value
+    );
+  }
+
+  function canDraft(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    if (entity.state === 'draft') return false;
+    if (entity.state === 'locked') return isAdmin.value;
+    return isAdmin.value || isReviewer.value;
+  }
+
   return {
     isAuthenticated,
     isAdmin,
-    isContrib,
+    isReviewer,
+    isContributor,
     profile,
     realmRoles,
     keycloak,
@@ -72,5 +158,15 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
     updateToken,
     getAccessToken,
+    canEdit,
+    canPublish,
+    canUnpublish,
+    canDelete,
+    canLock,
+    canInReview,
+    canToPublish,
+    canToUnpublish,
+    canToDelete,
+    canDraft,
   };
 });
