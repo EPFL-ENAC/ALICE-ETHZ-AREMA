@@ -2,7 +2,7 @@
   <q-page>
     <div class="text-h5 q-pa-md">{{ t('publication_flow') }}</div>
     <q-separator />
-    <div class="q-pa-md">
+    <div class="q-pl-md q-pr-md q-pb-md">
       <q-markdown :src="publicationFlowContent" no-heading-anchor-links />
     </div>
   </q-page>

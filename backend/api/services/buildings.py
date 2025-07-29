@@ -237,14 +237,14 @@ class BuildingService(EntityService):
         await self.session.commit()
 
     async def remove_index(self, id: int, user: User = None) -> None:
-        """Unpublish a natural resource"""
+        """Unpublish a building by id"""
         res = await self.session.exec(
-            select(NaturalResource).where(NaturalResource.id == id)
+            select(Building).where(Building.id == id)
         )
         entity = res.one_or_none()
         if not entity:
             raise HTTPException(
-                status_code=404, detail="Natural resource not found")
+                status_code=404, detail="Building not found")
         EntityIndexer().deleteEntity(self.entityType, entity.id)
         entity.published_at = None
         entity.published_by = None

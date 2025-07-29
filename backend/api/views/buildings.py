@@ -69,7 +69,7 @@ async def publish(
     session: AsyncSession = Depends(get_session),
     user: User = Depends(kc_service.require_admin())
 ) -> None:
-    """Publish a building material by id"""
+    """Publish a building by id"""
     return await BuildingService(session).index(id, user)
 
 
@@ -79,7 +79,7 @@ async def unpublish(
     session: AsyncSession = Depends(get_session),
     user: User = Depends(kc_service.require_admin())
 ) -> None:
-    """Unpublish a building material by id"""
+    """Unpublish a building by id"""
     return await BuildingService(session).remove_index(id, user)
 
 
@@ -92,7 +92,7 @@ async def set_state(
         ["app-administrator", "app-reviewer", "app-contributor"])
     )
 ) -> None:
-    """Set the state of a building material by id"""
+    """Set the state of a building by id"""
     return await BuildingService(session).set_state(id, s, user)
 
 
