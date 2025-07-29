@@ -64,6 +64,40 @@ export const useAuthStore = defineStore('auth', () => {
 
   function canEdit(entity: Entity) {
     if (!isAuthenticated.value) return false;
+    if (['locked', 'to-delete', 'to-unpublish'].includes(entity.state || '')) return false;
+    if (isAdmin.value || isReviewer.value) return true;
+    if (entity.state !== 'draft') return false;
+    const userName = profile.value?.username;
+    return entity.created_by === userName || entity.updated_by === userName;
+  }
+
+  function canPublish(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    if (entity.state !== 'to-publish') return false;
+    return isAdmin.value;
+  }
+
+  function canUnpublish(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    if (entity.state !== 'to-unpublish') return false;
+    return isAdmin.value;
+  }
+
+  function canDelete(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    if (entity.state !== 'to-delete') return false;
+    return isAdmin.value;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function canLock(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    return isAdmin.value;
+  }
+
+  function canInReview(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    if (entity.state !== 'draft') return false;
     const userName = profile.value?.username;
     return (
       entity.created_by === userName ||
@@ -73,16 +107,42 @@ export const useAuthStore = defineStore('auth', () => {
     );
   }
 
-  function canPublish(entity: Entity) {
+  function canToPublish(entity: Entity) {
     if (!isAuthenticated.value) return false;
-    console.debug('TODO check publish permissions for entity:', entity);
-    return isAdmin.value;
+    if (entity.state !== 'in-review') return false;
+    return isAdmin.value || isReviewer.value;
   }
 
-  function canDelete(entity: Entity) {
+  function canToUnpublish(entity: Entity) {
     if (!isAuthenticated.value) return false;
-    console.debug('TODO check delete permissions for entity:', entity);
-    return isAdmin.value;
+    if (entity.state === 'to-unpublish') return false;
+    if (entity.published_at === undefined) return false;
+    const userName = profile.value?.username;
+    return (
+      entity.created_by === userName ||
+      entity.updated_by === userName ||
+      isAdmin.value ||
+      isReviewer.value
+    );
+  }
+
+  function canToDelete(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    if (entity.state === 'to-delete') return false;
+    const userName = profile.value?.username;
+    return (
+      entity.created_by === userName ||
+      entity.updated_by === userName ||
+      isAdmin.value ||
+      isReviewer.value
+    );
+  }
+
+  function canDraft(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    if (entity.state === 'draft') return false;
+    if (entity.state === 'locked') return isAdmin.value;
+    return isAdmin.value || isReviewer.value;
   }
 
   return {
@@ -100,6 +160,13 @@ export const useAuthStore = defineStore('auth', () => {
     getAccessToken,
     canEdit,
     canPublish,
+    canUnpublish,
     canDelete,
+    canLock,
+    canInReview,
+    canToPublish,
+    canToUnpublish,
+    canToDelete,
+    canDraft,
   };
 });

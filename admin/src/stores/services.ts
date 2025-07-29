@@ -85,7 +85,40 @@ export class Service<
         Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
     };
+    return await api.put(`/${this.entityName}/${id}/_publish`, {}, config);
+  }
+
+  async publish(id: string | number) {
+    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
+    await authStore.updateToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
+      },
+    };
     return await api.put(`/${this.entityName}/${id}/_index`, {}, config);
+  }
+
+  async unpublish(id: string | number) {
+    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
+    await authStore.updateToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
+      },
+    };
+    return await api.delete(`/${this.entityName}/${id}/_index`, config);
+  }
+
+  async setState(id: string | number, state: string) {
+    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
+    await authStore.updateToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
+      },
+    };
+    return await api.put(`/${this.entityName}/${id}/_state?s=${state}`, {}, config);
   }
 
   async remove(id: string | number) {

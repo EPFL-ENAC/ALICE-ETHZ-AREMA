@@ -70,5 +70,28 @@ async def publish(
     session: AsyncSession = Depends(get_session),
     user: User = Depends(kc_service.require_admin())
 ) -> None:
-    """Publish/unpublish a natural resource by id"""
+    """Publish a natural resource by id"""
     return await NaturalResourceService(session).index(id, user)
+
+
+@router.delete("/{id}/_index", response_model_exclude_none=True)
+async def unpublish(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
+) -> None:
+    """Unpublish a natural resource by id"""
+    return await NaturalResourceService(session).remove_index(id, user)
+
+
+@router.put("/{id}/_state", response_model_exclude_none=True)
+async def set_state(
+    id: int,
+    s: str,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_any_role(
+        ["app-administrator", "app-reviewer", "app-contributor"])
+    )
+) -> None:
+    """Set the state of a natural resource by id"""
+    return await NaturalResourceService(session).set_state(id, s, user)

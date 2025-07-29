@@ -42,25 +42,28 @@ class TechnicalConstructionService(EntityService):
         self.entityType = "technical-construction"
         self.folder = f"{self.entityType}s"
 
-    async def indexAll(self) -> int:
-        """Index all technical constructions"""
+    async def reIndexAll(self) -> int:
+        """Index all technical constructions that were published"""
         indexService = EntityIndexer()
         # delete documents of this type
         indexService.deleteEntities(self.entityType)
         # add all documents
         count = 0
         for entity in (await self.session.exec(select(TechnicalConstruction))).all():
-            tags = []
-            if entity.types:
-                tags.extend(entity.types)
-            if entity.materials:
-                tags.extend(entity.materials)
-            indexService.addEntity(
-                self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
-            count += 1
-            entity.published_at = datetime.now()
+            if entity.published_at is not None or entity.state == "to-publish":
+                tags = []
+                if entity.types:
+                    tags.extend(entity.types)
+                if entity.materials:
+                    tags.extend(entity.materials)
+                indexService.addEntity(
+                    self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
+                count += 1
+                entity.published_at = datetime.now()
+                if entity.state == "to-publish":
+                    entity.state = "draft"
         await self.session.commit()
-        debug(f"Indexed {count} technical constructions")
+        debug(f"Published {count} technical constructions")
         return count
 
     async def count(self) -> int:
@@ -190,8 +193,8 @@ class TechnicalConstructionService(EntityService):
         await self.session.commit()
         return entity
 
-    async def index(self, id: int, user: User = None) -> None:
-        """Toggle publication of a technical construction"""
+    async def set_state(self, id: int, state: str, user: User = None) -> None:
+        """Set the state of a technical construction by id"""
         res = await self.session.exec(
             select(TechnicalConstruction).where(TechnicalConstruction.id == id)
         )
@@ -199,16 +202,39 @@ class TechnicalConstructionService(EntityService):
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Technical construction not found")
-        if not entity.published_at or entity.published_at < entity.updated_at:
-            EntityIndexer().updateEntity(
-                self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
-            entity.published_at = datetime.now()
-            if user:
-                entity.published_by = user.username
-        else:
-            EntityIndexer().deleteEntity(self.entityType, entity.id)
-            entity.published_at = None
-            entity.published_by = None
+        entity = self.apply_state(entity, state, user)
+        await self.session.commit()
+
+    async def index(self, id: int, user: User = None) -> None:
+        """Publish a technical construction by id"""
+        res = await self.session.exec(
+            select(TechnicalConstruction).where(TechnicalConstruction.id == id)
+        )
+        entity = res.one_or_none()
+        if not entity:
+            raise HTTPException(
+                status_code=404, detail="Technical construction not found")
+        EntityIndexer().updateEntity(
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
+        entity.published_at = datetime.now()
+        if user:
+            entity.published_by = user.username
+        entity.state = "draft"
+        await self.session.commit()
+
+    async def remove_index(self, id: int, user: User = None) -> None:
+        """Unpublish a technical construction by id"""
+        res = await self.session.exec(
+            select(TechnicalConstruction).where(TechnicalConstruction.id == id)
+        )
+        entity = res.one_or_none()
+        if not entity:
+            raise HTTPException(
+                status_code=404, detail="Technical construction not found")
+        EntityIndexer().deleteEntity(self.entityType, entity.id)
+        entity.published_at = None
+        entity.published_by = None
+        entity.state = "draft"
         await self.session.commit()
 
     def _makeTags(self, entity: TechnicalConstruction) -> list[str]:
