@@ -1,6 +1,3 @@
-// This is just an example,
-// so you can safely delete all default props below
-
 export default {
   login: {
     title: 'AREMA',
@@ -105,7 +102,7 @@ export default {
   last_name: 'Nom de famille',
   layout_help:
     "Ceci est un exemple de disposition de page de chaque élément permettant de visualiser comment chaque champ est placé dans la page correspondante du portail web d'AREMA.",
-  layout: 'Disposition',
+  layout: "Disposition d'un article",
   legend: 'Légende',
   light: 'Clair',
   liquid_transfer_coefficient_hint: 'A, kg/(m²*sqrt(s))',
@@ -143,7 +140,7 @@ export default {
   professional_technical_construction_expertise_hint: 'Expertise en techniques de construction.',
   professionals: 'Professionnels',
   properties: 'Propriétés',
-  publish_unpublish: 'Publier/Dépublier',
+  publication_flow: 'Flot de publication',
   published_on: 'Publié le {date}',
   published: 'Publié',
   radius: 'Rayon',

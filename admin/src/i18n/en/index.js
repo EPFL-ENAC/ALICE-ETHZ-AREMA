@@ -1,6 +1,3 @@
-// This is just an example,
-// so you can safely delete all default props below
-
 export default {
   main: {
     brand: 'AREMA',
@@ -120,7 +117,7 @@ export default {
   last_name: 'Last name',
   layout_help:
     "This is a preview of the layout of each item. It indicates how each field is placed in the item's page in the main web portal of AREMA.",
-  layout: 'Layout',
+  layout: 'Article layout',
   legend: 'Legend',
   light: 'Light',
   lock_unlock: 'Lock/Unlock',
@@ -161,7 +158,7 @@ export default {
   professional_technical_construction_expertise_hint: 'Construction techniques expertise.',
   professionals: 'Professionals',
   properties: 'Properties',
-  publish_unpublish: 'Publish/Unpublish',
+  publication_flow: 'Publication flow',
   published_on: 'Published on {date}',
   published: 'Published',
   radius: 'Radius',

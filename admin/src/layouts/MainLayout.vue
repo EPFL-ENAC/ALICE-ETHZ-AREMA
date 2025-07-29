@@ -100,6 +100,22 @@
         </q-item>
 
         <q-item-label class="text-h6" header>{{ t('help') }}</q-item-label>
+        <q-item clickable :to="'/publication'">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-upload" size="xs" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ t('publication_flow') }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable :to="'/layout'">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-newspaper" size="xs" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ t('layout') }}</q-item-label>
+          </q-item-section>
+        </q-item>
         <q-item
           clickable
           v-close-popup

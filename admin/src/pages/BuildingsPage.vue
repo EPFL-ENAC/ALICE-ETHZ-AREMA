@@ -126,7 +126,7 @@ const columns = computed(() => {
       label: 'ID',
       align: 'left' as Alignment,
       field: 'id',
-      style: 'width: 20px',
+      style: 'min-width: 20px',
       sortable: true,
     },
     {
@@ -144,7 +144,7 @@ const columns = computed(() => {
       align: 'left' as Alignment,
       field: 'published_at',
       sortable: false,
-      style: 'width: 50px',
+      style: 'min-width: 50px',
     },
     {
       name: 'state',
@@ -153,7 +153,7 @@ const columns = computed(() => {
       align: 'left' as Alignment,
       field: 'state',
       sortable: true,
-      style: 'width: 100px',
+      style: 'min-width: 120px',
     },
     {
       name: 'type',
@@ -231,7 +231,7 @@ const columns = computed(() => {
       field: 'action',
       required: false,
       sortable: false,
-      style: 'width: 100px',
+      style: 'min-width: 100px',
     });
   }
 

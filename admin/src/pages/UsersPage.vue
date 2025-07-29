@@ -189,7 +189,7 @@ const columns = computed(() => {
       field: 'action',
       required: false,
       sortable: false,
-      style: 'width: 100px',
+      style: 'min-width: 100px',
     });
   }
   return cols;
