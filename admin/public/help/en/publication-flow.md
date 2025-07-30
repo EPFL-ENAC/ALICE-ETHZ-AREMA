@@ -18,7 +18,7 @@ The publication flow involves different roles, each with specific permissions:
 | Role              | Permissions                                                                  |
 | ----------------- | ---------------------------------------------------------------------------- |
 | **Contributor**   | Can add and edit their own documents.                                        |
-| **Reviewer**      | Can edit all documents but cannot (un)publish, or delete them.               |
+| **Reviewer**      | Can add and edit all documents but cannot (un)publish, or delete them.       |
 | **Administrator** | Can perform all operations, including document (un)publication and deletion. |
 
 ## Transitions
