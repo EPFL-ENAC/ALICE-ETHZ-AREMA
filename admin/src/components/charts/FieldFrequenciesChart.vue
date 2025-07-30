@@ -44,6 +44,18 @@ const props = withDefaults(defineProps<FieldFrequenciesChartProps>(), {
 
 const { t } = useI18n();
 
+// ["","","","","#cbe839","#ff9b21","#d6390f","#900c00"]
+const allColors: Record<string, string> = {
+  draft: '#4076f5',
+  'in-review': '#26d0cd',
+  'to-publish': '#5ffc73',
+  'to-unpublish': '#cbe839',
+  'to-delete': '#ff9b21',
+  locked: '#d6390f',
+  null: '#23171b',
+  None: '#23171b',
+};
+
 const chart = shallowRef(null);
 const option = ref<EChartsOption>({});
 const loading = ref(false);
@@ -99,11 +111,12 @@ function initChartOptions() {
   loading.value = true;
 
   const dataset = frequencies.value.counts.map((item) => ({
+    key: item.value || 'null',
     name: keyLabel(item.value || 'null'),
     value: item.count,
   }));
 
-  //const colors = dataset.map((item) => getFieldValueColor(props.field, item.name));
+  const colors = dataset.map((item) => allColors[item.key] || '#cccccc');
 
   const newOption: EChartsOption = {
     animation: false,
@@ -122,6 +135,7 @@ function initChartOptions() {
         type: 'pie',
         radius: ['20%', '50%'],
         avoidLabelOverlap: true,
+        color: colors,
         label: {
           margin: 0,
           fontWeight: 'bold',
