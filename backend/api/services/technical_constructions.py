@@ -2,10 +2,11 @@ from logging import debug
 from api.db import AsyncSession
 from sqlalchemy.sql import text
 from sqlalchemy.orm import selectinload
+from sqlalchemy import func
 from sqlmodel import select
 from fastapi import HTTPException
 from api.models.domain import FileItem, TechnicalConstruction, BuildingMaterial, TechnicalConstructionBuildingMaterial, ProfessionalTechnicalConstruction
-from api.models.query import TechnicalConstructionResult, TechnicalConstructionDraft
+from api.models.query import TechnicalConstructionResult, TechnicalConstructionDraft, GroupByResult, GroupByCount
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
 from api.services.entity import EntityService
@@ -21,6 +22,12 @@ class TechnicalConstructionQueryBuilder(QueryBuilder):
         query = self.build_count_query()
         query = self._apply_joins(query, filter)
         return query
+
+    def build_group_query_with_joins(self, filter, group_by_column):
+        query = self._apply_filter(
+            select(group_by_column, func.count(func.distinct(self.model.id))))
+        query = self._apply_joins(query, filter)
+        return query.group_by(group_by_column)
 
     def build_query_with_joins(self, total_count, filter, fields=None):
         start, end, query = self.build_query(total_count, fields)
@@ -70,6 +77,23 @@ class TechnicalConstructionService(EntityService):
         """Count all technical constructions"""
         count = (await self.session.exec(text("select count(id) from TechnicalConstruction"))).scalar()
         return count
+
+    async def count_group_by(self, filter: dict, group_by: str) -> dict:
+        """Count all technical constructions matching filter"""
+        builder = TechnicalConstructionQueryBuilder(
+            TechnicalConstruction, filter, [], [], {"$building_materials": BuildingMaterial})
+
+        # Do a query to satisfy total count
+        count_query = builder.build_group_query_with_joins(
+            filter, getattr(TechnicalConstruction, group_by))
+        group_by_count_res = await self.session.exec(count_query)
+        group_by_counts = group_by_count_res.all()
+
+        # Convert to dict
+        return GroupByResult(
+            field=group_by,
+            counts=[GroupByCount(value=str(item[0]) if item[0] else None, count=item[1])
+                    for item in group_by_counts])
 
     async def get(self, id: int) -> TechnicalConstruction:
         """Get a technical construction by id"""

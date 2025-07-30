@@ -1,4 +1,5 @@
 from typing import List, Optional, Dict
+from pydantic import BaseModel
 from sqlmodel import Field
 from api.models.domain import NaturalResource, NaturalResourceBase, BuildingMaterial, BuildingMaterialBase, TechnicalConstruction, TechnicalConstructionBase, BuildingBase, Professional, ProfessionalBase, BuildingElement, BuildingElementBase, BuildingElementMaterial, BuildingElementMaterialBase
 from api.models.authz import ACL
@@ -140,3 +141,13 @@ class SearchResult(ListResult):
 
 class ACLResult(ListResult):
     data: List[ACL] = []
+
+
+class GroupByCount(BaseModel):
+    value: str | None
+    count: int
+
+
+class GroupByResult(BaseModel):
+    field: str
+    counts: List[GroupByCount]

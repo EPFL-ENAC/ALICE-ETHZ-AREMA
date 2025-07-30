@@ -2,10 +2,11 @@ from logging import debug
 from api.db import AsyncSession
 from sqlalchemy.sql import text
 from sqlalchemy.orm import selectinload
+from sqlalchemy import func
 from sqlmodel import select
 from fastapi import HTTPException
 from api.models.domain import FileItem, BuildingMaterial, BuildingMaterial, NaturalResource, BuildingMaterialNaturalResource, TechnicalConstructionBuildingMaterial, BuildingBuildingMaterial, ProfessionalBuildingMaterial
-from api.models.query import BuildingMaterialResult, BuildingMaterialDraft
+from api.models.query import BuildingMaterialResult, BuildingMaterialDraft, GroupByResult, GroupByCount
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
 from api.services.entity import EntityService
@@ -21,6 +22,12 @@ class BuildingMaterialQueryBuilder(QueryBuilder):
         query = self.build_count_query()
         query = self._apply_joins(query, filter)
         return query
+
+    def build_group_query_with_joins(self, filter, group_by_column):
+        query = self._apply_filter(
+            select(group_by_column, func.count(func.distinct(self.model.id))))
+        query = self._apply_joins(query, filter)
+        return query.group_by(group_by_column)
 
     def build_query_with_joins(self, total_count, filter, fields=None):
         start, end, query = self.build_query(total_count, fields)
@@ -66,6 +73,23 @@ class BuildingMaterialService(EntityService):
         count = (await self.session.exec(text("select count(id) from BuildingMaterial"))).scalar()
         return count
 
+    async def count_group_by(self, filter: dict, group_by: str) -> dict:
+        """Count all building materials matching filter"""
+        builder = BuildingMaterialQueryBuilder(
+            BuildingMaterial, filter, [], [], {})
+
+        # Do a query to satisfy total count
+        count_query = builder.build_group_query_with_joins(
+            filter, getattr(BuildingMaterial, group_by))
+        group_by_count_res = await self.session.exec(count_query)
+        group_by_counts = group_by_count_res.all()
+
+        # Convert to dict
+        return GroupByResult(
+            field=group_by,
+            counts=[GroupByCount(value=str(item[0]) if item[0] else None, count=item[1])
+                    for item in group_by_counts])
+
     async def get(self, id: int) -> BuildingMaterial:
         """Get a building material by id"""
         res = await self.session.exec(
@@ -97,8 +121,8 @@ class BuildingMaterialService(EntityService):
 
     async def find(self, filter: dict, fields: list, sort: list, range: list) -> BuildingMaterialResult:
         """Get all building materials matching filter and range"""
-        builder = BuildingMaterialQueryBuilder(BuildingMaterial, filter, sort, range, {
-                                               "$building_materials": BuildingMaterial})
+        builder = BuildingMaterialQueryBuilder(
+            BuildingMaterial, filter, sort, range, {})
 
         # Do a query to satisfy total count
         count_query = builder.build_count_query_with_joins(filter)

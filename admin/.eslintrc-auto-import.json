@@ -102,6 +102,8 @@
     "watch": true,
     "watchEffect": true,
     "watchPostEffect": true,
-    "watchSyncEffect": true
+    "watchSyncEffect": true,
+    "useStatsService": true,
+    "useStatsStore": true
   }
 }

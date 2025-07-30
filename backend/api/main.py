@@ -16,6 +16,7 @@ from api.views.taxonomy import router as taxonomy_router
 from api.views.search import router as search_router
 from api.views.users import router as users_router
 from api.views.authz import router as authz_router
+from api.views.stats import router as stats_router
 from titiler.core.factory import TilerFactory
 
 basicConfig(level=DEBUG)
@@ -83,6 +84,8 @@ app.include_router(users_router,
                    prefix="/user", tags=["Users"])
 app.include_router(authz_router,
                    prefix="/authz", tags=["Authorization"])
+app.include_router(stats_router,
+                   prefix="/stats", tags=["Statistics"])
 
 # Create TilerFactory instance for COGs
 cog = TilerFactory()
