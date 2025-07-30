@@ -100,6 +100,22 @@
         </q-item>
 
         <q-item-label class="text-h6" header>{{ t('help') }}</q-item-label>
+        <q-item clickable :to="'/publication'">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-upload" size="xs" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ t('publication_flow') }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable :to="'/layout'">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-newspaper" size="xs" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ t('layout') }}</q-item-label>
+          </q-item-section>
+        </q-item>
         <q-item
           clickable
           v-close-popup
@@ -136,11 +152,17 @@ const showLogin = ref(false);
 const username = computed(() => authStore.profile?.email);
 
 onMounted(() => {
-  void authStore.init().then(() => {
-    if (!authStore.isAuthenticated) {
-      showLogin.value = true;
-    }
-  });
+  void authStore
+    .init()
+    .then(() => {
+      if (!authStore.isAuthenticated) {
+        showLogin.value = true;
+      }
+    })
+    .catch((error) => {
+      console.error('Error initializing auth store:', error);
+      onLogout();
+    });
 });
 
 watch(

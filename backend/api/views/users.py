@@ -47,7 +47,7 @@ async def update(
 
 
 @router.put("/{id}/password")
-async def update(
+async def update_password(
     id: str,
     payload: AppUserPassword,
     user: User = Depends(kc_service.require_admin())

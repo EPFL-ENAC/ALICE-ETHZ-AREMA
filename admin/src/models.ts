@@ -45,6 +45,8 @@ export interface Entity {
   created_by?: string;
   updated_by?: string;
   published_by?: string;
+
+  state?: string;
 }
 
 export interface PhysicalEntity extends Entity {
@@ -224,4 +226,14 @@ export interface AppUser {
   totp: boolean;
   roles: string[];
   password?: string;
+}
+
+export interface GroupByCount {
+  value: string | null;
+  count: number;
+}
+
+export interface GroupByResult {
+  field: string;
+  counts: GroupByCount[];
 }

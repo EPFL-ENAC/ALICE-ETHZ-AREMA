@@ -18,7 +18,7 @@
       >
         <template v-slot:top>
           <q-btn
-            v-if="authStore.isAdmin || authStore.isContrib"
+            v-if="authStore.isAdmin || authStore.isReviewer || authStore.isContributor"
             size="sm"
             color="primary"
             :disable="loading"
@@ -73,43 +73,18 @@
             </div>
           </q-td>
         </template>
+        <template v-slot:body-cell-state="props">
+          <q-td :props="props">
+            <entity-state-btn
+              :entity="props.row"
+              type="technical-construction"
+              @state-changed="onStateChanged()"
+            />
+          </q-td>
+        </template>
         <template v-slot:body-cell-action="props">
           <q-td :props="props">
-            <q-btn
-              color="grey-8"
-              size="12px"
-              flat
-              dense
-              round
-              icon="edit"
-              :title="t('edit')"
-              @click="onEdit(props.row)"
-            >
-            </q-btn>
-            <q-btn
-              v-if="authStore.isAdmin"
-              color="grey-8"
-              size="12px"
-              flat
-              dense
-              round
-              icon="publish"
-              :title="t('publish_unpublish')"
-              @click="onTogglePublish(props.row)"
-            >
-            </q-btn>
-            <q-btn
-              v-if="authStore.isAdmin"
-              color="grey-8"
-              size="12px"
-              flat
-              dense
-              round
-              icon="delete"
-              :title="t('remove')"
-              @click="onRemove(props.row)"
-            >
-            </q-btn>
+            <entity-actions-btn :entity="props.row" @action="onAction(props.row, $event)" />
           </q-td>
         </template>
       </q-table>
@@ -120,12 +95,6 @@
         :item="selected"
         @saved="onSaved"
       ></construction-technique-dialog>
-      <confirm-dialog
-        v-model="showConfirmDialog"
-        :title="t('remove')"
-        :text="t('confirm_remove', { name: selected?.name })"
-        @confirm="remove()"
-      />
     </div>
   </q-page>
 </template>
@@ -134,12 +103,13 @@
 import type { Option, Query } from 'src/components/models';
 import type { TechnicalConstruction } from 'src/models';
 import ConstructionTechniqueDialog from 'src/components/ConstructionTechniqueDialog.vue';
-import ConfirmDialog from 'src/components/ConfirmDialog.vue';
 import { makePaginationRequestHandler } from 'src/utils/pagination';
 import type { PaginationOptions } from 'src/utils/pagination';
 import { toDatetimeString, isDatetimeBefore } from 'src/utils/time';
 import { notifyError, notifySuccess } from 'src/utils/notify';
 import type { Alignment } from 'src/components/models';
+import EntityActionsBtn from 'src/components/EntityActionsBtn.vue';
+import EntityStateBtn from 'src/components/EntityStateBtn.vue';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
@@ -176,6 +146,15 @@ const columns = computed(() => {
       style: 'width: 50px',
     },
     {
+      name: 'state',
+      required: true,
+      label: t('state'),
+      align: 'left' as Alignment,
+      field: 'state',
+      sortable: true,
+      style: 'min-width: 120px',
+    },
+    {
       name: 'types',
       required: true,
       label: t('types'),
@@ -197,6 +176,14 @@ const columns = computed(() => {
       sortable: false,
     },
     {
+      name: 'createdBy',
+      required: true,
+      label: t('created_by'),
+      align: 'left' as Alignment,
+      field: 'created_by',
+      sortable: true,
+    },
+    {
       name: 'lastModification',
       required: true,
       label: t('last_modification'),
@@ -207,7 +194,7 @@ const columns = computed(() => {
     },
   ];
 
-  if (authStore.isAdmin || authStore.isContrib) {
+  if (authStore.isAdmin || authStore.isReviewer || authStore.isContributor) {
     cols.splice(2, 0, {
       name: 'action',
       align: 'right' as Alignment,
@@ -215,7 +202,7 @@ const columns = computed(() => {
       field: 'action',
       required: false,
       sortable: false,
-      style: 'width: 100px',
+      style: 'min-width: 100px',
     });
   }
 
@@ -224,7 +211,6 @@ const columns = computed(() => {
 
 const selected = ref<TechnicalConstruction>();
 const showEditDialog = ref(false);
-const showConfirmDialog = ref(false);
 const tableRef = ref();
 const rows = ref<TechnicalConstruction[]>([]);
 const filter = ref('');
@@ -297,15 +283,70 @@ function onAdd() {
   showEditDialog.value = true;
 }
 
+function onStateChanged() {
+  tableRef.value.requestServerInteraction();
+}
+
+function onAction(item: TechnicalConstruction, action: string) {
+  switch (action) {
+    case 'edit':
+      onEdit(item);
+      break;
+    case 'publish':
+      onPublish(item);
+      break;
+    case 'unpublish':
+      onUnpublish(item);
+      break;
+    case 'remove':
+      onRemove(item);
+      break;
+    case 'lock':
+      onToggleLock(item);
+      break;
+    default:
+      console.warn(`Unknown action: ${action}`);
+  }
+}
+
 function onEdit(item: TechnicalConstruction) {
   selected.value = { ...item };
   showEditDialog.value = true;
 }
-
-function onTogglePublish(item: TechnicalConstruction) {
+function onPublish(item: TechnicalConstruction) {
   if (!item.id) return;
   void service
-    .togglePublish(item.id)
+    .publish(item.id)
+    .then(() => {
+      tableRef.value.requestServerInteraction();
+    })
+    .catch(notifyError);
+}
+
+function onUnpublish(item: TechnicalConstruction) {
+  if (!item.id) return;
+  void service
+    .unpublish(item.id)
+    .then(() => {
+      tableRef.value.requestServerInteraction();
+    })
+    .catch(notifyError);
+}
+
+function onToggleLock(item: TechnicalConstruction) {
+  if (!item.id) return;
+  void service
+    .setState(item.id, item.state === 'locked' ? 'draft' : 'locked')
+    .then(() => {
+      tableRef.value.requestServerInteraction();
+    })
+    .catch(notifyError);
+}
+
+function onRemove(item: TechnicalConstruction) {
+  if (!item.id) return;
+  void service
+    .remove(item.id)
     .then(() => {
       tableRef.value.requestServerInteraction();
     })
@@ -314,21 +355,6 @@ function onTogglePublish(item: TechnicalConstruction) {
 
 function onSaved() {
   tableRef.value.requestServerInteraction();
-}
-
-function onRemove(item: TechnicalConstruction) {
-  selected.value = item;
-  showConfirmDialog.value = true;
-}
-
-function remove() {
-  if (!selected.value?.id) return;
-  void service
-    .remove(selected.value?.id)
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch(notifyError);
 }
 
 function getTypeLabel(val: string): string {

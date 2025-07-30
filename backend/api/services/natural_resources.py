@@ -1,13 +1,14 @@
 from logging import debug
 from api.db import AsyncSession
 from sqlalchemy.sql import text
-from sqlalchemy.orm import selectinload
+from sqlalchemy import func
 from sqlmodel import select
 from fastapi import HTTPException
 from api.models.domain import FileItem, NaturalResource, BuildingMaterial, BuildingMaterialNaturalResource
-from api.models.query import NaturalResourceResult
+from api.models.query import NaturalResourceResult, GroupByResult, GroupByCount
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
+from api.services.entity import EntityService
 from api.services.s3 import s3_client
 from api.utils.files import moveTempFile
 from api.auth import User
@@ -20,6 +21,12 @@ class NaturalResourceQueryBuilder(QueryBuilder):
         query = self.build_count_query()
         query = self._apply_joins(query, filter)
         return query
+
+    def build_group_query_with_joins(self, filter, group_by_column):
+        query = self._apply_filter(
+            select(group_by_column, func.count(func.distinct(self.model.id))))
+        query = self._apply_joins(query, filter)
+        return query.group_by(group_by_column)
 
     def build_query_with_joins(self, total_count, filter, fields=None):
         start, end, query = self.build_query(total_count, fields)
@@ -34,33 +41,54 @@ class NaturalResourceQueryBuilder(QueryBuilder):
         return query
 
 
-class NaturalResourceService:
+class NaturalResourceService(EntityService):
 
     def __init__(self, session: AsyncSession):
         self.session = session
         self.entityType = "natural-resource"
         self.folder = f"{self.entityType}s"
 
-    async def indexAll(self) -> int:
-        """Index all natural resources"""
+    async def reIndexAll(self) -> int:
+        """Index all natural resources that were published"""
         indexService = EntityIndexer()
         # delete documents of this type
         indexService.deleteEntities(self.entityType)
         # add all documents
         count = 0
         for entity in (await self.session.exec(select(NaturalResource))).all():
-            indexService.addEntity(
-                self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
-            count += 1
-            entity.published_at = datetime.now()
+            if entity.published_at is not None or entity.state == "to-publish":
+                indexService.addEntity(
+                    self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
+                count += 1
+                entity.published_at = datetime.now()
+                if entity.state == "to-publish":
+                    entity.state = "draft"
         await self.session.commit()
-        debug(f"Indexed {count} natural resources")
+        debug(f"Published {count} natural resources")
         return count
 
     async def count(self) -> int:
         """Count all natural resources"""
         count = (await self.session.exec(text("select count(id) from naturalresource"))).scalar()
         return count
+
+    async def count_group_by(self, filter: dict, group_by: str) -> dict:
+        """Count all natural resources matching filter"""
+        builder = NaturalResourceQueryBuilder(NaturalResource, filter, [], [], {
+            "$building_materials": BuildingMaterial
+        })
+
+        # Do a query to satisfy total count
+        count_query = builder.build_group_query_with_joins(
+            filter, getattr(NaturalResource, group_by))
+        group_by_count_res = await self.session.exec(count_query)
+        group_by_counts = group_by_count_res.all()
+
+        # Convert to dict
+        return GroupByResult(
+            field=group_by,
+            counts=[GroupByCount(value=str(item[0]) if item[0] else None, count=item[1])
+                    for item in group_by_counts])
 
     async def get(self, id: int) -> NaturalResource:
         """Get a natural resource by id"""
@@ -148,13 +176,16 @@ class NaturalResourceService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Natural resource not found")
+        # check edit permission
+        if not self.can_edit(entity, user):
+            raise HTTPException(
+                status_code=403, detail="Not enough permissions")
         for key, value in payload.model_dump().items():
             print(key, value)
             if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "published_at", "published_by"]:
                 setattr(entity, key, value)
         entity.updated_at = datetime.now()
-        if user:
-            entity.updated_by = user.username
+        entity.updated_by = user.username
         # handle tmp files
         if entity.files:
             s3_folder = f"{self.folder}/{entity.id}"
@@ -169,8 +200,8 @@ class NaturalResourceService:
         await self.session.commit()
         return entity
 
-    async def index(self, id: int, user: User = None) -> None:
-        """Toggle publication of a natural resource"""
+    async def set_state(self, id: int, state: str, user: User = None) -> None:
+        """Set the state of a natural resource by id"""
         res = await self.session.exec(
             select(NaturalResource).where(NaturalResource.id == id)
         )
@@ -178,16 +209,39 @@ class NaturalResourceService:
         if not entity:
             raise HTTPException(
                 status_code=404, detail="Natural resource not found")
-        if not entity.published_at or entity.published_at < entity.updated_at:
-            EntityIndexer().updateEntity(
-                self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
-            entity.published_at = datetime.now()
-            if user:
-                entity.published_by = user.username
-        else:
-            EntityIndexer().deleteEntity(self.entityType, entity.id)
-            entity.published_at = None
-            entity.published_by = None
+        entity = self.apply_state(entity, state, user)
+        await self.session.commit()
+
+    async def index(self, id: int, user: User = None) -> None:
+        """Publish a natural resource by id"""
+        res = await self.session.exec(
+            select(NaturalResource).where(NaturalResource.id == id)
+        )
+        entity = res.one_or_none()
+        if not entity:
+            raise HTTPException(
+                status_code=404, detail="Natural resource not found")
+        EntityIndexer().updateEntity(
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
+        entity.published_at = datetime.now()
+        if user:
+            entity.published_by = user.username
+        entity.state = "draft"
+        await self.session.commit()
+
+    async def remove_index(self, id: int, user: User = None) -> None:
+        """Unpublish a natural resource by id"""
+        res = await self.session.exec(
+            select(NaturalResource).where(NaturalResource.id == id)
+        )
+        entity = res.one_or_none()
+        if not entity:
+            raise HTTPException(
+                status_code=404, detail="Natural resource not found")
+        EntityIndexer().deleteEntity(self.entityType, entity.id)
+        entity.published_at = None
+        entity.published_by = None
+        entity.state = "draft"
         await self.session.commit()
 
     def _makeTags(self, entity: NaturalResource) -> list[str]:

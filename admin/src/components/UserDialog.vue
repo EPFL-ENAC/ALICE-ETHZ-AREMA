@@ -65,6 +65,7 @@
           <div class="q-mb-lg">
             <div class="text-grey-8 q-mb-sm">{{ t('role') + ' *' }}</div>
             <q-option-group v-model="role" dense :options="roleOptions" color="primary" inline />
+            <div class="text-hint q-mt-sm">{{ t('roles_hint') }}</div>
           </div>
           <div>
             <q-checkbox v-model="selected.enabled" :label="t('enabled')" dense class="q-mb-md" />
@@ -110,6 +111,7 @@ const role = ref('app-contributor'); // Default role
 
 const roleOptions = [
   { label: t('roles.contributor'), value: 'app-contributor' },
+  { label: t('roles.reviewer'), value: 'app-reviewer' },
   { label: t('roles.administrator'), value: 'app-administrator' },
 ];
 
@@ -128,7 +130,9 @@ watch(
       }
       role.value = selected.value.roles?.includes('app-administrator')
         ? 'app-administrator'
-        : 'app-contributor';
+        : selected.value.roles?.includes('app-reviewer')
+          ? 'app-reviewer'
+          : 'app-contributor';
     }
     showDialog.value = value;
   },
@@ -146,16 +150,16 @@ async function onSave() {
   if (selected.value.roles === undefined) {
     selected.value.roles = [];
   }
-  let index = selected.value.roles.indexOf('app-administrator');
-  if (index !== -1) {
-    selected.value.roles.splice(index, 1);
-  }
-  index = selected.value.roles.indexOf('app-contributor');
-  if (index !== -1) {
-    selected.value.roles.splice(index, 1);
-  }
+  ['app-administrator', 'app-reviewer', 'app-contributor'].forEach((role) => {
+    const index = selected.value.roles.indexOf(role);
+    if (index !== -1) {
+      selected.value.roles.splice(index, 1);
+    }
+  });
   if (role.value === 'app-administrator') {
     selected.value.roles.push('app-administrator');
+  } else if (role.value === 'app-reviewer') {
+    selected.value.roles.push('app-reviewer');
   } else {
     selected.value.roles.push('app-contributor');
   }

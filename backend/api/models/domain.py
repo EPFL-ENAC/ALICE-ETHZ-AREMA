@@ -33,6 +33,8 @@ class Entity(SQLModel):
     updated_by: Optional[str] = Field(default=None)
     published_by: Optional[str] = Field(default=None)
 
+    state: Optional[str] = Field(default="draft")
+
 
 class PhysicalEntity(Entity):
     density: Optional[float] = Field(default=None)

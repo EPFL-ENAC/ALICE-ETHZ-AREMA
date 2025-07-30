@@ -44,7 +44,13 @@
               )"
               :key="role"
               class="q-ml-none q-mr-sm"
-              :color="role === 'app-administrator' ? 'primary' : 'secondary'"
+              :color="
+                role === 'app-administrator'
+                  ? 'primary'
+                  : role === 'app-reviewer'
+                    ? 'secondary'
+                    : 'grey'
+              "
               text-color="white"
               size="12px"
             >
@@ -183,7 +189,7 @@ const columns = computed(() => {
       field: 'action',
       required: false,
       sortable: false,
-      style: 'width: 100px',
+      style: 'min-width: 100px',
     });
   }
   return cols;

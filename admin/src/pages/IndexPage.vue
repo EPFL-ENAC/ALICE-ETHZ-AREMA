@@ -3,67 +3,38 @@
     <div class="text-h5 q-pa-md">{{ t('dashboard') }}</div>
     <q-separator />
     <div class="q-pa-md">
-      <div class="text-h6 q-mb-md">{{ t('layout') }}</div>
-      <div class="text-help q-mb-md">{{ t('layout_help') }}</div>
-      <div class="row">
-        <div class="col-12 col-md-2"></div>
-        <div class="col-12 col-md-8">
-          <q-card flat bordered class="text-grey-8">
-            <q-card-section>
-              <div class="row q-col-gutter-md">
-                <div class="col-2">
-                  <q-skeleton height="100px" class="q-pa-md bg-teal-1" style="margin-top: 650px">
-                    {{ t('external_links') }}
-                  </q-skeleton>
-                </div>
-                <div class="col-8">
-                  <q-skeleton height="50px" class="q-mb-md q-pa-md bg-teal-1">
-                    {{ t('name') }}
-                  </q-skeleton>
-                  <q-skeleton height="100px" class="q-mb-md q-pa-md bg-teal-1">
-                    {{ t('description') }}
-                  </q-skeleton>
-
-                  <q-skeleton height="100px" class="q-mb-md q-pa-md bg-teal-1">
-                    {{ t('physical_characteristics') }}
-                  </q-skeleton>
-
-                  <q-skeleton height="150px" class="q-mb-md q-pa-md bg-teal-1">
-                    {{ t('article_top') }}
-                  </q-skeleton>
-
-                  <div
-                    style="
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <q-skeleton width="300px" height="100px" class="q-mb-md q-pa-md bg-teal-1">
-                      {{ t('multimedia') }}
-                    </q-skeleton>
-
-                    <q-skeleton type="rect" width="300px" class="q-mb-md q-pa-xs bg-teal-1">
-                      {{ t('legend') }}
-                    </q-skeleton>
-                  </div>
-
-                  <q-skeleton height="150px" class="q-pa-md bg-teal-1">
-                    {{ t('article_bottom') }}
-                  </q-skeleton>
-                </div>
-                <div class="col-2">
-                  <q-skeleton height="100px" class="q-pa-md bg-teal-1" style="margin-top: 300px">
-                    {{ t('side_note') }}
-                  </q-skeleton>
-                </div>
-              </div>
-            </q-card-section>
-            <div></div>
-          </q-card>
+      <div v-show="authStore.isAuthenticated">
+        <div class="text-h6 q-mb-md">{{ t('contributions') }}</div>
+        <q-spinner-dots v-if="statsStore.loading" size="lg" color="primary" />
+        <div v-if="!statsStore.loading" class="row">
+          <div v-for="type in types" :key="type">
+            <FieldFrequenciesChart :type="type" :height="200" :width="300" />
+          </div>
         </div>
-        <div class="col-12 col-md-2"></div>
+        <div v-if="!statsStore.loading" class="row q-col-gutter-md q-mb-md">
+          <q-select
+            v-show="false"
+            v-model="groupBy"
+            :options="[
+              { label: t('state'), value: 'state' },
+              { label: t('created_by'), value: 'created_by' },
+              { label: t('updated_by'), value: 'updated_by' },
+              { label: t('published_by'), value: 'published_by' },
+            ]"
+            emit-value
+            map-options
+            filled
+            dense
+            :label="t('group_by')"
+            @update:model-value="onLoadFrequencies"
+            style="width: 200px"
+          />
+          <q-checkbox
+            v-model="createdByMe"
+            :label="t('created_by_me')"
+            @update:model-value="onLoadFrequencies"
+          />
+        </div>
       </div>
       <div v-if="authStore.isAdmin">
         <div class="text-h6 q-mb-md q-mt-lg">{{ t('search_index') }}</div>
@@ -94,11 +65,55 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
+import FieldFrequenciesChart from 'src/components/charts/FieldFrequenciesChart.vue';
+import { notifyError } from 'src/utils/notify';
 
 const authStore = useAuthStore();
 const searchService = useSearchService();
+const statsStore = useStatsStore();
 const $q = useQuasar();
-const { t } = useI18n({ useScope: 'global' });
+const { t } = useI18n();
+
+const groupBy = ref('state');
+const createdByMe = ref(false);
+const username = computed(() => authStore.profile?.username || authStore.profile?.email);
+
+const types = computed(() => {
+  return [
+    'natural-resource',
+    'building-material',
+    'technical-construction',
+    'building',
+    'professional',
+  ].filter((type) => statsStore.frequencies?.[type]);
+});
+
+onMounted(() => {
+  if (authStore.isAuthenticated) {
+    createdByMe.value = authStore.isContributor;
+    onLoadFrequencies();
+  }
+});
+
+watch(
+  () => authStore.isAuthenticated,
+  () => {
+    if (authStore.isAuthenticated) {
+      createdByMe.value = authStore.isContributor;
+      onLoadFrequencies();
+    }
+  },
+);
+
+function onLoadFrequencies() {
+  const filter: Record<string, string> | undefined = createdByMe.value
+    ? { created_by: username.value || '' }
+    : undefined;
+  statsStore.loadFrequencies(groupBy.value, filter).catch((err) => {
+    console.error('Error loading frequencies:', err);
+    notifyError(err);
+  });
+}
 
 function onIndexAll() {
   searchService

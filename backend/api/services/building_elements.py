@@ -109,7 +109,7 @@ class BuildingElementService:
         self.session.add(entity)
         await self.session.commit()
         # handle building elements
-        await self._apply_building_element_materials(entity.id, payload.materials)
+        await self._apply_building_element_materials(entity.id, materials)
         return entity
 
     async def update(self, id: int, payload: BuildingElementDraft) -> BuildingElement:

@@ -1,5 +1,5 @@
-from sqlmodel import SQLModel, Field, Relationship
-from typing import List, Optional
+from sqlmodel import SQLModel, Field
+from typing import Optional
 
 # Authorization models
 
