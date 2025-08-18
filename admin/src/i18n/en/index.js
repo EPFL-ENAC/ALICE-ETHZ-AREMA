@@ -48,6 +48,7 @@ export default {
   areaDelivery: 'Area of delivery',
   article_bottom: 'Article (bottom)',
   article_top: 'Article (top)',
+  assigned_to: 'Assigned to',
   building_building_material_used_hint: 'Building material used.',
   building_element_building_material_distance_hint:
     'Distance to fetch the building materials in kilometers.',

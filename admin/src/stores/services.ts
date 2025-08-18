@@ -121,6 +121,34 @@ export class Service<
     return await api.put(`/${this.entityName}/${id}/_state?s=${state}`, {}, config);
   }
 
+  async assign(id: string | number, assignee: string) {
+    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
+    await authStore.updateToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
+      },
+    };
+    return await api.put(
+      `/${this.entityName}/${id}/_assign`,
+      {
+        assignee,
+      },
+      config,
+    );
+  }
+
+  async unassign(id: string | number) {
+    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
+    await authStore.updateToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
+      },
+    };
+    return await api.delete(`/${this.entityName}/${id}/_assign`, config);
+  }
+
   async remove(id: string | number) {
     if (!authStore.isAuthenticated) throw new Error('Not authenticated');
     await authStore.updateToken();

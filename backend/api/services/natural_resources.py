@@ -44,9 +44,7 @@ class NaturalResourceQueryBuilder(QueryBuilder):
 class NaturalResourceService(EntityService):
 
     def __init__(self, session: AsyncSession):
-        self.session = session
-        self.entityType = "natural-resource"
-        self.folder = f"{self.entityType}s"
+        super().__init__(session, "natural-resource")
 
     async def reIndexAll(self) -> int:
         """Index all natural resources that were published"""

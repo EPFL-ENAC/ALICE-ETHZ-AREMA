@@ -45,9 +45,7 @@ class BuildingMaterialQueryBuilder(QueryBuilder):
 class BuildingMaterialService(EntityService):
 
     def __init__(self, session: AsyncSession):
-        self.session = session
-        self.entityType = "building-material"
-        self.folder = f"{self.entityType}s"
+        super().__init__(session, "building-material")
 
     async def reIndexAll(self) -> int:
         """Index all building materials that were published"""

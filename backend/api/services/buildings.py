@@ -47,9 +47,7 @@ class BuildingQueryBuilder(QueryBuilder):
 class BuildingService(EntityService):
 
     def __init__(self, session: AsyncSession):
-        self.session = session
-        self.entityType = "building"
-        self.folder = f"{self.entityType}s"
+        super().__init__(session, "building")
 
     async def reIndexAll(self) -> int:
         """Index all buildings that were published"""

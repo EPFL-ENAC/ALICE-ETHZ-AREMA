@@ -82,6 +82,17 @@
             />
           </q-td>
         </template>
+        <template v-slot:body-cell-assignedTo="props">
+          <q-td :props="props">
+            <q-badge
+              v-if="props.value"
+              color="accent"
+              :label="props.value"
+              :title="toDatetimeString(props.row.assigned_at)"
+            />
+            <span v-else>-</span>
+          </q-td>
+        </template>
         <template v-slot:body-cell-action="props">
           <q-td :props="props">
             <entity-actions-btn :entity="props.row" @action="onAction(props.row, $event)" />
@@ -153,6 +164,14 @@ const columns = computed(() => {
       field: 'state',
       sortable: true,
       style: 'min-width: 120px;',
+    },
+    {
+      name: 'assignedTo',
+      required: true,
+      label: t('assigned_to'),
+      align: 'left' as Alignment,
+      field: 'assigned_to',
+      sortable: true,
     },
     {
       name: 'types',

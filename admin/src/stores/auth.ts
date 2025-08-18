@@ -145,6 +145,12 @@ export const useAuthStore = defineStore('auth', () => {
     return isAdmin.value || isReviewer.value;
   }
 
+  function canAssign(entity: Entity) {
+    if (!isAuthenticated.value) return false;
+    if (entity.state !== 'in-review') return false;
+    return isAdmin.value;
+  }
+
   return {
     isAuthenticated,
     isAdmin,
@@ -168,5 +174,6 @@ export const useAuthStore = defineStore('auth', () => {
     canToUnpublish,
     canToDelete,
     canDraft,
+    canAssign,
   };
 });

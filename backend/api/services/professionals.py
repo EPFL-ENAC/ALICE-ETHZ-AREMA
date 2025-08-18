@@ -45,9 +45,7 @@ class ProfessionalQueryBuilder(QueryBuilder):
 class ProfessionalService(EntityService):
 
     def __init__(self, session: AsyncSession):
-        self.session = session
-        self.entityType = "professional"
-        self.folder = f"{self.entityType}s"
+        super().__init__(session, "professional")
 
     async def reIndexAll(self) -> int:
         """Index all professionals that were published"""

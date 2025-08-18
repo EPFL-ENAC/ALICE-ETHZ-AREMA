@@ -45,9 +45,7 @@ class TechnicalConstructionQueryBuilder(QueryBuilder):
 class TechnicalConstructionService(EntityService):
 
     def __init__(self, session: AsyncSession):
-        self.session = session
-        self.entityType = "technical-construction"
-        self.folder = f"{self.entityType}s"
+        super().__init__(session, "technical-construction")
 
     async def reIndexAll(self) -> int:
         """Index all technical constructions that were published"""

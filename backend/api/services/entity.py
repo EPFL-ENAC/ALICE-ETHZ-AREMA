@@ -1,10 +1,17 @@
+import datetime
 from fastapi import HTTPException
+from api.db import AsyncSession
 from api.models.domain import Entity
 from api.auth import User
 
 
 class EntityService:
     """Base service for entity operations"""
+
+    def __init__(self, session: AsyncSession, entityType: str):
+        self.session = session
+        self.entityType = entityType
+        self.folder = f"{self.entityType}s"
 
     def can_edit(self, entity: Entity, user: User) -> bool:
         """Check if the user can edit the entity"""
@@ -15,6 +22,13 @@ class EntityService:
         if "app-reviewer" in user.realm_roles or "app-administrator" in user.realm_roles:
             return True
         return False
+
+    async def assign(self, entity: Entity, assignee: str | None) -> Entity:
+        """Assign the entity to a user"""
+        entity.assigned_to = assignee
+        entity.assigned_at = datetime.now() if assignee else None
+        await self.session.commit()
+        return entity
 
     def apply_state(self, entity: Entity, state: str, user: User) -> Entity:
         """Set the state of the entity"""
@@ -48,7 +62,7 @@ class EntityService:
                 status_code=400, detail="Entity must be in draft or to-publish state to be reviewed")
         if self._is_contributor(user) and not self._is_author(entity, user):
             raise HTTPException(
-                status_code=402, detail="Operation not allowed")
+                status_code=403, detail="Operation not allowed")
         entity.state = "in-review"
         return entity
 
@@ -61,7 +75,7 @@ class EntityService:
                 status_code=400, detail="Entity must be in review to be published")
         if self._is_contributor(user):
             raise HTTPException(
-                status_code=402, detail="Operation not allowed")
+                status_code=403, detail="Operation not allowed")
         entity.state = "to-publish"
         return entity
 
@@ -71,7 +85,7 @@ class EntityService:
             return entity
         if self._is_contributor(user) and not self._is_author(entity, user):
             raise HTTPException(
-                status_code=402, detail="Operation not allowed")
+                status_code=403, detail="Operation not allowed")
         entity.state = "to-unpublish"
         return entity
 
@@ -81,7 +95,7 @@ class EntityService:
             return entity
         if self._is_contributor(user) and not self._is_author(entity, user):
             raise HTTPException(
-                status_code=402, detail="Operation not allowed")
+                status_code=403, detail="Operation not allowed")
         entity.state = "draft"
         return entity
 
@@ -91,7 +105,7 @@ class EntityService:
             return entity
         if "app-administrator" not in user.realm_roles:
             raise HTTPException(
-                status_code=402, detail="Operation not allowed")
+                status_code=403, detail="Operation not allowed")
         entity.state = "locked"
         return entity
 
@@ -101,7 +115,7 @@ class EntityService:
             return entity
         if self._is_contributor(user) and not self._is_author(entity, user):
             raise HTTPException(
-                status_code=402, detail="Operation not allowed")
+                status_code=403, detail="Operation not allowed")
         entity.state = "to-delete"
         return entity
 

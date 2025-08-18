@@ -95,3 +95,24 @@ async def set_state(
 ) -> None:
     """Set the state of a natural resource by id"""
     return await NaturalResourceService(session).set_state(id, s, user)
+
+
+@router.put("/{id}/_assign", response_model_exclude_none=True)
+async def assign(
+    id: int,
+    assignee: str = Query(None),
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
+) -> None:
+    """Assign a natural resource by id"""
+    return await NaturalResourceService(session).assign(id, assignee)
+
+
+@router.delete("/{id}/_assign", response_model_exclude_none=True)
+async def unassign(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
+) -> None:
+    """Unassign a natural resource by id"""
+    return await NaturalResourceService(session).assign(id, None)
