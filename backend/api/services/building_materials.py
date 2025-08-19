@@ -45,9 +45,7 @@ class BuildingMaterialQueryBuilder(QueryBuilder):
 class BuildingMaterialService(EntityService):
 
     def __init__(self, session: AsyncSession):
-        self.session = session
-        self.entityType = "building-material"
-        self.folder = f"{self.entityType}s"
+        super().__init__(session, "building-material")
 
     async def reIndexAll(self) -> int:
         """Index all building materials that were published"""
@@ -213,25 +211,18 @@ class BuildingMaterialService(EntityService):
 
     async def set_state(self, id: int, state: str, user: User = None) -> None:
         """Set the state of a building material by id"""
-        res = await self.session.exec(
-            select(BuildingMaterial).where(BuildingMaterial.id == id)
-        )
-        entity = res.one_or_none()
-        if not entity:
-            raise HTTPException(
-                status_code=404, detail="Building material not found")
+        entity = await self.get(id)
         entity = self.apply_state(entity, state, user)
         await self.session.commit()
 
+    async def set_assignee(self, id: int, assignee: str | None) -> None:
+        """Set the assignee of a building material by id"""
+        entity = await self.get(id)
+        await self.assign(entity, assignee)
+
     async def index(self, id: int, user: User = None) -> None:
         """Publish a building material by id"""
-        res = await self.session.exec(
-            select(BuildingMaterial).where(BuildingMaterial.id == id)
-        )
-        entity = res.one_or_none()
-        if not entity:
-            raise HTTPException(
-                status_code=404, detail="Building material not found")
+        entity = await self.get(id)
         EntityIndexer().updateEntity(
             self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         entity.published_at = datetime.now()
@@ -242,13 +233,7 @@ class BuildingMaterialService(EntityService):
 
     async def remove_index(self, id: int, user: User = None) -> None:
         """Unpublish a building material by id"""
-        res = await self.session.exec(
-            select(BuildingMaterial).where(BuildingMaterial.id == id)
-        )
-        entity = res.one_or_none()
-        if not entity:
-            raise HTTPException(
-                status_code=404, detail="Building material not found")
+        entity = await self.get(id)
         EntityIndexer().deleteEntity(self.entityType, entity.id)
         entity.published_at = None
         entity.published_by = None

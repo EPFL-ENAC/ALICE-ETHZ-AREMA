@@ -78,7 +78,16 @@
             <entity-state-btn
               :entity="props.row"
               type="technical-construction"
-              @state-changed="onStateChanged()"
+              @state-changed="onRefresh"
+            />
+          </q-td>
+        </template>
+        <template v-slot:body-cell-assigned_to="props">
+          <q-td :props="props">
+            <entity-assignee-btn
+              :entity="props.row"
+              type="technical-construction"
+              @assignee-changed="onRefresh"
             />
           </q-td>
         </template>
@@ -93,7 +102,7 @@
         v-if="selected"
         v-model="showEditDialog"
         :item="selected"
-        @saved="onSaved"
+        @saved="onRefresh"
       ></construction-technique-dialog>
     </div>
   </q-page>
@@ -110,6 +119,7 @@ import { notifyError, notifySuccess } from 'src/utils/notify';
 import type { Alignment } from 'src/components/models';
 import EntityActionsBtn from 'src/components/EntityActionsBtn.vue';
 import EntityStateBtn from 'src/components/EntityStateBtn.vue';
+import EntityAssigneeBtn from 'src/components/EntityAssigneeBtn.vue';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
@@ -153,6 +163,14 @@ const columns = computed(() => {
       field: 'state',
       sortable: true,
       style: 'min-width: 120px',
+    },
+    {
+      name: 'assigned_to',
+      required: true,
+      label: t('assigned_to'),
+      align: 'left' as Alignment,
+      field: 'assigned_to',
+      sortable: true,
     },
     {
       name: 'types',
@@ -224,8 +242,7 @@ const pagination = ref<PaginationOptions>({
 const tcTypes = ref<Option[]>([]);
 
 onMounted(() => {
-  // get initial data from server (1st page)
-  tableRef.value.requestServerInteraction();
+  onRefresh();
   void taxonomyStore.getTaxonomyNode('technical-construction', 'type').then((types) => {
     if (!types) {
       console.warn('No taxonomy found for technical-construction type');
@@ -270,7 +287,7 @@ function onIndex() {
     .index()
     .then((result) => {
       notifySuccess(t('all_items_indexed', { count: result }));
-      tableRef.value.requestServerInteraction();
+      onRefresh();
     })
     .catch(notifyError)
     .finally(() => {
@@ -283,7 +300,7 @@ function onAdd() {
   showEditDialog.value = true;
 }
 
-function onStateChanged() {
+function onRefresh() {
   tableRef.value.requestServerInteraction();
 }
 
@@ -315,46 +332,25 @@ function onEdit(item: TechnicalConstruction) {
 }
 function onPublish(item: TechnicalConstruction) {
   if (!item.id) return;
-  void service
-    .publish(item.id)
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch(notifyError);
+  void service.publish(item.id).then(onRefresh).catch(notifyError);
 }
 
 function onUnpublish(item: TechnicalConstruction) {
   if (!item.id) return;
-  void service
-    .unpublish(item.id)
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch(notifyError);
+  void service.unpublish(item.id).then(onRefresh).catch(notifyError);
 }
 
 function onToggleLock(item: TechnicalConstruction) {
   if (!item.id) return;
   void service
     .setState(item.id, item.state === 'locked' ? 'draft' : 'locked')
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
+    .then(onRefresh)
     .catch(notifyError);
 }
 
 function onRemove(item: TechnicalConstruction) {
   if (!item.id) return;
-  void service
-    .remove(item.id)
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch(notifyError);
-}
-
-function onSaved() {
-  tableRef.value.requestServerInteraction();
+  void service.remove(item.id).then(onRefresh).catch(notifyError);
 }
 
 function getTypeLabel(val: string): string {

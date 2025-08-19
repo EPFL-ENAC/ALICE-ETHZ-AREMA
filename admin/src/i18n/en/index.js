@@ -48,6 +48,7 @@ export default {
   areaDelivery: 'Area of delivery',
   article_bottom: 'Article (bottom)',
   article_top: 'Article (top)',
+  assigned_to: 'Assigned to',
   building_building_material_used_hint: 'Building material used.',
   building_element_building_material_distance_hint:
     'Distance to fetch the building materials in kilometers.',
@@ -144,6 +145,7 @@ export default {
   no_building_element_materials: 'No materials information',
   no_building_elements: 'No building elements',
   no_results: 'No results',
+  not_assigned: 'Not assigned',
   not_published: 'Not published',
   other_addresses: 'Other addresses',
   other: 'Other',

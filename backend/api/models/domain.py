@@ -29,9 +29,12 @@ class Entity(SQLModel):
         sa_column=TIMESTAMP(timezone=True), default=None)
     published_at: Optional[datetime] = Field(
         sa_column=TIMESTAMP(timezone=True), default=None)
+    assigned_at: Optional[datetime] = Field(
+        sa_column=TIMESTAMP(timezone=True), default=None)
     created_by: Optional[str] = Field(default=None)
     updated_by: Optional[str] = Field(default=None)
     published_by: Optional[str] = Field(default=None)
+    assigned_to: Optional[str] = Field(default=None)
 
     state: Optional[str] = Field(default="draft")
 
