@@ -218,7 +218,7 @@ class TechnicalConstructionService(EntityService):
     async def set_state(self, id: int, state: str, user: User = None) -> None:
         """Set the state of a technical construction by id"""
         entity = await self.get(id)
-        entity = self.apply_state(entity, state, user)
+        entity = await self.apply_state(entity, state, user)
         await self.session.commit()
 
     async def set_assignee(self, id: int, assignee: str | None) -> None:

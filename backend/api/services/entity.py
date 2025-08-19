@@ -30,15 +30,10 @@ class EntityService:
         entity.assigned_at = datetime.now() if assignee else None
         await self.session.commit()
         if assignee:
-            await self.send_review_assigned_email(entity, assignee)
+            await Mailer().send_review_assigned_email(self.entityType, entity.id, entity.name, assignee)
         return entity
 
-    async def send_review_assigned_email(self, entity: Entity, assignee: str) -> None:
-        """Send an email to the assignee when a review is assigned"""
-        await Mailer().send_review_assigned_email(
-            self.entityType, entity.id, entity.name, assignee)
-
-    def apply_state(self, entity: Entity, state: str, user: User) -> Entity:
+    async def apply_state(self, entity: Entity, state: str, user: User) -> Entity:
         """Set the state of the entity"""
         valid_states = ["draft", "in-review", "to-publish", "to-unpublish",
                         "published", "locked", "to-delete"]
@@ -56,6 +51,10 @@ class EntityService:
         }
         set_state_func = switcher.get(state)
         if set_state_func:
+            notification_states = ["in-review",
+                                   "to-publish", "to-unpublish", "to-delete"]
+            if state in notification_states:
+                await Mailer().send_state_transition_email(self.entityType, entity.id, entity.name, state)
             return set_state_func(entity, user)
         else:
             raise HTTPException(

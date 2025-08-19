@@ -21,7 +21,7 @@ class Mailer:
         self.smtp_name = config.SMTP_NAME
         self.smtp_password = config.SMTP_PASSWORD
         self.smtp_username = config.SMTP_USERNAME
-        self.smtp_subject_prefix = config.SMTP_SUBJECT_PREFIX
+        self.smtp_subject_prefix = config.MAIL_SUBJECT_PREFIX
 
     async def send_review_assigned_email(self, entity_type: str, entity_id: int, entity_name: str, assignee: str):
         """Send an email to the assignee when a review is assigned"""
@@ -38,6 +38,28 @@ class Mailer:
             "full_name": self._get_full_name(user),
         }
         self.send_email(user.email, subject, "review_assigned.html", context)
+
+    async def send_state_transition_email(self, entity_type: str, entity_id: int, entity_name: str, state: str):
+        """Send an email when the state of an entity is changed"""
+        subject = f"State change for {self._get_entity_type_name(entity_type)}: {entity_name} #{entity_id}"
+        url = f"https://atlas-regenmat.ch/admin/{self._get_entity_type_path(entity_type)}"
+        context = {
+            "url": url,
+            "entity_type": self._get_entity_type_name(entity_type),
+            "entity_name": entity_name,
+            "entity_id": entity_id,
+            "state": state,
+        }
+        users = await kc_admin_service.get_users_for_role("app-administrator")
+        if not users:
+            return
+        # Send email to all administrators
+        for user in users:
+            if config.MAIL_ADMINISTRATORS != "" and user.email not in config.MAIL_ADMINISTRATORS.split(","):
+                continue
+            context["full_name"] = self._get_full_name(user)
+            self.send_email(user.email, subject,
+                            "state_transition.html", context)
 
     def send_email(self, to_email: str, subject: str, template_name: str, context: dict):
         """Send an email using a Jinja2 template"""

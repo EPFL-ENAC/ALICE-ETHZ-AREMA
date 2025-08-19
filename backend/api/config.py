@@ -41,7 +41,8 @@ class Config(BaseSettings):
     SMTP_NAME: str = "AREMA"
     SMTP_PASSWORD: str = ""
     SMTP_USERNAME: str = ""
-    SMTP_SUBJECT_PREFIX: str = "[AREMA]"
+    MAIL_SUBJECT_PREFIX: str = "[AREMA]"
+    MAIL_ADMINISTRATORS: str = "shhuber@ethz.ch,yannick.marcon@epfl.ch"
 
     @model_validator(mode="before")
     def form_db_url(cls, values: dict) -> dict:

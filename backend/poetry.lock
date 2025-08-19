@@ -823,7 +823,7 @@ vectorstore-mmr = ["numpy (>=1)", "simsimd (>=3)"]
 
 [[package]]
 name = "enacit4r-auth"
-version = "0.3.1"
+version = "0.5.0"
 description = "Python authz utils for EPFL ENAC IT4R developments"
 optional = false
 python-versions = "^3.10"
@@ -839,8 +839,8 @@ python-keycloak = "^4.7.0"
 [package.source]
 type = "git"
 url = "https://github.com/EPFL-ENAC/enacit4r-auth"
-reference = "0.3.1"
-resolved_reference = "2eda0ddb273da3756830b3b50f71dba73c916ff9"
+reference = "0.5.0"
+resolved_reference = "108a125c1b7cf7c762e4deb69e4ab4abd9b55794"
 
 [[package]]
 name = "enacit4r-files"
@@ -3030,4 +3030,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "52e79be997f8136820342cf6a39d962914fd7bde89d8239fbc4ebf102c5b8519"
+content-hash = "4693493957279dae95355d8ad657b705fc85023a40f69f13c1176068736071b2"
