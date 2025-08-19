@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from fastapi import HTTPException
 from api.db import AsyncSession
 from api.models.domain import Entity
@@ -23,11 +23,10 @@ class EntityService:
             return True
         return False
 
-    async def assign(self, entity: Entity, assignee: str | None) -> Entity:
+    def assign(self, entity: Entity, assignee: str | None) -> Entity:
         """Assign the entity to a user"""
         entity.assigned_to = assignee
         entity.assigned_at = datetime.now() if assignee else None
-        await self.session.commit()
         return entity
 
     def apply_state(self, entity: Entity, state: str, user: User) -> Entity:
@@ -97,6 +96,8 @@ class EntityService:
             raise HTTPException(
                 status_code=403, detail="Operation not allowed")
         entity.state = "draft"
+        entity.assigned_to = None
+        entity.assigned_at = None
         return entity
 
     def _set_locked(self, entity: Entity, user: User) -> Entity:
@@ -119,7 +120,7 @@ class EntityService:
         entity.state = "to-delete"
         return entity
 
-    def _is_contributor(user: User) -> bool:
+    def _is_contributor(self, user: User) -> bool:
         return "app-contributor" in user.realm_roles
 
     def _is_author(self, entity: Entity, user: User) -> bool:

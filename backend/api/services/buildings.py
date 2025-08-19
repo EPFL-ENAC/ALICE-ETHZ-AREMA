@@ -231,25 +231,19 @@ class BuildingService(EntityService):
 
     async def set_state(self, id: int, state: str, user: User = None) -> None:
         """Set the state of a building by id"""
-        res = await self.session.exec(
-            select(Building).where(Building.id == id)
-        )
-        entity = res.one_or_none()
-        if not entity:
-            raise HTTPException(
-                status_code=404, detail="Building not found")
+        entity = await self.get(id)
         entity = self.apply_state(entity, state, user)
+        await self.session.commit()
+
+    async def set_assignee(self, id: int, assignee: str | None) -> None:
+        """Set the assignee of a building by id"""
+        entity = await self.get(id)
+        entity = self.assign(entity, assignee)
         await self.session.commit()
 
     async def index(self, id: int, user: User = None) -> None:
         """Publish a building by id"""
-        res = await self.session.exec(
-            select(Building).where(Building.id == id)
-        )
-        entity = res.one_or_none()
-        if not entity:
-            raise HTTPException(
-                status_code=404, detail="Building not found")
+        entity = await self.get(id)
         EntityIndexer().updateEntity(
             self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         entity.published_at = datetime.now()
@@ -260,13 +254,7 @@ class BuildingService(EntityService):
 
     async def remove_index(self, id: int, user: User = None) -> None:
         """Unpublish a building by id"""
-        res = await self.session.exec(
-            select(Building).where(Building.id == id)
-        )
-        entity = res.one_or_none()
-        if not entity:
-            raise HTTPException(
-                status_code=404, detail="Building not found")
+        entity = await self.get(id)
         EntityIndexer().deleteEntity(self.entityType, entity.id)
         entity.published_at = None
         entity.published_by = None

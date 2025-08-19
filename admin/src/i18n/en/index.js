@@ -145,6 +145,7 @@ export default {
   no_building_element_materials: 'No materials information',
   no_building_elements: 'No building elements',
   no_results: 'No results',
+  not_assigned: 'Not assigned',
   not_published: 'Not published',
   other_addresses: 'Other addresses',
   other: 'Other',

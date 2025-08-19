@@ -104,7 +104,7 @@ async def assign(
     user: User = Depends(kc_service.require_admin())
 ) -> None:
     """Assign a building material by id"""
-    return await BuildingMaterialService(session).assign(id, assignee)
+    return await BuildingMaterialService(session).set_assignee(id, assignee)
 
 
 @router.delete("/{id}/_assign", response_model_exclude_none=True)
@@ -114,4 +114,4 @@ async def unassign(
     user: User = Depends(kc_service.require_admin())
 ) -> None:
     """Unassign a building material by id"""
-    return await BuildingMaterialService(session).assign(id, None)
+    return await BuildingMaterialService(session).set_assignee(id, None)

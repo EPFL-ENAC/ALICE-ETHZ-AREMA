@@ -121,7 +121,9 @@ export class Service<
     return await api.put(`/${this.entityName}/${id}/_state?s=${state}`, {}, config);
   }
 
-  async assign(id: string | number, assignee: string) {
+  async assign(id: string | number, assignee: string | null | undefined) {
+    if (!assignee) return await this.unassign(id);
+
     if (!authStore.isAuthenticated) throw new Error('Not authenticated');
     await authStore.updateToken();
     const config = {
@@ -129,13 +131,7 @@ export class Service<
         Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
     };
-    return await api.put(
-      `/${this.entityName}/${id}/_assign`,
-      {
-        assignee,
-      },
-      config,
-    );
+    return await api.put(`/${this.entityName}/${id}/_assign?assignee=${assignee}`, {}, config);
   }
 
   async unassign(id: string | number) {

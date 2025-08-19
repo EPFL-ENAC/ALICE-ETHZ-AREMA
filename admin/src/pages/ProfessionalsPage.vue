@@ -46,7 +46,7 @@
             dense
             style="min-width: 200px"
             class="q-mr-md"
-            @update:model-value="onTypeSelection"
+            @update:model-value="onRefresh"
           />
           <q-input dense debounce="300" v-model="filter" clearable>
             <template v-slot:append>
@@ -111,22 +111,16 @@
         </template>
         <template v-slot:body-cell-state="props">
           <q-td :props="props">
-            <entity-state-btn
-              :entity="props.row"
-              type="professional"
-              @state-changed="onStateChanged()"
-            />
+            <entity-state-btn :entity="props.row" type="professional" @state-changed="onRefresh" />
           </q-td>
         </template>
-        <template v-slot:body-cell-assignedTo="props">
+        <template v-slot:body-cell-assigned_to="props">
           <q-td :props="props">
-            <q-badge
-              v-if="props.value"
-              color="accent"
-              :label="props.value"
-              :title="toDatetimeString(props.row.assigned_at)"
+            <entity-assignee-btn
+              :entity="props.row"
+              type="professional"
+              @assignee-changed="onRefresh"
             />
-            <span v-else>-</span>
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -140,7 +134,7 @@
         v-if="selected"
         v-model="showEditDialog"
         :item="selected"
-        @saved="onSaved"
+        @saved="onRefresh"
       />
     </div>
   </q-page>
@@ -160,6 +154,7 @@ import type { Alignment } from 'src/components/models';
 import type { Feature, GeoJsonProperties, Polygon } from 'geojson';
 import EntityActionsBtn from 'src/components/EntityActionsBtn.vue';
 import EntityStateBtn from 'src/components/EntityStateBtn.vue';
+import EntityAssigneeBtn from 'src/components/EntityAssigneeBtn.vue';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
@@ -206,7 +201,7 @@ const columns = computed(() => {
       style: 'min-width: 120px',
     },
     {
-      name: 'assignedTo',
+      name: 'assigned_to',
       required: true,
       label: t('assigned_to'),
       align: 'left' as Alignment,
@@ -320,7 +315,7 @@ const pagination = ref<PaginationOptions>({
 const professionalTypes = ref<Option[]>([]);
 
 onMounted(() => {
-  tableRef.value.requestServerInteraction();
+  onRefresh();
   void taxonomyStore.getTaxonomyNode('professional', 'type').then((types) => {
     if (!types) {
       console.warn('No taxonomy found for professional type');
@@ -415,17 +410,13 @@ function fetchFromServer(
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
 
-function onTypeSelection() {
-  tableRef.value.requestServerInteraction();
-}
-
 function onIndex() {
   loading.value = true;
   void service
     .index()
     .then((result) => {
       notifySuccess(t('all_items_indexed', { count: result }));
-      tableRef.value.requestServerInteraction();
+      onRefresh();
     })
     .catch(notifyError)
     .finally(() => {
@@ -438,7 +429,7 @@ function onAdd() {
   showEditDialog.value = true;
 }
 
-function onStateChanged() {
+function onRefresh() {
   tableRef.value.requestServerInteraction();
 }
 
@@ -471,46 +462,25 @@ function onEdit(resource: Professional) {
 
 function onPublish(item: Professional) {
   if (!item.id) return;
-  void service
-    .publish(item.id)
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch(notifyError);
+  void service.publish(item.id).then(onRefresh).catch(notifyError);
 }
 
 function onUnpublish(item: Professional) {
   if (!item.id) return;
-  void service
-    .unpublish(item.id)
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch(notifyError);
+  void service.unpublish(item.id).then(onRefresh).catch(notifyError);
 }
 
 function onToggleLock(item: Professional) {
   if (!item.id) return;
   void service
     .setState(item.id, item.state === 'locked' ? 'draft' : 'locked')
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
+    .then(onRefresh)
     .catch(notifyError);
 }
 
 function onRemove(item: Professional) {
   if (!item.id) return;
-  void service
-    .remove(item.id)
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch(notifyError);
-}
-
-function onSaved() {
-  tableRef.value.requestServerInteraction();
+  void service.remove(item.id).then(onRefresh).catch(notifyError);
 }
 
 function getTypeLabel(val: string): string {
