@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <p>Dear {{ full_name }},</p>
+    <p>You have been assigned a review task of <strong>{{ entity_type }} {{ entity_name }} #{{ entity_id }}</strong>. To view the task, please click the link below:</p>
+  {% if url %}
+    <p><a href="{{ url }}">{{ url }}</a></p>
+  {% else %}
+    <p><a href="https://atlas-regenmat.ch/admin/">Atlas Regenmat Admin</a></p>
+  {% endif %}
+
+    <p>Thank you!</p>
+    <p>Best regards,</p>
+    <p>The AREMA Team</p>
+    <p>---</p>
+    <p>Visit the <a href="https://atlas-regenmat.ch">Atlas of Regenerative Materials</a></p>
+</body>
+</html>

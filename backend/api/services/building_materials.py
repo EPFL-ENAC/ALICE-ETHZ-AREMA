@@ -218,8 +218,7 @@ class BuildingMaterialService(EntityService):
     async def set_assignee(self, id: int, assignee: str | None) -> None:
         """Set the assignee of a building material by id"""
         entity = await self.get(id)
-        entity = self.assign(entity, assignee)
-        await self.session.commit()
+        await self.assign(entity, assignee)
 
     async def index(self, id: int, user: User = None) -> None:
         """Publish a building material by id"""

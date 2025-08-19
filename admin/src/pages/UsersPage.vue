@@ -34,7 +34,9 @@
           </q-td>
         </template>
         <template v-slot:body-cell-name="props">
-          <q-td :props="props"> {{ props.row.first_name }} {{ props.row.last_name }} </q-td>
+          <q-td :props="props">
+            {{ getFullname(props.row) }}
+          </q-td>
         </template>
         <template v-slot:body-cell-roles="props">
           <q-td :props="props">
@@ -207,6 +209,10 @@ watch(
     }
   },
 );
+
+function getFullname(user: AppUser) {
+  return `${user.first_name ?? ''} ${user.first_name?.endsWith(user.last_name || '') ? '' : user.last_name}`;
+}
 
 function onAdd() {
   selected.value = {} as AppUser;

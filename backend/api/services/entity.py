@@ -3,6 +3,7 @@ from fastapi import HTTPException
 from api.db import AsyncSession
 from api.models.domain import Entity
 from api.auth import User
+from api.services.mailer import Mailer
 
 
 class EntityService:
@@ -23,11 +24,19 @@ class EntityService:
             return True
         return False
 
-    def assign(self, entity: Entity, assignee: str | None) -> Entity:
+    async def assign(self, entity: Entity, assignee: str | None) -> Entity:
         """Assign the entity to a user"""
         entity.assigned_to = assignee
         entity.assigned_at = datetime.now() if assignee else None
+        await self.session.commit()
+        if assignee:
+            await self.send_review_assigned_email(entity, assignee)
         return entity
+
+    async def send_review_assigned_email(self, entity: Entity, assignee: str) -> None:
+        """Send an email to the assignee when a review is assigned"""
+        await Mailer().send_review_assigned_email(
+            self.entityType, entity.id, entity.name, assignee)
 
     def apply_state(self, entity: Entity, state: str, user: User) -> Entity:
         """Set the state of the entity"""

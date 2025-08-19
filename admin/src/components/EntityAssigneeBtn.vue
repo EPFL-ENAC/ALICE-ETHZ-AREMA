@@ -24,7 +24,7 @@
                 <q-item-section>
                   <q-item-label>{{ user.username }}</q-item-label>
                   <q-item-label class="text-hint">{{
-                    `${user.first_name} ${user.last_name}` +
+                    `${user.first_name ?? ''} ${user.first_name?.endsWith(user.last_name || '') ? '' : user.last_name}` +
                     (user.email !== user.username ? ` <${user.email}>` : '')
                   }}</q-item-label>
                 </q-item-section>
