@@ -196,8 +196,17 @@ const columns = computed(() => {
 });
 
 onMounted(() => {
-  void usersStore.init();
+  void usersStore.init().catch(() => {});
 });
+
+watch(
+  () => authStore.isAuthenticated,
+  (isAuthenticated) => {
+    if (isAuthenticated) {
+      void usersStore.init();
+    }
+  },
+);
 
 function onAdd() {
   selected.value = {} as AppUser;
