@@ -107,8 +107,11 @@ const color = computed(() => {
 });
 
 const users = computed(() => {
-  if (!filter.value || filter.value.trim().length === 0) return usersStore.users;
-  return usersStore.users.filter((user) =>
+  const experts = usersStore.users.filter(
+    (user) => user.roles?.includes('app-administrator') || user.roles?.includes('app-reviewer'),
+  );
+  if (!filter.value || filter.value.trim().length === 0) return experts;
+  return experts.filter((user) =>
     `${user.username} ${user.first_name} ${user.last_name} ${user.email}`
       .toLowerCase()
       .includes(filter.value.toLowerCase()),
