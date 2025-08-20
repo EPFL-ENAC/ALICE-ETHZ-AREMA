@@ -18,9 +18,15 @@
                   <q-icon name="search" />
                 </template>
               </q-input>
+              <q-spinner-dots v-if="usersStore.loading" size="lg" color="primary" class="q-pa-sm" />
             </div>
             <template v-for="user in users" :key="user.username">
-              <q-item clickable v-close-popup @click="onAssign(user.username)">
+              <q-item
+                clickable
+                v-close-popup
+                @click="onAssign(user.username)"
+                :active="user.username === entity.assigned_to"
+              >
                 <q-item-section>
                   <q-item-label>{{ user.username }}</q-item-label>
                   <q-item-label class="text-hint">{{
