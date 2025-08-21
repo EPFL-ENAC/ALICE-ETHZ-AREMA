@@ -18,7 +18,7 @@
       >
         <template v-slot:top>
           <q-btn
-            v-if="authStore.isAdmin || authStore.isReviewer || authStore.isContributor"
+            v-if="authStore.isAdmin || authStore.isReviewer"
             size="sm"
             color="primary"
             :disable="loading"
