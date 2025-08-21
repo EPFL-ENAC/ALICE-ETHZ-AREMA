@@ -313,8 +313,11 @@ function fetchFromServer(
     $limit: count,
     $sort: [sortBy, descending],
   };
+  query.filter = {};
+  if (authStore.isContributor) {
+    query.filter.created_by = authStore.profile?.username || authStore.profile?.email || '';
+  }
   if (filter) {
-    if (!query.filter) query.filter = {};
     query.filter.$or = [
       {
         name: {

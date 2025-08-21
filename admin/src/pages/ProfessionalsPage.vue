@@ -361,6 +361,9 @@ function fetchFromServer(
     $sort: [sortBy, descending],
   };
   query.filter = {};
+  if (authStore.isContributor) {
+    query.filter.created_by = authStore.profile?.username || authStore.profile?.email || '';
+  }
   if (types.value?.length) {
     // AND
     // query.filter = {
