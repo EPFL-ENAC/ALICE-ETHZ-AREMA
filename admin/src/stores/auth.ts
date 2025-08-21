@@ -65,9 +65,10 @@ export const useAuthStore = defineStore('auth', () => {
   function canEdit(entity: Entity) {
     if (!isAuthenticated.value) return false;
     if (['locked', 'to-delete', 'to-unpublish'].includes(entity.state || '')) return false;
-    if (isAdmin.value || isReviewer.value) return true;
-    if (entity.state !== 'draft') return false;
+    if (isAdmin.value) return true;
     const userName = profile.value?.username;
+    if (isReviewer.value && entity.assigned_to === userName) return true;
+    if (entity.state !== 'draft') return false;
     return entity.created_by === userName || entity.updated_by === userName;
   }
 
@@ -97,20 +98,21 @@ export const useAuthStore = defineStore('auth', () => {
 
   function canInReview(entity: Entity) {
     if (!isAuthenticated.value) return false;
-    if (entity.state !== 'draft') return false;
+    if (!['draft', 'to-publish'].includes(entity.state || '')) return false;
     const userName = profile.value?.username;
     return (
       entity.created_by === userName ||
       entity.updated_by === userName ||
-      isAdmin.value ||
-      isReviewer.value
+      entity.assigned_to === userName ||
+      isAdmin.value
     );
   }
 
   function canToPublish(entity: Entity) {
     if (!isAuthenticated.value) return false;
     if (entity.state !== 'in-review') return false;
-    return isAdmin.value || isReviewer.value;
+    const userName = profile.value?.username;
+    return entity.assigned_to === userName || isAdmin.value;
   }
 
   function canToUnpublish(entity: Entity) {
@@ -118,12 +120,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (entity.state === 'to-unpublish') return false;
     if (entity.published_at === undefined) return false;
     const userName = profile.value?.username;
-    return (
-      entity.created_by === userName ||
-      entity.updated_by === userName ||
-      isAdmin.value ||
-      isReviewer.value
-    );
+    return entity.created_by === userName || entity.updated_by === userName || isAdmin.value;
   }
 
   function canToDelete(entity: Entity) {
@@ -133,8 +130,8 @@ export const useAuthStore = defineStore('auth', () => {
     return (
       entity.created_by === userName ||
       entity.updated_by === userName ||
-      isAdmin.value ||
-      isReviewer.value
+      entity.assigned_to === userName ||
+      isAdmin.value
     );
   }
 
@@ -142,7 +139,13 @@ export const useAuthStore = defineStore('auth', () => {
     if (!isAuthenticated.value) return false;
     if (entity.state === 'draft') return false;
     if (entity.state === 'locked') return isAdmin.value;
-    return isAdmin.value || isReviewer.value;
+    const userName = profile.value?.username;
+    return (
+      isAdmin.value ||
+      (isReviewer.value && entity.assigned_to === userName) ||
+      entity.created_by === userName ||
+      entity.updated_by === userName
+    );
   }
 
   function canAssign(entity: Entity) {

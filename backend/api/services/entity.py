@@ -116,6 +116,8 @@ class EntityService:
             raise HTTPException(
                 status_code=403, detail="Operation not allowed")
         entity.state = "locked"
+        entity.assigned_to = None
+        entity.assigned_at = None
         return entity
 
     def _set_to_delete(self, entity: Entity, user: User) -> Entity:

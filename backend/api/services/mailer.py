@@ -1,4 +1,5 @@
 import smtplib
+import logging
 from email.message import EmailMessage
 from jinja2 import Environment, PackageLoader, select_autoescape
 from api.config import config
@@ -73,10 +74,13 @@ class Mailer:
         msg["From"] = f"{self.smtp_name} <{self.smtp_email}>"
         msg["To"] = to_email
 
-        with smtplib.SMTP(self.smtp_host, self.smtp_port) as server:
-            if self.smtp_username and self.smtp_password:
-                server.login(self.smtp_username, self.smtp_password)
-            server.send_message(msg)
+        try:
+            with smtplib.SMTP(self.smtp_host, self.smtp_port) as server:
+                if self.smtp_username and self.smtp_password:
+                    server.login(self.smtp_username, self.smtp_password)
+                server.send_message(msg)
+        except smtplib.SMTPException as e:
+            logging.error(f"Failed to send email to {to_email}: {e}")
 
     def _get_full_name(self, user: User) -> str:
         """Get the full name of a user"""

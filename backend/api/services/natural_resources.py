@@ -61,6 +61,8 @@ class NaturalResourceService(EntityService):
                 entity.published_at = datetime.now()
                 if entity.state == "to-publish":
                     entity.state = "draft"
+                    entity.assigned_to = None
+                    entity.assigned_at = None
         await self.session.commit()
         debug(f"Published {count} natural resources")
         return count
@@ -206,6 +208,8 @@ class NaturalResourceService(EntityService):
         if user:
             entity.published_by = user.username
         entity.state = "draft"
+        entity.assigned_to = None
+        entity.assigned_at = None
         await self.session.commit()
 
     async def remove_index(self, id: int, user: User = None) -> None:
@@ -215,6 +219,8 @@ class NaturalResourceService(EntityService):
         entity.published_at = None
         entity.published_by = None
         entity.state = "draft"
+        entity.assigned_to = None
+        entity.assigned_at = None
         await self.session.commit()
 
     def _makeTags(self, entity: NaturalResource) -> list[str]:

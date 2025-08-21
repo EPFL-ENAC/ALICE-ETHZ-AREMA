@@ -64,6 +64,8 @@ class BuildingService(EntityService):
                 entity.published_at = datetime.now()
                 if entity.state == "to-publish":
                     entity.state = "draft"
+                    entity.assigned_to = None
+                    entity.assigned_at = None
         await self.session.commit()
         debug(f"Published {count} buildings")
         return count
@@ -249,6 +251,8 @@ class BuildingService(EntityService):
         if user:
             entity.published_by = user.username
         entity.state = "draft"
+        entity.assigned_to = None
+        entity.assigned_at = None
         await self.session.commit()
 
     async def remove_index(self, id: int, user: User = None) -> None:
@@ -258,6 +262,8 @@ class BuildingService(EntityService):
         entity.published_at = None
         entity.published_by = None
         entity.state = "draft"
+        entity.assigned_to = None
+        entity.assigned_at = None
         await self.session.commit()
 
     async def _apply_building_elements(self, building_id: int, elements: list[BuildingElementDraft]):
