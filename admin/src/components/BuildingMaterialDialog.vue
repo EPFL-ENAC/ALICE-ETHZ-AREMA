@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model="showDialog" persistent @hide="onHide">
-    <q-card class="dialog-lg">
+    <q-card class="dialog-xl">
       <q-card-actions>
         <div class="text-h6 q-ml-sm">{{ t(editMode ? 'edit' : 'add') }}</div>
         <q-space />
