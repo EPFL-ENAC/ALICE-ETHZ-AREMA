@@ -16,6 +16,7 @@
                 v-model="text"
                 type="textarea"
                 @update:model-value="onUpdate"
+                :disable="props.disable"
               />
             </div>
             <div class="col-3 q-pa-sm">
@@ -41,6 +42,7 @@ interface Props {
   label?: string;
   hint?: string;
   help?: string;
+  disable?: boolean | undefined;
 }
 
 const props = defineProps<Props>();

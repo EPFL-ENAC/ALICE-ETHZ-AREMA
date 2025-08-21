@@ -13,6 +13,18 @@
     >
     </q-btn>
     <q-btn
+      v-if="!authStore.canEdit(entity)"
+      color="grey-8"
+      size="12px"
+      flat
+      dense
+      round
+      icon="visibility"
+      :title="t('view')"
+      @click="onView()"
+    >
+    </q-btn>
+    <q-btn
       v-if="authStore.canPublish(entity)"
       color="secondary"
       size="12px"
@@ -91,6 +103,10 @@ const onConfirmRemove = () => {
 
 const onEdit = () => {
   emit('action', 'edit');
+};
+
+const onView = () => {
+  emit('action', 'view');
 };
 
 const onPublish = () => {

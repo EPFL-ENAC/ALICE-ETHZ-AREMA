@@ -219,6 +219,7 @@ export default {
   users: 'Users',
   vapor_diffusion_resistance_hint: 'µ',
   vapor_diffusion_resistance: 'Water vapor diffusion resistance',
+  view: 'View',
   website: 'Website',
   weight: 'Weight',
   write: 'Write',

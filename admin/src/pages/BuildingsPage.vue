@@ -102,6 +102,7 @@
         v-if="selected"
         v-model="showEditDialog"
         :item="selected"
+        :read-only="readOnly"
         @saved="onRefresh"
       />
     </div>
@@ -259,6 +260,7 @@ const columns = computed(() => {
 
 const selected = ref<Building>();
 const showEditDialog = ref(false);
+const readOnly = ref(false);
 const tableRef = ref();
 const rows = ref<Building[]>([]);
 const filter = ref('');
@@ -371,6 +373,9 @@ function onAction(item: Building, action: string) {
     case 'edit':
       onEdit(item);
       break;
+    case 'view':
+      onView(item);
+      break;
     case 'publish':
       onPublish(item);
       break;
@@ -390,6 +395,13 @@ function onAction(item: Building, action: string) {
 
 function onEdit(resource: Building) {
   selected.value = { ...resource };
+  readOnly.value = false;
+  showEditDialog.value = true;
+}
+
+function onView(resource: Building) {
+  selected.value = { ...resource };
+  readOnly.value = true;
   showEditDialog.value = true;
 }
 function onPublish(item: Building) {

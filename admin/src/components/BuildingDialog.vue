@@ -2,7 +2,7 @@
   <q-dialog v-model="showDialog" persistent @hide="onHide">
     <q-card class="dialog-xl">
       <q-card-actions>
-        <div class="text-h6 q-ml-sm">{{ t(editMode ? 'edit' : 'add') }}</div>
+        <div class="text-h6 q-ml-sm">{{ t(readOnly ? 'view' : editMode ? 'edit' : 'add') }}</div>
         <q-space />
         <q-btn flat icon="close" color="primary" v-close-popup />
       </q-card-actions>
@@ -21,10 +21,16 @@
           <q-tab-panel name="general" class="q-pl-none q-pr-none">
             <div class="row q-mb-md q-col-gutter-md">
               <div class="col-12 col-sm-3">
-                <q-input filled v-model="selected.name" :label="t('name') + ' *'" />
+                <q-input
+                  :disable="readOnly"
+                  filled
+                  v-model="selected.name"
+                  :label="t('name') + ' *'"
+                />
               </div>
               <div class="col-12 col-sm-3">
                 <taxonomy-select
+                  :disable="readOnly"
                   v-model="selected.type"
                   entity-type="building"
                   path="type"
@@ -33,6 +39,7 @@
               </div>
               <div class="col-12 col-sm-3">
                 <taxonomy-select
+                  :disable="readOnly"
                   v-model="selected.status"
                   entity-type="building"
                   path="status"
@@ -41,6 +48,7 @@
               </div>
               <div class="col-12 col-sm-3">
                 <taxonomy-select
+                  :disable="readOnly"
                   v-model="selected.materials"
                   entity-type="natural-resource"
                   path="type"
@@ -51,10 +59,16 @@
             </div>
             <div class="row q-mb-md q-col-gutter-md">
               <div class="col-12 col-sm-4">
-                <q-input filled v-model="selected.client" :label="t('client')" />
+                <q-input
+                  :disable="readOnly"
+                  filled
+                  v-model="selected.client"
+                  :label="t('client')"
+                />
               </div>
               <div class="col-12 col-sm-4">
                 <q-input
+                  :disable="readOnly"
                   filled
                   v-model.number="selected.gross_internal_area"
                   type="number"
@@ -64,6 +78,7 @@
               </div>
               <div class="col-12 col-sm-4">
                 <q-input
+                  :disable="readOnly"
                   filled
                   v-model.number="selected.year"
                   type="number"
@@ -72,30 +87,35 @@
               </div>
             </div>
             <text-input
+              :disable="readOnly"
               v-model="selected.description"
               :label="t('description')"
               help="building-description"
               class="q-mb-md"
             />
             <text-input
+              :disable="readOnly"
               v-model="selected.article_top"
               :label="t('article_top')"
               help="building-article-top"
               class="q-mb-md"
             />
             <text-input
+              :disable="readOnly"
               v-model="selected.article_bottom"
               :label="t('article_bottom')"
               help="building-article-bottom"
               class="q-mb-md"
             />
             <text-input
+              :disable="readOnly"
               v-model="selected.side_note"
               :label="t('side_note')"
               help="building-side-note"
               class="q-mb-md"
             />
             <text-input
+              :disable="readOnly"
               v-model="selected.external_links"
               :label="t('external_links')"
               help="building-links"
@@ -104,16 +124,18 @@
           </q-tab-panel>
           <q-tab-panel name="location" class="q-pl-none q-pr-none">
             <point-map-input
+              :disable="readOnly"
               v-model="location"
               height="400px"
               @update:model-value="onPointInputUpdated"
             ></point-map-input>
           </q-tab-panel>
           <q-tab-panel name="multimedia" class="q-pl-none q-pr-none">
-            <files-input v-if="selected.files" v-model="selected.files" />
+            <files-input :disable="readOnly" v-if="selected.files" v-model="selected.files" />
           </q-tab-panel>
           <q-tab-panel name="relations" class="q-pl-none q-pr-none">
             <q-select
+              :disable="readOnly"
               filled
               v-model="buildingMaterials"
               :options="buildingMaterialsOptions"
@@ -126,6 +148,7 @@
               class="q-mb-md"
             />
             <q-select
+              :disable="readOnly"
               filled
               v-model="professionals"
               :options="professionalsOptions"
@@ -151,13 +174,14 @@
                   <q-item v-for="(element, index) in buildingElements" :key="index">
                     <q-item-section>
                       <building-element-form
+                        :disable="readOnly"
                         v-if="buildingElements[index]"
                         v-model="buildingElements[index]"
                         :technical-constructions-options="technicalConstructionsOptions"
                         :professionals-options="professionalsOptions"
                       />
                     </q-item-section>
-                    <q-item-section side>
+                    <q-item-section v-if="!readOnly" side>
                       <q-btn
                         rounded
                         dense
@@ -172,7 +196,13 @@
                 </q-list>
               </q-card-section>
               <q-card-actions class="q-pa-md">
-                <q-btn color="primary" icon="add" size="sm" @click="onAddBuildingElement" />
+                <q-btn
+                  v-show="!readOnly"
+                  color="primary"
+                  icon="add"
+                  size="sm"
+                  @click="onAddBuildingElement"
+                />
               </q-card-actions>
             </q-card>
           </q-tab-panel>
@@ -182,8 +212,29 @@
       <q-separator />
 
       <q-card-actions align="right" class="bg-grey-3">
-        <q-btn flat :label="t('cancel')" color="secondary" @click="onCancel" v-close-popup />
-        <q-btn :label="t('save')" color="primary" @click="onSave" :disable="!isValid" />
+        <q-btn
+          v-if="readOnly"
+          flat
+          :label="t('close')"
+          color="secondary"
+          @click="onCancel"
+          v-close-popup
+        />
+        <q-btn
+          v-if="!readOnly"
+          flat
+          :label="t('cancel')"
+          color="secondary"
+          @click="onCancel"
+          v-close-popup
+        />
+        <q-btn
+          v-if="!readOnly"
+          :label="t('save')"
+          color="primary"
+          @click="onSave"
+          :disable="!isValid"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -209,6 +260,7 @@ import type { Feature } from '@turf/turf';
 interface DialogProps {
   modelValue: boolean;
   item: Building;
+  readOnly?: boolean;
 }
 
 const props = defineProps<DialogProps>();

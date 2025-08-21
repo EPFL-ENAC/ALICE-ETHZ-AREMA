@@ -185,6 +185,7 @@ export default {
   users: 'Utilisateurs',
   vapor_diffusion_resistance_hint: 'µ',
   vapor_diffusion_resistance: "Resistance à la diffusion de vapeur d'eau",
+  view: 'Voir',
   website: 'Site web',
   weight: 'Poids',
   write: 'Ecrire',

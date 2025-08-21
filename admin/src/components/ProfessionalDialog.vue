@@ -2,7 +2,7 @@
   <q-dialog v-model="showDialog" persistent @hide="onHide">
     <q-card class="dialog-xl">
       <q-card-actions>
-        <div class="text-h6 q-ml-sm">{{ t(editMode ? 'edit' : 'add') }}</div>
+        <div class="text-h6 q-ml-sm">{{ t(readOnly ? 'view' : editMode ? 'edit' : 'add') }}</div>
         <q-space />
         <q-btn flat icon="close" color="primary" v-close-popup />
       </q-card-actions>
@@ -21,10 +21,16 @@
           <q-tab-panel name="general" class="q-pl-none q-pr-none">
             <div class="row q-mb-md q-col-gutter-md">
               <div class="col-12 col-sm-4">
-                <q-input filled v-model="selected.name" :label="t('name') + ' *'" />
+                <q-input
+                  :disable="readOnly"
+                  filled
+                  v-model="selected.name"
+                  :label="t('name') + ' *'"
+                />
               </div>
               <div class="col-12 col-sm-4">
                 <taxonomy-select
+                  :disable="readOnly"
                   v-model="selected.types"
                   entity-type="professional"
                   path="type"
@@ -34,6 +40,7 @@
               </div>
               <div class="col-12 col-sm-4">
                 <taxonomy-select
+                  :disable="readOnly"
                   v-model="selected.materials"
                   entity-type="natural-resource"
                   path="type"
@@ -43,6 +50,7 @@
               </div>
             </div>
             <text-input
+              :disable="readOnly"
               v-model="selected.description"
               :label="t('description')"
               help="professional-description"
@@ -50,34 +58,44 @@
             />
             <div class="row q-mb-md q-col-gutter-md">
               <div class="col-12 col-sm-4">
-                <q-input filled v-model="selected.tel" :label="t('phone')" />
+                <q-input :disable="readOnly" filled v-model="selected.tel" :label="t('phone')" />
               </div>
               <div class="col-12 col-sm-4">
-                <q-input filled v-model="selected.email" type="email" :label="t('email')" />
+                <q-input
+                  :disable="readOnly"
+                  filled
+                  v-model="selected.email"
+                  type="email"
+                  :label="t('email')"
+                />
               </div>
               <div class="col-12 col-sm-4">
-                <q-input filled v-model="selected.web" :label="t('website')" />
+                <q-input :disable="readOnly" filled v-model="selected.web" :label="t('website')" />
               </div>
             </div>
             <text-input
+              :disable="readOnly"
               v-model="selected.article_top"
               :label="t('article_top')"
               help="professional-article-top"
               class="q-mb-md"
             />
             <text-input
+              :disable="readOnly"
               v-model="selected.article_bottom"
               :label="t('article_bottom')"
               help="professional-article-bottom"
               class="q-mb-md"
             />
             <text-input
+              :disable="readOnly"
               v-model="selected.side_note"
               :label="t('side_note')"
               help="professional-side-note"
               class="q-mb-md"
             />
             <text-input
+              :disable="readOnly"
               v-model="selected.external_links"
               :label="t('external_links')"
               help="professional-links"
@@ -86,6 +104,7 @@
           </q-tab-panel>
           <q-tab-panel name="location" class="q-pl-none q-pr-none">
             <circle-map-input
+              :disable="readOnly"
               v-model="circle"
               height="400px"
               @update:model-value="onCircleInputUpdated"
@@ -95,26 +114,34 @@
               <q-item v-for="(address, index) in selected.addresses" :key="index" class="q-pa-none">
                 <q-item-section>
                   <address-input
+                    :disable="readOnly"
                     v-if="selected.addresses && selected.addresses[index]"
                     v-model="selected.addresses[index]"
                     :label="t('address')"
                   />
                 </q-item-section>
                 <q-item-section side>
-                  <q-btn flat size="sm" icon="delete" @click="onDeleteAddress(index)" />
+                  <q-btn
+                    v-show="!readOnly"
+                    flat
+                    size="sm"
+                    icon="delete"
+                    @click="onDeleteAddress(index)"
+                  />
                 </q-item-section>
               </q-item>
             </q-list>
             <div v-if="selected.addresses?.length" class="text-hint q-mb-sm">
               {{ t('address_input_hint') }}
             </div>
-            <q-btn color="primary" icon="add" @click="onAddAddress" size="sm" />
+            <q-btn v-show="!readOnly" color="primary" icon="add" @click="onAddAddress" size="sm" />
           </q-tab-panel>
           <q-tab-panel name="multimedia" class="q-pl-none q-pr-none">
-            <files-input v-if="selected.files" v-model="selected.files" />
+            <files-input v-if="selected.files" :disable="readOnly" v-model="selected.files" />
           </q-tab-panel>
           <q-tab-panel name="relations" class="q-pl-none q-pr-none">
             <q-select
+              :disable="readOnly"
               filled
               v-model="buildingMaterials"
               :options="buildingMaterialsOptions"
@@ -127,6 +154,7 @@
               class="q-mb-md"
             />
             <q-select
+              :disable="readOnly"
               filled
               v-model="technicalConstructions"
               :options="technicalConstructionsOptions"
@@ -145,8 +173,29 @@
       <q-separator />
 
       <q-card-actions align="right" class="bg-grey-3">
-        <q-btn flat :label="t('cancel')" color="secondary" @click="onCancel" v-close-popup />
-        <q-btn :label="t('save')" color="primary" @click="onSave" :disable="!isValid" />
+        <q-btn
+          v-if="readOnly"
+          flat
+          :label="t('close')"
+          color="secondary"
+          @click="onCancel"
+          v-close-popup
+        />
+        <q-btn
+          v-if="!readOnly"
+          flat
+          :label="t('cancel')"
+          color="secondary"
+          @click="onCancel"
+          v-close-popup
+        />
+        <q-btn
+          v-if="!readOnly"
+          :label="t('save')"
+          color="primary"
+          @click="onSave"
+          :disable="!isValid"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -165,6 +214,7 @@ import type { Feature } from '@turf/turf';
 interface DialogProps {
   modelValue: boolean;
   item: Professional;
+  readOnly?: boolean;
 }
 
 const props = defineProps<DialogProps>();

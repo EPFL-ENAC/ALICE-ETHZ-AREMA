@@ -10,6 +10,7 @@
       :multiple="multiple"
       :use-chips="multiple"
       :clearable="!multiple"
+      :disable="disable"
       emit-value
       map-options
     >
@@ -38,6 +39,7 @@ interface Props {
   label: string;
   multiple?: boolean;
   dense?: boolean;
+  disable?: boolean | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {

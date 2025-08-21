@@ -3,6 +3,7 @@
     <div class="row q-col-gutter-lg">
       <div class="col">
         <q-select
+          :disable="disable"
           filled
           v-model="entity.technical_construction_id"
           :options="technicalConstructionsOptions"
@@ -16,6 +17,7 @@
       </div>
       <div class="col">
         <q-select
+          :disable="disable"
           filled
           v-model="entity.professional_ids"
           :options="professionalsOptions"
@@ -40,12 +42,13 @@
             <q-item v-for="(mat, index) in entity.materials" :key="index">
               <q-item-section>
                 <building-element-material-form
+                  :disable="disable"
                   v-if="entity.materials && entity.materials[index]"
                   v-model="entity.materials[index]"
                   :technical-contruction-id="entity.technical_construction_id"
                 />
               </q-item-section>
-              <q-item-section side>
+              <q-item-section v-show="!disable" side>
                 <q-btn
                   rounded
                   dense
@@ -60,7 +63,13 @@
           </q-list>
         </q-card-section>
         <q-card-actions class="q-pa-md">
-          <q-btn color="secondary" icon="add" size="sm" @click="onAddBuildingElementMaterial" />
+          <q-btn
+            v-show="!disable"
+            color="secondary"
+            icon="add"
+            size="sm"
+            @click="onAddBuildingElementMaterial"
+          />
         </q-card-actions>
       </q-card>
     </div>
@@ -76,6 +85,7 @@ interface Props {
   modelValue: BuildingElement;
   technicalConstructionsOptions: Option[];
   professionalsOptions: Option[];
+  disable?: boolean | undefined;
 }
 
 const props = defineProps<Props>();

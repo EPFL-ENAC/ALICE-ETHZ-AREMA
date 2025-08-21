@@ -102,6 +102,7 @@
         v-if="selected"
         v-model="showEditDialog"
         :item="selected"
+        :read-only="readOnly"
         @saved="onRefresh"
       ></construction-technique-dialog>
     </div>
@@ -229,6 +230,7 @@ const columns = computed(() => {
 
 const selected = ref<TechnicalConstruction>();
 const showEditDialog = ref(false);
+const readOnly = ref(false);
 const tableRef = ref();
 const rows = ref<TechnicalConstruction[]>([]);
 const filter = ref('');
@@ -309,6 +311,9 @@ function onAction(item: TechnicalConstruction, action: string) {
     case 'edit':
       onEdit(item);
       break;
+    case 'view':
+      onView(item);
+      break;
     case 'publish':
       onPublish(item);
       break;
@@ -328,6 +333,13 @@ function onAction(item: TechnicalConstruction, action: string) {
 
 function onEdit(item: TechnicalConstruction) {
   selected.value = { ...item };
+  readOnly.value = false;
+  showEditDialog.value = true;
+}
+
+function onView(resource: TechnicalConstruction) {
+  selected.value = { ...resource };
+  readOnly.value = true;
   showEditDialog.value = true;
 }
 function onPublish(item: TechnicalConstruction) {

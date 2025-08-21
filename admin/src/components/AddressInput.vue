@@ -5,6 +5,7 @@
     v-model="address"
     :label="t('address')"
     :hint="hint"
+    :disable="disable"
     debounce="300"
     @keyup.enter="onSuggestAddress"
     @update:model-value="onUpdate"
@@ -38,6 +39,7 @@ import type { Feature } from '@turf/turf';
 interface Props {
   modelValue: string | undefined;
   hint?: string;
+  disable?: boolean | undefined;
 }
 
 const props = defineProps<Props>();

@@ -134,6 +134,7 @@
         v-if="selected"
         v-model="showEditDialog"
         :item="selected"
+        :read-only="readOnly"
         @saved="onRefresh"
       />
     </div>
@@ -301,6 +302,7 @@ const columns = computed(() => {
 
 const selected = ref<Professional>();
 const showEditDialog = ref(false);
+const readOnly = ref(false);
 const tableRef = ref();
 const rows = ref<Professional[]>([]);
 const types = ref<string[] | null>(null);
@@ -441,6 +443,9 @@ function onAction(item: Professional, action: string) {
     case 'edit':
       onEdit(item);
       break;
+    case 'view':
+      onView(item);
+      break;
     case 'publish':
       onPublish(item);
       break;
@@ -460,6 +465,13 @@ function onAction(item: Professional, action: string) {
 
 function onEdit(resource: Professional) {
   selected.value = { ...resource };
+  readOnly.value = false;
+  showEditDialog.value = true;
+}
+
+function onView(resource: Professional) {
+  selected.value = { ...resource };
+  readOnly.value = true;
   showEditDialog.value = true;
 }
 
