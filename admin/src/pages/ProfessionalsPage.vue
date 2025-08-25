@@ -46,7 +46,7 @@
             dense
             style="min-width: 200px"
             class="q-mr-md"
-            @update:model-value="onTypeSelection"
+            @update:model-value="onRefresh"
           />
           <q-input dense debounce="300" v-model="filter" clearable>
             <template v-slot:append>
@@ -111,10 +111,15 @@
         </template>
         <template v-slot:body-cell-state="props">
           <q-td :props="props">
-            <entity-state-btn
+            <entity-state-btn :entity="props.row" type="professional" @state-changed="onRefresh" />
+          </q-td>
+        </template>
+        <template v-slot:body-cell-assigned_to="props">
+          <q-td :props="props">
+            <entity-assignee-btn
               :entity="props.row"
               type="professional"
-              @state-changed="onStateChanged()"
+              @assignee-changed="onRefresh"
             />
           </q-td>
         </template>
@@ -129,7 +134,8 @@
         v-if="selected"
         v-model="showEditDialog"
         :item="selected"
-        @saved="onSaved"
+        :read-only="readOnly"
+        @saved="onRefresh"
       />
     </div>
   </q-page>
@@ -149,6 +155,7 @@ import type { Alignment } from 'src/components/models';
 import type { Feature, GeoJsonProperties, Polygon } from 'geojson';
 import EntityActionsBtn from 'src/components/EntityActionsBtn.vue';
 import EntityStateBtn from 'src/components/EntityStateBtn.vue';
+import EntityAssigneeBtn from 'src/components/EntityAssigneeBtn.vue';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
@@ -193,6 +200,14 @@ const columns = computed(() => {
       field: 'state',
       sortable: true,
       style: 'min-width: 120px',
+    },
+    {
+      name: 'assigned_to',
+      required: true,
+      label: t('assigned_to'),
+      align: 'left' as Alignment,
+      field: 'assigned_to',
+      sortable: true,
     },
     {
       name: 'types',
@@ -287,6 +302,7 @@ const columns = computed(() => {
 
 const selected = ref<Professional>();
 const showEditDialog = ref(false);
+const readOnly = ref(false);
 const tableRef = ref();
 const rows = ref<Professional[]>([]);
 const types = ref<string[] | null>(null);
@@ -301,7 +317,7 @@ const pagination = ref<PaginationOptions>({
 const professionalTypes = ref<Option[]>([]);
 
 onMounted(() => {
-  tableRef.value.requestServerInteraction();
+  onRefresh();
   void taxonomyStore.getTaxonomyNode('professional', 'type').then((types) => {
     if (!types) {
       console.warn('No taxonomy found for professional type');
@@ -347,6 +363,9 @@ function fetchFromServer(
     $sort: [sortBy, descending],
   };
   query.filter = {};
+  if (authStore.isContributor) {
+    query.filter.created_by = authStore.profile?.username || authStore.profile?.email || '';
+  }
   if (types.value?.length) {
     // AND
     // query.filter = {
@@ -396,17 +415,13 @@ function fetchFromServer(
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
 
-function onTypeSelection() {
-  tableRef.value.requestServerInteraction();
-}
-
 function onIndex() {
   loading.value = true;
   void service
     .index()
     .then((result) => {
       notifySuccess(t('all_items_indexed', { count: result }));
-      tableRef.value.requestServerInteraction();
+      onRefresh();
     })
     .catch(notifyError)
     .finally(() => {
@@ -419,7 +434,7 @@ function onAdd() {
   showEditDialog.value = true;
 }
 
-function onStateChanged() {
+function onRefresh() {
   tableRef.value.requestServerInteraction();
 }
 
@@ -427,6 +442,9 @@ function onAction(item: Professional, action: string) {
   switch (action) {
     case 'edit':
       onEdit(item);
+      break;
+    case 'view':
+      onView(item);
       break;
     case 'publish':
       onPublish(item);
@@ -447,51 +465,37 @@ function onAction(item: Professional, action: string) {
 
 function onEdit(resource: Professional) {
   selected.value = { ...resource };
+  readOnly.value = false;
+  showEditDialog.value = true;
+}
+
+function onView(resource: Professional) {
+  selected.value = { ...resource };
+  readOnly.value = true;
   showEditDialog.value = true;
 }
 
 function onPublish(item: Professional) {
   if (!item.id) return;
-  void service
-    .publish(item.id)
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch(notifyError);
+  void service.publish(item.id).then(onRefresh).catch(notifyError);
 }
 
 function onUnpublish(item: Professional) {
   if (!item.id) return;
-  void service
-    .unpublish(item.id)
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch(notifyError);
+  void service.unpublish(item.id).then(onRefresh).catch(notifyError);
 }
 
 function onToggleLock(item: Professional) {
   if (!item.id) return;
   void service
     .setState(item.id, item.state === 'locked' ? 'draft' : 'locked')
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
+    .then(onRefresh)
     .catch(notifyError);
 }
 
 function onRemove(item: Professional) {
   if (!item.id) return;
-  void service
-    .remove(item.id)
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch(notifyError);
-}
-
-function onSaved() {
-  tableRef.value.requestServerInteraction();
+  void service.remove(item.id).then(onRefresh).catch(notifyError);
 }
 
 function getTypeLabel(val: string): string {

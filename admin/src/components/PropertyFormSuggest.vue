@@ -7,6 +7,7 @@
     <div class="row q-col-gutter-sm q-mb-sm">
       <div class="col">
         <q-input
+          :disable="disable"
           filled
           v-model="selected[`${property}_low`]"
           :label="t('low')"
@@ -29,6 +30,7 @@
       </div>
       <div class="col">
         <q-input
+          :disable="disable"
           filled
           v-model="selected[property]"
           :label="t('std')"
@@ -51,6 +53,7 @@
       </div>
       <div class="col">
         <q-input
+          :disable="disable"
           filled
           v-model="selected[`${property}_high`]"
           :label="t('high')"
@@ -85,6 +88,7 @@ interface Props {
   modelValue: { [key: string]: string | number | null };
   property: string;
   suggestions?: Suggestions;
+  disable?: boolean | undefined;
 }
 
 const props = defineProps<Props>();

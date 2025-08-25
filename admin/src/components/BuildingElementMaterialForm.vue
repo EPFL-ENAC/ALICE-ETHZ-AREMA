@@ -1,6 +1,7 @@
 <template>
   <div>
     <q-select
+      :disable="disable"
       filled
       v-model="entity.building_material_id"
       :options="buildingMaterialsOptions"
@@ -19,7 +20,7 @@
           type="number"
           filled
           min="0"
-          :disable="!entity.building_material_id"
+          :disable="!entity.building_material_id || disable"
           :label="t('distance')"
           :hint="t('building_element_building_material_distance_hint')"
         />
@@ -30,7 +31,7 @@
           type="number"
           filled
           min="0"
-          :disable="!entity.building_material_id"
+          :disable="!entity.building_material_id || disable"
           :label="t('weight')"
           :hint="t('building_element_building_material_weight_hint')"
         />
@@ -50,6 +51,7 @@ const tcService = services.make('technical-construction');
 interface Props {
   modelValue: BuildingElementMaterial;
   technicalContructionId: number;
+  disable?: boolean | undefined;
 }
 
 const props = defineProps<Props>();

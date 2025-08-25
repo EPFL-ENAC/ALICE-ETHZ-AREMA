@@ -8,6 +8,7 @@
           :key="property"
           v-model="entity"
           :property="property"
+          :disable="disable"
         />
       </div>
       <div class="col">
@@ -16,6 +17,7 @@
           :key="property"
           v-model="entity"
           :property="property"
+          :disable="disable"
         />
       </div>
     </div>
@@ -33,6 +35,7 @@
           :key="property"
           v-model="entity"
           :property="property"
+          :disable="disable"
         />
       </div>
       <div class="col">
@@ -47,6 +50,7 @@
           :key="property"
           v-model="entity"
           :property="property"
+          :disable="disable"
         />
       </div>
     </div>
@@ -58,6 +62,7 @@
           :key="property"
           v-model="entity"
           :property="property"
+          :disable="disable"
         />
       </div>
       <div class="col"></div>
@@ -71,6 +76,7 @@
           :property="'reaction_to_fire'"
           :suggestions="reactionToFireClasses"
           @suggest="onSuggest"
+          :disable="disable"
         />
       </div>
       <div class="col">
@@ -80,13 +86,14 @@
           :property="'fire_resistance_class'"
           :suggestions="fireResistanceClasses"
           @suggest="onSuggest"
+          :disable="disable"
         />
       </div>
     </div>
     <div class="text-bold q-mb-sm">{{ t('others') }}</div>
     <div class="row q-col-gutter-lg">
       <div class="col">
-        <property-form-number v-model="entity" :property="'air_tightness'" />
+        <property-form-number v-model="entity" :property="'air_tightness'" :disable="disable" />
       </div>
       <div class="col"></div>
     </div>
@@ -101,6 +108,7 @@ import type { Suggestions } from 'src/components/models';
 
 interface Props {
   modelValue: PhysicalEntity;
+  disable?: boolean | undefined;
 }
 
 const props = defineProps<Props>();

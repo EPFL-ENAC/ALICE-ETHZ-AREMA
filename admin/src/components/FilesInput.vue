@@ -8,7 +8,7 @@
               {{ getLabel(file) }}
               <q-icon name="visibility" />
             </a>
-            <q-input filled v-model="file.legend" :label="t('legend')" />
+            <q-input :disable="disable" filled v-model="file.legend" :label="t('legend')" />
           </q-item-section>
           <q-item-section avatar v-if="isImage(file)">
             <q-img v-if="file.url" :src="file.url" width="200px" fit="scale-down" />
@@ -26,6 +26,7 @@
           <q-item-section avatar>
             <div class="row">
               <q-btn
+                v-show="disable !== true"
                 icon="arrow_upward"
                 rounded
                 dense
@@ -34,6 +35,7 @@
                 @click="onUpFile(file, idx)"
               />
               <q-btn
+                v-show="disable !== true"
                 icon="arrow_downward"
                 rounded
                 dense
@@ -42,6 +44,7 @@
                 @click="onDownFile(file, idx)"
               />
               <q-btn
+                v-show="disable !== true"
                 icon="delete"
                 rounded
                 dense
@@ -55,30 +58,33 @@
         </q-item>
       </template>
     </q-list>
-    <div class="q-gutter-sm">
-      <q-radio v-model="type" val="files" :label="t('files')" />
-      <q-radio v-model="type" val="url" :label="t('url')" />
+    <div v-show="disable !== true">
+      <div class="q-gutter-sm">
+        <q-radio v-model="type" val="files" :label="t('files')" />
+        <q-radio v-model="type" val="url" :label="t('url')" />
+      </div>
+      <q-file
+        v-if="type === 'files'"
+        filled
+        v-model="localFiles"
+        multiple
+        :label="t('upload_files')"
+        :hint="t('upload_files_hint')"
+        accept=".jpg, .jpeg, .png, .pdf, .mp4, .webp, .svg, .txt, .doc, .docx, .xls, .xlsx"
+        :disable="disable || uploading"
+        :loading="uploading"
+        @update:model-value="onLocalFilesSelected"
+      />
+      <q-input
+        :disable="disable"
+        v-else
+        filled
+        v-model="selectedUrl"
+        :label="t('url')"
+        :hint="t('url_hint')"
+        @keyup.enter="onURLAdd"
+      />
     </div>
-    <q-file
-      v-if="type === 'files'"
-      filled
-      v-model="localFiles"
-      multiple
-      :label="t('upload_files')"
-      :hint="t('upload_files_hint')"
-      accept=".jpg, .jpeg, .png, .pdf, .mp4, .webp, .svg, .txt, .doc, .docx, .xls, .xlsx"
-      :disable="uploading"
-      :loading="uploading"
-      @update:model-value="onLocalFilesSelected"
-    />
-    <q-input
-      v-else
-      filled
-      v-model="selectedUrl"
-      :label="t('url')"
-      :hint="t('url_hint')"
-      @keyup.enter="onURLAdd"
-    />
   </div>
 </template>
 
@@ -89,6 +95,7 @@ import { baseUrl } from 'src/boot/api';
 
 interface Props {
   modelValue: FileItem[];
+  disable?: boolean | undefined;
 }
 
 const props = defineProps<Props>();

@@ -79,10 +79,15 @@
         </template>
         <template v-slot:body-cell-state="props">
           <q-td :props="props">
-            <entity-state-btn
+            <entity-state-btn :entity="props.row" type="building" @state-changed="onRefresh" />
+          </q-td>
+        </template>
+        <template v-slot:body-cell-assigned_to="props">
+          <q-td :props="props">
+            <entity-assignee-btn
               :entity="props.row"
               type="building"
-              @state-changed="onStateChanged()"
+              @assignee-changed="onRefresh"
             />
           </q-td>
         </template>
@@ -93,7 +98,13 @@
         </template>
       </q-table>
 
-      <building-dialog v-if="selected" v-model="showEditDialog" :item="selected" @saved="onSaved" />
+      <building-dialog
+        v-if="selected"
+        v-model="showEditDialog"
+        :item="selected"
+        :read-only="readOnly"
+        @saved="onRefresh"
+      />
     </div>
   </q-page>
 </template>
@@ -111,6 +122,7 @@ import type { Alignment } from 'src/components/models';
 import type { Feature, Point, GeoJsonProperties } from 'geojson';
 import EntityActionsBtn from 'src/components/EntityActionsBtn.vue';
 import EntityStateBtn from 'src/components/EntityStateBtn.vue';
+import EntityAssigneeBtn from 'src/components/EntityAssigneeBtn.vue';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
@@ -154,6 +166,14 @@ const columns = computed(() => {
       field: 'state',
       sortable: true,
       style: 'min-width: 120px',
+    },
+    {
+      name: 'assigned_to',
+      required: true,
+      label: t('assigned_to'),
+      align: 'left' as Alignment,
+      field: 'assigned_to',
+      sortable: true,
     },
     {
       name: 'type',
@@ -240,6 +260,7 @@ const columns = computed(() => {
 
 const selected = ref<Building>();
 const showEditDialog = ref(false);
+const readOnly = ref(false);
 const tableRef = ref();
 const rows = ref<Building[]>([]);
 const filter = ref('');
@@ -253,7 +274,7 @@ const pagination = ref<PaginationOptions>({
 const bldTypes = ref<Option[]>([]);
 
 onMounted(() => {
-  tableRef.value.requestServerInteraction();
+  onRefresh();
   void taxonomyStore.getTaxonomyNode('building', 'type').then((types) => {
     if (!types) {
       console.warn('No taxonomy found for building type');
@@ -294,8 +315,11 @@ function fetchFromServer(
     $limit: count,
     $sort: [sortBy, descending],
   };
+  query.filter = {};
+  if (authStore.isContributor) {
+    query.filter.created_by = authStore.profile?.username || authStore.profile?.email || '';
+  }
   if (filter) {
-    if (!query.filter) query.filter = {};
     query.filter.$or = [
       {
         name: {
@@ -327,7 +351,7 @@ function onIndex() {
     .index()
     .then((result) => {
       notifySuccess(t('all_items_indexed', { count: result }));
-      tableRef.value.requestServerInteraction();
+      onRefresh();
     })
     .catch(notifyError)
     .finally(() => {
@@ -340,7 +364,7 @@ function onAdd() {
   showEditDialog.value = true;
 }
 
-function onStateChanged() {
+function onRefresh() {
   tableRef.value.requestServerInteraction();
 }
 
@@ -348,6 +372,9 @@ function onAction(item: Building, action: string) {
   switch (action) {
     case 'edit':
       onEdit(item);
+      break;
+    case 'view':
+      onView(item);
       break;
     case 'publish':
       onPublish(item);
@@ -368,50 +395,36 @@ function onAction(item: Building, action: string) {
 
 function onEdit(resource: Building) {
   selected.value = { ...resource };
+  readOnly.value = false;
+  showEditDialog.value = true;
+}
+
+function onView(resource: Building) {
+  selected.value = { ...resource };
+  readOnly.value = true;
   showEditDialog.value = true;
 }
 function onPublish(item: Building) {
   if (!item.id) return;
-  void service
-    .publish(item.id)
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch(notifyError);
+  void service.publish(item.id).then(onRefresh).catch(notifyError);
 }
 
 function onUnpublish(item: Building) {
   if (!item.id) return;
-  void service
-    .unpublish(item.id)
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch(notifyError);
+  void service.unpublish(item.id).then(onRefresh).catch(notifyError);
 }
 
 function onToggleLock(item: Building) {
   if (!item.id) return;
   void service
     .setState(item.id, item.state === 'locked' ? 'draft' : 'locked')
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
+    .then(onRefresh)
     .catch(notifyError);
 }
 
 function onRemove(item: Building) {
   if (!item.id) return;
-  void service
-    .remove(item.id)
-    .then(() => {
-      tableRef.value.requestServerInteraction();
-    })
-    .catch(notifyError);
-}
-
-function onSaved() {
-  tableRef.value.requestServerInteraction();
+  void service.remove(item.id).then(onRefresh).catch(notifyError);
 }
 
 function getTypeLabel(val: string): string {

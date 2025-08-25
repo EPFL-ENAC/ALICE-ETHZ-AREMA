@@ -1,8 +1,8 @@
 <template>
   <q-dialog v-model="showDialog" persistent @hide="onHide">
-    <q-card class="dialog-lg">
+    <q-card class="dialog-xl">
       <q-card-actions>
-        <div class="text-h6 q-ml-sm">{{ t(editMode ? 'edit' : 'add') }}</div>
+        <div class="text-h6 q-ml-sm">{{ t(readOnly ? 'view' : editMode ? 'edit' : 'add') }}</div>
         <q-space />
         <q-btn flat icon="close" color="primary" v-close-popup />
       </q-card-actions>
@@ -21,10 +21,16 @@
           <q-tab-panel name="general" class="q-pl-none q-pr-none">
             <div class="row q-mb-md q-col-gutter-md">
               <div class="col-12 col-sm-4">
-                <q-input filled v-model="selected.name" :label="t('name') + ' *'" />
+                <q-input
+                  :disable="readOnly"
+                  filled
+                  v-model="selected.name"
+                  :label="t('name') + ' *'"
+                />
               </div>
               <div class="col-12 col-sm-4">
                 <taxonomy-select
+                  :disable="readOnly"
                   v-model="selected.types"
                   entity-type="building-material"
                   path="type"
@@ -34,6 +40,7 @@
               </div>
               <div class="col-12 col-sm-4">
                 <taxonomy-select
+                  :disable="readOnly"
                   v-model="selected.materials"
                   entity-type="natural-resource"
                   path="type"
@@ -43,30 +50,35 @@
               </div>
             </div>
             <text-input
+              :disable="readOnly"
               v-model="selected.description"
               :label="t('description')"
               help="building-material-description"
               class="q-mb-md"
             />
             <text-input
+              :disable="readOnly"
               v-model="selected.article_top"
               :label="t('article_top')"
               help="building-material-article-top"
               class="q-mb-md"
             />
             <text-input
+              :disable="readOnly"
               v-model="selected.article_bottom"
               :label="t('article_bottom')"
               help="building-material-article-bottom"
               class="q-mb-md"
             />
             <text-input
+              :disable="readOnly"
               v-model="selected.side_note"
               :label="t('side_note')"
               help="building-material-side-note"
               class="q-mb-md"
             />
             <text-input
+              :disable="readOnly"
               v-model="selected.external_links"
               :label="t('external_links')"
               help="building-material-links"
@@ -74,13 +86,14 @@
             />
           </q-tab-panel>
           <q-tab-panel name="physical_characteristics" class="q-pl-none q-pr-none">
-            <physical-entity-form v-model="selected" />
+            <physical-entity-form :disable="readOnly" v-model="selected" />
           </q-tab-panel>
           <q-tab-panel name="multimedia" class="q-pl-none q-pr-none">
-            <files-input v-if="selected.files" v-model="selected.files" />
+            <files-input :disable="readOnly" v-if="selected.files" v-model="selected.files" />
           </q-tab-panel>
           <q-tab-panel name="relations" class="q-pl-none q-pr-none">
             <q-select
+              :disable="readOnly"
               filled
               v-model="naturalResources"
               :options="naturalResourcesOptions"
@@ -99,8 +112,29 @@
       <q-separator />
 
       <q-card-actions align="right" class="bg-grey-3">
-        <q-btn flat :label="t('cancel')" color="secondary" @click="onCancel" v-close-popup />
-        <q-btn :label="t('save')" color="primary" @click="onSave" :disable="!isValid" />
+        <q-btn
+          v-if="readOnly"
+          flat
+          :label="t('close')"
+          color="secondary"
+          @click="onCancel"
+          v-close-popup
+        />
+        <q-btn
+          v-if="!readOnly"
+          flat
+          :label="t('cancel')"
+          color="secondary"
+          @click="onCancel"
+          v-close-popup
+        />
+        <q-btn
+          v-if="!readOnly"
+          :label="t('save')"
+          color="primary"
+          @click="onSave"
+          :disable="!isValid"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -117,6 +151,7 @@ import TextInput from 'src/components/TextInput.vue';
 interface DialogProps {
   modelValue: boolean;
   item: BuildingMaterial;
+  readOnly?: boolean;
 }
 
 const props = defineProps<DialogProps>();

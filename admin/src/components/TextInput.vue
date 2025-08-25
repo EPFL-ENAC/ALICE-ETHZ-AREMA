@@ -1,27 +1,34 @@
 <template>
   <div>
-    <q-card bordered flat>
+    <q-card flat>
       <q-tabs v-model="tab" dense align="left" class="bg-grey-1 text-grey-6" active-color="grey-8">
-        <q-tab v-if="helpContent" name="help" :label="t('instructions')" no-caps />
-        <q-tab name="write" :label="t('write')" no-caps />
+        <q-tab name="write" :label="label" no-caps />
         <q-tab name="preview" :label="t('preview')" no-caps />
       </q-tabs>
       <q-separator />
       <q-tab-panels v-model="tab">
         <q-tab-panel name="write" class="q-pa-none">
-          <q-input
-            filled
-            v-model="text"
-            type="textarea"
-            :label="label"
-            @update:model-value="onUpdate"
-          />
+          <div class="row">
+            <div class="col-9">
+              <q-input
+                filled
+                autogrow
+                v-model="text"
+                type="textarea"
+                @update:model-value="onUpdate"
+                :disable="props.disable"
+              />
+            </div>
+            <div class="col-3 q-pa-sm">
+              <div class="text-bold q-pl-md">{{ t('instructions') }}</div>
+              <div v-if="helpContent" style="font-size: smaller">
+                <q-markdown :src="helpContent" no-heading-anchor-links />
+              </div>
+            </div>
+          </div>
         </q-tab-panel>
         <q-tab-panel name="preview">
           <q-markdown :src="text" no-heading-anchor-links />
-        </q-tab-panel>
-        <q-tab-panel v-if="helpContent" name="help" class="bg-grey-2">
-          <q-markdown :src="helpContent" no-heading-anchor-links />
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -35,6 +42,7 @@ interface Props {
   label?: string;
   hint?: string;
   help?: string;
+  disable?: boolean | undefined;
 }
 
 const props = defineProps<Props>();
@@ -51,7 +59,7 @@ onMounted(() => {
     void fetch(`/admin/help/en/${props.help}.md`).then((response) => {
       void response.text().then((text) => {
         helpContent.value = text;
-        tab.value = text ? 'help' : 'write';
+        tab.value = 'write';
       });
     });
   }

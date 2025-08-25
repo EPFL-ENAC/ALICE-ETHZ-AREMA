@@ -35,6 +35,7 @@ interface Props {
   minZoom?: number | undefined;
   maxZoom?: number | undefined;
   height: string;
+  disable?: boolean | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -82,11 +83,12 @@ onMounted(() => {
   });
   map.addControl(draw as unknown as IControl);
 
-  map.on('draw.add', updateArea);
-  map.on('draw.create', updateArea);
-  map.on('draw.delete', updateArea);
-  map.on('draw.update', updateArea);
-
+  if (props.disable !== true) {
+    map.on('draw.add', updateArea);
+    map.on('draw.create', updateArea);
+    map.on('draw.delete', updateArea);
+    map.on('draw.update', updateArea);
+  }
   applyMode();
   if (props.feature) {
     deleteAll();

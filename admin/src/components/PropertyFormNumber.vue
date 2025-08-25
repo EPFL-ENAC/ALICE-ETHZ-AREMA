@@ -6,6 +6,7 @@
     <div class="row q-col-gutter-sm q-mb-sm">
       <div class="col">
         <q-input
+          :disable="disable"
           filled
           v-model.number="selected[`${property}_low`]"
           type="number"
@@ -15,6 +16,7 @@
       </div>
       <div class="col">
         <q-input
+          :disable="disable"
           filled
           v-model.number="selected[property]"
           type="number"
@@ -24,6 +26,7 @@
       </div>
       <div class="col">
         <q-input
+          :disable="disable"
           filled
           v-model.number="selected[`${property}_high`]"
           type="number"
@@ -42,6 +45,7 @@
 interface Props {
   modelValue: { [key: string]: string | number | null };
   property: string;
+  disable?: boolean | undefined;
 }
 
 const props = defineProps<Props>();

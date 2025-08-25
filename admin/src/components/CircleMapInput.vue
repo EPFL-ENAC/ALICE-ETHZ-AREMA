@@ -2,6 +2,7 @@
   <div>
     <div class="row q-mb-sm">
       <address-input
+        :disable="disable"
         v-model="address"
         :hint="t('address_input_hint')"
         @feature="updateWithLocation"
@@ -14,7 +15,7 @@
         :label="t('radius')"
         type="number"
         :rules="rules"
-        :disable="modelValue === null"
+        :disable="disable || modelValue === null"
         v-model.number="radius"
         @update:model-value="onRadiusUpdate"
         style="width: 150px"
@@ -22,6 +23,7 @@
       />
       <div>
         <q-btn
+          v-show="disable !== true"
           flat
           class="q-ml-sm"
           color="red"
@@ -40,6 +42,7 @@
           :center="center"
           :zoom="zoom"
           :height="height"
+          :disable="disable"
           @update:selectedFeatures="onFeatureSelected"
         />
       </div>
@@ -60,6 +63,7 @@ interface Props {
   center?: [number, number] | undefined;
   zoom?: number | undefined;
   height: string;
+  disable?: boolean | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {

@@ -2,13 +2,21 @@
   <div>
     <div class="row">
       <address-input
+        :disable="disable"
         v-model="address"
         :hint="t('address_input_hint')"
         @feature="updateWithLocation"
         style="width: 400px"
       />
       <div class="q-ml-sm">
-        <q-btn flat color="red" :disable="modelValue === null" @click="deleteAll()" icon="delete" />
+        <q-btn
+          v-show="!disable"
+          flat
+          color="red"
+          :disable="modelValue === null"
+          @click="deleteAll()"
+          icon="delete"
+        />
       </div>
     </div>
 
@@ -42,6 +50,7 @@ interface Props {
   center?: [number, number] | undefined;
   zoom?: number | undefined;
   height: string;
+  disable?: boolean | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -93,26 +102,28 @@ function onInit() {
     marker = new Marker({ color: '#FF0000' }).setLngLat(coordinates).addTo(map);
     map.setCenter(coordinates);
   }
-  map.on('click', (e) => {
-    if (!map) {
-      return;
-    }
-    if (marker) {
-      marker.remove();
-    }
-    marker = new Marker({ color: '#FF0000' }).setLngLat([e.lngLat.lng, e.lngLat.lat]).addTo(map);
-    const point = {
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [e.lngLat.lng, e.lngLat.lat],
-      },
-      properties: {
-        addressInput: address.value,
-      },
-    } as Feature<Point>;
-    onFeatureSelected(point);
-  });
+  if (props.disable !== true) {
+    map.on('click', (e) => {
+      if (!map) {
+        return;
+      }
+      if (marker) {
+        marker.remove();
+      }
+      marker = new Marker({ color: '#FF0000' }).setLngLat([e.lngLat.lng, e.lngLat.lat]).addTo(map);
+      const point = {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [e.lngLat.lng, e.lngLat.lat],
+        },
+        properties: {
+          addressInput: address.value,
+        },
+      } as Feature<Point>;
+      onFeatureSelected(point);
+    });
+  }
 }
 
 function onFeatureSelected(selectedFeature: Feature<Point>) {

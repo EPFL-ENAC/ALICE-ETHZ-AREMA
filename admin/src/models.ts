@@ -42,9 +42,11 @@ export interface Entity {
   created_at?: string;
   updated_at?: string;
   published_at?: string;
+  assigned_at?: string;
   created_by?: string;
   updated_by?: string;
   published_by?: string;
+  assigned_to?: string;
 
   state?: string;
 }

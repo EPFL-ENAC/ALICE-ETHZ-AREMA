@@ -34,6 +34,16 @@ class Config(BaseSettings):
     # ES
     ES_URL: str
 
+    # Mail/SMTP
+    SMTP_HOST: str = "mail.epfl.ch"
+    SMTP_PORT: int = 25
+    SMTP_EMAIL: str = "noreply+arema@epfl.ch"
+    SMTP_NAME: str = "AREMA"
+    SMTP_PASSWORD: str = ""
+    SMTP_USERNAME: str = ""
+    MAIL_SUBJECT_PREFIX: str = "[AREMA]"
+    MAIL_ADMINISTRATORS: str = ""
+
     @model_validator(mode="before")
     def form_db_url(cls, values: dict) -> dict:
         """Form the DB URL from the settings"""
