@@ -17,11 +17,12 @@
                 type="textarea"
                 @update:model-value="onUpdate"
                 :disable="props.disable"
+                style="min-height: 200px"
               />
             </div>
             <div class="col-3 q-pa-sm">
               <div class="text-bold q-pl-md">{{ t('instructions') }}</div>
-              <div v-if="helpContent" style="font-size: smaller">
+              <div v-if="helpContent" style="font-size: smaller; overflow: auto">
                 <q-markdown :src="helpContent" no-heading-anchor-links />
               </div>
             </div>
