@@ -1,2 +1,2 @@
-- Sources: [name of link](https://example.org), year, language, source
+- Sources: `[name of the link](https://example.org)`, year, language, source
 - Links to map sources!
