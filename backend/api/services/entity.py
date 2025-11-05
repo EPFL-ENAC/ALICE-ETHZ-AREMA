@@ -24,13 +24,13 @@ class EntityService:
             return True
         return False
 
-    async def assign(self, entity: Entity, assignee: str | None) -> Entity:
+    async def assign(self, entity: Entity, assignee: str | None, user: User = None) -> Entity:
         """Assign the entity to a user"""
         entity.assigned_to = assignee
         entity.assigned_at = datetime.now() if assignee else None
         await self.session.commit()
         if assignee:
-            await Mailer().send_review_assigned_email(self.entityType, entity.id, entity.name, assignee)
+            await Mailer().send_review_assigned_email(self.entityType, entity.id, entity.name, assignee, user)
         return entity
 
     async def apply_state(self, entity: Entity, state: str, user: User) -> Entity:
@@ -54,7 +54,7 @@ class EntityService:
             notification_states = ["in-review",
                                    "to-publish", "to-unpublish", "to-delete"]
             if state in notification_states:
-                await Mailer().send_state_transition_email(self.entityType, entity.id, entity.name, state)
+                await Mailer().send_state_transition_email(self.entityType, entity.id, entity.name, state, user)
             return set_state_func(entity, user)
         else:
             raise HTTPException(
