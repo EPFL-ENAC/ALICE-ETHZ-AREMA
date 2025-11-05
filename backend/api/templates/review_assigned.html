@@ -2,7 +2,7 @@
 <html lang="en">
 <body>
     <p>Dear {{ full_name }},</p>
-    <p>You have been assigned a review task of <strong>{{ entity_type }} {{ entity_name }} #{{ entity_id }}</strong>. To view the task, please click the link below:</p>
+    <p>You have been assigned a review task of <strong>{{ entity_type }} {{ entity_name }} #{{ entity_id }}</strong>{% if from_full_name %} by {{ from_full_name }}{% endif %}. To view the task, please click the link below:</p>
   {% if url %}
     <p><a href="{{ url }}">{{ url }}</a></p>
   {% else %}

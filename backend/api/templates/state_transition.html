@@ -2,7 +2,7 @@
 <html lang="en">
 <body>
     <p>Dear {{ full_name }},</p>
-    <p>The <strong>{{ entity_type }} {{ entity_name }} #{{ entity_id }}</strong> has transitioned to the <strong>{{ state }}</strong> state. To view the details, please click the link below:</p>
+    <p>The <strong>{{ entity_type }} {{ entity_name }} #{{ entity_id }}</strong> has transitioned to the <strong>{{ state }}</strong> state{% if from_full_name %}, initiated by {{ from_full_name }}{% endif %}. To view the details, please click the link below:</p>
   {% if url %}
     <p><a href="{{ url }}">{{ url }}</a></p>
   {% else %}

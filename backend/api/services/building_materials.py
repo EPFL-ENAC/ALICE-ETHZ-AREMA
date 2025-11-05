@@ -217,10 +217,10 @@ class BuildingMaterialService(EntityService):
         entity = await self.apply_state(entity, state, user)
         await self.session.commit()
 
-    async def set_assignee(self, id: int, assignee: str | None) -> None:
+    async def set_assignee(self, id: int, assignee: str | None, user: User = None) -> None:
         """Set the assignee of a building material by id"""
         entity = await self.get(id)
-        await self.assign(entity, assignee)
+        await self.assign(entity, assignee, user)
 
     async def index(self, id: int, user: User = None) -> None:
         """Publish a building material by id"""
