@@ -93,7 +93,7 @@ function onSuggestAddress() {
 function onSuggestionSelected(suggestion: Suggestion) {
   address.value = suggestion.value;
   showSuggestions.value = false;
-  emit('feature', suggestion.feature);
   onUpdate();
+  emit('feature', suggestion.feature);
 }
 </script>

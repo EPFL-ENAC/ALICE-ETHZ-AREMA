@@ -6,6 +6,7 @@
         v-model="address"
         :hint="t('address_input_hint')"
         @feature="updateWithLocation"
+        @update:model-value="updateAddress"
         style="width: 400px"
       />
       <div class="q-ml-sm">
@@ -189,6 +190,11 @@ function updateWithLocation(location: Feature<Point | Polygon | MultiPolygon>) {
     marker = new Marker({ color: '#FF0000' }).setLngLat(coordinates).addTo(map);
   }
   emit('update:modelValue', location);
+}
+
+function updateAddress(newAddress: string) {
+  address.value = newAddress;
+  updateWithLocation(unref(props.modelValue) as Feature<Point | Polygon | MultiPolygon>);
 }
 </script>
 
