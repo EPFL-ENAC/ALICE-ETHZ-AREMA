@@ -37,6 +37,7 @@ export default {
   aerial: 'Aérien',
   all_items_indexed: 'Tous les éléments sont republiés ({count}).',
   amount: 'Quantité',
+  apply: 'Appliquer',
   areaDelivery: 'Zone de livraison',
   article_bottom: 'Article (bas)',
   article_top: 'Article (haut)',

@@ -45,6 +45,7 @@ export default {
   air_tightness: 'Air tightness',
   all_items_indexed: 'All items republished ({count})',
   amount: 'Amount',
+  apply: 'Apply',
   areaDelivery: 'Area of delivery',
   article_bottom: 'Article (bottom)',
   article_top: 'Article (top)',

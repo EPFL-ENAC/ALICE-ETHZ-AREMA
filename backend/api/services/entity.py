@@ -30,7 +30,10 @@ class EntityService:
         entity.assigned_at = datetime.now() if assignee else None
         await self.session.commit()
         if assignee:
-            await Mailer().send_review_assigned_email(self.entityType, entity.id, entity.name, assignee, user)
+            # split comma separated assignees and send email to each
+            assignees = [a.strip() for a in assignee.split(",")]
+            for assignee in assignees:
+                await Mailer().send_review_assigned_email(self.entityType, entity.id, entity.name, assignee, user)
         return entity
 
     async def apply_state(self, entity: Entity, state: str, user: User) -> Entity:
