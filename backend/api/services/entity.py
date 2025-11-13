@@ -26,14 +26,19 @@ class EntityService:
 
     async def assign(self, entity: Entity, assignee: str | None, user: User = None) -> Entity:
         """Assign the entity to a user"""
+        original_assignee = entity.assigned_to
         entity.assigned_to = assignee
         entity.assigned_at = datetime.now() if assignee else None
         await self.session.commit()
         if assignee:
             # split comma separated assignees and send email to each
             assignees = [a.strip() for a in assignee.split(",")]
-            for assignee in assignees:
-                await Mailer().send_review_assigned_email(self.entityType, entity.id, entity.name, assignee, user)
+            original_assignees = [a.strip() for a in original_assignee.split(
+                ",")] if original_assignee else []
+            for username in assignees:
+                # only send email if the assignee is new
+                if username not in original_assignees:
+                    await Mailer().send_review_assigned_email(self.entityType, entity.id, entity.name, username, user)
         return entity
 
     async def apply_state(self, entity: Entity, state: str, user: User) -> Entity:
