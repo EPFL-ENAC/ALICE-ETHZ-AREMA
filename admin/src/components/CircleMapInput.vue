@@ -6,6 +6,7 @@
         v-model="address"
         :hint="t('address_input_hint')"
         @feature="updateWithLocation"
+        @update:model-value="onAddressUpdate"
         style="width: 400px"
       />
       <q-input
@@ -180,8 +181,8 @@ function updateWithLocation(location: Feature) {
   }
   value.properties = {
     circleRadius: value.properties.circleRadius,
-    addressInput: address.value,
     ...location.properties,
+    addressInput: address.value,
   };
   const center =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -191,6 +192,11 @@ function updateWithLocation(location: Feature) {
     coordinates: [[center, center, center, center]],
   };
   emit('update:modelValue', value);
+}
+
+function onAddressUpdate(newAddress: string) {
+  address.value = newAddress;
+  updateWithLocation(unref(props.modelValue) as Feature<Polygon | MultiPolygon>);
 }
 
 function toFeature() {

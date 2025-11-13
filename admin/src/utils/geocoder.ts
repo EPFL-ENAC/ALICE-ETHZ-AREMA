@@ -1,12 +1,13 @@
 import type { Feature, FeatureCollection } from '@turf/turf';
 
-const COUNTRIES = ['ch', 'fr', 'it', 'de', 'at'];
+const COUNTRIES: string[] = []; //['ch', 'fr', 'it', 'de', 'at'];
 
 function handleNominatimResponse(geojson: FeatureCollection): Feature[] {
   const features: Feature[] = [];
   const place_names: string[] = [];
-  for (const feature of geojson.features.filter((f: Feature) =>
-    COUNTRIES.includes(f.properties?.address.country_code),
+  for (const feature of geojson.features.filter(
+    (f: Feature) =>
+      COUNTRIES.length === 0 || COUNTRIES.includes(f.properties?.address.country_code),
   )) {
     if (
       feature.properties &&
@@ -51,7 +52,8 @@ export const geocoderApi = {
       let countrycodes = COUNTRIES.join(',');
       if (config.countries && config.countries.length > 0)
         countrycodes = config.countries.join(',');
-      const request = `https://nominatim.openstreetmap.org/search?q=${config.query}&limit=${config.limit}&format=geojson&polygon_geojson=1&addressdetails=1&countrycodes=${countrycodes}`;
+      const countrycodes_param = countrycodes.length > 0 ? `&countrycodes=${countrycodes}` : '';
+      const request = `https://nominatim.openstreetmap.org/search?q=${config.query}&limit=${config.limit}&format=geojson&polygon_geojson=1&addressdetails=1${countrycodes_param}`;
       if (searchController) searchController.abort();
       searchController = new AbortController();
       const response = await fetch(request, {
