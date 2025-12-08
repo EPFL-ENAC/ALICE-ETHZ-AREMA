@@ -9,7 +9,7 @@
       class="layers bg-white"
       size="12px"
     >
-      <q-menu>
+      <q-menu v-model="showMenu">
         <q-list>
           <template v-for="node in mapMenu" :key="node.id">
             <q-item
@@ -161,6 +161,7 @@ const marker = new Marker({ element: el }).setLngLat([0, 0]);
 
 const map = shallowRef<Map>();
 const mapLoaded = ref(false);
+const showMenu = ref(true);
 const mapMenu = ref<MapNode[]>([
   {
     id: 'earth',
