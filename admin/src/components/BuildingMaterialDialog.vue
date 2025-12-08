@@ -12,7 +12,7 @@
         <q-tabs v-model="tab" dense align="left" no-caps>
           <q-tab name="general" :label="t('general') + ' *'" />
           <q-tab name="physical_characteristics" :label="t('physical_characteristics')" />
-          <q-tab name="multimedia" :label="t('multimedia')" />
+          <q-tab name="multimedia" :label="t('multimedia') + ' *'" />
           <q-tab name="relations" :label="t('relations')" />
         </q-tabs>
         <q-separator />
@@ -180,7 +180,12 @@ const naturalResourcesOptions = ref<
 >([]);
 
 const isValid = computed(() => {
-  return selected.value.name && selected.value.types;
+  return (
+    selected.value.name &&
+    selected.value.types &&
+    selected.value.files !== undefined &&
+    selected.value.files.length >= 1
+  );
 });
 
 onMounted(() => {

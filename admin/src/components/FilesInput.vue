@@ -58,6 +58,9 @@
         </q-item>
       </template>
     </q-list>
+    <div v-else class="q-mb-sm text-negative">
+      {{ t('one_file_required') }}
+    </div>
     <div v-show="disable !== true">
       <div class="q-gutter-sm">
         <q-radio v-model="type" val="files" :label="t('files')" />

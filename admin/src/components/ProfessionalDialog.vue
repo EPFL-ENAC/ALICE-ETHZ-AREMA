@@ -12,7 +12,7 @@
         <q-tabs v-model="tab" dense align="left" no-caps>
           <q-tab name="general" :label="t('general') + ' *'" />
           <q-tab name="location" :label="t('location') + ' *'" />
-          <q-tab name="multimedia" :label="t('multimedia')" />
+          <q-tab name="multimedia" :label="t('multimedia') + ' *'" />
           <q-tab name="relations" :label="t('relations')" />
         </q-tabs>
         <q-separator />
@@ -245,7 +245,13 @@ const technicalConstructionsOptions = ref<
 >([]);
 
 const isValid = computed(() => {
-  return selected.value.name && selected.value.types && selected.value.address;
+  return (
+    selected.value.name &&
+    selected.value.types &&
+    selected.value.address &&
+    selected.value.files !== undefined &&
+    selected.value.files.length >= 1
+  );
 });
 
 onMounted(() => {

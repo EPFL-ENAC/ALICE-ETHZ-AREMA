@@ -128,6 +128,7 @@ export default {
   no_results: 'Aucun résultat',
   not_assigned: 'Non assigné',
   not_published: 'Non publié',
+  one_file_required: 'Au moins un document multimédia est requis.',
   other_addresses: 'Autres adresses',
   other: 'Autre',
   others: 'Autres',

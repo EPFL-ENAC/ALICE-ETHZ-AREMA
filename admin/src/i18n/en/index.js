@@ -149,6 +149,7 @@ export default {
   not_assigned: 'Not assigned',
   not_published: 'Not published',
   other_addresses: 'Other addresses',
+  one_file_required: 'At least one multimedia document is required.',
   other: 'Other',
   others: 'Others',
   password_copied: 'Password copied to clipboard',

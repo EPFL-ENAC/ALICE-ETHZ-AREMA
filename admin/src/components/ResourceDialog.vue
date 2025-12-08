@@ -11,7 +11,7 @@
       <q-card-section>
         <q-tabs v-model="tab" dense align="left" no-caps>
           <q-tab name="general" :label="t('general') + ' *'" />
-          <q-tab name="multimedia" :label="t('multimedia')" />
+          <q-tab name="multimedia" :label="t('multimedia') + ' *'" />
         </q-tabs>
         <q-separator />
 
@@ -141,7 +141,12 @@ const editMode = ref(false);
 const tab = ref('general');
 
 const isValid = computed(() => {
-  return selected.value.name && selected.value.type;
+  return (
+    selected.value.name &&
+    selected.value.type &&
+    selected.value.files !== undefined &&
+    selected.value.files.length >= 1
+  );
 });
 
 onMounted(() => {
