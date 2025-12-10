@@ -46,7 +46,7 @@ async def get_file(file_path: str,
              dependencies=[Depends(file_checker.check_size)])
 async def upload_temp_files(
         files: list[UploadFile] = File(description="Multiple file upload"),
-        user: User = Depends(kc_service.require_admin())
+        user: User = Depends(kc_service.get_user_info())
 ):
     current_time = datetime.datetime.now()
     # generate unique name for the files' base folder in S3
@@ -62,7 +62,7 @@ async def upload_temp_files(
                )
 async def delete_temp_files(
     file_path: str,
-    user: User = Depends(kc_service.require_admin())
+    user: User = Depends(kc_service.get_user_info())
 ):
     # delete file at path
     await s3_client.delete_file(file_path)

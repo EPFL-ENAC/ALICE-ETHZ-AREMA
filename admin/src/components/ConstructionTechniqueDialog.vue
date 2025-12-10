@@ -11,7 +11,7 @@
       <q-card-section>
         <q-tabs v-model="tab" dense align="left" no-caps>
           <q-tab name="general" :label="t('general') + ' *'" />
-          <q-tab name="multimedia" :label="t('multimedia')" />
+          <q-tab name="multimedia" :label="t('multimedia') + ' *'" />
           <q-tab name="relations" :label="t('relations')" />
         </q-tabs>
         <q-separator />
@@ -172,7 +172,12 @@ const buildingMaterialsOptions = ref<{ label: string | undefined; value: number 
 );
 
 const isValid = computed(() => {
-  return selected.value.name && selected.value.types;
+  return (
+    selected.value.name &&
+    selected.value.types &&
+    selected.value.files !== undefined &&
+    selected.value.files.length >= 1
+  );
 });
 
 onMounted(() => {

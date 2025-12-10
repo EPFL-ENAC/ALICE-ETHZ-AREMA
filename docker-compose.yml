@@ -17,7 +17,7 @@ services:
       memlock:
         soft: -1
         hard: -1
-    restart: always
+    restart: unless-stopped
   postgres:
     #image: postgis/postgis:15-3.5-alpine
     image: postgres:15.5-alpine
@@ -26,7 +26,7 @@ services:
     ports:
       # Expose Postgres port we need it for dev purposes should not be exposed publicly
       - '5432:5432'
-    restart: always
+    restart: unless-stopped
     environment:
         - POSTGRES_USER=${DB_USER}
         - POSTGRES_PASSWORD=${DB_PASSWORD}
