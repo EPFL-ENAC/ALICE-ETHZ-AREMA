@@ -162,6 +162,7 @@ export default {
   porosity: 'Porosity',
   preview: 'Preview',
   professional_building_material_expertise_hint: 'Building material expertise.',
+  professional_professionals_hint: 'Related professionals.',
   professional_technical_construction_expertise_hint: 'Construction techniques expertise.',
   professionals: 'Professionals',
   properties: 'Properties',
