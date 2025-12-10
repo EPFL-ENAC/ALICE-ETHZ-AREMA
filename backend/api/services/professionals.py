@@ -160,6 +160,7 @@ class ProfessionalService(EntityService):
             entity.created_by = user.username
             entity.updated_by = user.username
         # handle relationships
+        # new_pros = await self._get_professionals(payload.professional_ids)
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
         entity.building_materials.extend(new_bms)
@@ -201,7 +202,7 @@ class ProfessionalService(EntityService):
                 status_code=403, detail="Not enough permissions")
         for key, value in payload.model_dump().items():
             debug(key, value)
-            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "published_at", "published_by", "building_material_ids", "technical_construction_ids"]:
+            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "published_at", "published_by", "professional_ids", "building_material_ids", "technical_construction_ids"]:
                 setattr(entity, key, value)
         entity.updated_at = datetime.now()
         entity.updated_by = user.username
@@ -218,6 +219,7 @@ class ProfessionalService(EntityService):
             entity.files = new_files
 
         # handle relationships
+        # new_pros = await self._get_professionals(payload.professional_ids)
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
         entity.building_materials.extend(new_bms)
@@ -286,3 +288,6 @@ class ProfessionalService(EntityService):
 
     async def _get_technical_constructions(self, ids: list[int]):
         return await self.session.exec(select(TechnicalConstruction).filter(TechnicalConstruction.id.in_(ids)))
+
+    async def _get_professionals(self, ids: list[int]):
+        return await self.session.exec(select(Professional).filter(Professional.id.in_(ids)))

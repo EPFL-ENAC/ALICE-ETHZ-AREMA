@@ -140,6 +140,13 @@ class ProfessionalBuilding(SQLModel, table=True):
         default=None, foreign_key="building.id", primary_key=True)
 
 
+class ProfessionalProfessional(SQLModel, table=True):
+    professional_id: Optional[int] = Field(
+        default=None, foreign_key="professional.id", primary_key=True)
+    related_id: Optional[int] = Field(
+        default=None, foreign_key="professional.id", primary_key=True)
+
+
 class ProfessionalBuildingMaterial(SQLModel, table=True):
     professional_id: Optional[int] = Field(
         default=None, foreign_key="professional.id", primary_key=True)
@@ -335,6 +342,14 @@ class Professional(ProfessionalBase, table=True):
         nullable=False,
         primary_key=True,
         index=True,
+    )
+    professionals: List["Professional"] = Relationship(
+        back_populates="professionals",
+        link_model=ProfessionalProfessional,
+        sa_relationship_kwargs={
+            "primaryjoin": "Professional.id==ProfessionalProfessional.professional_id",
+            "secondaryjoin": "Professional.id==ProfessionalProfessional.related_id",
+        }
     )
     buildings: List["Building"] = Relationship(
         back_populates="professionals", link_model=ProfessionalBuilding)

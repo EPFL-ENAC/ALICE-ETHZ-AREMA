@@ -143,6 +143,19 @@
             <q-select
               :disable="readOnly"
               filled
+              v-model="professionals"
+              :options="professionalsOptions"
+              multiple
+              map-options
+              emit-value
+              use-chips
+              :label="t('professionals')"
+              :hint="t('professional_professionals_hint')"
+              class="q-mb-md"
+            />
+            <q-select
+              :disable="readOnly"
+              filled
               v-model="buildingMaterials"
               :options="buildingMaterialsOptions"
               multiple
@@ -210,6 +223,7 @@ import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 import TextInput from 'src/components/TextInput.vue';
 import AddressInput from 'src/components/AddressInput.vue';
 import type { Feature } from '@turf/turf';
+import type { Option } from 'src/components/models';
 
 interface DialogProps {
   modelValue: boolean;
@@ -235,14 +249,12 @@ const selected = ref<Professional>({
 const circle = ref<Feature>({} as Feature);
 const editMode = ref(false);
 const tab = ref('general');
+const professionals = ref<number[]>([]);
+const professionalsOptions = ref<Option[]>([]);
 const buildingMaterials = ref<number[]>([]);
-const buildingMaterialsOptions = ref<{ label: string | undefined; value: number | undefined }[]>(
-  [],
-);
+const buildingMaterialsOptions = ref<Option[]>([]);
 const technicalConstructions = ref<number[]>([]);
-const technicalConstructionsOptions = ref<
-  { label: string | undefined; value: number | undefined }[]
->([]);
+const technicalConstructionsOptions = ref<Option[]>([]);
 
 const isValid = computed(() => {
   return (
@@ -286,6 +298,21 @@ function init(value: boolean) {
       };
     }
 
+    professionals.value = [];
+    void service
+      .find({
+        $limit: 100,
+        $select: ['id', 'name'],
+        filter: {},
+      })
+      .then((res) => {
+        professionalsOptions.value = res.data
+          .filter((item: Professional) => item.id !== selected.value.id)
+          .map((item: Professional) => ({
+            label: item.name,
+            value: item.id,
+          }));
+      });
     buildingMaterials.value = [];
     void bmService
       .find({
@@ -344,6 +371,8 @@ function onCancel() {
 
 function onSave() {
   if (selected.value === undefined) return;
+  delete selected.value.professionals;
+  selected.value.professional_ids = professionals.value;
   delete selected.value.building_materials;
   selected.value.building_material_ids = buildingMaterials.value;
   delete selected.value.technical_constructions;

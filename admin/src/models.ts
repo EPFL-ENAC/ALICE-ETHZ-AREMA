@@ -208,11 +208,13 @@ export interface Professional extends Entity {
   geom?: Geometry | undefined;
   files?: FileItem[];
 
+  professionals?: Professional[];
   buildings?: Building[];
   building_materials?: BuildingMaterial[];
   technical_constructions?: TechnicalConstruction[];
 
   // draft
+  professional_ids?: number[];
   building_material_ids?: number[];
   technical_construction_ids?: number[];
 }

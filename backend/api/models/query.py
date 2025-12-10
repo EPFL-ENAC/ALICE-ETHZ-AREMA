@@ -118,6 +118,7 @@ class BuildingResult(ListResult):
 
 class ProfessionalDraft(ProfessionalBase):
     id: Optional[int] = Field(default=None)
+    professional_ids: List[int] = []
     building_material_ids: List[int] = []
     technical_construction_ids: List[int] = []
 
