@@ -161,7 +161,8 @@ const marker = new Marker({ element: el }).setLngLat([0, 0]);
 
 const map = shallowRef<Map>();
 const mapLoaded = ref(false);
-const showMenu = ref(true);
+const showMenu = ref(false);
+const isVisible = ref(false);
 const mapMenu = ref<MapNode[]>([
   {
     id: 'earth',
@@ -226,6 +227,27 @@ const hasLegend = computed(() => {
 // track which were the layers added, to be able to remove them
 const layerIds: string[] = [];
 
+let observer: IntersectionObserver | null = null;
+
+function setupIntersectionObserver() {
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        isVisible.value = entry.isIntersecting;
+        showMenu.value = entry.isIntersecting;
+      });
+    },
+    {
+      threshold: 0.1, // Trigger when at least 10% of the map is visible
+    },
+  );
+
+  const mapElement = document.getElementById('map-results');
+  if (mapElement) {
+    observer.observe(mapElement);
+  }
+}
+
 const EntityTypeSymbols: { [key: string]: { image: string } } = {
   building: { image: 'building-regular-32.png' }, // 'building-solid.png'
   professional: { image: 'compass-drafting-solid-32.png' }, // 'helmet-safety-solid.svg'
@@ -233,12 +255,16 @@ const EntityTypeSymbols: { [key: string]: { image: string } } = {
 
 onMounted(() => {
   initMap();
+  setupIntersectionObserver();
 });
 
 onUnmounted(() => {
   if (map.value) {
     map.value.remove();
     map.value = undefined;
+  }
+  if (observer) {
+    observer.disconnect();
   }
 });
 
