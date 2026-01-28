@@ -122,6 +122,7 @@
           :label="t('cancel')"
           color="secondary"
           @click="onCancel"
+          :disable="saving"
           v-close-popup
         />
         <q-btn
@@ -129,7 +130,8 @@
           :label="t('save')"
           color="primary"
           @click="onSave"
-          :disable="!isValid"
+          :disable="!isValid || saving"
+          :loading="saving"
         />
       </q-card-actions>
     </q-card>
@@ -170,6 +172,7 @@ const buildingMaterials = ref<number[]>([]);
 const buildingMaterialsOptions = ref<{ label: string | undefined; value: number | undefined }[]>(
   [],
 );
+const saving = ref(false);
 
 const isValid = computed(() => {
   return (
@@ -234,6 +237,7 @@ function onSave() {
   if (selected.value === undefined) return;
   delete selected.value.building_materials;
   selected.value.building_material_ids = buildingMaterials.value;
+  saving.value = true;
   if (selected.value.id) {
     service
       .update(selected.value.id, selected.value)
@@ -244,6 +248,9 @@ function onSave() {
       })
       .catch((err) => {
         notifyError(err.message);
+      })
+      .finally(() => {
+        saving.value = false;
       });
   } else {
     service
@@ -255,6 +262,9 @@ function onSave() {
       })
       .catch((err) => {
         notifyError(err.message);
+      })
+      .finally(() => {
+        saving.value = false;
       });
   }
 }

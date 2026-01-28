@@ -143,6 +143,19 @@
             <q-select
               :disable="readOnly"
               filled
+              v-model="professionals"
+              :options="professionalsOptions"
+              multiple
+              map-options
+              emit-value
+              use-chips
+              :label="t('professionals')"
+              :hint="t('professional_professionals_hint')"
+              class="q-mb-md"
+            />
+            <q-select
+              :disable="readOnly"
+              filled
               v-model="buildingMaterials"
               :options="buildingMaterialsOptions"
               multiple
@@ -187,6 +200,7 @@
           :label="t('cancel')"
           color="secondary"
           @click="onCancel"
+          :disable="saving"
           v-close-popup
         />
         <q-btn
@@ -194,7 +208,8 @@
           :label="t('save')"
           color="primary"
           @click="onSave"
-          :disable="!isValid"
+          :disable="!isValid || saving"
+          :loading="saving"
         />
       </q-card-actions>
     </q-card>
@@ -210,6 +225,7 @@ import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 import TextInput from 'src/components/TextInput.vue';
 import AddressInput from 'src/components/AddressInput.vue';
 import type { Feature } from '@turf/turf';
+import type { Option } from 'src/components/models';
 
 interface DialogProps {
   modelValue: boolean;
@@ -235,14 +251,13 @@ const selected = ref<Professional>({
 const circle = ref<Feature>({} as Feature);
 const editMode = ref(false);
 const tab = ref('general');
+const professionals = ref<number[]>([]);
+const professionalsOptions = ref<Option[]>([]);
 const buildingMaterials = ref<number[]>([]);
-const buildingMaterialsOptions = ref<{ label: string | undefined; value: number | undefined }[]>(
-  [],
-);
+const buildingMaterialsOptions = ref<Option[]>([]);
 const technicalConstructions = ref<number[]>([]);
-const technicalConstructionsOptions = ref<
-  { label: string | undefined; value: number | undefined }[]
->([]);
+const technicalConstructionsOptions = ref<Option[]>([]);
+const saving = ref(false);
 
 const isValid = computed(() => {
   return (
@@ -284,6 +299,26 @@ function init(value: boolean) {
           coordinates: [[center, center, center, center]],
         },
       };
+    }
+
+    professionals.value = [];
+    void service
+      .find({
+        $limit: 100,
+        $select: ['id', 'name'],
+        filter: {},
+      })
+      .then((res) => {
+        professionalsOptions.value = res.data
+          .filter((item: Professional) => item.id !== selected.value.id)
+          .map((item: Professional) => ({
+            label: item.name,
+            value: item.id,
+          }));
+      });
+    if (editMode.value) {
+      professionals.value =
+        selected.value.professionals?.map((item: Professional) => item.id || 0) || [];
     }
 
     buildingMaterials.value = [];
@@ -344,10 +379,13 @@ function onCancel() {
 
 function onSave() {
   if (selected.value === undefined) return;
+  delete selected.value.professionals;
+  selected.value.professional_ids = professionals.value;
   delete selected.value.building_materials;
   selected.value.building_material_ids = buildingMaterials.value;
   delete selected.value.technical_constructions;
   selected.value.technical_construction_ids = technicalConstructions.value;
+  saving.value = true;
   if (selected.value.id) {
     service
       .update(selected.value.id, selected.value)
@@ -358,6 +396,9 @@ function onSave() {
       })
       .catch((err) => {
         notifyError(err.message);
+      })
+      .finally(() => {
+        saving.value = false;
       });
   } else {
     service
@@ -369,6 +410,9 @@ function onSave() {
       })
       .catch((err) => {
         notifyError(err.message);
+      })
+      .finally(() => {
+        saving.value = false;
       });
   }
 }

@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy import func
 from sqlmodel import select
 from fastapi import HTTPException
-from api.models.domain import FileItem, Professional, Building, BuildingMaterial, TechnicalConstruction, ProfessionalBuildingMaterial, ProfessionalTechnicalConstruction, ProfessionalBuilding
+from api.models.domain import FileItem, Professional, Building, BuildingMaterial, TechnicalConstruction, ProfessionalBuildingMaterial, ProfessionalTechnicalConstruction, ProfessionalBuilding, ProfessionalProfessional
 from api.models.query import ProfessionalDraft, ProfessionalResult, GroupByCount, GroupByResult
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
@@ -34,7 +34,9 @@ class ProfessionalQueryBuilder(QueryBuilder):
         query = self._apply_joins(query, filter)
         if fields is None or len(fields) == 0:
             query = query.options(selectinload(Professional.building_materials),
-                                  selectinload(Professional.technical_constructions))
+                                  selectinload(
+                                      Professional.technical_constructions),
+                                  selectinload(Professional.professionals))
         return start, end, query
 
     def _apply_joins(self, query, filter):
@@ -128,7 +130,8 @@ class ProfessionalService(EntityService):
         builder = ProfessionalQueryBuilder(Professional, filter, sort, range, {
             "$buildings": Building,
             "$building_materials": BuildingMaterial,
-            "$technical_constructions": TechnicalConstruction
+            "$technical_constructions": TechnicalConstruction,
+            "$professionals": Professional
         })
 
         # Do a query to satisfy total count
@@ -160,6 +163,9 @@ class ProfessionalService(EntityService):
             entity.created_by = user.username
             entity.updated_by = user.username
         # handle relationships
+        new_pros = await self._get_professionals(payload.professional_ids)
+        entity.professionals.clear()
+        entity.professionals.extend(new_pros)
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
         entity.building_materials.extend(new_bms)
@@ -190,7 +196,8 @@ class ProfessionalService(EntityService):
             select(Professional)
             .where(Professional.id == id)
             .options(selectinload(Professional.building_materials),
-                     selectinload(Professional.technical_constructions)))
+                     selectinload(Professional.technical_constructions),
+                     selectinload(Professional.professionals)))
         entity = res.one_or_none()
         if not entity:
             raise HTTPException(
@@ -201,7 +208,7 @@ class ProfessionalService(EntityService):
                 status_code=403, detail="Not enough permissions")
         for key, value in payload.model_dump().items():
             debug(key, value)
-            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "published_at", "published_by", "building_material_ids", "technical_construction_ids"]:
+            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "published_at", "published_by", "professional_ids", "building_material_ids", "technical_construction_ids"]:
                 setattr(entity, key, value)
         entity.updated_at = datetime.now()
         entity.updated_by = user.username
@@ -218,6 +225,10 @@ class ProfessionalService(EntityService):
             entity.files = new_files
 
         # handle relationships
+        new_pros = await self._get_professionals(payload.professional_ids)
+        entity.professionals.clear()
+        entity.professionals.extend(
+            [pro for pro in new_pros if pro.id != entity.id])
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
         entity.building_materials.extend(new_bms)
@@ -279,6 +290,9 @@ class ProfessionalService(EntityService):
             [f"technical-construction:{rel.technical_construction_id}" for rel in relations])
         relations = (await self.session.exec(select(ProfessionalBuilding).where(ProfessionalBuilding.professional_id == entity.id))).all()
         relates_to.extend([f"building:{rel.building_id}" for rel in relations])
+        relations = (await self.session.exec(select(ProfessionalProfessional).where(ProfessionalProfessional.professional_id == entity.id))).all()
+        relates_to.extend(
+            [f"professional:{rel.related_id}" for rel in relations])
         return relates_to
 
     async def _get_building_materials(self, ids: list[int]):
@@ -286,3 +300,6 @@ class ProfessionalService(EntityService):
 
     async def _get_technical_constructions(self, ids: list[int]):
         return await self.session.exec(select(TechnicalConstruction).filter(TechnicalConstruction.id.in_(ids)))
+
+    async def _get_professionals(self, ids: list[int]):
+        return await self.session.exec(select(Professional).filter(Professional.id.in_(ids)))
