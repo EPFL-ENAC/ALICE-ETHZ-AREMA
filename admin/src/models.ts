@@ -232,6 +232,16 @@ export interface AppUser {
   password?: string;
 }
 
+export interface SubjectProfile {
+  id?: number;
+  name: string;
+  type: string;
+  affiliation?: string;
+  description?: string;
+  email?: string;
+  web?: string;
+}
+
 export interface GroupByCount {
   value: string | null;
   count: number;

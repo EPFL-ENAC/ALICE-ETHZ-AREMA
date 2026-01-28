@@ -9,6 +9,16 @@ export default {
     en: 'English',
     fr: 'Français',
   },
+  profile: {
+    identification: 'Identification',
+    public: 'Informations publiques',
+    name: "Nom affiché",
+    affiliation: 'Affiliation',
+    description: 'Description',
+    email: 'Courriel public',
+    email_hint: 'Ce courriel sera visible publiquement dans votre profil.',
+    web: 'Site web',
+  },
   roles: {
     administrator: 'Administrateur',
     contributor: 'Contributeur',

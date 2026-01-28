@@ -15,6 +15,16 @@ export default {
     en: 'English',
     fr: 'Français',
   },
+  profile: {
+    identification: 'Identification',
+    public: 'Public information',
+    name: 'Display name',
+    affiliation: 'Affiliation',
+    description: 'Description',
+    email: 'Public email',
+    email_hint: 'This email will be publicly visible in your profile.',
+    web: 'Website',
+  },
   roles: {
     administrator: 'Administrator',
     contributor: 'Contributor',

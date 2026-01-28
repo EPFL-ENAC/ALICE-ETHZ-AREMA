@@ -9,6 +9,24 @@ from enacit4r_files.models.files import FileRef
 # Base classes
 
 
+class SubjectProfileBase(SQLModel):
+    type: Optional[str] = Field(default=None)
+    name: Optional[str] = Field(default=None)
+    affiliation: Optional[str] = Field(default=None)
+    description: Optional[str] = Field(default=None)
+    email: Optional[str] = Field(default=None)
+    web: Optional[str] = Field(default=None)
+
+
+class SubjectProfile(SubjectProfileBase, table=True):
+    id: Optional[int] = Field(
+        default=None,
+        nullable=False,
+        primary_key=True,
+        index=True,
+    )
+
+
 class FileItem(BaseModel):
     ref: Optional[FileRef] = Field(default=None)
     url: Optional[str] = Field(default=None)
