@@ -227,7 +227,8 @@ class ProfessionalService(EntityService):
         # handle relationships
         new_pros = await self._get_professionals(payload.professional_ids)
         entity.professionals.clear()
-        entity.professionals.extend(new_pros)
+        entity.professionals.extend(
+            [pro for pro in new_pros if pro.id != entity.id])
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
         entity.building_materials.extend(new_bms)

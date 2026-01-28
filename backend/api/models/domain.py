@@ -343,12 +343,22 @@ class Professional(ProfessionalBase, table=True):
         primary_key=True,
         index=True,
     )
+    # Related professionals (e.g., partners, subsidiaries)
     professionals: List["Professional"] = Relationship(
-        back_populates="professionals",
+        back_populates="parent_professionals",
         link_model=ProfessionalProfessional,
         sa_relationship_kwargs={
             "primaryjoin": "Professional.id==ProfessionalProfessional.professional_id",
             "secondaryjoin": "Professional.id==ProfessionalProfessional.related_id",
+        }
+    )
+    # Reverse relationship (who links TO this professional)
+    parent_professionals: List["Professional"] = Relationship(
+        back_populates="professionals",
+        link_model=ProfessionalProfessional,
+        sa_relationship_kwargs={
+            "primaryjoin": "Professional.id==ProfessionalProfessional.related_id",
+            "secondaryjoin": "Professional.id==ProfessionalProfessional.professional_id",
         }
     )
     buildings: List["Building"] = Relationship(
