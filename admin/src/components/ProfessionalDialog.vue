@@ -200,6 +200,7 @@
           :label="t('cancel')"
           color="secondary"
           @click="onCancel"
+          :disable="saving"
           v-close-popup
         />
         <q-btn
@@ -207,7 +208,8 @@
           :label="t('save')"
           color="primary"
           @click="onSave"
-          :disable="!isValid"
+          :disable="!isValid || saving"
+          :loading="saving"
         />
       </q-card-actions>
     </q-card>
@@ -255,6 +257,7 @@ const buildingMaterials = ref<number[]>([]);
 const buildingMaterialsOptions = ref<Option[]>([]);
 const technicalConstructions = ref<number[]>([]);
 const technicalConstructionsOptions = ref<Option[]>([]);
+const saving = ref(false);
 
 const isValid = computed(() => {
   return (
@@ -313,6 +316,11 @@ function init(value: boolean) {
             value: item.id,
           }));
       });
+    if (editMode.value) {
+      professionals.value =
+        selected.value.professionals?.map((item: Professional) => item.id || 0) || [];
+    }
+
     buildingMaterials.value = [];
     void bmService
       .find({
@@ -377,6 +385,7 @@ function onSave() {
   selected.value.building_material_ids = buildingMaterials.value;
   delete selected.value.technical_constructions;
   selected.value.technical_construction_ids = technicalConstructions.value;
+  saving.value = true;
   if (selected.value.id) {
     service
       .update(selected.value.id, selected.value)
@@ -387,6 +396,9 @@ function onSave() {
       })
       .catch((err) => {
         notifyError(err.message);
+      })
+      .finally(() => {
+        saving.value = false;
       });
   } else {
     service
@@ -398,6 +410,9 @@ function onSave() {
       })
       .catch((err) => {
         notifyError(err.message);
+      })
+      .finally(() => {
+        saving.value = false;
       });
   }
 }

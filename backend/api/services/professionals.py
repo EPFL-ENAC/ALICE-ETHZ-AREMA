@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy import func
 from sqlmodel import select
 from fastapi import HTTPException
-from api.models.domain import FileItem, Professional, Building, BuildingMaterial, TechnicalConstruction, ProfessionalBuildingMaterial, ProfessionalTechnicalConstruction, ProfessionalBuilding
+from api.models.domain import FileItem, Professional, Building, BuildingMaterial, TechnicalConstruction, ProfessionalBuildingMaterial, ProfessionalTechnicalConstruction, ProfessionalBuilding, ProfessionalProfessional
 from api.models.query import ProfessionalDraft, ProfessionalResult, GroupByCount, GroupByResult
 from enacit4r_sql.utils.query import QueryBuilder
 from datetime import datetime
@@ -34,7 +34,9 @@ class ProfessionalQueryBuilder(QueryBuilder):
         query = self._apply_joins(query, filter)
         if fields is None or len(fields) == 0:
             query = query.options(selectinload(Professional.building_materials),
-                                  selectinload(Professional.technical_constructions))
+                                  selectinload(
+                                      Professional.technical_constructions),
+                                  selectinload(Professional.professionals))
         return start, end, query
 
     def _apply_joins(self, query, filter):
@@ -128,7 +130,8 @@ class ProfessionalService(EntityService):
         builder = ProfessionalQueryBuilder(Professional, filter, sort, range, {
             "$buildings": Building,
             "$building_materials": BuildingMaterial,
-            "$technical_constructions": TechnicalConstruction
+            "$technical_constructions": TechnicalConstruction,
+            "$professionals": Professional
         })
 
         # Do a query to satisfy total count
@@ -160,7 +163,9 @@ class ProfessionalService(EntityService):
             entity.created_by = user.username
             entity.updated_by = user.username
         # handle relationships
-        # new_pros = await self._get_professionals(payload.professional_ids)
+        new_pros = await self._get_professionals(payload.professional_ids)
+        entity.professionals.clear()
+        entity.professionals.extend(new_pros)
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
         entity.building_materials.extend(new_bms)
@@ -191,7 +196,8 @@ class ProfessionalService(EntityService):
             select(Professional)
             .where(Professional.id == id)
             .options(selectinload(Professional.building_materials),
-                     selectinload(Professional.technical_constructions)))
+                     selectinload(Professional.technical_constructions),
+                     selectinload(Professional.professionals)))
         entity = res.one_or_none()
         if not entity:
             raise HTTPException(
@@ -219,7 +225,9 @@ class ProfessionalService(EntityService):
             entity.files = new_files
 
         # handle relationships
-        # new_pros = await self._get_professionals(payload.professional_ids)
+        new_pros = await self._get_professionals(payload.professional_ids)
+        entity.professionals.clear()
+        entity.professionals.extend(new_pros)
         new_bms = await self._get_building_materials(payload.building_material_ids)
         entity.building_materials.clear()
         entity.building_materials.extend(new_bms)
@@ -281,6 +289,9 @@ class ProfessionalService(EntityService):
             [f"technical-construction:{rel.technical_construction_id}" for rel in relations])
         relations = (await self.session.exec(select(ProfessionalBuilding).where(ProfessionalBuilding.professional_id == entity.id))).all()
         relates_to.extend([f"building:{rel.building_id}" for rel in relations])
+        relations = (await self.session.exec(select(ProfessionalProfessional).where(ProfessionalProfessional.professional_id == entity.id))).all()
+        relates_to.extend(
+            [f"professional:{rel.related_id}" for rel in relations])
         return relates_to
 
     async def _get_building_materials(self, ids: list[int]):

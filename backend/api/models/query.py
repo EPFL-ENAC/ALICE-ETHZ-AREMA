@@ -123,11 +123,15 @@ class ProfessionalDraft(ProfessionalBase):
     technical_construction_ids: List[int] = []
 
 
-class ProfessionalRead(ProfessionalBase):
+class ProfessionalBaseRead(ProfessionalBase):
     id: Optional[int] = Field(default=None)
     name: Optional[str] = Field(default=None)
+
+
+class ProfessionalRead(ProfessionalBaseRead):
     building_materials: List[BuildingMaterial] = None
     technical_constructions: List[TechnicalConstruction] = None
+    professionals: List['ProfessionalBaseRead'] = None
 
 
 class ProfessionalResult(ListResult):
