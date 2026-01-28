@@ -39,8 +39,8 @@
       />
       <q-spinner-dots v-if="searchService.searching" size="md" />
     </div>
+    <list-results v-if="searchService.selectedView === 'list'" />
     <map-results v-if="searchService.selectedView === 'map'" />
-    <list-results v-else-if="searchService.selectedView === 'list'" />
   </div>
 </template>
 
@@ -53,7 +53,7 @@ const { t } = useI18n();
 const taxonomyStore = useTaxonomyStore();
 const searchService = useSearchService();
 
-const views = ['map', 'list'];
+const views = ['list', 'map'];
 onMounted(() => {
   if (!taxonomyStore.taxonomies) {
     void taxonomyStore.init().then(() => {

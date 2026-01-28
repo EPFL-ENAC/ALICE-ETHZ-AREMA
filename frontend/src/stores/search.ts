@@ -5,7 +5,7 @@ import type { TaxonomyNodeOption } from 'src/components/models';
 import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 
 export const useSearchService = defineStore('search', () => {
-  const selectedView = ref('map');
+  const selectedView = ref('list'); // 'list' | 'map'
   const selectedTerms = ref<string[]>([]);
   const selectedResourceTerms = ref<string[]>([]);
   const filterText = ref('');
