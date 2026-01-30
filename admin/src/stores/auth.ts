@@ -77,20 +77,24 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function canPublish(entity: Entity) {
+    console.log('canPublish check', entity);
     if (!isAuthenticated.value) return false;
-    if (hasState(entity) && entity.state !== 'to-publish') return false;
-    return entity.published_at === undefined && isAdmin.value;
+    if (!hasState(entity) && entity.published_at === undefined) return isAdmin.value;
+    if (entity.state !== 'to-publish') return false;
+    return isAdmin.value;
   }
 
   function canUnpublish(entity: Entity) {
     if (!isAuthenticated.value) return false;
-    if (hasState(entity) && entity.state !== 'to-unpublish') return false;
-    return entity.published_at !== undefined && isAdmin.value;
+    if (!hasState(entity) && entity.published_at !== undefined) return isAdmin.value;
+    if (entity.state !== 'to-unpublish') return false;
+    return entity.published_at !== undefined || isAdmin.value;
   }
 
   function canDelete(entity: Entity) {
     if (!isAuthenticated.value) return false;
-    if (hasState(entity) && entity.state !== 'to-delete') return false;
+    if (!hasState(entity)) return isAdmin.value;
+    if (entity.state !== 'to-delete') return false;
     return isAdmin.value;
   }
 

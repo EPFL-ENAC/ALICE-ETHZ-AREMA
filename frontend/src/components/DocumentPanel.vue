@@ -151,6 +151,28 @@
         </div>
         <div class="col-12 col-md-3"></div>
       </div>
+
+      <div v-if="authors.length" class="row q-col-gutter-md q-mt-md">
+        <div class="col-12 col-md-3"></div>
+        <div class="col-12 col-md-6">
+          <q-card flat class="q-mb-md" style="min-width: 200px">
+            <q-card-section>
+              <div class="text-primary">{{ t('authors') }}</div>
+              <ul class="q-mt-xs q-mb-none q-pl-md">
+                <li
+                  v-for="doc in authors"
+                  :key="doc.id"
+                  class="text-bold cursor-pointer"
+                  @click="onDocument(doc)"
+                >
+                  {{ doc.name }}
+                </li>
+              </ul>
+            </q-card-section>
+          </q-card>
+        </div>
+        <div class="col-12 col-md-3"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -177,6 +199,7 @@ const props = defineProps<Props>();
 const slide = ref(0);
 const relationSummaries = ref<Document[]>([]);
 const relatedResources = ref<Document[]>([]);
+const authors = ref<Document[]>([]);
 
 const relationSummariesPerEntityType = computed(() => {
   const relations: { [key: string]: Document[] } = {};
@@ -199,7 +222,13 @@ function init() {
   if (!props.document) return;
   relationSummaries.value = [];
   relatedResources.value = [];
+  authors.value = [];
   const fields = ['id', 'entity_type', 'name', 'description'];
+  if (props.document.authors && props.document.authors.length > 0) {
+    void searchService.getAuthors(props.document.authors).then((authorsResult) => {
+      authors.value = authorsResult.data || [];
+    });
+  }
   void searchService
     .getRelatedDocuments(toId(props.document.entity_type, props.document.id), fields)
     .then((result) => {

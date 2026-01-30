@@ -47,7 +47,6 @@ class Entity(SQLModel):
     article_bottom: Optional[str] = Field(default=None)
     side_note: Optional[str] = Field(default=None)
     external_links: Optional[str] = Field(default=None)
-
     created_at: datetime = Field(
         sa_column=TIMESTAMP(timezone=True), default=None)
     updated_at: datetime = Field(
@@ -60,7 +59,6 @@ class Entity(SQLModel):
     updated_by: Optional[str] = Field(default=None)
     published_by: Optional[str] = Field(default=None)
     assigned_to: Optional[str] = Field(default=None)
-
     state: Optional[str] = Field(default="draft")
 
 
@@ -201,6 +199,7 @@ class BuildingElementProfessional(SQLModel, table=True):
 class NaturalResourceBase(PhysicalEntity):
     type: str
     files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
+    authors: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
 
 
 class NaturalResource(NaturalResourceBase, table=True):
@@ -221,6 +220,7 @@ class BuildingMaterialBase(PhysicalEntity):
     materials: Optional[List[str]] = Field(
         default=None, sa_column=Column(JSON))
     files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
+    authors: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
 
 
 class BuildingMaterial(BuildingMaterialBase, table=True):
@@ -247,6 +247,7 @@ class TechnicalConstructionBase(PhysicalEntity):
     materials: Optional[List[str]] = Field(
         default=None, sa_column=Column(JSON))
     files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
+    authors: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
 
 
 class TechnicalConstruction(TechnicalConstructionBase, table=True):
@@ -325,6 +326,7 @@ class BuildingBase(Entity):
     lat: Optional[float] = Field(default=None)
     geom: Optional[Dict] = Field(default=None, sa_column=Column(JSON))
     files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
+    authors: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
 
 
 class Building(BuildingBase, table=True):
@@ -359,6 +361,7 @@ class ProfessionalBase(Entity):
     radius: Optional[int] = Field(default=None)
     geom: Optional[Dict] = Field(default=None, sa_column=Column(JSON))
     files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
+    authors: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
 
 
 class Professional(ProfessionalBase, table=True):

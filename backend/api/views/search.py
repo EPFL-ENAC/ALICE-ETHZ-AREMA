@@ -78,6 +78,31 @@ async def find_by_query(
     return indexService.search(query=queryDict, skip=skip, limit=limit)
 
 
+@router.get("/_authors", response_model=SearchResult, response_model_exclude_none=True)
+async def find_documents(keys: List[str] = Query(None),
+                         index: str = Query("entities")) -> SearchResult:
+    """Search subject profile documents per keys"""
+    indexService = SearchService.fromIndex(index)
+    if keys is None or len(keys) == 0:
+        return SearchResult(total=0, skip=0, limit=0, data=[])
+    shouldQueries = []
+    # the keys are in the format type:identifier, so both fields are needed
+    for key in keys:
+        parts = key.split(":")
+        if len(parts) != 2:
+            continue
+        shouldQueries.append(
+            {"bool": {
+                "must": [
+                    {"term": {"type.keyword": parts[0]}},
+                    {"term": {"identifier.keyword": parts[1]}}
+                ]
+            }}
+        )
+    queryDict = {"query": {"bool": {"should": shouldQueries}}}
+    return indexService.search(query=queryDict, skip=0, limit=len(keys))
+
+
 @router.get("/_doc", response_model=SearchResult, response_model_exclude_none=True)
 async def find_documents(id: str = Query(None),
                          index: str = Query("entities"),
@@ -155,6 +180,10 @@ async def find_entities(
     mustQueries.extend(make_bbox_criteria(bbox))
     if relates:
         mustQueries.append({"terms": {"relates_to": relates}})
+
+    # entity_type must be any of natural-resource, building-material, technical-construction, building, professional
+    mustQueries.append({"terms": {"entity_type": [
+        "natural-resource", "building-material", "technical-construction", "building", "professional"]}})
 
     queryDict = {}
     if len(mustQueries):

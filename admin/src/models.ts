@@ -119,6 +119,7 @@ export interface PhysicalEntity extends Entity {
 export interface NaturalResource extends PhysicalEntity {
   type: string;
   files?: FileItem[];
+  authors?: string[];
   building_materials?: BuildingMaterial[];
 }
 

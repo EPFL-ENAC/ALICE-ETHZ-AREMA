@@ -61,6 +61,7 @@ export default {
   article_top: 'Article (top)',
   assigned_to: 'Assigned to',
   authors: 'Authors',
+  authors_hint: 'Authors/contributors of the article.',
   authors_synced_from_users: 'Authors synced from users ({count})',
   building_building_material_used_hint: 'Building material used.',
   building_element_building_material_distance_hint:
@@ -93,6 +94,7 @@ export default {
   contributions: 'Contributions',
   created_by: 'Added by',
   created_by_me: 'Added by me',
+  credits: 'Credits',
   dark: 'Dark',
   dashboard: 'Dashboard',
   density_hint: 'ρ, kg/m³',
@@ -108,6 +110,7 @@ export default {
   effusivity: 'Effusivity',
   email: 'Email',
   enabled: 'Enabled',
+  error_loading_authors: "Error loading authors.",
   error_not_found: 'Oops. Nothing here...',
   external_links: 'External links',
   field_required: 'This field is required.',

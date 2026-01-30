@@ -52,6 +52,7 @@ export default {
   article_bottom: 'Article (bas)',
   article_top: 'Article (haut)',
   authors: 'Auteurs',
+  authors_hint: 'Auteurs/contributeurs de l\'article.',
   authors_synced_from_users: 'Auteurs synchronisés depuis les utilisateurs ({count})',
   building_building_material_used_hint: 'Matériaux de construction utilisés.',
   building_element_building_material_distance_hint:
@@ -83,6 +84,7 @@ export default {
   contributions: 'Contributions',
   created_by: 'Ajouté par',
   created_by_me: 'Ajouté par moi',
+  credits: 'Crédits',
   dark: 'Sombre',
   dashboard: 'Tableau de bord',
   density_hint: 'ρ, kg/m³',
@@ -96,6 +98,7 @@ export default {
   edit: 'Editer',
   email: 'Courriel',
   enabled: 'Activé',
+  error_loading_authors: "Erreur lors du chargement des auteurs.",
   error_not_found: "Oups. Il n'y a rien ici...",
   external_links: 'Liens externes',
   field_required: 'Champ requis',
