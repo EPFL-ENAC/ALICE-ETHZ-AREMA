@@ -222,6 +222,8 @@ export interface Document extends Entity {
   };
   relates_to?: string[];
   authors?: string[];
+  identifier?: string;
+  type?: string;
 }
 
 export interface SearchResult {

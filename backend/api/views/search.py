@@ -164,6 +164,7 @@ async def find_entities(
     bbox: List[float] = Query(None),
     # filter documents related to the given ids
     relates: List[str] = Query(None),
+    authors: List[str] = Query(None),
     skip: int = Query(0),
     limit: int = Query(10),
 ) -> SearchResult:
@@ -180,6 +181,9 @@ async def find_entities(
     mustQueries.extend(make_bbox_criteria(bbox))
     if relates:
         mustQueries.append({"terms": {"relates_to": relates}})
+    if authors:
+        # authors must contain any of the given authors
+        mustQueries.append({"terms": {"authors.keyword": authors}})
 
     # entity_type must be any of natural-resource, building-material, technical-construction, building, professional
     mustQueries.append({"terms": {"entity_type": [

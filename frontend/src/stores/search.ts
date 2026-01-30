@@ -62,6 +62,25 @@ export const useSearchService = defineStore('search', () => {
     }
   }
 
+  async function getContributedDocuments(
+    key: string,
+    fields: string[] = [],
+  ): Promise<SearchResult> {
+    searching.value = true;
+    try {
+      const response = await api.get('/search/_entities', {
+        params: { fields, authors: [key] },
+        paramsSerializer: {
+          indexes: null, // no brackets at all
+        },
+      });
+      const result = response.data;
+      return result;
+    } finally {
+      searching.value = false;
+    }
+  }
+
   async function getRelatedDocuments(id: string, fields: string[] = []): Promise<SearchResult> {
     searching.value = true;
     try {
@@ -293,6 +312,7 @@ export const useSearchService = defineStore('search', () => {
     search_videos,
     getDocument,
     getAuthors,
+    getContributedDocuments,
     getRelatedDocuments,
     getDocumentsFromTags,
     getSelectedNodes,

@@ -109,7 +109,7 @@
         <div class="col-12 col-md-3"></div>
         <div class="col-12 col-md-6">
           <div class="text-primary text-uppercase q-mb-sm">
-            {{ t('relates_to') }}
+            {{ t(isSubjectProfile ? 'contributions' : 'relates_to') }}
           </div>
           <div class="row q-gutter-md">
             <template
@@ -212,6 +212,9 @@ const relationSummariesPerEntityType = computed(() => {
   });
   return relations;
 });
+const isSubjectProfile = computed(() => {
+  return props.document?.entity_type === 'subject-profile';
+});
 
 onMounted(init);
 
@@ -228,6 +231,14 @@ function init() {
     void searchService.getAuthors(props.document.authors).then((authorsResult) => {
       authors.value = authorsResult.data || [];
     });
+  }
+  if (props.document.entity_type === 'subject-profile') {
+    void searchService
+      .getContributedDocuments(`${props.document.type}:${props.document.identifier}`, fields)
+      .then((result) => {
+        relationSummaries.value = result.data || [];
+      });
+    return;
   }
   void searchService
     .getRelatedDocuments(toId(props.document.entity_type, props.document.id), fields)

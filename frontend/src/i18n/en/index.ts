@@ -41,6 +41,7 @@ export default {
   compressive_strength: 'Compressive Strength',
   contact: 'Contact',
   contribute: 'Contribute',
+  contributions: 'Contributions',
   copyright: 'Copyright',
   density_symbol: 'ρ',
   density_unit: 'kg/m³',

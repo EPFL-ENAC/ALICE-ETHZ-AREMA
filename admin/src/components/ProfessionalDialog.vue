@@ -14,6 +14,7 @@
           <q-tab name="location" :label="t('location') + ' *'" />
           <q-tab name="multimedia" :label="t('multimedia') + ' *'" />
           <q-tab name="relations" :label="t('relations')" />
+          <q-tab name="credits" :label="t('credits')" />
         </q-tabs>
         <q-separator />
 
@@ -180,6 +181,9 @@
               class="q-mb-md"
             />
           </q-tab-panel>
+          <q-tab-panel name="credits" class="q-pl-none q-pr-none">
+            <authors-input :disable="readOnly" v-model="selected.authors" />
+          </q-tab-panel>
         </q-tab-panels>
       </q-card-section>
 
@@ -224,6 +228,7 @@ import FilesInput from 'src/components/FilesInput.vue';
 import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 import TextInput from 'src/components/TextInput.vue';
 import AddressInput from 'src/components/AddressInput.vue';
+import AuthorsInput from 'src/components/AuthorsInput.vue';
 import type { Feature } from '@turf/turf';
 import type { Option } from 'src/components/models';
 
