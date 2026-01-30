@@ -262,7 +262,9 @@ class VideoIndexService(IndexService):
         docs = []
         docs += self._getVideosFromFiles(entity_type, entity, tags)
         for field in ["article_top", "article_bottom"]:
-            docs += self._getVideosFromField(field, entity_type, entity, tags)
+            if hasattr(entity, field):
+                docs += self._getVideosFromField(field,
+                                                 entity_type, entity, tags)
         return docs
 
     def _getVideosFromFiles(self, entity_type: str, entity, tags: list[str]):
@@ -276,7 +278,7 @@ class VideoIndexService(IndexService):
         Returns:
             list[dict]: The list of video documents 
         """
-        if not entity.files:
+        if "files" not in entity or not entity.files:
             return []
         docs = []
         parent_id = f"{entity_type}:{entity.id}"

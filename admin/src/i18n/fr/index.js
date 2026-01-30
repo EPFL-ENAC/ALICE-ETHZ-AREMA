@@ -10,8 +10,8 @@ export default {
     fr: 'Français',
   },
   profile: {
-    identification: 'Identification',
-    public: 'Informations publiques',
+    identifier: 'Identifiant',
+    type: 'Type',
     name: "Nom affiché",
     affiliation: 'Affiliation',
     description: 'Description',
@@ -51,6 +51,8 @@ export default {
   areaDelivery: 'Zone de livraison',
   article_bottom: 'Article (bas)',
   article_top: 'Article (haut)',
+  authors: 'Auteurs',
+  authors_synced_from_users: 'Auteurs synchronisés depuis les utilisateurs ({count})',
   building_building_material_used_hint: 'Matériaux de construction utilisés.',
   building_element_building_material_distance_hint:
     'Distance pour obtenir les matériaux de construction en kilomètres.',
@@ -180,6 +182,7 @@ export default {
   status: 'Etat',
   state: 'Etat',
   std: 'Standard',
+  sync_from_users: 'Synchroniser depuis les utilisateurs',
   technical_construction_building_material_constituants_hint:
     'Les techniques de construction sont fabriquées à partir de matériaux de construction.',
   technical_construction_natural_resource_constituants_hint:

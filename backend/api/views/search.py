@@ -4,6 +4,7 @@ from api.auth import kc_service, User
 from api.db import get_session, AsyncSession
 from api.services.natural_resources import NaturalResourceService
 from api.services.building_materials import BuildingMaterialService
+from api.services.subject_profiles import SubjectProfileService
 from api.services.technical_constructions import TechnicalConstructionService
 from api.services.buildings import BuildingService
 from api.services.professionals import ProfessionalService
@@ -38,6 +39,9 @@ async def populate_index(
         if type is None or type == "professional":
             service = ProfessionalService(session)
             indexCounts["professional"] = await service.reIndexAll()
+        if type is None or type == "subject-profile":
+            service = SubjectProfileService(session)
+            indexCounts["subject-profile"] = await service.reIndexAll()
         return indexCounts
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

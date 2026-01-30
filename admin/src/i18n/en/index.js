@@ -16,8 +16,8 @@ export default {
     fr: 'Français',
   },
   profile: {
-    identification: 'Identification',
-    public: 'Public information',
+    identifier: 'Identifier',
+    type: 'Type',
     name: 'Display name',
     affiliation: 'Affiliation',
     description: 'Description',
@@ -60,6 +60,8 @@ export default {
   article_bottom: 'Article (bottom)',
   article_top: 'Article (top)',
   assigned_to: 'Assigned to',
+  authors: 'Authors',
+  authors_synced_from_users: 'Authors synced from users ({count})',
   building_building_material_used_hint: 'Building material used.',
   building_element_building_material_distance_hint:
     'Distance to fetch the building materials in kilometers.',
@@ -208,6 +210,7 @@ export default {
   state: 'State',
   std: 'Standard',
   structural: 'Structural',
+  sync_from_users: 'Sync from users',
   technical_construction_building_material_constituants_hint:
     'Construction techniques are made of building materials.',
   technical_construction_natural_resource_constituants_hint:

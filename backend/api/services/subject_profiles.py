@@ -1,9 +1,12 @@
 import logging
+from datetime import datetime
 from api.db import AsyncSession
 from sqlmodel import func, select
+from api.models.users import AppUser
 from api.models.domain import SubjectProfile
 from api.models.query import SubjectProfileDraft, SubjectProfileResult
 from enacit4r_sql.utils.query import QueryBuilder
+from api.services.search import EntityIndexer
 
 
 class SubjectProfileQueryBuilder(QueryBuilder):
@@ -33,19 +36,73 @@ class SubjectProfileService:
 
     def __init__(self, session: AsyncSession):
         self.session = session
+        self.entityType = "subject-profile"
 
-    async def get(self, subject: str, type: str = "user") -> SubjectProfile:
-        """Get subject profile by subject name
+    async def reIndexAll(self) -> int:
+        """Index all subject profiles that were published"""
+        indexService = EntityIndexer()
+        # delete documents of this type
+        indexService.deleteEntities(self.entityType)
+        # add all documents
+        count = 0
+        for entity in (await self.session.exec(select(SubjectProfile))).all():
+            indexService.addEntity(
+                self.entityType, entity, [], [])
+            count += 1
+            entity.published_at = datetime.now()
+        await self.session.commit()
+        logging.debug(f"Published {count} subject profiles")
+        return count
+
+    async def index(self, id: int) -> None:
+        """Publish a subject profile by id"""
+        entity = await self.get_by_id(id)
+        EntityIndexer().updateEntity(
+            self.entityType, entity, [], [])
+        entity.published_at = datetime.now()
+        await self.session.commit()
+
+    async def remove_index(self, id: int) -> None:
+        """Unpublish a subject profile by id"""
+        entity = await self.get_by_id(id)
+        EntityIndexer().deleteEntity(self.entityType, entity.id)
+        entity.published_at = None
+        await self.session.commit()
+
+    async def create_subject_profile_for_user(self, appUser: AppUser) -> SubjectProfile:
+        """Create a subject profile for a newly created user
 
         Args:
-            subject (str): The unique subject name
+            appUser (AppUser): The application user object
+        Returns:
+            SubjectProfile: The created subject profile object
+        """
+        profile_obj = SubjectProfile(
+            identifier=appUser.username,
+            type="user",
+            name=f"{appUser.first_name} {appUser.last_name}",
+            email=appUser.email,
+            affiliation="",
+            description="",
+            web=""
+        )
+        self.session.add(profile_obj)
+        await self.session.commit()
+        await self.session.refresh(profile_obj)
+        return profile_obj
+
+    async def get(self, identifier: str, type: str = "user") -> SubjectProfile:
+        """Get subject profile by subject and type
+
+        Args:
+            identifier (str): The unique subject identifier
             type (str): The type of the subject profile
         Returns:
             SubjectProfile: The subject profile object
         """
         res = await self.session.exec(
-            select(SubjectProfile).where(SubjectProfile.name ==
-                                         subject, SubjectProfile.type == type)
+            select(SubjectProfile).where(SubjectProfile.identifier == identifier,
+                                         SubjectProfile.type == type)
         )
         return res.first()
 
@@ -72,6 +129,8 @@ class SubjectProfileService:
             SubjectProfile: The created subject profile object
         """
         profile_obj = SubjectProfile(**payload.model_dump())
+        profile_obj.created_at = datetime.now()
+        profile_obj.updated_at = datetime.now()
         self.session.add(profile_obj)
         await self.session.commit()
         await self.session.refresh(profile_obj)
@@ -90,46 +149,53 @@ class SubjectProfileService:
             return None
 
         for key, value in payload.model_dump().items():
-            if key not in ["id"]:
+            if key not in ["id", "created_at", "updated_at", "published_at"]:
                 setattr(profile, key, value)
-
+        profile.updated_at = datetime.now()
         self.session.add(profile)
         await self.session.commit()
         await self.session.refresh(profile)
+        # reindex if published
+        if profile.published_at:
+            EntityIndexer().updateEntity(
+                self.entityType, profile, [], [])
         return profile
 
-    async def delete(self, name: str, type: str = "user") -> bool:
+    async def delete(self, identifier: str, type: str = "user") -> SubjectProfile:
         """Delete a subject profile
 
         Args:
-            name (str): The subject name
+            identifier (str): The subject identifier
             type (str): The type of the subject profile
         Returns:
-            bool: True if deleted, False otherwise
+            SubjectProfile: The deleted subject profile object
         """
-        profile = await self.get(name, type)
+        profile = await self.get(identifier, type)
         if not profile:
-            return False
-
+            return None
         await self.session.delete(profile)
         await self.session.commit()
-        return True
+        # delete from index
+        EntityIndexer().deleteEntity(self.entityType, profile.id)
+        return profile
 
-    async def delete_by_id(self, profile_id: int) -> bool:
+    async def delete_by_id(self, profile_id: int) -> SubjectProfile:
         """Delete a subject profile by ID
 
         Args:
             profile_id (int): The unique subject profile ID
         Returns:
-            bool: True if deleted, False otherwise
+            SubjectProfile: The deleted subject profile object
         """
         profile = await self.get_by_id(profile_id)
         if not profile:
-            return False
+            return None
 
         await self.session.delete(profile)
         await self.session.commit()
-        return True
+        # delete from index
+        EntityIndexer().deleteEntity(self.entityType, profile.id)
+        return profile
 
     async def count(self) -> int:
         """Count total subject profiles

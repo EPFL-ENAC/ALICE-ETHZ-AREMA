@@ -62,6 +62,10 @@ export const useAuthStore = defineStore('auth', () => {
     });
   }
 
+  function hasState(entity: Entity) {
+    return entity.state !== undefined && entity.state !== null && entity.state !== '';
+  }
+
   function canEdit(entity: Entity) {
     if (!isAuthenticated.value) return false;
     if (['locked', 'to-delete', 'to-unpublish'].includes(entity.state || '')) return false;
@@ -74,26 +78,25 @@ export const useAuthStore = defineStore('auth', () => {
 
   function canPublish(entity: Entity) {
     if (!isAuthenticated.value) return false;
-    if (entity.state !== 'to-publish') return false;
-    return isAdmin.value;
+    if (hasState(entity) && entity.state !== 'to-publish') return false;
+    return entity.published_at === undefined && isAdmin.value;
   }
 
   function canUnpublish(entity: Entity) {
     if (!isAuthenticated.value) return false;
-    if (entity.state !== 'to-unpublish') return false;
-    return isAdmin.value;
+    if (hasState(entity) && entity.state !== 'to-unpublish') return false;
+    return entity.published_at !== undefined && isAdmin.value;
   }
 
   function canDelete(entity: Entity) {
     if (!isAuthenticated.value) return false;
-    if (entity.state !== 'to-delete') return false;
+    if (hasState(entity) && entity.state !== 'to-delete') return false;
     return isAdmin.value;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function canLock(entity: Entity) {
     if (!isAuthenticated.value) return false;
-    return isAdmin.value;
+    return hasState(entity) && isAdmin.value;
   }
 
   function canInReview(entity: Entity) {

@@ -234,8 +234,9 @@ export interface AppUser {
 
 export interface SubjectProfile {
   id?: number;
-  name: string;
+  identifier: string;
   type: string;
+  name: string;
   affiliation?: string;
   description?: string;
   email?: string;

@@ -48,6 +48,10 @@ async def create(
     user: User = Depends(kc_service.require_admin())
 ) -> SubjectProfile:
     """Create a subject profile"""
+    # check already exists for user
+    existing = await SubjectProfileService(session).get(subject_profile.identifier, subject_profile.type)
+    if existing:
+        return existing
     return await SubjectProfileService(session).create(subject_profile)
 
 
@@ -60,3 +64,23 @@ async def update(
 ) -> SubjectProfile:
     """Update a subject profile"""
     return await SubjectProfileService(session).update(id, subject_profile)
+
+
+@router.put("/{id}/_index", response_model_exclude_none=True)
+async def publish(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
+) -> None:
+    """Publish a subject profile by id"""
+    return await SubjectProfileService(session).index(id)
+
+
+@router.delete("/{id}/_index", response_model_exclude_none=True)
+async def unpublish(
+    id: int,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(kc_service.require_admin())
+) -> None:
+    """Unpublish a subject profile by id"""
+    return await SubjectProfileService(session).remove_index(id)

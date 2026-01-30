@@ -10,12 +10,19 @@ from enacit4r_files.models.files import FileRef
 
 
 class SubjectProfileBase(SQLModel):
-    type: Optional[str] = Field(default=None)
-    name: Optional[str] = Field(default=None)
+    identifier: str = Field(index=True)
+    type: str = Field(index=True)
+    name: str = Field(index=True)  # Display name
     affiliation: Optional[str] = Field(default=None)
     description: Optional[str] = Field(default=None)
     email: Optional[str] = Field(default=None)
     web: Optional[str] = Field(default=None)
+    created_at: datetime = Field(
+        sa_column=TIMESTAMP(timezone=True), default=None)
+    updated_at: datetime = Field(
+        sa_column=TIMESTAMP(timezone=True), default=None)
+    published_at: Optional[datetime] = Field(
+        sa_column=TIMESTAMP(timezone=True), default=None)
 
 
 class SubjectProfile(SubjectProfileBase, table=True):

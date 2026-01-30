@@ -9,7 +9,7 @@
       <q-tab-panels v-model="tab">
         <q-tab-panel name="write" class="q-pa-none">
           <div class="row">
-            <div class="col-9">
+            <div :class="helpContent ? 'col-9' : 'col-12'">
               <q-input
                 filled
                 autogrow
@@ -17,12 +17,12 @@
                 type="textarea"
                 @update:model-value="onUpdate"
                 :disable="props.disable"
-                style="min-height: 200px"
+                :style="{ minHeight: props.minHeight || '200px' }"
               />
             </div>
-            <div class="col-3 q-pa-sm">
+            <div v-if="helpContent" class="col-3 q-pa-sm">
               <div class="text-bold q-pl-md">{{ t('instructions') }}</div>
-              <div v-if="helpContent" style="font-size: smaller; overflow: auto">
+              <div style="font-size: smaller; overflow: auto">
                 <q-markdown :src="helpContent" no-heading-anchor-links />
               </div>
             </div>
@@ -44,6 +44,7 @@ interface Props {
   hint?: string;
   help?: string;
   disable?: boolean | undefined;
+  minHeight?: string | undefined;
 }
 
 const props = defineProps<Props>();
