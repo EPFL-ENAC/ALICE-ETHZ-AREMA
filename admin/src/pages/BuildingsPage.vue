@@ -404,6 +404,7 @@ function onView(resource: Building) {
   readOnly.value = true;
   showEditDialog.value = true;
 }
+
 function onPublish(item: Building) {
   if (!item.id) return;
   void service.publish(item.id).then(onRefresh).catch(notifyError);

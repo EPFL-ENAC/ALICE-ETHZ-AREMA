@@ -13,6 +13,7 @@
           <q-tab name="general" :label="t('general') + ' *'" />
           <q-tab name="multimedia" :label="t('multimedia') + ' *'" />
           <q-tab name="relations" :label="t('relations')" />
+          <q-tab name="credits" :label="t('credits')" />
         </q-tabs>
         <q-separator />
 
@@ -102,6 +103,9 @@
               class="q-mb-md"
             />
           </q-tab-panel>
+          <q-tab-panel name="credits" class="q-pl-none q-pr-none">
+            <authors-input :disable="readOnly" v-model="selected.authors" />
+          </q-tab-panel>
         </q-tab-panels>
       </q-card-section>
 
@@ -144,6 +148,7 @@ import { notifyError } from 'src/utils/notify';
 import FilesInput from 'src/components/FilesInput.vue';
 import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 import TextInput from 'src/components/TextInput.vue';
+import AuthorsInput from 'src/components/AuthorsInput.vue';
 
 interface DialogProps {
   modelValue: boolean;

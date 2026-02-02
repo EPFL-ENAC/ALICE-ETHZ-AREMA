@@ -17,7 +17,6 @@
             :label="t('email') + ' *'"
             lazy-rules
             :rules="[(val) => !!val || t('field_required')]"
-            class="q-mb-md"
           />
           <q-input
             v-if="!editMode"
@@ -28,7 +27,6 @@
             :hint="t('password_hint')"
             lazy-rules
             :rules="[(val) => !!val || t('field_required')]"
-            class="q-mb-md"
           >
             <template v-slot:append>
               <q-icon
@@ -52,7 +50,6 @@
             :label="t('first_name') + ' *'"
             lazy-rules
             :rules="[(val) => !!val || t('field_required')]"
-            class="q-mb-md"
           />
           <q-input
             filled
@@ -60,7 +57,6 @@
             :label="t('last_name') + ' *'"
             lazy-rules
             :rules="[(val) => !!val || t('field_required')]"
-            class="q-mb-md"
           />
           <div class="q-mb-lg">
             <div class="text-grey-8 q-mb-sm">{{ t('role') + ' *' }}</div>
@@ -68,7 +64,7 @@
             <div class="text-hint q-mt-sm">{{ t('roles_hint') }}</div>
           </div>
           <div>
-            <q-checkbox v-model="selected.enabled" :label="t('enabled')" dense class="q-mb-md" />
+            <q-checkbox v-model="selected.enabled" :label="t('enabled')" dense />
           </div>
         </q-form>
       </q-card-section>

@@ -9,6 +9,16 @@ export default {
     en: 'English',
     fr: 'Français',
   },
+  profile: {
+    identifier: 'Identifiant',
+    type: 'Type',
+    name: "Nom affiché",
+    affiliation: 'Affiliation',
+    description: 'Description',
+    email: 'Courriel public',
+    email_hint: 'Ce courriel sera visible publiquement dans votre profil.',
+    web: 'Site web',
+  },
   roles: {
     administrator: 'Administrateur',
     contributor: 'Contributeur',
@@ -41,6 +51,9 @@ export default {
   areaDelivery: 'Zone de livraison',
   article_bottom: 'Article (bas)',
   article_top: 'Article (haut)',
+  authors: 'Auteurs',
+  authors_hint: 'Auteurs/contributeurs de l\'article.',
+  authors_synced_from_users: 'Auteurs synchronisés depuis les utilisateurs ({count})',
   building_building_material_used_hint: 'Matériaux de construction utilisés.',
   building_element_building_material_distance_hint:
     'Distance pour obtenir les matériaux de construction en kilomètres.',
@@ -71,6 +84,7 @@ export default {
   contributions: 'Contributions',
   created_by: 'Ajouté par',
   created_by_me: 'Ajouté par moi',
+  credits: 'Crédits',
   dark: 'Sombre',
   dashboard: 'Tableau de bord',
   density_hint: 'ρ, kg/m³',
@@ -84,6 +98,7 @@ export default {
   edit: 'Editer',
   email: 'Courriel',
   enabled: 'Activé',
+  error_loading_authors: "Erreur lors du chargement des auteurs.",
   error_not_found: "Oups. Il n'y a rien ici...",
   external_links: 'Liens externes',
   field_required: 'Champ requis',
@@ -123,6 +138,7 @@ export default {
   name: 'Nom',
   natural_resource_constituants: 'Ressources constituantes',
   natural_resources: 'Ressources',
+  no_authors_found: "Aucun auteur trouvé.",
   no_building_element_materials: "Pas d'information sur les matériaux",
   no_building_elements: 'Aucun élément de bâtiment',
   no_results: 'Aucun résultat',
@@ -170,6 +186,7 @@ export default {
   status: 'Etat',
   state: 'Etat',
   std: 'Standard',
+  sync_from_users: 'Synchroniser depuis les utilisateurs',
   technical_construction_building_material_constituants_hint:
     'Les techniques de construction sont fabriquées à partir de matériaux de construction.',
   technical_construction_natural_resource_constituants_hint:

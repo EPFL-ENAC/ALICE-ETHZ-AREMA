@@ -1,10 +1,14 @@
 <template>
   <q-page class="q-pa-md bg-grey-2">
-    <document-panel v-if="document" :document="document" />
+    <div v-if="document">
+      <author-panel v-if="document.entity_type === 'author'" :document="document" />
+      <document-panel v-else :document="document" />
+    </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
+import AuthorPanel from 'src/components/AuthorPanel.vue';
 import DocumentPanel from 'src/components/DocumentPanel.vue';
 import type { Document } from 'src/models';
 

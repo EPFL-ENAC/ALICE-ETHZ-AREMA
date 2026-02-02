@@ -103,6 +103,14 @@
             <q-item-label header>{{ t('users') }}</q-item-label>
           </q-item-section>
         </q-item>
+        <q-item v-if="authStore.isAdmin" clickable :to="'/authors'">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-copyright" size="xs" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ t('authors') }}</q-item-label>
+          </q-item-section>
+        </q-item>
 
         <q-item-label class="text-h6" header>{{ t('help') }}</q-item-label>
         <q-item clickable :to="'/publication'">

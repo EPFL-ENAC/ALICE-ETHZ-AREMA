@@ -20,13 +20,13 @@
             {{ t(document.entity_type) }}
           </div>
           <div class="text-h2 q-mb-md">{{ document.name }}</div>
-          <div class="q-mb-lg">
+          <div class="q-my-lg">
             <tags-badges :item="document" />
           </div>
-          <div class="q-mb-lg" style="font-size: 1.5rem">
+          <div class="q-my-lg" style="font-size: 1.5rem">
             <q-markdown :src="document.description" no-heading-anchor-links />
           </div>
-          <div class="q-mb-lg">
+          <div class="q-my-lg">
             <physical-parameters-panel :document="document" />
           </div>
         </div>
@@ -81,73 +81,18 @@
         <div class="col-12 col-md-1"></div>
       </div>
 
-      <div v-if="document.address" class="row q-col-gutter-md q-mt-md">
+      <div class="row q-col-gutter-md q-mt-md">
         <div class="col-12 col-md-3"></div>
         <div class="col-12 col-md-6">
-          <div class="text-primary text-uppercase q-mb-sm">
-            {{ t('address') }}
-          </div>
-          <div class="row q-gutter-md">
-            <template v-for="addr in [document.address, ...(document.addresses || [])]" :key="addr">
-              <q-card flat class="q-mb-md" style="min-width: 200px">
-                <q-card-section>
-                  <template v-for="(tk, idx) in addr.split(',')" :key="idx">
-                    <div :class="idx === 0 ? 'text-primary' : ''">{{ tk }}</div>
-                  </template>
-                </q-card-section>
-              </q-card>
-            </template>
-          </div>
-        </div>
-        <div class="col-12 col-md-3"></div>
-      </div>
-
-      <div
-        v-if="relationSummaries.length || relatedResources.length"
-        class="row q-col-gutter-md q-mt-md"
-      >
-        <div class="col-12 col-md-3"></div>
-        <div class="col-12 col-md-6">
-          <div class="text-primary text-uppercase q-mb-sm">
-            {{ t('relates_to') }}
-          </div>
-          <div class="row q-gutter-md">
-            <template
-              v-for="entity_type in Object.keys(relationSummariesPerEntityType)"
-              :key="entity_type"
-            >
-              <q-card flat class="q-mb-md" style="min-width: 200px">
-                <q-card-section>
-                  <div class="text-primary">{{ t(entity_type) }}</div>
-                  <ul class="q-mt-xs q-mb-none q-pl-md">
-                    <li
-                      v-for="doc in relationSummariesPerEntityType[entity_type]"
-                      :key="doc.id"
-                      class="text-bold cursor-pointer"
-                      @click="onDocument(doc)"
-                    >
-                      {{ doc.name }}
-                    </li>
-                  </ul>
-                </q-card-section>
-              </q-card>
-            </template>
-            <q-card v-if="relatedResources.length" flat class="q-mb-md" style="min-width: 200px">
-              <q-card-section>
-                <div class="text-primary">{{ t(document.entity_type) }}</div>
-                <ul class="q-mt-xs q-mb-none q-pl-md">
-                  <li
-                    v-for="doc in relatedResources"
-                    :key="doc.id"
-                    class="text-bold cursor-pointer"
-                    @click="onDocument(doc)"
-                  >
-                    {{ doc.name }}
-                  </li>
-                </ul>
-              </q-card-section>
-            </q-card>
-          </div>
+          <address-panel :document="document" />
+          <relations-panel
+            :title="t('relates_to')"
+            :relation-summaries="relationSummaries"
+            :related-resources="relatedResources"
+            :entity-type="document.entity_type"
+            @document-click="onDocument"
+          />
+          <authors-panel :authors="authors" @document-click="onDocument" class="q-my-lg" />
         </div>
         <div class="col-12 col-md-3"></div>
       </div>
@@ -161,6 +106,9 @@ import TagsBadges from 'src/components/TagsBadges.vue';
 import PhysicalParametersPanel from 'src/components/PhysicalParametersPanel.vue';
 import MultimediaPanel from 'src/components/MultimediaPanel.vue';
 import ExternalLinksPanel from 'src/components/ExternalLinksPanel.vue';
+import RelationsPanel from 'src/components/RelationsPanel.vue';
+import AddressPanel from 'src/components/AddressPanel.vue';
+import AuthorsPanel from 'src/components/AuthorsPanel.vue';
 import type { Document } from 'src/models';
 
 const { t } = useI18n();
@@ -177,18 +125,7 @@ const props = defineProps<Props>();
 const slide = ref(0);
 const relationSummaries = ref<Document[]>([]);
 const relatedResources = ref<Document[]>([]);
-
-const relationSummariesPerEntityType = computed(() => {
-  const relations: { [key: string]: Document[] } = {};
-  relationSummaries.value.forEach((doc) => {
-    const entityType = doc.entity_type;
-    if (!relations[entityType]) {
-      relations[entityType] = [];
-    }
-    relations[entityType].push(doc);
-  });
-  return relations;
-});
+const authors = ref<Document[]>([]);
 
 onMounted(init);
 
@@ -199,7 +136,13 @@ function init() {
   if (!props.document) return;
   relationSummaries.value = [];
   relatedResources.value = [];
+  authors.value = [];
   const fields = ['id', 'entity_type', 'name', 'description'];
+  if (props.document.authors && props.document.authors.length > 0) {
+    void searchService.getAuthors(props.document.authors).then((authorsResult) => {
+      authors.value = authorsResult.data || [];
+    });
+  }
   void searchService
     .getRelatedDocuments(toId(props.document.entity_type, props.document.id), fields)
     .then((result) => {

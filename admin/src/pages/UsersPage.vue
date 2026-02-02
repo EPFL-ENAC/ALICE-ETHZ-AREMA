@@ -5,12 +5,13 @@
     <div class="q-pa-md">
       <q-table
         flat
-        :rows="usersStore.users"
+        :rows="users"
         :columns="columns"
         row-key="id"
         :pagination="initialPagination"
         :loading="usersStore.loading"
         :rows-per-page-options="[10, 25, 50, 0]"
+        :filter="filter"
       >
         <template v-slot:top>
           <q-btn
@@ -144,6 +145,21 @@ const initialPagination = ref({
   descending: false,
   page: 1,
   rowsPerPage: 50,
+});
+
+const users = computed(() => {
+  if (!filter.value) {
+    return usersStore.users;
+  }
+  return usersStore.users.filter((user) => {
+    const search = filter.value.toLowerCase();
+    return (
+      user.email.toLowerCase().includes(search) ||
+      (user.first_name && user.first_name.toLowerCase().includes(search)) ||
+      (user.last_name && user.last_name.toLowerCase().includes(search)) ||
+      (user.roles && user.roles.some((role) => role.toLowerCase().includes(search)))
+    );
+  });
 });
 
 const columns = computed(() => {

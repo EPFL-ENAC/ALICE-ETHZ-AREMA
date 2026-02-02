@@ -15,6 +15,16 @@ export default {
     en: 'English',
     fr: 'Français',
   },
+  profile: {
+    identifier: 'Identifier',
+    type: 'Type',
+    name: 'Display name',
+    affiliation: 'Affiliation',
+    description: 'Description',
+    email: 'Public email',
+    email_hint: 'This email will be publicly visible in your profile.',
+    web: 'Website',
+  },
   roles: {
     administrator: 'Administrator',
     contributor: 'Contributor',
@@ -50,6 +60,9 @@ export default {
   article_bottom: 'Article (bottom)',
   article_top: 'Article (top)',
   assigned_to: 'Assigned to',
+  authors: 'Authors',
+  authors_hint: 'Authors/contributors of the article.',
+  authors_synced_from_users: 'Authors synced from users ({count})',
   building_building_material_used_hint: 'Building material used.',
   building_element_building_material_distance_hint:
     'Distance to fetch the building materials in kilometers.',
@@ -81,6 +94,7 @@ export default {
   contributions: 'Contributions',
   created_by: 'Added by',
   created_by_me: 'Added by me',
+  credits: 'Credits',
   dark: 'Dark',
   dashboard: 'Dashboard',
   density_hint: 'ρ, kg/m³',
@@ -96,6 +110,7 @@ export default {
   effusivity: 'Effusivity',
   email: 'Email',
   enabled: 'Enabled',
+  error_loading_authors: "Error loading authors.",
   error_not_found: 'Oops. Nothing here...',
   external_links: 'External links',
   field_required: 'This field is required.',
@@ -143,6 +158,7 @@ export default {
   name: 'Name',
   natural_resource_constituants: 'Resources constituants',
   natural_resources: 'Resources',
+  no_authors_found: 'No authors found.',
   no_building_element_materials: 'No materials information',
   no_building_elements: 'No building elements',
   no_results: 'No results',
@@ -198,6 +214,7 @@ export default {
   state: 'State',
   std: 'Standard',
   structural: 'Structural',
+  sync_from_users: 'Sync from users',
   technical_construction_building_material_constituants_hint:
     'Construction techniques are made of building materials.',
   technical_construction_natural_resource_constituants_hint:

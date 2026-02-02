@@ -14,6 +14,7 @@
           <q-tab name="location" :label="t('location') + ' *'" />
           <q-tab name="multimedia" :label="t('multimedia') + ' *'" />
           <q-tab name="relations" :label="t('relations')" />
+          <q-tab name="credits" :label="t('credits')" />
         </q-tabs>
         <q-separator />
 
@@ -206,6 +207,9 @@
               </q-card-actions>
             </q-card>
           </q-tab-panel>
+          <q-tab-panel name="credits" class="q-pl-none q-pr-none">
+            <authors-input :disable="readOnly" v-model="selected.authors" />
+          </q-tab-panel>
         </q-tab-panels>
       </q-card-section>
 
@@ -257,6 +261,7 @@ import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 import BuildingElementForm from 'src/components/BuildingElementForm.vue';
 import type { Option } from 'src/components/models';
 import TextInput from 'src/components/TextInput.vue';
+import AuthorsInput from 'src/components/AuthorsInput.vue';
 import type { Feature } from '@turf/turf';
 
 interface DialogProps {

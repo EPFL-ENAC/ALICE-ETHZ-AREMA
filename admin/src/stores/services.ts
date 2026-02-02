@@ -7,6 +7,7 @@ import type {
   Building,
   Professional,
   BuildingElement,
+  SubjectProfile,
 } from 'src/models';
 import type { Query } from 'src/components/models';
 
@@ -19,7 +20,8 @@ export class Service<
     | BuildingMaterial
     | Building
     | Professional
-    | BuildingElement,
+    | BuildingElement
+    | SubjectProfile,
 > {
   constructor(
     public entityType: Type,
@@ -182,6 +184,7 @@ export const useServices = defineStore('services', () => {
     | Building
     | Professional
     | BuildingElement
+    | SubjectProfile
   > {
     let entityType;
     switch (entityName) {
@@ -202,6 +205,9 @@ export const useServices = defineStore('services', () => {
         break;
       case 'building-element':
         entityType = {} as BuildingElement;
+        break;
+      case 'subject-profile':
+        entityType = {} as SubjectProfile;
         break;
     }
     if (!entityType) {

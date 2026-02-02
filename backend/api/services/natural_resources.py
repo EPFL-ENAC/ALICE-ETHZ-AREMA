@@ -169,7 +169,6 @@ class NaturalResourceService(EntityService):
             raise HTTPException(
                 status_code=403, detail="Not enough permissions")
         for key, value in payload.model_dump().items():
-            print(key, value)
             if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "published_at", "published_by"]:
                 setattr(entity, key, value)
         entity.updated_at = datetime.now()

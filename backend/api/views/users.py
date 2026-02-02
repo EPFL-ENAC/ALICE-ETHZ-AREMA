@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends
+from api.db import get_session, AsyncSession
 from api.models.users import AppUser, AppUserResult, AppUserDraft, AppUserPassword
 from api.auth import kc_service, User, kc_admin_service
+from api.services.subject_profiles import SubjectProfileService
 
 router = APIRouter()
 
@@ -29,9 +31,14 @@ async def delete(id: str, user: User = Depends(kc_service.require_admin())):
 
 
 @router.post("/", response_model=AppUser, response_model_exclude_none=True)
-async def create(item: AppUserDraft, user: User = Depends(kc_service.require_admin())) -> AppUser:
+async def create(item: AppUserDraft,
+                 session: AsyncSession = Depends(get_session),
+                 user: User = Depends(kc_service.require_admin())) -> AppUser:
     """Create a user"""
-    return await kc_admin_service.create_user(item)
+    appUser = await kc_admin_service.create_user(item)
+    subjectProfileService = SubjectProfileService(session)
+    await subjectProfileService.create_subject_profile_for_user(appUser)
+    return appUser
 
 
 @router.put("/{id}", response_model=AppUser, response_model_exclude_none=True)
