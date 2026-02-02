@@ -24,7 +24,7 @@
             v-model="selected.password"
             :type="showPassword ? 'text' : 'password'"
             :label="t('password') + ' *'"
-            :hint="t('password_hint')"
+            :hint="t('password_temp_hint')"
             lazy-rules
             :rules="[(val) => !!val || t('field_required')]"
           >

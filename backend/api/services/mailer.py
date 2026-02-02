@@ -3,7 +3,8 @@ import logging
 from email.message import EmailMessage
 from jinja2 import Environment, PackageLoader, select_autoescape
 from api.config import config
-from api.auth import kc_service, User, kc_admin_service
+from api.auth import User, kc_admin_service
+from api.models.users import AppUser
 
 # Setup Jinja2 to load templates from inside the package
 env = Environment(
@@ -23,6 +24,15 @@ class Mailer:
         self.smtp_password = config.SMTP_PASSWORD
         self.smtp_username = config.SMTP_USERNAME
         self.smtp_subject_prefix = config.MAIL_SUBJECT_PREFIX
+
+    async def send_welcome_email(self, app_user: AppUser):
+        """Send a welcome email to a new user"""
+        subject = "Welcome to the Atlas of Regenerative Materials"
+        context = {
+            "full_name": f"{app_user.first_name} {app_user.last_name}" if app_user.first_name and app_user.last_name else app_user.username,
+            "username": app_user.username
+        }
+        self.send_email(app_user.email, subject, "welcome.html", context)
 
     async def send_review_assigned_email(self, entity_type: str, entity_id: int, entity_name: str, assignee: str, from_user: User = None):
         """Send an email to the assignee when a review is assigned"""

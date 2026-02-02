@@ -10,6 +10,10 @@ if "pytest" not in sys.modules:
     engine = create_async_engine(config.DB_URL, echo=True, future=True)
 
 
+async def get_engine():
+    return engine
+
+
 async def get_session() -> AsyncSession:
     async_session = sessionmaker(
         engine, class_=AsyncSession, expire_on_commit=False

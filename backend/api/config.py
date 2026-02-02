@@ -19,6 +19,7 @@ class Config(BaseSettings):
     KEYCLOAK_URL: str = "https://enac-it-sso.epfl.ch"
     KEYCLOAK_API_ID: str
     KEYCLOAK_API_SECRET: str
+    KEYCLOAK_TOTP: bool = False
 
     PATH_PREFIX: str = "/api"
 

@@ -10,9 +10,10 @@ export const useAuthStore = defineStore('auth', () => {
   const isAdmin = computed(() => realmRoles.value.includes('app-administrator'));
   const isReviewer = computed(() => realmRoles.value.includes('app-reviewer'));
   const isContributor = computed(() => realmRoles.value.includes('app-contributor'));
+  const initialized = ref(false);
 
   async function init() {
-    if (isAuthenticated.value) return Promise.resolve(true);
+    if (isAuthenticated.value || initialized.value) return Promise.resolve(true);
     profile.value = undefined;
     realmRoles.value = [];
     return keycloak
@@ -20,6 +21,7 @@ export const useAuthStore = defineStore('auth', () => {
         onLoad: 'check-sso', // Optional: 'login-required' forces login right away, 'check-sso' checks if the user is already logged in.
       })
       .then(async (authenticated: boolean) => {
+        initialized.value = true;
         if (authenticated) {
           realmRoles.value = keycloak.tokenParsed?.realm_access?.roles || [];
           profile.value = await keycloak.loadUserProfile();
@@ -32,11 +34,21 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function login() {
     if (isAuthenticated.value) return;
+    // Ensure keycloak is initialized before attempting login
+    if (!keycloak.authenticated && !keycloak.didInitialize) {
+      await init();
+    }
     // redirects to keycloak login page
     return await keycloak.login();
   }
 
   async function logout() {
+    if (!keycloak.didInitialize) {
+      // If keycloak was never initialized, just clear local state
+      profile.value = undefined;
+      realmRoles.value = [];
+      return;
+    }
     if (!isAuthenticated.value) return;
     return await keycloak
       .logout({
@@ -161,6 +173,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   return {
+    initialized,
     isAuthenticated,
     isAdmin,
     isReviewer,
