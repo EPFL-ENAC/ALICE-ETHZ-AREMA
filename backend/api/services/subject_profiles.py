@@ -36,7 +36,7 @@ class SubjectProfileService:
 
     def __init__(self, session: AsyncSession):
         self.session = session
-        self.entityType = "subject-profile"
+        self.entityType = "author"
 
     async def reIndexAll(self) -> int:
         """Index all subject profiles that were published"""

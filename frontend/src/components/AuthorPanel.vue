@@ -4,9 +4,8 @@
       <q-spinner-dots />
     </div>
     <div v-else>
-      <div class="row q-col-gutter-md">
-        <div class="col-12 col-md-1"></div>
-        <div class="col-12 col-md-2">
+      <div class="grid-header">
+        <div class="grid-nav">
           <router-link
             to="/search"
             class="text-primary text-caption q-pa-xs"
@@ -15,7 +14,7 @@
             <q-icon name="arrow_back" /> {{ t('search') }}
           </router-link>
         </div>
-        <div class="col-12 col-md-6">
+        <div class="grid-content">
           <div class="text-primary text-uppercase q-mb-sm">
             {{ t(document.entity_type) }}
           </div>
@@ -23,13 +22,6 @@
           <div class="q-mb-lg" style="font-size: 1.5rem">
             <q-markdown :src="document.description" no-heading-anchor-links />
           </div>
-        </div>
-        <div class="col-12 col-md-3"></div>
-      </div>
-
-      <div class="row q-col-gutter-md">
-        <div class="col-12 col-md-1"></div>
-        <div class="col-12 col-md-2">
           <div class="q-mb-md">
             <div v-if="document.web" class="text-secondary text-caption">
               <q-markdown :src="toUrlMd(document.web)" no-heading-anchor-links class="q-mb-none" />
@@ -41,58 +33,57 @@
               />
             </div>
           </div>
-        </div>
-        <div class="col-12 col-md-1"></div>
-      </div>
 
-      <div
-        v-if="relationSummaries.length || relatedResources.length"
-        class="row q-col-gutter-md q-mt-md"
-      >
-        <div class="col-12 col-md-3"></div>
-        <div class="col-12 col-md-6">
-          <div class="text-primary text-uppercase q-mb-sm">
-            {{ t('contributions') }}
-          </div>
-          <div class="row q-gutter-md">
-            <template
-              v-for="entity_type in Object.keys(relationSummariesPerEntityType)"
-              :key="entity_type"
-            >
-              <q-card flat class="q-mb-md" style="min-width: 200px">
-                <q-card-section>
-                  <div class="text-primary">{{ t(entity_type) }}</div>
-                  <ul class="q-mt-xs q-mb-none q-pl-md">
-                    <li
-                      v-for="doc in relationSummariesPerEntityType[entity_type]"
-                      :key="doc.id"
-                      class="text-bold cursor-pointer"
-                      @click="onDocument(doc)"
-                    >
-                      {{ doc.name }}
-                    </li>
-                  </ul>
-                </q-card-section>
-              </q-card>
-            </template>
-            <q-card v-if="relatedResources.length" flat class="q-mb-md" style="min-width: 200px">
-              <q-card-section>
-                <div class="text-primary">{{ t(document.entity_type) }}</div>
-                <ul class="q-mt-xs q-mb-none q-pl-md">
-                  <li
-                    v-for="doc in relatedResources"
-                    :key="doc.id"
-                    class="text-bold cursor-pointer"
-                    @click="onDocument(doc)"
-                  >
-                    {{ doc.name }}
-                  </li>
-                </ul>
-              </q-card-section>
-            </q-card>
+          <div v-if="relationSummaries.length || relatedResources.length" class="q-mt-md">
+            <div class="grid-contributions-content">
+              <div class="text-primary text-uppercase q-mb-sm">
+                {{ t('contributions') }}
+              </div>
+              <div class="contributions-cards">
+                <template
+                  v-for="entity_type in Object.keys(relationSummariesPerEntityType)"
+                  :key="entity_type"
+                >
+                  <q-card flat class="q-mb-md" style="min-width: 200px">
+                    <q-card-section>
+                      <div class="text-primary">{{ t(entity_type) }}</div>
+                      <ul class="q-mt-xs q-mb-none q-pl-md">
+                        <li
+                          v-for="doc in relationSummariesPerEntityType[entity_type]"
+                          :key="doc.id"
+                          class="text-bold cursor-pointer"
+                          @click="onDocument(doc)"
+                        >
+                          {{ doc.name }}
+                        </li>
+                      </ul>
+                    </q-card-section>
+                  </q-card>
+                </template>
+                <q-card
+                  v-if="relatedResources.length"
+                  flat
+                  class="q-mb-md"
+                  style="min-width: 200px"
+                >
+                  <q-card-section>
+                    <div class="text-primary">{{ t(document.entity_type) }}</div>
+                    <ul class="q-mt-xs q-mb-none q-pl-md">
+                      <li
+                        v-for="doc in relatedResources"
+                        :key="doc.id"
+                        class="text-bold cursor-pointer"
+                        @click="onDocument(doc)"
+                      >
+                        {{ doc.name }}
+                      </li>
+                    </ul>
+                  </q-card-section>
+                </q-card>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="col-12 col-md-3"></div>
       </div>
     </div>
   </div>
@@ -165,3 +156,56 @@ function toUrlMd(url: string) {
   return `[${url.replace(/^https?:\/\//, '')}](${url})`;
 }
 </script>
+
+<style scoped>
+.grid-header {
+  display: grid;
+  grid-template-columns: 1fr 2fr 6fr 3fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.grid-nav {
+  grid-column: 2 / 3;
+}
+
+.grid-content {
+  grid-column: 3 / 4;
+}
+
+.grid-contributions {
+  display: grid;
+  grid-template-columns: 3fr 6fr 3fr;
+  gap: 1rem;
+}
+
+.grid-contributions-content {
+  grid-column: 2 / 3;
+}
+
+.contributions-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .grid-header {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-nav,
+  .grid-content {
+    grid-column: 1 / -1;
+  }
+
+  .grid-contributions {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-contributions-content {
+    grid-column: 1 / -1;
+  }
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-md bg-grey-2">
     <div v-if="document">
-      <author-panel v-if="document.entity_type === 'subject-profile'" :document="document" />
+      <author-panel v-if="document.entity_type === 'author'" :document="document" />
       <document-panel v-else :document="document" />
     </div>
   </q-page>

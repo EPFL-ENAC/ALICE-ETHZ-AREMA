@@ -21,7 +21,7 @@ export default {
   },
   'building-material': 'Building Material',
   'natural-resource': 'Resource',
-  'subject-profile': 'Author',
+  author: 'Author',
   'technical-construction': 'Construction Techniques',
   about: 'About',
   absorption_coefficient_symbol: 'α',

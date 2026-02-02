@@ -39,9 +39,9 @@ async def populate_index(
         if type is None or type == "professional":
             service = ProfessionalService(session)
             indexCounts["professional"] = await service.reIndexAll()
-        if type is None or type == "subject-profile":
+        if type is None or type == "author":
             service = SubjectProfileService(session)
-            indexCounts["subject-profile"] = await service.reIndexAll()
+            indexCounts["author"] = await service.reIndexAll()
         return indexCounts
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
