@@ -1,11 +1,12 @@
 import logging
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Request
 from api.config import config
-from api.db import get_session, AsyncSession, get_engine
+from api.db import AsyncSession, get_engine
 from api.models.users import AppUser, AppUserResult, AppUserDraft, AppUserPassword
 from api.auth import kc_service, User, kc_admin_service
 from api.services.subject_profiles import SubjectProfileService
 from api.services.mailer import Mailer
+from api.rate_limit import limiter
 
 router = APIRouter()
 
@@ -67,8 +68,12 @@ async def create(item: AppUserDraft,
 
 
 @router.post("/_register", response_model=AppUser, response_model_exclude_none=True)
-async def register(item: AppUserDraft,
-                   background_tasks: BackgroundTasks) -> AppUser:
+@limiter.limit(config.RATE_LIMIT_REGISTER)
+async def register(
+    request: Request,
+    item: AppUserDraft,
+    background_tasks: BackgroundTasks
+) -> AppUser:
     """User self-registration"""
     # check user does not exist
     try:

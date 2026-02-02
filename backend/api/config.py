@@ -23,6 +23,11 @@ class Config(BaseSettings):
 
     PATH_PREFIX: str = "/api"
 
+    # Rate limiting
+    RATE_LIMIT_ENABLED: bool = True
+    RATE_LIMIT_DEFAULT: str = "100/minute"
+    RATE_LIMIT_REGISTER: str = "5/minute"
+
     # S3
     S3_ENDPOINT_PROTOCOL: str
     S3_ENDPOINT_HOSTNAME: str
