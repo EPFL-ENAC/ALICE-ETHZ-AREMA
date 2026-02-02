@@ -91,6 +91,14 @@ export const useUsersStore = defineStore('users', () => {
     return await api.delete(`/user/${id}`, config);
   }
 
+  async function register(payload: AppUser) {
+    if (authStore.isAuthenticated) throw new Error('Already authenticated');
+    if (payload.username === undefined) {
+      payload.username = payload.email;
+    }
+    return api.post(`/user/_register`, payload);
+  }
+
   return {
     users,
     loading,
@@ -99,5 +107,6 @@ export const useUsersStore = defineStore('users', () => {
     update,
     update_password,
     remove,
+    register,
   };
 });

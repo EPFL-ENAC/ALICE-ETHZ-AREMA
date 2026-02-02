@@ -18,6 +18,7 @@ from api.views.users import router as users_router
 from api.views.authz import router as authz_router
 from api.views.stats import router as stats_router
 from api.views.subject_profiles import router as subject_profiles_router
+from api.rate_limit import setup_rate_limiting
 from titiler.core.factory import TilerFactory
 
 basicConfig(level=DEBUG)
@@ -33,6 +34,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+setup_rate_limiting(app)
 
 
 class HealthCheck(BaseModel):

@@ -14,11 +14,38 @@
       </q-toolbar>
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+        <img
+          :src="
+            $q.screen.gt.sm
+              ? 'arema-h-1.svg'
+              : $q.screen.gt.xs
+                ? 'arema-h-sm.svg'
+                : 'arema-h-xs.svg'
+          "
+          class="cursor-pointer"
+          style="height: 25px"
+          @click="router.push('/')"
+        />
+        <q-space />
 
-        <q-toolbar-title>
-          {{ t('main.brand') }}
-        </q-toolbar-title>
-
+        <q-btn-dropdown flat dense :label="locale" class="on-left">
+          <q-list>
+            <q-item
+              clickable
+              v-close-popup
+              @click="onLocaleSelection(localeOpt)"
+              v-for="localeOpt in localeOptions"
+              :key="localeOpt.value"
+            >
+              <q-item-section>
+                <q-item-label>{{ localeOpt.label }}</q-item-label>
+              </q-item-section>
+              <q-item-section avatar v-if="locale === localeOpt.value">
+                <q-icon color="primary" name="check" />
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
         <q-btn-dropdown flat no-caps :label="username">
           <q-list>
             <q-item clickable v-close-popup @click="onLogout" v-if="authStore.isAuthenticated">
@@ -141,7 +168,16 @@
             <q-item-label header>{{ t('markdown_guide') }}</q-item-label>
           </q-item-section>
         </q-item>
+        <q-item clickable @click="showTermsDialog = true">
+          <q-item-section avatar>
+            <q-icon name="fa-solid fa-gavel" size="xs" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ t('terms_and_conditions') }}</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
+      <markdown-dialog v-model="showTermsDialog" :text="terms" />
     </q-drawer>
 
     <login-dialog v-model="showLogin" />
@@ -153,36 +189,51 @@
 </template>
 
 <script setup lang="ts">
+import { useQuasar } from 'quasar';
 import LoginDialog from 'src/components/LoginDialog.vue';
+import MarkdownDialog from 'src/components/MarkdownDialog.vue';
 import { isDevelopment } from 'src/boot/api';
+import { Cookies } from 'quasar';
+import { locales } from 'boot/i18n';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
+const $q = useQuasar();
 const authStore = useAuthStore();
+const router = useRouter();
 
 const leftDrawerOpen = ref(false);
 const showLogin = ref(false);
+const showTermsDialog = ref(false);
+const terms = ref('');
 
 const username = computed(() => authStore.profile?.email);
+const lang = computed(() => (locales.includes(locale.value) ? locale.value : 'en'));
+const localeOptions = computed(() => {
+  return locales.map((key: string) => ({
+    label: key.toUpperCase(),
+    value: key,
+  }));
+});
 
 onMounted(() => {
-  void authStore
-    .init()
-    .then(() => {
-      if (!authStore.isAuthenticated) {
-        showLogin.value = true;
-      }
-    })
-    .catch((error) => {
-      console.error('Error initializing auth store:', error);
-      onLogout();
-    });
+  void authStore.init().then(() => {
+    if (!authStore.isAuthenticated) {
+      void router.push({ path: '/signin' });
+    } else {
+      void fetch(`/admin/help/${lang.value}/terms-conditions.md`).then((response) => {
+        void response.text().then((text) => {
+          terms.value = text;
+        });
+      });
+    }
+  });
 });
 
 watch(
   () => authStore.isAuthenticated,
   () => {
     if (!authStore.isAuthenticated) {
-      showLogin.value = true;
+      void router.push({ path: '/signin' });
     }
   },
 );
@@ -197,5 +248,10 @@ function onLogout() {
 
 function onOpenUrl(url: string) {
   window.open(url, '_blank');
+}
+
+function onLocaleSelection(localeOpt: { label: string; value: string }) {
+  locale.value = localeOpt.value;
+  Cookies.set('locale', localeOpt.value);
 }
 </script>

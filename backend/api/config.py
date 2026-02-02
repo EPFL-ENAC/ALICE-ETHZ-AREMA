@@ -19,8 +19,14 @@ class Config(BaseSettings):
     KEYCLOAK_URL: str = "https://enac-it-sso.epfl.ch"
     KEYCLOAK_API_ID: str
     KEYCLOAK_API_SECRET: str
+    KEYCLOAK_TOTP: bool = False
 
     PATH_PREFIX: str = "/api"
+
+    # Rate limiting
+    RATE_LIMIT_ENABLED: bool = True
+    RATE_LIMIT_DEFAULT: str = "100/minute"
+    RATE_LIMIT_REGISTER: str = "5/minute"
 
     # S3
     S3_ENDPOINT_PROTOCOL: str
