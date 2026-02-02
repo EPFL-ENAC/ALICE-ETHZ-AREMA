@@ -4,8 +4,8 @@
       <q-spinner-dots />
     </div>
     <div v-else>
-      <div class="grid-header">
-        <div class="grid-nav">
+      <div class="container">
+        <div class="nav">
           <router-link
             to="/search"
             class="text-primary text-caption q-pa-xs"
@@ -14,7 +14,7 @@
             <q-icon name="arrow_back" /> {{ t('search') }}
           </router-link>
         </div>
-        <div class="grid-content">
+        <div class="header">
           <div class="text-primary text-uppercase q-mb-sm">
             {{ t(document.entity_type) }}
           </div>
@@ -24,21 +24,24 @@
               {{ document.affiliation }}
             </q-chip>
           </div>
+        </div>
+        <div class="content">
           <div class="q-mb-lg" style="font-size: 1.5rem">
             <q-markdown :src="document.description" no-heading-anchor-links />
           </div>
-          <div class="q-mb-md">
-            <div v-if="document.web" class="text-secondary text-caption">
-              <q-markdown :src="toUrlMd(document.web)" no-heading-anchor-links class="q-mb-none" />
-            </div>
-            <div v-if="document.email" class="text-secondary text-caption">
-              <q-markdown
-                :src="`[${document.email}](mailto:${document.email})`"
-                no-heading-anchor-links
-              />
-            </div>
+        </div>
+        <div class="side-right">
+          <div v-if="document.web" class="text-secondary text-caption">
+            <q-markdown :src="toUrlMd(document.web)" no-heading-anchor-links class="q-mb-none" />
           </div>
-
+          <div v-if="document.email" class="text-secondary text-caption">
+            <q-markdown
+              :src="`[${document.email}](mailto:${document.email})`"
+              no-heading-anchor-links
+            />
+          </div>
+        </div>
+        <div class="footer">
           <relations-panel
             class="q-my-lg"
             :title="t('contributions')"
@@ -109,40 +112,37 @@ function toUrlMd(url: string) {
 </script>
 
 <style scoped>
-.grid-header {
+.container {
   display: grid;
   grid-template-columns: 1fr 2fr 6fr 3fr;
   gap: 1rem;
   margin-bottom: 1rem;
 }
 
-.grid-nav {
+.nav {
   grid-column: 2 / 3;
 }
 
-.grid-content {
-  grid-column: 3 / 4;
+.side-right {
+  grid-column: 4 / 5;
 }
 
-.grid-contributions {
-  display: grid;
-  grid-template-columns: 3fr 6fr 3fr;
-  gap: 1rem;
+.content,
+.footer {
+  grid-column: 3 / 4;
 }
 
 /* Mobile responsive */
 @media (max-width: 768px) {
-  .grid-header {
+  .container {
     grid-template-columns: 1fr;
   }
 
-  .grid-nav,
-  .grid-content {
+  .nav,
+  .content,
+  .side-right,
+  .footer {
     grid-column: 1 / -1;
-  }
-
-  .grid-contributions {
-    grid-template-columns: 1fr;
   }
 }
 </style>
