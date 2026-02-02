@@ -39,7 +39,7 @@ async def populate_index(
         if type is None or type == "professional":
             service = ProfessionalService(session)
             indexCounts["professional"] = await service.reIndexAll()
-        if type is None or type == "author":
+        if type is None or type == "author" or type == "subject-profile":
             service = SubjectProfileService(session)
             indexCounts["author"] = await service.reIndexAll()
         return indexCounts

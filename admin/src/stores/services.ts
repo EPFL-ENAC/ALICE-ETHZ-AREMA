@@ -160,17 +160,18 @@ export class Service<
 
   async index() {
     if (!authStore.isAuthenticated) throw new Error('Not authenticated');
+    const indexName = this.entityName === 'subject-profile' ? 'author' : this.entityName;
     await authStore.updateToken();
     const config = {
       headers: {
         Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
       params: {
-        type: this.entityName,
+        type: indexName,
       },
     };
     const res = await api.post('/search/_index', {}, config);
-    return res.data[this.entityName];
+    return res.data[indexName];
   }
 }
 
