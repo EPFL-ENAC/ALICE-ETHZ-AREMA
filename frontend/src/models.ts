@@ -224,6 +224,7 @@ export interface Document extends Entity {
   authors?: string[];
   identifier?: string;
   type?: string;
+  affiliation?: string;
 }
 
 export interface SearchResult {

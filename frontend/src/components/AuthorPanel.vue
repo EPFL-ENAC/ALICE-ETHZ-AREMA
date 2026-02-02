@@ -19,6 +19,11 @@
             {{ t(document.entity_type) }}
           </div>
           <div class="text-h2 q-mb-md">{{ document.name }}</div>
+          <div v-if="document.affiliation" class="q-my-lg">
+            <q-chip outline color="primary" size="12px" class="q-ml-none q-mr-sm no-border-radius">
+              {{ document.affiliation }}
+            </q-chip>
+          </div>
           <div class="q-mb-lg" style="font-size: 1.5rem">
             <q-markdown :src="document.description" no-heading-anchor-links />
           </div>
@@ -34,55 +39,14 @@
             </div>
           </div>
 
-          <div v-if="relationSummaries.length || relatedResources.length" class="q-mt-md">
-            <div class="grid-contributions-content">
-              <div class="text-primary text-uppercase q-mb-sm">
-                {{ t('contributions') }}
-              </div>
-              <div class="contributions-cards">
-                <template
-                  v-for="entity_type in Object.keys(relationSummariesPerEntityType)"
-                  :key="entity_type"
-                >
-                  <q-card flat class="q-mb-md" style="min-width: 200px">
-                    <q-card-section>
-                      <div class="text-primary">{{ t(entity_type) }}</div>
-                      <ul class="q-mt-xs q-mb-none q-pl-md">
-                        <li
-                          v-for="doc in relationSummariesPerEntityType[entity_type]"
-                          :key="doc.id"
-                          class="text-bold cursor-pointer"
-                          @click="onDocument(doc)"
-                        >
-                          {{ doc.name }}
-                        </li>
-                      </ul>
-                    </q-card-section>
-                  </q-card>
-                </template>
-                <q-card
-                  v-if="relatedResources.length"
-                  flat
-                  class="q-mb-md"
-                  style="min-width: 200px"
-                >
-                  <q-card-section>
-                    <div class="text-primary">{{ t(document.entity_type) }}</div>
-                    <ul class="q-mt-xs q-mb-none q-pl-md">
-                      <li
-                        v-for="doc in relatedResources"
-                        :key="doc.id"
-                        class="text-bold cursor-pointer"
-                        @click="onDocument(doc)"
-                      >
-                        {{ doc.name }}
-                      </li>
-                    </ul>
-                  </q-card-section>
-                </q-card>
-              </div>
-            </div>
-          </div>
+          <relations-panel
+            class="q-my-lg"
+            :title="t('contributions')"
+            :relation-summaries="relationSummaries"
+            :related-resources="[]"
+            :entity-type="document.entity_type"
+            @document-click="onDocument"
+          />
         </div>
       </div>
     </div>
@@ -91,6 +55,7 @@
 
 <script setup lang="ts">
 import type { Document } from 'src/models';
+import RelationsPanel from 'src/components/RelationsPanel.vue';
 
 const { t } = useI18n();
 const searchService = useSearchService();
@@ -104,20 +69,7 @@ const props = defineProps<Props>();
 
 const slide = ref(0);
 const relationSummaries = ref<Document[]>([]);
-const relatedResources = ref<Document[]>([]);
 const authors = ref<Document[]>([]);
-
-const relationSummariesPerEntityType = computed(() => {
-  const relations: { [key: string]: Document[] } = {};
-  relationSummaries.value.forEach((doc) => {
-    const entityType = doc.entity_type;
-    if (!relations[entityType]) {
-      relations[entityType] = [];
-    }
-    relations[entityType].push(doc);
-  });
-  return relations;
-});
 
 onMounted(init);
 
@@ -127,7 +79,6 @@ function init() {
   slide.value = 0;
   if (!props.document) return;
   relationSummaries.value = [];
-  relatedResources.value = [];
   authors.value = [];
   const fields = ['id', 'entity_type', 'name', 'description'];
   void searchService
@@ -179,16 +130,6 @@ function toUrlMd(url: string) {
   gap: 1rem;
 }
 
-.grid-contributions-content {
-  grid-column: 2 / 3;
-}
-
-.contributions-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
 /* Mobile responsive */
 @media (max-width: 768px) {
   .grid-header {
@@ -202,10 +143,6 @@ function toUrlMd(url: string) {
 
   .grid-contributions {
     grid-template-columns: 1fr;
-  }
-
-  .grid-contributions-content {
-    grid-column: 1 / -1;
   }
 }
 </style>
