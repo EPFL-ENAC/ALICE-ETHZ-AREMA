@@ -79,9 +79,9 @@ async def find_by_query(
 
 
 @router.get("/_authors", response_model=SearchResult, response_model_exclude_none=True)
-async def find_documents(keys: List[str] = Query(None),
-                         index: str = Query("entities")) -> SearchResult:
-    """Search subject profile documents per keys"""
+async def find_authors(keys: List[str] = Query(None),
+                       index: str = Query("entities")) -> SearchResult:
+    """Search author documents per keys"""
     indexService = SearchService.fromIndex(index)
     if keys is None or len(keys) == 0:
         return SearchResult(total=0, skip=0, limit=0, data=[])
@@ -100,6 +100,8 @@ async def find_documents(keys: List[str] = Query(None),
             }}
         )
     queryDict = {"query": {"bool": {"should": shouldQueries}}}
+    # add that entity_type must be author
+    queryDict["query"]["bool"]["must"] = {"term": {"entity_type": "author"}}
     return indexService.search(query=queryDict, skip=0, limit=len(keys))
 
 

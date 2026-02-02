@@ -82,9 +82,11 @@ class SubjectProfileService:
             type="user",
             name=f"{appUser.first_name} {appUser.last_name}",
             email=appUser.email,
-            affiliation="",
-            description="",
-            web=""
+            affiliation=None,
+            description=None,
+            web=None,
+            created_at=datetime.now(),
+            updated_at=datetime.now()
         )
         self.session.add(profile_obj)
         await self.session.commit()

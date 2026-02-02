@@ -158,6 +158,7 @@ export default {
   name: 'Name',
   natural_resource_constituants: 'Resources constituants',
   natural_resources: 'Resources',
+  no_authors_found: 'No authors found.',
   no_building_element_materials: 'No materials information',
   no_building_elements: 'No building elements',
   no_results: 'No results',

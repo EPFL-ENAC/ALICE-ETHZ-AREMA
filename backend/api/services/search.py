@@ -278,7 +278,7 @@ class VideoIndexService(IndexService):
         Returns:
             list[dict]: The list of video documents 
         """
-        if "files" not in entity or not entity.files:
+        if not hasattr(entity, "files") or not entity.files:
             return []
         docs = []
         parent_id = f"{entity_type}:{entity.id}"

@@ -241,7 +241,7 @@ function onSyncFromUsers() {
         usersStore.users.map(async (user) => {
           try {
             const author: SubjectProfile = {
-              name: `${user.first_name ?? ''} ${user.first_name?.endsWith(user.last_name || '') ? '' : user.last_name}`,
+              name: `${user.first_name ?? ''} ${user.first_name?.endsWith(user.last_name || '') ? '' : user.last_name}`.trim(),
               type: 'user',
               identifier: user.username?.toString() || user.id?.toString() || '',
             };
