@@ -10,7 +10,7 @@ if "pytest" not in sys.modules:
     engine = create_async_engine(config.DB_URL, echo=True, future=True)
 
 
-async def get_engine():
+def get_engine():
     return engine
 
 

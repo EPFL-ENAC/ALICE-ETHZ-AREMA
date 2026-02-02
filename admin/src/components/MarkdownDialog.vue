@@ -21,27 +21,27 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+const { t } = useI18n();
 
 interface DialogProps {
-  modelValue: boolean
-  title?: string | undefined
-  text: string
+  modelValue: boolean;
+  title?: string | undefined;
+  text: string;
 }
 
-const props = defineProps<DialogProps>()
-const emit = defineEmits(['update:modelValue', 'confirm', 'cancel'])
+const props = defineProps<DialogProps>();
+const emit = defineEmits(['update:modelValue']);
 
-const showDialog = ref(props.modelValue)
+const showDialog = ref(props.modelValue);
 
 watch(
   () => props.modelValue,
   (value) => {
-    showDialog.value = value
+    showDialog.value = value;
   },
-)
+);
 
 function onHide() {
-  emit('update:modelValue', false)
+  emit('update:modelValue', false);
 }
 </script>

@@ -12,13 +12,17 @@ router = APIRouter()
 
 async def create_subject_profile_task(appUser: AppUser):
     """Background task to create subject profile for a user"""
-    engine = await get_engine()
+    engine = get_engine()
     async with AsyncSession(engine) as session:
         subjectProfileService = SubjectProfileService(session)
-        await subjectProfileService.create_subject_profile_for_user(appUser)
+        try:
+            await subjectProfileService.create_subject_profile_for_user(appUser)
+        except Exception:
+            logging.exception(
+                "Error creating subject profile for user")
     # send welcome email
     try:
-        await Mailer().send_welcome_email(appUser)
+        Mailer().send_welcome_email(appUser)
     except Exception as e:
         logging.error(f"Failed to send welcome email to {appUser.email}: {e}")
 
@@ -49,7 +53,6 @@ async def delete(id: str, user: User = Depends(kc_service.require_admin())):
 @router.post("/", response_model=AppUser, response_model_exclude_none=True)
 async def create(item: AppUserDraft,
                  background_tasks: BackgroundTasks,
-                 session: AsyncSession = Depends(get_session),
                  user: User = Depends(kc_service.require_admin())) -> AppUser:
     """Create a user"""
     actions = ["UPDATE_PASSWORD"]
@@ -65,8 +68,7 @@ async def create(item: AppUserDraft,
 
 @router.post("/_register", response_model=AppUser, response_model_exclude_none=True)
 async def register(item: AppUserDraft,
-                   background_tasks: BackgroundTasks,
-                   session: AsyncSession = Depends(get_session)) -> AppUser:
+                   background_tasks: BackgroundTasks) -> AppUser:
     """User self-registration"""
     # check user does not exist
     try:
@@ -75,7 +77,8 @@ async def register(item: AppUserDraft,
             raise HTTPException(
                 status_code=400, detail="error.registration_failed")
     except Exception:
-        pass
+        logging.exception(
+            "Error checking for existing user during registration")
 
     if kc_admin_service.check_valid_password(item.password) is False:
         raise HTTPException(

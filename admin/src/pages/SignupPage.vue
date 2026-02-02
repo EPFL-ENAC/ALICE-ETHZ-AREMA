@@ -103,7 +103,7 @@
             <q-btn
               outline
               :label="t('signup')"
-              :disable="!authStore.initialized || !terms_and_conditions_accepted"
+              :disable="!authStore.initialized"
               :loading="!authStore.initialized"
               color="primary"
               @click="onSignup"

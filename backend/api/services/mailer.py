@@ -25,7 +25,7 @@ class Mailer:
         self.smtp_username = config.SMTP_USERNAME
         self.smtp_subject_prefix = config.MAIL_SUBJECT_PREFIX
 
-    async def send_welcome_email(self, app_user: AppUser):
+    def send_welcome_email(self, app_user: AppUser):
         """Send a welcome email to a new user"""
         subject = "Welcome to the Atlas of Regenerative Materials"
         context = {
