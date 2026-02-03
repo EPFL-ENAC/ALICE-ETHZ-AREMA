@@ -158,7 +158,6 @@ export default {
   liquid_transfer_coefficient_hint: 'A, kg/(m²*sqrt(s))',
   liquid_transfer_coefficient: 'Coefficient de transfert de liquide pour absorption',
   location: 'Emplacement',
-  logout: 'Déconnexion',
   low: 'Bas',
   markdown_guide: 'Guide Markdown',
   materials: 'Matériaux',
