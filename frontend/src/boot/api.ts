@@ -6,6 +6,7 @@ declare global {
     env: {
       API_URL: string;
       API_PATH: string;
+      MARTIN_URL?: string;
       UMAMI_URL?: string;
       UMAMI_WEBSITE_ID?: string;
     };
@@ -25,6 +26,7 @@ declare module '@vue/runtime-core' {
 const appEnv = window.env;
 
 const cdnUrl = 'https://enacit4r-cdn.epfl.ch';
+const martinUrl = appEnv.MARTIN_URL ?? 'http://localhost:3000';
 const baseUrl = `${appEnv.API_URL}${appEnv.API_PATH}`;
 const api = axios.create({
   baseURL: baseUrl,
@@ -67,4 +69,4 @@ export default defineBoot(({ app, router }) => {
   }
 });
 
-export { api, baseUrl, cdnUrl };
+export { api, baseUrl, cdnUrl, martinUrl };
