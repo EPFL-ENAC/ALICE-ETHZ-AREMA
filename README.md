@@ -16,6 +16,12 @@ DB_USER=postgres
 DB_PASSWORD=password
 DB_NAME=arema
 DB_PREFIX=postgresql+asyncpg
+# PostGIS
+DB_GIS_HOST=localhost
+DB_GIS_PORT=5433
+DB_GIS_USER=postgres
+DB_GIS_PASSWORD=password
+DB_GIS_NAME=arema_gis
 # FastAPI prefix
 PATH_PREFIX=
 # Keycloak
@@ -46,4 +52,16 @@ Local Elasticsearch:
 
 ```sh
 make run-es
+```
+
+Local PostGIS database (used by Martin):
+
+```sh
+make run-gis
+```
+
+Local Martin tiles server:
+
+```sh
+make run-martin
 ```

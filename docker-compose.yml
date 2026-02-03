@@ -32,6 +32,39 @@ services:
         - POSTGRES_PASSWORD=${DB_PASSWORD}
         - POSTGRES_DB=${DB_NAME}
         - POSTGRES_HOST=postgres 
+  postgis:
+    image: postgis/postgis:16-3.4
+    container_name: lasur-postgis
+    environment:
+      - POSTGRES_USER=${DB_GIS_USER}
+      - POSTGRES_PASSWORD=${DB_GIS_PASSWORD}
+      - POSTGRES_DB=${DB_GIS_NAME}
+      - POSTGRES_HOST=postgis
+    volumes:
+      - postgis:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_GIS_USER} -d ${DB_GIS_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    ports:
+      - "5433:5432"
+  martin:
+    image: ghcr.io/maplibre/martin:1.3.0
+    container_name: lasur-martin
+    environment:
+      DATABASE_URL: postgres://${DB_GIS_USER}:${DB_GIS_PASSWORD}@postgis:5432/${DB_GIS_NAME}
+      RUST_LOG: info
+    depends_on:
+      postgis:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
 volumes:
   postgres:
+    driver: local
+  postgis:
     driver: local
