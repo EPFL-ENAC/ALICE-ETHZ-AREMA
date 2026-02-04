@@ -45,7 +45,7 @@ export const style: StyleSpecification = {
     },
     corn: {
       type: 'vector',
-      tiles: [`${martinUrl}/Corn_CH_FR_2024/{z}/{x}/{y}`],
+      tiles: [`${martinUrl}/Mais_2024/{z}/{x}/{y}`],
     },
     sheep: {
       type: 'vector',
@@ -351,7 +351,7 @@ export const style: StyleSpecification = {
       id: 'corn',
       type: 'circle',
       source: 'corn',
-      'source-layer': 'Corn_CH_FR_2024',
+      'source-layer': 'Mais_2024',
       minzoom: 7,
       paint: {
         'circle-color': 'rgb(255, 251, 0)',
@@ -392,7 +392,7 @@ export const style: StyleSpecification = {
       id: 'corn-heat',
       type: 'heatmap',
       source: 'corn',
-      'source-layer': 'Corn_CH_FR_2024',
+      'source-layer': 'Mais_2024',
       maxzoom: 20,
       paint: {
         // Increase the heatmap weight based on frequency and property flaeche_m2
