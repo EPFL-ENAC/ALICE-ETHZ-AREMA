@@ -17,9 +17,13 @@ lint:
 lint-staged:
 	$(MAKE) -C frontend lint-staged
 
-run: run-db run-es run-postgis run-martin
+run: run-db run-es
 
-stop: stop-db stop-es stop-martin stop-postgis
+stop: stop-db stop-es
+
+run-gis: run-postgis run-martin
+
+stop-gis: stop-martin stop-postgis
 
 # PostgreSQL
 
@@ -59,16 +63,16 @@ down-martin:
 
 # POSTGIS
 
-run-gis:
+run-postgis:
 	docker compose up -d --pull=always postgis
 
-stop-gis:
+stop-postgis:
 	docker compose stop postgis
 
-down-gis:
+down-postgis:
 	docker compose down postgis
 
-connect-gis:
+connect-postgis:
 	docker compose exec postgis psql -U postgres -d arema_gis
 
 workflow:
