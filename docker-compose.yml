@@ -17,7 +17,6 @@ services:
       memlock:
         soft: -1
         hard: -1
-    restart: unless-stopped
   postgres:
     #image: postgis/postgis:15-3.5-alpine
     image: postgres:15.5-alpine
@@ -26,12 +25,41 @@ services:
     ports:
       # Expose Postgres port we need it for dev purposes should not be exposed publicly
       - '5432:5432'
-    restart: unless-stopped
     environment:
         - POSTGRES_USER=${DB_USER}
         - POSTGRES_PASSWORD=${DB_PASSWORD}
         - POSTGRES_DB=${DB_NAME}
         - POSTGRES_HOST=postgres 
+  postgis:
+    image: postgis/postgis:16-3.4
+    environment:
+      - POSTGRES_USER=${DB_GIS_USER}
+      - POSTGRES_PASSWORD=${DB_GIS_PASSWORD}
+      - POSTGRES_DB=${DB_GIS_NAME}
+      - POSTGRES_HOST=postgis
+    volumes:
+      - postgis:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_GIS_USER} -d ${DB_GIS_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    ports:
+      - "5433:5432"
+  martin:
+    image: ghcr.io/maplibre/martin:1.3.0
+    environment:
+      DATABASE_URL: postgres://${DB_GIS_USER}:${DB_GIS_PASSWORD}@postgis:5432/${DB_GIS_NAME}
+      RUST_LOG: info
+    depends_on:
+      postgis:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+
 volumes:
   postgres:
+    driver: local
+  postgis:
     driver: local
