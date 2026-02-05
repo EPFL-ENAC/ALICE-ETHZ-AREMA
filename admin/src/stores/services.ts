@@ -7,6 +7,7 @@ import type {
   Building,
   Professional,
   BuildingElement,
+  SubjectProfile,
 } from 'src/models';
 import type { Query } from 'src/components/models';
 
@@ -19,7 +20,8 @@ export class Service<
     | BuildingMaterial
     | Building
     | Professional
-    | BuildingElement,
+    | BuildingElement
+    | SubjectProfile,
 > {
   constructor(
     public entityType: Type,
@@ -158,17 +160,18 @@ export class Service<
 
   async index() {
     if (!authStore.isAuthenticated) throw new Error('Not authenticated');
+    const indexName = this.entityName === 'subject-profile' ? 'author' : this.entityName;
     await authStore.updateToken();
     const config = {
       headers: {
         Authorization: `Bearer ${authStore.getAccessToken()}`,
       },
       params: {
-        type: this.entityName,
+        type: indexName,
       },
     };
     const res = await api.post('/search/_index', {}, config);
-    return res.data[this.entityName];
+    return res.data[indexName];
   }
 }
 
@@ -182,6 +185,7 @@ export const useServices = defineStore('services', () => {
     | Building
     | Professional
     | BuildingElement
+    | SubjectProfile
   > {
     let entityType;
     switch (entityName) {
@@ -202,6 +206,9 @@ export const useServices = defineStore('services', () => {
         break;
       case 'building-element':
         entityType = {} as BuildingElement;
+        break;
+      case 'subject-profile':
+        entityType = {} as SubjectProfile;
         break;
     }
     if (!entityType) {

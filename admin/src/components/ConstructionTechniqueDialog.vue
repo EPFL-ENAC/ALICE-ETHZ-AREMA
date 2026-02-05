@@ -13,6 +13,7 @@
           <q-tab name="general" :label="t('general') + ' *'" />
           <q-tab name="multimedia" :label="t('multimedia') + ' *'" />
           <q-tab name="relations" :label="t('relations')" />
+          <q-tab name="credits" :label="t('credits')" />
         </q-tabs>
         <q-separator />
 
@@ -102,6 +103,9 @@
               class="q-mb-md"
             />
           </q-tab-panel>
+          <q-tab-panel name="credits" class="q-pl-none q-pr-none">
+            <authors-input :disable="readOnly" v-model="selected.authors" />
+          </q-tab-panel>
         </q-tab-panels>
       </q-card-section>
 
@@ -122,6 +126,7 @@
           :label="t('cancel')"
           color="secondary"
           @click="onCancel"
+          :disable="saving"
           v-close-popup
         />
         <q-btn
@@ -129,7 +134,8 @@
           :label="t('save')"
           color="primary"
           @click="onSave"
-          :disable="!isValid"
+          :disable="!isValid || saving"
+          :loading="saving"
         />
       </q-card-actions>
     </q-card>
@@ -142,6 +148,7 @@ import { notifyError } from 'src/utils/notify';
 import FilesInput from 'src/components/FilesInput.vue';
 import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 import TextInput from 'src/components/TextInput.vue';
+import AuthorsInput from 'src/components/AuthorsInput.vue';
 
 interface DialogProps {
   modelValue: boolean;
@@ -170,6 +177,7 @@ const buildingMaterials = ref<number[]>([]);
 const buildingMaterialsOptions = ref<{ label: string | undefined; value: number | undefined }[]>(
   [],
 );
+const saving = ref(false);
 
 const isValid = computed(() => {
   return (
@@ -234,6 +242,7 @@ function onSave() {
   if (selected.value === undefined) return;
   delete selected.value.building_materials;
   selected.value.building_material_ids = buildingMaterials.value;
+  saving.value = true;
   if (selected.value.id) {
     service
       .update(selected.value.id, selected.value)
@@ -244,6 +253,9 @@ function onSave() {
       })
       .catch((err) => {
         notifyError(err.message);
+      })
+      .finally(() => {
+        saving.value = false;
       });
   } else {
     service
@@ -255,6 +267,9 @@ function onSave() {
       })
       .catch((err) => {
         notifyError(err.message);
+      })
+      .finally(() => {
+        saving.value = false;
       });
   }
 }

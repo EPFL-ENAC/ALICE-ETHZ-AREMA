@@ -221,6 +221,10 @@ export interface Document extends Entity {
     lat: number;
   };
   relates_to?: string[];
+  authors?: string[];
+  identifier?: string;
+  type?: string;
+  affiliation?: string;
 }
 
 export interface SearchResult {

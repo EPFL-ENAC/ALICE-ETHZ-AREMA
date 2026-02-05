@@ -5,7 +5,7 @@ import type { TaxonomyNodeOption } from 'src/components/models';
 import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 
 export const useSearchService = defineStore('search', () => {
-  const selectedView = ref('map');
+  const selectedView = ref('list'); // 'list' | 'map'
   const selectedTerms = ref<string[]>([]);
   const selectedResourceTerms = ref<string[]>([]);
   const filterText = ref('');
@@ -41,6 +41,41 @@ export const useSearchService = defineStore('search', () => {
         throw new Error(`Document with id ${id} not found`);
       }
       return result.data[0];
+    } finally {
+      searching.value = false;
+    }
+  }
+
+  async function getAuthors(keys: string[] = []): Promise<SearchResult> {
+    searching.value = true;
+    try {
+      const response = await api.get('/search/_authors', {
+        params: { keys, index: 'entities' },
+        paramsSerializer: {
+          indexes: null, // no brackets at all
+        },
+      });
+      const result = response.data;
+      return result;
+    } finally {
+      searching.value = false;
+    }
+  }
+
+  async function getContributedDocuments(
+    key: string,
+    fields: string[] = [],
+  ): Promise<SearchResult> {
+    searching.value = true;
+    try {
+      const response = await api.get('/search/_entities', {
+        params: { fields, authors: [key] },
+        paramsSerializer: {
+          indexes: null, // no brackets at all
+        },
+      });
+      const result = response.data;
+      return result;
     } finally {
       searching.value = false;
     }
@@ -276,6 +311,8 @@ export const useSearchService = defineStore('search', () => {
     search_entities,
     search_videos,
     getDocument,
+    getAuthors,
+    getContributedDocuments,
     getRelatedDocuments,
     getDocumentsFromTags,
     getSelectedNodes,

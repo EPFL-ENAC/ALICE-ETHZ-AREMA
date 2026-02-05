@@ -20,3 +20,7 @@ db-revision:
 
 seed:
 	curl -X PUT 'http://localhost:8000/seed' -H 'accept: application/json'
+
+es-health:
+	curl http://localhost:9200/_cluster/health?pretty
+

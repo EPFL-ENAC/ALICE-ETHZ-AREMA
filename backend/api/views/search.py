@@ -4,6 +4,7 @@ from api.auth import kc_service, User
 from api.db import get_session, AsyncSession
 from api.services.natural_resources import NaturalResourceService
 from api.services.building_materials import BuildingMaterialService
+from api.services.subject_profiles import SubjectProfileService
 from api.services.technical_constructions import TechnicalConstructionService
 from api.services.buildings import BuildingService
 from api.services.professionals import ProfessionalService
@@ -38,6 +39,9 @@ async def populate_index(
         if type is None or type == "professional":
             service = ProfessionalService(session)
             indexCounts["professional"] = await service.reIndexAll()
+        if type is None or type == "author" or type == "subject-profile":
+            service = SubjectProfileService(session)
+            indexCounts["author"] = await service.reIndexAll()
         return indexCounts
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -72,6 +76,33 @@ async def find_by_query(
     indexService = SearchService.fromIndex(index)
     queryDict = paramAsDict(query)
     return indexService.search(query=queryDict, skip=skip, limit=limit)
+
+
+@router.get("/_authors", response_model=SearchResult, response_model_exclude_none=True)
+async def find_authors(keys: List[str] = Query(None),
+                       index: str = Query("entities")) -> SearchResult:
+    """Search author documents per keys"""
+    indexService = SearchService.fromIndex(index)
+    if keys is None or len(keys) == 0:
+        return SearchResult(total=0, skip=0, limit=0, data=[])
+    shouldQueries = []
+    # the keys are in the format type:identifier, so both fields are needed
+    for key in keys:
+        parts = key.split(":")
+        if len(parts) != 2:
+            continue
+        shouldQueries.append(
+            {"bool": {
+                "must": [
+                    {"term": {"type.keyword": parts[0]}},
+                    {"term": {"identifier.keyword": parts[1]}}
+                ]
+            }}
+        )
+    queryDict = {"query": {"bool": {"should": shouldQueries}}}
+    # add that entity_type must be author
+    queryDict["query"]["bool"]["must"] = {"term": {"entity_type": "author"}}
+    return indexService.search(query=queryDict, skip=0, limit=len(keys))
 
 
 @router.get("/_doc", response_model=SearchResult, response_model_exclude_none=True)
@@ -135,6 +166,7 @@ async def find_entities(
     bbox: List[float] = Query(None),
     # filter documents related to the given ids
     relates: List[str] = Query(None),
+    authors: List[str] = Query(None),
     skip: int = Query(0),
     limit: int = Query(10),
 ) -> SearchResult:
@@ -151,6 +183,13 @@ async def find_entities(
     mustQueries.extend(make_bbox_criteria(bbox))
     if relates:
         mustQueries.append({"terms": {"relates_to": relates}})
+    if authors:
+        # authors must contain any of the given authors
+        mustQueries.append({"terms": {"authors.keyword": authors}})
+
+    # entity_type must be any of natural-resource, building-material, technical-construction, building, professional
+    mustQueries.append({"terms": {"entity_type": [
+        "natural-resource", "building-material", "technical-construction", "building", "professional"]}})
 
     queryDict = {}
     if len(mustQueries):

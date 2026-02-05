@@ -1,9 +1,23 @@
 from typing import List, Optional, Dict
 from pydantic import BaseModel
 from sqlmodel import Field
-from api.models.domain import NaturalResource, NaturalResourceBase, BuildingMaterial, BuildingMaterialBase, TechnicalConstruction, TechnicalConstructionBase, BuildingBase, Professional, ProfessionalBase, BuildingElement, BuildingElementBase, BuildingElementMaterial, BuildingElementMaterialBase
+from api.models.domain import NaturalResource, NaturalResourceBase, BuildingMaterial, BuildingMaterialBase, TechnicalConstruction, TechnicalConstructionBase, BuildingBase, Professional, ProfessionalBase, BuildingElement, BuildingElementBase, BuildingElementMaterial, BuildingElementMaterialBase, SubjectProfileBase
 from api.models.authz import ACL
 from enacit4r_sql.models.query import ListResult
+
+# Subject profiles
+
+
+class SubjectProfileDraft(SubjectProfileBase):
+    pass
+
+
+class SubjectProfileRead(SubjectProfileDraft):
+    id: Optional[int] = None
+
+
+class SubjectProfileResult(ListResult):
+    data: List[SubjectProfileRead] = []
 
 # Natural resources
 
@@ -118,15 +132,20 @@ class BuildingResult(ListResult):
 
 class ProfessionalDraft(ProfessionalBase):
     id: Optional[int] = Field(default=None)
+    professional_ids: List[int] = []
     building_material_ids: List[int] = []
     technical_construction_ids: List[int] = []
 
 
-class ProfessionalRead(ProfessionalBase):
+class ProfessionalBaseRead(ProfessionalBase):
     id: Optional[int] = Field(default=None)
     name: Optional[str] = Field(default=None)
+
+
+class ProfessionalRead(ProfessionalBaseRead):
     building_materials: List[BuildingMaterial] = None
     technical_constructions: List[TechnicalConstruction] = None
+    professionals: List['ProfessionalBaseRead'] = None
 
 
 class ProfessionalResult(ListResult):

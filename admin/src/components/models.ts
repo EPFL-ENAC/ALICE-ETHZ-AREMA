@@ -22,6 +22,7 @@ export interface Option {
   label: string;
   level?: number;
   selectable?: boolean;
+  type?: string;
 }
 export interface OptionNumber {
   value: number;

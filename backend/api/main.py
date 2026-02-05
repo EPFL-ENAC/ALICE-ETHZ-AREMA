@@ -17,6 +17,8 @@ from api.views.search import router as search_router
 from api.views.users import router as users_router
 from api.views.authz import router as authz_router
 from api.views.stats import router as stats_router
+from api.views.subject_profiles import router as subject_profiles_router
+from api.rate_limit import setup_rate_limiting
 from titiler.core.factory import TilerFactory
 
 basicConfig(level=DEBUG)
@@ -32,6 +34,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+setup_rate_limiting(app)
 
 
 class HealthCheck(BaseModel):
@@ -86,6 +90,8 @@ app.include_router(authz_router,
                    prefix="/authz", tags=["Authorization"])
 app.include_router(stats_router,
                    prefix="/stats", tags=["Statistics"])
+app.include_router(subject_profiles_router,
+                   prefix="/subject-profile", tags=["Subject Profiles"])
 
 # Create TilerFactory instance for COGs
 cog = TilerFactory()
