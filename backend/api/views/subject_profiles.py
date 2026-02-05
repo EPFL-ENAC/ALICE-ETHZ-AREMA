@@ -60,10 +60,10 @@ async def update(
     id: int,
     subject_profile: SubjectProfileDraft,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    user: User = Depends(kc_service.get_user_info())
 ) -> SubjectProfile:
     """Update a subject profile"""
-    return await SubjectProfileService(session).update(id, subject_profile)
+    return await SubjectProfileService(session).update(id, subject_profile, user)
 
 
 @router.put("/{id}/_index", response_model_exclude_none=True)

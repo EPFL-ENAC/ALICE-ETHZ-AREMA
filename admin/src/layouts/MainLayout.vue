@@ -46,8 +46,16 @@
             </q-item>
           </q-list>
         </q-btn-dropdown>
-        <q-btn-dropdown flat no-caps :label="username">
+        <q-btn-dropdown flat no-caps :label="username" icon="account_circle">
           <q-list>
+            <q-item clickable v-close-popup :to="'/profile'" v-if="authStore.isAuthenticated">
+              <q-item-section avatar>
+                <q-icon name="badge" size="xs" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ t('profile.current') }}</q-item-label>
+              </q-item-section>
+            </q-item>
             <q-item clickable v-close-popup @click="onLogout" v-if="authStore.isAuthenticated">
               <q-item-section avatar>
                 <q-icon name="logout" size="xs" />
@@ -69,6 +77,14 @@
           </q-item-section>
           <q-item-section>
             <q-item-label header>{{ t('dashboard') }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup :to="'/profile'">
+          <q-item-section avatar>
+            <q-icon name="badge" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label header>{{ t('profile.current') }}</q-item-label>
           </q-item-section>
         </q-item>
 

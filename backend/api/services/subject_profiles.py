@@ -1,5 +1,8 @@
+from http.client import HTTPException
 import logging
 from datetime import datetime
+
+from fastapi import HTTPException
 from api.db import AsyncSession
 from sqlmodel import func, select
 from api.models.users import AppUser
@@ -7,6 +10,7 @@ from api.models.domain import SubjectProfile
 from api.models.query import SubjectProfileDraft, SubjectProfileResult
 from enacit4r_sql.utils.query import QueryBuilder
 from api.services.search import EntityIndexer
+from api.auth import User
 
 
 class SubjectProfileQueryBuilder(QueryBuilder):
@@ -138,7 +142,7 @@ class SubjectProfileService:
         await self.session.refresh(profile_obj)
         return profile_obj
 
-    async def update(self, id: int, payload: SubjectProfileDraft) -> SubjectProfile:
+    async def update(self, id: int, payload: SubjectProfileDraft, user: User = None) -> SubjectProfile:
         """Update an existing subject profile
 
         Args:
@@ -149,6 +153,10 @@ class SubjectProfileService:
         profile = await self.get_by_id(id)
         if not profile:
             return None
+
+        if user is None or ("app-administrator" not in user.realm_roles and user.username != profile.identifier):
+            raise HTTPException(
+                status_code=403, detail="Not enough permissions")
 
         for key, value in payload.model_dump().items():
             if key not in ["id", "created_at", "updated_at", "published_at"]:
