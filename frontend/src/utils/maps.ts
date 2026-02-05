@@ -37,7 +37,7 @@ export const style: StyleSpecification = {
     },
     stroh: {
       type: 'vector',
-      tiles: [`${martinUrl}/Stroh_2024/{z}/{x}/{y}`],
+      tiles: [`${martinUrl}/straw_ch_fr_2024/{z}/{x}/{y}`],
     },
     hemp: {
       type: 'vector',
@@ -161,7 +161,7 @@ export const style: StyleSpecification = {
       id: 'stroh',
       type: 'circle',
       source: 'stroh',
-      'source-layer': 'Stroh_2024',
+      'source-layer': 'straw_ch_fr_2024',
       minzoom: 7,
       paint: {
         'circle-color': 'rgb(255, 145, 0)',
@@ -176,7 +176,7 @@ export const style: StyleSpecification = {
           [
             'interpolate',
             ['linear'],
-            ['get', 'flaeche_m2'],
+            ['get', 'area_m2'],
             1,
             1,
             100,
@@ -200,14 +200,14 @@ export const style: StyleSpecification = {
       id: 'stroh-heat',
       type: 'heatmap',
       source: 'stroh',
-      'source-layer': 'Stroh_2024',
+      'source-layer': 'straw_ch_fr_2024',
       maxzoom: 20,
       paint: {
         // Increase the heatmap weight based on frequency and property flaeche_m2
         'heatmap-weight': [
           'interpolate',
           ['linear'],
-          ['get', 'flaeche_m2'],
+          ['get', 'area_m2'],
           0,
           0,
           100,
