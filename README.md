@@ -16,6 +16,12 @@ DB_USER=postgres
 DB_PASSWORD=password
 DB_NAME=arema
 DB_PREFIX=postgresql+asyncpg
+# PostGIS
+DB_GIS_HOST=localhost
+DB_GIS_PORT=5433
+DB_GIS_USER=postgres
+DB_GIS_PASSWORD=password
+DB_GIS_NAME=arema_gis
 # FastAPI prefix
 PATH_PREFIX=
 # Keycloak
@@ -36,14 +42,38 @@ ES_URL=http://localhost:9200
 ```
 ## Manage external services
 
+### Database
+
+For storing Draft data (used by admin app):
+
 Local Postgres database:
 
 ```sh
 make run-db
 ```
 
+For storing storing Published data (used by frontend map):
+
 Local Elasticsearch:
 
 ```sh
 make run-es
 ```
+
+### GIS Database
+
+By default the GIS database is https://arema-dev.epfl.ch/martin (see `./frontend/public/env.js`). But it is still possible to run a local [Martin](https://martin.maplibre.org/) service.
+
+Local PostGIS database (used by Martin):
+
+```sh
+make run-gis
+```
+
+Local Martin tiles server:
+
+```sh
+make run-martin
+```
+
+Note that it is required to restart Martin, after the GIS database is updated with new tables. See the list of Martin catalog entries at https://arema-dev.epfl.ch/martin/catalog.
