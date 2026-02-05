@@ -54,7 +54,7 @@
             />
             <text-input
               v-model="selected.description"
-              :label="t('description')"
+              :label="t('profile.description')"
               min-height="50px"
             />
           </div>

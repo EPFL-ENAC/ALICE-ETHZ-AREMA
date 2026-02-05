@@ -12,7 +12,8 @@
             <div :class="helpContent ? 'col-9' : 'col-12'">
               <q-input
                 filled
-                autogrow
+                :autogrow="rows === undefined"
+                :rows="props.rows"
                 v-model="text"
                 type="textarea"
                 @update:model-value="onUpdate"
@@ -28,12 +29,14 @@
             </div>
           </div>
         </q-tab-panel>
-        <q-tab-panel name="preview">
-          <q-markdown :src="text" no-heading-anchor-links />
+        <q-tab-panel name="preview" class="q-pa-none">
+          <q-card flat bordered class="q-pa-md" style="border-top: none">
+            <q-markdown :src="text" no-heading-anchor-links />
+          </q-card>
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
-    <div v-if="hint" class="q-pt-xs text-help">{{ hint }}</div>
+    <div v-if="hint && tab === 'write'" class="q-pt-xs on-right text-hint">{{ hint }}</div>
   </div>
 </template>
 
@@ -45,6 +48,7 @@ interface Props {
   help?: string;
   disable?: boolean | undefined;
   minHeight?: string | undefined;
+  rows?: number | undefined;
 }
 
 const props = defineProps<Props>();
