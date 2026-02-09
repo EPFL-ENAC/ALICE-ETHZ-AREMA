@@ -10,7 +10,7 @@ COMMA=""
 for envrow in $(printenv); do
   IFS='=' read -r key value <<< "${envrow}"
   case "${key}" in
-    "API_URL" | "API_PATH" | "UMAMI_URL" | "UMAMI_WEBSITE_ID")
+    "API_URL" | "API_PATH" | "MARTIN_URL" | "UMAMI_URL" | "UMAMI_WEBSITE_ID")
       echo -n "${COMMA}" >> "${ENV_PATH}"
       echo -n "${key}: '${value}'" >> "${ENV_PATH}"
       COMMA=","

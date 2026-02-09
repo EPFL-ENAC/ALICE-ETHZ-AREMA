@@ -1,11 +1,8 @@
 backup/
 data/
-geojson/
-raster/
 tiles/
 work/
 *.html
-*.geojson
 *.qmd
 *.qgz
 *.json

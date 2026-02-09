@@ -1,7 +1,7 @@
 import type { StyleSpecification } from 'maplibre-gl';
 import type { ThemeDefinition } from 'maplibregl-theme-switcher';
 import { t } from 'src/boot/i18n';
-import { baseUrl, cdnUrl } from 'src/boot/api';
+import { baseUrl, cdnUrl, martinUrl } from 'src/boot/api';
 
 const mapsUrl = `${cdnUrl}/arema/maps/2025-05-06T09:25`;
 
@@ -16,40 +16,40 @@ export const style: StyleSpecification = {
       maxzoom: 20,
     },
     hartgestein: {
-      type: 'geojson',
-      data: `${mapsUrl}/geojson/Hartgestein.geojson`,
+      type: 'vector',
+      tiles: [`${martinUrl}/Hartgestein/{z}/{x}/{y}`],
     },
     kalkstein: {
-      type: 'geojson',
-      data: `${mapsUrl}/geojson/Kalkstein.geojson`,
+      type: 'vector',
+      tiles: [`${martinUrl}/Kalkstein/{z}/{x}/{y}`],
     },
     konglomerat: {
-      type: 'geojson',
-      data: `${mapsUrl}/geojson/Konglomerat.geojson`,
+      type: 'vector',
+      tiles: [`${martinUrl}/Konglomerat/{z}/{x}/{y}`],
     },
     sandstein: {
-      type: 'geojson',
-      data: `${mapsUrl}/geojson/Sandstein.geojson`,
+      type: 'vector',
+      tiles: [`${martinUrl}/Sandstein/{z}/{x}/{y}`],
     },
     vulkanisch: {
-      type: 'geojson',
-      data: `${mapsUrl}/geojson/Vulkanisch.geojson`,
+      type: 'vector',
+      tiles: [`${martinUrl}/Vulkanisch/{z}/{x}/{y}`],
     },
     stroh: {
-      type: 'geojson',
-      data: `${mapsUrl}/geojson/Stroh_2024.geojson`,
+      type: 'vector',
+      tiles: [`${martinUrl}/Stroh_2024/{z}/{x}/{y}`],
     },
     hemp: {
-      type: 'geojson',
-      data: `${mapsUrl}/geojson/Hanf_2024.geojson`,
+      type: 'vector',
+      tiles: [`${martinUrl}/Hanf_2024/{z}/{x}/{y}`],
     },
     corn: {
-      type: 'geojson',
-      data: `${mapsUrl}/geojson/Mais_2024.geojson`,
+      type: 'vector',
+      tiles: [`${martinUrl}/Mais_2024/{z}/{x}/{y}`],
     },
     sheep: {
-      type: 'geojson',
-      data: `${mapsUrl}/geojson/Schafe_4326_2025-04-17.geojson`,
+      type: 'vector',
+      tiles: [`${martinUrl}/Schafe_4326_2025-04-17/{z}/{x}/{y}`],
     },
     woods: {
       type: 'raster',
@@ -73,12 +73,12 @@ export const style: StyleSpecification = {
       tileSize: 256,
     },
     reynoutria_japonica: {
-      type: 'geojson',
-      data: `${mapsUrl}/geojson/Reynoutria%20Japonica_2025_2024.geojson`,
+      type: 'vector',
+      tiles: [`${martinUrl}/Reynoutria_Japonica_2025_2024/{z}/{x}/{y}`],
     },
     demolition: {
-      type: 'geojson',
-      data: `${mapsUrl}/geojson/Abriss_4326_2025-05-01.geojson`,
+      type: 'vector',
+      tiles: [`${martinUrl}/Abriss_4326_2025-05-01/{z}/{x}/{y}`],
     },
   },
   glyphs: 'https://orangemug.github.io/font-glyphs/glyphs/{fontstack}/{range}.pbf',
@@ -96,6 +96,7 @@ export const style: StyleSpecification = {
       id: 'hartgestein',
       type: 'fill',
       source: 'hartgestein',
+      'source-layer': 'Hartgestein',
       paint: {
         'fill-color': 'rgb(25, 118, 210)',
         'fill-opacity': 0.5,
@@ -108,6 +109,7 @@ export const style: StyleSpecification = {
       id: 'kalkstein',
       type: 'fill',
       source: 'kalkstein',
+      'source-layer': 'Kalkstein',
       paint: {
         'fill-color': 'rgb(84, 110, 122)',
         'fill-opacity': 0.5,
@@ -120,6 +122,7 @@ export const style: StyleSpecification = {
       id: 'konglomerat',
       type: 'fill',
       source: 'konglomerat',
+      'source-layer': 'Konglomerat',
       paint: {
         'fill-color': 'rgb(85, 139, 47)',
         'fill-opacity': 0.5,
@@ -132,6 +135,7 @@ export const style: StyleSpecification = {
       id: 'sandstein',
       type: 'fill',
       source: 'sandstein',
+      'source-layer': 'Sandstein',
       paint: {
         'fill-color': 'rgb(251, 192, 45)',
         'fill-opacity': 0.5,
@@ -144,6 +148,7 @@ export const style: StyleSpecification = {
       id: 'vulkanisch',
       type: 'fill',
       source: 'vulkanisch',
+      'source-layer': 'Vulkanisch',
       paint: {
         'fill-color': 'rgb(216, 27, 96)',
         'fill-opacity': 0.5,
@@ -156,6 +161,7 @@ export const style: StyleSpecification = {
       id: 'stroh',
       type: 'circle',
       source: 'stroh',
+      'source-layer': 'Stroh_2024',
       minzoom: 7,
       paint: {
         'circle-color': 'rgb(255, 145, 0)',
@@ -194,6 +200,7 @@ export const style: StyleSpecification = {
       id: 'stroh-heat',
       type: 'heatmap',
       source: 'stroh',
+      'source-layer': 'Stroh_2024',
       maxzoom: 20,
       paint: {
         // Increase the heatmap weight based on frequency and property flaeche_m2
@@ -248,6 +255,7 @@ export const style: StyleSpecification = {
       id: 'hemp',
       type: 'circle',
       source: 'hemp',
+      'source-layer': 'Hanf_2024',
       minzoom: 7,
       paint: {
         'circle-color': 'rgb(30, 255, 0)',
@@ -288,6 +296,7 @@ export const style: StyleSpecification = {
       id: 'hemp-heat',
       type: 'heatmap',
       source: 'hemp',
+      'source-layer': 'Hanf_2024',
       maxzoom: 20,
       paint: {
         // Increase the heatmap weight based on frequency and property flaeche_m2
@@ -342,6 +351,7 @@ export const style: StyleSpecification = {
       id: 'corn',
       type: 'circle',
       source: 'corn',
+      'source-layer': 'Mais_2024',
       minzoom: 7,
       paint: {
         'circle-color': 'rgb(255, 251, 0)',
@@ -356,7 +366,7 @@ export const style: StyleSpecification = {
           [
             'interpolate',
             ['linear'],
-            ['get', 'flaeche_m2'],
+            ['coalesce', ['get', 'flaeche_m2'], ['*', ['get', 'sf_adm_de'], 10000], 0],
             1,
             1,
             100,
@@ -382,13 +392,14 @@ export const style: StyleSpecification = {
       id: 'corn-heat',
       type: 'heatmap',
       source: 'corn',
+      'source-layer': 'Mais_2024',
       maxzoom: 20,
       paint: {
         // Increase the heatmap weight based on frequency and property flaeche_m2
         'heatmap-weight': [
           'interpolate',
           ['linear'],
-          ['get', 'flaeche_m2'],
+          ['coalesce', ['get', 'flaeche_m2'], ['*', ['get', 'sf_adm_de'], 10000], 0],
           0,
           0,
           100,
@@ -436,6 +447,7 @@ export const style: StyleSpecification = {
       id: 'sheep',
       type: 'circle',
       source: 'sheep',
+      'source-layer': 'Schafe_4326_2025-04-17',
       minzoom: 7,
       paint: {
         'circle-color': '#08519c',
@@ -476,6 +488,7 @@ export const style: StyleSpecification = {
       id: 'sheep-heat',
       type: 'heatmap',
       source: 'sheep',
+      'source-layer': 'Schafe_4326_2025-04-17',
       maxzoom: 20,
       paint: {
         // Increase the heatmap weight based on frequency and property flaeche_m2
@@ -530,6 +543,7 @@ export const style: StyleSpecification = {
       id: 'reynoutria_japonica',
       type: 'circle',
       source: 'reynoutria_japonica',
+      'source-layer': 'Reynoutria_Japonica_2025_2024',
       minzoom: 1,
       paint: {
         'circle-color': 'rgb(255, 0, 234)',
@@ -546,6 +560,7 @@ export const style: StyleSpecification = {
       id: 'demolition',
       type: 'circle',
       source: 'demolition',
+      'source-layer': 'Abriss_4326_2025-05-01',
       minzoom: 1,
       paint: {
         'circle-color': '#08519c',
