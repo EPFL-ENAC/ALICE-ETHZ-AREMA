@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg2"
+   width="470.12399"
+   height="278.4505"
+   viewBox="0 0 470.12399 278.45051"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs6">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath442">
+      <path
+         d="M 0,1600 H 1200 V 0 H 0 Z"
+         id="path440" />
+    </clipPath>
+  </defs>
+  <g
+     id="g8"
+     transform="matrix(1.3333333,0,0,-1.3333333,-28.024279,1463.041)">
+    <g
+       id="g428"
+       transform="translate(373.11121,1015.7699)">
+      <path
+         d="m 0,0 v -6.532 l -210.955,-120.795 v 5.532 z"
+         style="fill:#cdcdcd;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         id="path430" />
+    </g>
+    <g
+       id="g432"
+       transform="translate(232.79601,1096.7808)">
+      <path
+         d="M 0,0 140.315,-81.011 -70.64,-202.806 -211.277,-121.609 Z"
+         style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         id="path434" />
+    </g>
+    <g
+       id="g436"
+       transform="translate(-387.34709,427.72974)">
+      <g
+         id="g438"
+         clip-path="url(#clipPath442)">
+        <g
+           id="g444"
+           transform="translate(409.8663,547.4418)">
+          <path
+             d="M 0,0 139.637,-80.619 349.592,40.599 210.276,121.032 Z m 139.637,-81.696 c -0.086,0 -0.173,0.022 -0.25,0.067 L -1.251,-0.432 c -0.155,0.089 -0.25,0.254 -0.25,0.433 0,0.179 0.096,0.344 0.251,0.434 l 211.277,121.608 c 0.155,0.088 0.345,0.089 0.499,-0.001 L 350.842,41.031 c 0.154,-0.089 0.25,-0.254 0.25,-0.432 0,-0.179 -0.096,-0.344 -0.25,-0.433 L 139.887,-81.629 c -0.077,-0.045 -0.164,-0.067 -0.25,-0.067"
+             style="fill:#cdcdcd;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             id="path446" />
+        </g>
+        <g
+           id="g448"
+           transform="translate(549.5032,466.2452)">
+          <path
+             d="m 0,0 v -5.532 l -140.636,81.196 0.047,5.532 z"
+             style="fill:#cdcdcd;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             id="path450" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

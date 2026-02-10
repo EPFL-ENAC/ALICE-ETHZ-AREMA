@@ -3,6 +3,7 @@
 
 import { defineConfig } from '#q-app/wrappers';
 import { fileURLToPath } from 'node:url';
+import svgLoader from 'vite-svg-loader';
 
 export default defineConfig((ctx) => {
   return {
@@ -64,6 +65,7 @@ export default defineConfig((ctx) => {
       // viteVuePluginOptions: {},
 
       vitePlugins: [
+        svgLoader(),
         [
           'unplugin-auto-import/vite',
           {
