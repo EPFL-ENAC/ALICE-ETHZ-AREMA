@@ -466,7 +466,8 @@
          id="path140" />
     </g>
     <g
-       id="g142">
+       id="g142"
+       class="be15">
       <g
          id="g144"
          clip-path="url(#clipPath148)">
@@ -631,7 +632,7 @@
            transform="translate(1020.5209,901.0999)">
           <path
              d="m 0,0 1.18,0.681 -138.816,80.203 -1.18,-0.682 z"
-             style="fill:#cdcdcd;"
+             class="stroke-be15"
              id="path230" />
         </g>
         <g
@@ -5430,7 +5431,8 @@
          id="path2694" />
     </g>
     <g
-       id="g2696">
+       id="g2696"
+       class="be7">
       <g
          id="g2698"
          clip-path="url(#clipPath2702)">
@@ -5469,7 +5471,7 @@
          id="path2718" />
     </g>
     <g
-       id="g2720">
+       id="g2720" class="be7">
       <g
          id="g2722"
          clip-path="url(#clipPath2726)">
@@ -5508,7 +5510,7 @@
          id="path2742" />
     </g>
     <g
-       id="g2744">
+       id="g2744" class="be7">
       <g
          id="g2746"
          clip-path="url(#clipPath2750)">
@@ -5547,7 +5549,7 @@
          id="path2766" />
     </g>
     <g
-       id="g2768">
+       id="g2768" class="be7">
       <g
          id="g2770"
          clip-path="url(#clipPath2774)">
@@ -5586,7 +5588,7 @@
          id="path2790" />
     </g>
     <g
-       id="g2792">
+       id="g2792" class="be7">
       <g
          id="g2794"
          clip-path="url(#clipPath2798)">
@@ -5625,7 +5627,7 @@
          id="path2814" />
     </g>
     <g
-       id="g2816">
+       id="g2816" class="be7">
       <g
          id="g2818"
          clip-path="url(#clipPath2822)">
@@ -5664,7 +5666,7 @@
          id="path2838" />
     </g>
     <g
-       id="g2840">
+       id="g2840" class="be7">
       <g
          id="g2842"
          clip-path="url(#clipPath2846)">
@@ -5703,7 +5705,7 @@
          id="path2862" />
     </g>
     <g
-       id="g2864">
+       id="g2864" class="be7">
       <g
          id="g2866"
          clip-path="url(#clipPath2870)">
@@ -5742,7 +5744,7 @@
          id="path2886" />
     </g>
     <g
-       id="g2888">
+       id="g2888" class="be7">
       <g
          id="g2890"
          clip-path="url(#clipPath2894)">
@@ -5781,7 +5783,7 @@
          id="path2910" />
     </g>
     <g
-       id="g2912">
+       id="g2912" class="be7">
       <g
          id="g2914"
          clip-path="url(#clipPath2918)">
@@ -5820,7 +5822,7 @@
          id="path2934" />
     </g>
     <g
-       id="g2936">
+       id="g2936" class="be7">
       <g
          id="g2938"
          clip-path="url(#clipPath2942)">

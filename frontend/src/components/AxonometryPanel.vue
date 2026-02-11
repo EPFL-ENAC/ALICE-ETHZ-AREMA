@@ -3,55 +3,72 @@
     <div v-if="hasBuildingElements" class="text-center">
       <Axonometry
         style="max-height: 800px"
+        @mouseover="onSvgClick"
+        @click="onSvgClick"
         :style="{
-          '--stroke-be1': be1ColorStroke,
-          '--fill-be1': be1ColorFill,
-          '--stroke-be2': be2ColorStroke,
-          '--fill-be2': be2ColorFill,
-          '--stroke-be3': be3ColorStroke,
-          '--fill-be3': be3ColorFill,
-          '--stroke-be4': be4ColorStroke,
-          '--fill-be4': be4ColorFill,
-          '--stroke-be5': be5ColorStroke,
-          '--fill-be5': be5ColorFill,
-          '--stroke-be6': be6ColorStroke,
-          '--fill-be6': be6ColorFill,
-          '--stroke-be7': be7ColorStroke,
-          '--fill-be7': be7ColorFill,
-          '--stroke-be8': be8ColorStroke,
-          '--fill-be8': be8ColorFill,
-          '--stroke-be9': be9ColorStroke,
-          '--fill-be9': be9ColorFill,
-          '--stroke-be10': be10ColorStroke,
-          '--fill-be10': be10ColorFill,
-          '--stroke-be11': be11ColorStroke,
-          '--fill-be11': be11ColorFill,
-          '--stroke-be12': be12ColorStroke,
-          '--fill-be12': be12ColorFill,
-          '--stroke-be13': be13ColorStroke,
-          '--fill-be13': be13ColorFill,
-          '--stroke-be14': be14ColorStroke,
-          '--fill-be14': be14ColorFill,
-          '--stroke-be15': be15ColorStroke,
-          '--fill-be15': be15ColorFill,
-          '--stroke-be16': be16ColorStroke,
-          '--fill-be16': be16ColorFill,
-          '--stroke-be17': be17ColorStroke,
-          '--fill-be17': be17ColorFill,
-          '--stroke-be18': be18ColorStroke,
-          '--fill-be18': be18ColorFill,
-          '--stroke-be19': be19ColorStroke,
-          '--fill-be19': be19ColorFill,
-          '--stroke-be20': be20ColorStroke,
-          '--fill-be20': be20ColorFill,
-          '--stroke-be21': be21ColorStroke,
-          '--fill-be21': be21ColorFill,
-          '--stroke-be22': be22ColorStroke,
-          '--fill-be22': be22ColorFill,
+          '--stroke-be1': beColors['be1']?.stroke,
+          '--fill-be1': beColors['be1']?.fill,
+          '--stroke-be2': beColors['be2']?.stroke,
+          '--fill-be2': beColors['be2']?.fill,
+          '--stroke-be3': beColors['be3']?.stroke,
+          '--fill-be3': beColors['be3']?.fill,
+          '--stroke-be4': beColors['be4']?.stroke,
+          '--fill-be4': beColors['be4']?.fill,
+          '--stroke-be5': beColors['be5']?.stroke,
+          '--fill-be5': beColors['be5']?.fill,
+          '--stroke-be6': beColors['be6']?.stroke,
+          '--fill-be6': beColors['be6']?.fill,
+          '--stroke-be7': beColors['be7']?.stroke,
+          '--fill-be7': beColors['be7']?.fill,
+          '--stroke-be8': beColors['be8']?.stroke,
+          '--fill-be8': beColors['be8']?.fill,
+          '--stroke-be9': beColors['be9']?.stroke,
+          '--fill-be9': beColors['be9']?.fill,
+          '--stroke-be10': beColors['be10']?.stroke,
+          '--fill-be10': beColors['be10']?.fill,
+          '--stroke-be11': beColors['be11']?.stroke,
+          '--fill-be11': beColors['be11']?.fill,
+          '--stroke-be12': beColors['be12']?.stroke,
+          '--fill-be12': beColors['be12']?.fill,
+          '--stroke-be13': beColors['be13']?.stroke,
+          '--fill-be13': beColors['be13']?.fill,
+          '--stroke-be14': beColors['be14']?.stroke,
+          '--fill-be14': beColors['be14']?.fill,
+          '--stroke-be15': beColors['be15']?.stroke,
+          '--fill-be15': beColors['be15']?.fill,
+          '--stroke-be16': beColors['be16']?.stroke,
+          '--fill-be16': beColors['be16']?.fill,
+          '--stroke-be17': beColors['be17']?.stroke,
+          '--fill-be17': beColors['be17']?.fill,
+          '--stroke-be18': beColors['be18']?.stroke,
+          '--fill-be18': beColors['be18']?.fill,
+          '--stroke-be19': beColors['be19']?.stroke,
+          '--fill-be19': beColors['be19']?.fill,
+          '--stroke-be20': beColors['be20']?.stroke,
+          '--fill-be20': beColors['be20']?.fill,
+          '--stroke-be21': beColors['be21']?.stroke,
+          '--fill-be21': beColors['be21']?.fill,
+          '--stroke-be22': beColors['be22']?.stroke,
+          '--fill-be22': beColors['be22']?.fill,
         }"
       />
-      <div>{{ buildingElementIds }}</div>
     </div>
+    <q-menu v-model="showMenu" touch-position>
+      <q-list style="min-width: 100px">
+        <template v-for="be in hoveredBuildingElements" :key="be.id">
+          <q-item>
+            <q-item-section>
+              <q-item-label>{{ be.name }}</q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <router-link :to="`/_/${be.entity_type}:${be.id}`">
+                <q-icon name="arrow_forward" />
+              </router-link>
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-list>
+    </q-menu>
   </div>
 </template>
 
@@ -74,138 +91,28 @@ const ACTIVE_COLOR_FILL = '#dde9da';
 const HOVER_COLOR_STROKE = 'orange'; // '#bf7437';
 const HOVER_COLOR_FILL = '#e5c7af';
 
-const be1ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be1') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be1ColorFill = computed(() =>
-  buildingElementIds.value.includes('be1') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be2ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be2') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be2ColorFill = computed(() =>
-  buildingElementIds.value.includes('be2') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be3ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be3') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be3ColorFill = computed(() =>
-  buildingElementIds.value.includes('be3') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be4ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be4') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be4ColorFill = computed(() =>
-  buildingElementIds.value.includes('be4') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be5ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be5') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be5ColorFill = computed(() =>
-  buildingElementIds.value.includes('be5') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be6ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be6') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be6ColorFill = computed(() =>
-  buildingElementIds.value.includes('be6') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be7ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be7') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be7ColorFill = computed(() =>
-  buildingElementIds.value.includes('be7') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be8ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be8') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be8ColorFill = computed(() =>
-  buildingElementIds.value.includes('be8') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be9ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be9') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be9ColorFill = computed(() =>
-  buildingElementIds.value.includes('be9') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be10ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be10') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be10ColorFill = computed(() =>
-  buildingElementIds.value.includes('be10') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be11ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be11') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be11ColorFill = computed(() =>
-  buildingElementIds.value.includes('be11') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be12ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be12') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be12ColorFill = computed(() =>
-  buildingElementIds.value.includes('be12') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be13ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be13') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be13ColorFill = computed(() =>
-  buildingElementIds.value.includes('be13') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be14ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be14') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be14ColorFill = computed(() =>
-  buildingElementIds.value.includes('be14') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be15ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be15') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be15ColorFill = computed(() =>
-  buildingElementIds.value.includes('be15') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be16ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be16') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be16ColorFill = computed(() =>
-  buildingElementIds.value.includes('be16') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be17ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be17') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be17ColorFill = computed(() =>
-  buildingElementIds.value.includes('be17') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be18ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be18') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be18ColorFill = computed(() =>
-  buildingElementIds.value.includes('be18') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be19ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be19') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be19ColorFill = computed(() =>
-  buildingElementIds.value.includes('be19') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be20ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be20') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be20ColorFill = computed(() =>
-  buildingElementIds.value.includes('be20') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be21ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be21') ? HOVER_COLOR_STROKE : ACTIVE_COLOR_STROKE,
-);
-const be21ColorFill = computed(() =>
-  buildingElementIds.value.includes('be21') ? HOVER_COLOR_FILL : ACTIVE_COLOR_FILL,
-);
-const be22ColorStroke = computed(() =>
-  buildingElementIds.value.includes('be22') ? HOVER_COLOR_STROKE : DEFAULT_COLOR_STROKE,
-);
-const be22ColorFill = computed(() =>
-  buildingElementIds.value.includes('be22') ? HOVER_COLOR_FILL : DEFAULT_COLOR_FILL,
-);
+const hoveredBuildingElementId = ref<string>('');
+const showMenu = ref(false);
+
+const beColors = computed(() => {
+  const colors: Record<string, { stroke: string; fill: string }> = {};
+  for (let i = 1; i <= 22; i++) {
+    const beId = `be${i}`;
+    colors[beId] = {
+      stroke: buildingElementIds.value.includes(beId)
+        ? hoveredBuildingElementId.value === beId
+          ? HOVER_COLOR_STROKE
+          : ACTIVE_COLOR_STROKE
+        : DEFAULT_COLOR_STROKE,
+      fill: buildingElementIds.value.includes(beId)
+        ? hoveredBuildingElementId.value === beId
+          ? HOVER_COLOR_FILL
+          : ACTIVE_COLOR_FILL
+        : DEFAULT_COLOR_FILL,
+    };
+  }
+  return colors;
+});
 
 const buildingElements = computed<Document[]>(() => {
   return (
@@ -229,6 +136,36 @@ const buildingElementIds = computed(() => {
     .join('|')
     .split('|');
 });
+const hoveredBuildingElements = computed(() => {
+  return hoveredBuildingElementId.value
+    ? buildingElements.value.filter((doc) =>
+        doc.tags?.find(
+          (tag) =>
+            tag.startsWith(TECHNICAL_CONSTRUCTION_TYPE) &&
+            tag.endsWith(`.${hoveredBuildingElementId.value}`),
+        ),
+      )
+    : [];
+});
+
+function onSvgClick(evt: MouseEvent) {
+  const target = evt.target as Element | null;
+  const be = target?.closest?.('[class*="-be"]') as Element | null;
+  if (!be) {
+    showMenu.value = false;
+    return;
+  }
+  const beClass = Array.from(be.classList).find((c) => /be\d+$/.test(c));
+  if (beClass) {
+    const beId = beClass.replace('stroke-', '').replace('fill-', '');
+    if (buildingElementIds.value.includes(beId)) {
+      // change to hover stroke and fill colors in beColors logic
+      if (hoveredBuildingElementId.value !== beId) {
+        hoveredBuildingElementId.value = beId; // only allow hovering one element at a time for now
+      }
+    }
+  }
+}
 </script>
 
 <style scoped>
