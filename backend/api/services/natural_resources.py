@@ -55,7 +55,7 @@ class NaturalResourceService(EntityService):
         count = 0
         for entity in (await self.session.exec(select(NaturalResource))).all():
             if entity.published_at is not None or entity.state == "to-publish":
-                indexService.addEntity(
+                await indexService.addEntity(
                     self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
                 count += 1
                 entity.published_at = datetime.now()
@@ -201,7 +201,7 @@ class NaturalResourceService(EntityService):
     async def index(self, id: int, user: User = None) -> None:
         """Publish a natural resource by id"""
         entity = await self.get(id)
-        EntityIndexer().updateEntity(
+        await EntityIndexer().updateEntity(
             self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         entity.published_at = datetime.now()
         if user:

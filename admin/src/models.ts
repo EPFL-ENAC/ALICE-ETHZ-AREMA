@@ -166,6 +166,7 @@ export interface BuildingElement {
   technical_construction?: TechnicalConstruction;
   professionals?: Professional[];
   materials?: BuildingElementMaterial[];
+  type?: string;
 
   // draft
   building_id?: number | undefined;

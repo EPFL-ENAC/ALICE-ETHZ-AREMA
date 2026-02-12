@@ -78,7 +78,7 @@ class EntityIndexService(IndexService):
     def __init__(self):
         super().__init__("entities")
 
-    def addEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] = []):
+    async def addEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] = []):
         """Add a new entity to the index
 
         Args:
@@ -87,15 +87,13 @@ class EntityIndexService(IndexService):
             tags (list[str]): The associated tags
         """
         doc_id = f"{entity_type}:{entity.id}"
-        doc = entity.model_dump()
+        doc = await self.dumpModel(entity)
         doc["entity_type"] = entity_type
         doc["tags"] = tags
         doc["relates_to"] = relates_to
-        if "long" in doc and "lat" in doc:
-            doc["location"] = {"lat": doc["lat"], "lon": doc["long"]}
         self._addDocument(doc_id, doc)
 
-    def updateEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] = []):
+    async def updateEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] = []):
         """Update an entity of the index
 
         Args:
@@ -104,12 +102,10 @@ class EntityIndexService(IndexService):
             tags (list[str]): The associated tags
         """
         doc_id = f"{entity_type}:{entity.id}"
-        doc = entity.model_dump()
+        doc = await self.dumpModel(entity)
         doc["entity_type"] = entity_type
         doc["tags"] = tags
         doc["relates_to"] = relates_to
-        if "long" in doc and "lat" in doc:
-            doc["location"] = {"lat": doc["lat"], "lon": doc["long"]}
         self._updateDocument(doc_id, doc)
 
     def deleteEntity(self, entity_type: str, entity_id: int):
@@ -130,6 +126,19 @@ class EntityIndexService(IndexService):
         """
         query = {"query": {"term": {"entity_type": entity_type}}}
         self._deleteDocuments(query)
+
+    async def dumpModel(self, entity):
+        """Dump an entity model to a dict, including building elements if they exist
+
+        Args:
+            entity (_type_): The entity object to dump
+        Returns:
+            dict: The dumped entity
+        """
+        doc = entity.model_dump()
+        if "long" in doc and "lat" in doc:
+            doc["location"] = {"lat": doc["lat"], "lon": doc["long"]}
+        return doc
 
     def _ensureIndex(self):
         if not self.client.indices.exists(index=self.index_name):
@@ -413,11 +422,11 @@ class VideoIndexService(IndexService):
 
 
 class EntityIndexer:
-    def __init__(self):
-        self.entityIndexService = EntityIndexService()
-        self.videoIndexService = VideoIndexService()
+    def __init__(self, entity_index_service: EntityIndexService = None, video_index_service: VideoIndexService = None):
+        self.entityIndexService = entity_index_service or EntityIndexService()
+        self.videoIndexService = video_index_service or VideoIndexService()
 
-    def addEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] = []):
+    async def addEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] = []):
         """Add a new entity to the index
 
         Args:
@@ -425,11 +434,11 @@ class EntityIndexer:
             entity (_type_): The entity object to add
             tags (list[str]): The associated tags
         """
-        self.entityIndexService.addEntity(
+        await self.entityIndexService.addEntity(
             entity_type, entity, tags, relates_to)
         self.videoIndexService.addVideos(entity_type, entity, tags)
 
-    def updateEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] = []):
+    async def updateEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] = []):
         """Update an entity of the index
 
         Args:
@@ -437,7 +446,7 @@ class EntityIndexer:
             entity (_type_): The entity object to add
             tags (list[str]): The associated tags
         """
-        self.entityIndexService.updateEntity(
+        await self.entityIndexService.updateEntity(
             entity_type, entity, tags, relates_to)
         self.videoIndexService.updateVideos(entity_type, entity, tags)
 

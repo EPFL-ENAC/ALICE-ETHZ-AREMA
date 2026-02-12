@@ -14,7 +14,7 @@ from api.services.entity import EntityService
 from api.services.s3 import s3_client
 from api.utils.files import moveTempFile
 from api.auth import User
-from api.services.search import EntityIndexer
+from api.services.search import EntityIndexService, EntityIndexer
 
 
 class BuildingQueryBuilder(QueryBuilder):
@@ -44,6 +44,29 @@ class BuildingQueryBuilder(QueryBuilder):
         return query
 
 
+class BuildingIndexService(EntityIndexService):
+    def __init__(self, session: AsyncSession):
+        super().__init__()
+        self.session = session
+
+    async def dumpModel(self, entity: Building) -> dict:
+        doc = await super().dumpModel(entity)
+        if hasattr(entity, "building_elements"):
+            doc["building_elements"] = []
+            for be in entity.building_elements:
+                be_doc = be.model_dump()
+                # get professionals for this building element
+                professionals = await self.session.exec(select(BuildingElementProfessional).where(BuildingElementProfessional.building_element_id == be.id))
+                be_doc["professionals"] = [
+                    bpro.model_dump() for bpro in professionals]
+                # get materials for this building element
+                materials = await self.session.exec(select(BuildingElementMaterial).where(BuildingElementMaterial.building_element_id == be.id))
+                be_doc["materials"] = [
+                    bem.model_dump() for bem in materials]
+                doc["building_elements"].append(be_doc)
+        return doc
+
+
 class BuildingService(EntityService):
 
     def __init__(self, session: AsyncSession):
@@ -51,14 +74,18 @@ class BuildingService(EntityService):
 
     async def reIndexAll(self) -> int:
         """Index all buildings that were published"""
-        indexService = EntityIndexer()
+        indexService = self._make_indexer()
         # delete documents of this type
         indexService.deleteEntities(self.entityType)
         # add all documents
         count = 0
-        for entity in (await self.session.exec(select(Building))).all():
+        query = select(Building).options(selectinload(Building.building_materials),
+                                         selectinload(
+                                             Building.building_elements),
+                                         selectinload(Building.professionals))
+        for entity in (await self.session.exec(query)).all():
             if entity.published_at is not None or entity.state == "to-publish":
-                indexService.addEntity(
+                await indexService.addEntity(
                     self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
                 count += 1
                 entity.published_at = datetime.now()
@@ -92,11 +119,14 @@ class BuildingService(EntityService):
             counts=[GroupByCount(value=str(item[0]) if item[0] else None, count=item[1])
                     for item in group_by_counts])
 
-    async def get(self, id: int) -> Building:
+    async def get(self, id: int, with_relations: bool = False) -> Building:
         """Get a building by id"""
-        res = await self.session.exec(
-            select(Building).where(
-                Building.id == id))
+        query = select(Building).where(Building.id == id)
+        if with_relations:
+            query = query.options(selectinload(Building.building_materials),
+                                  selectinload(Building.building_elements),
+                                  selectinload(Building.professionals))
+        res = await self.session.exec(query)
         entity = res.one_or_none()
         if not entity:
             raise HTTPException(
@@ -122,7 +152,7 @@ class BuildingService(EntityService):
         await self.session.delete(entity)
         await self.session.commit()
         # delete from index
-        EntityIndexer().deleteEntity(self.entityType, entity.id)
+        self._make_indexer().deleteEntity(self.entityType, entity.id)
         return entity
 
     async def find(self, filter: dict, fields: list, sort: list, range: list) -> BuildingResult:
@@ -244,8 +274,8 @@ class BuildingService(EntityService):
 
     async def index(self, id: int, user: User = None) -> None:
         """Publish a building by id"""
-        entity = await self.get(id)
-        EntityIndexer().updateEntity(
+        entity = await self.get(id, with_relations=True)
+        await self._make_indexer().updateEntity(
             self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         entity.published_at = datetime.now()
         if user:
@@ -258,7 +288,7 @@ class BuildingService(EntityService):
     async def remove_index(self, id: int, user: User = None) -> None:
         """Unpublish a building by id"""
         entity = await self.get(id)
-        EntityIndexer().deleteEntity(self.entityType, entity.id)
+        self._make_indexer().deleteEntity(self.entityType, entity.id)
         entity.published_at = None
         entity.published_by = None
         entity.state = "draft"
@@ -296,18 +326,15 @@ class BuildingService(EntityService):
 
     async def _makeRelations(self, entity: Building) -> list[str]:
         # building materials
-        relations = (await self.session.exec(select(BuildingBuildingMaterial).where(BuildingBuildingMaterial.building_id == entity.id))).all()
         relates_to = [
-            f"building-material:{rel.building_material_id}" for rel in relations]
+            f"building-material:{bm.id}" for bm in entity.building_materials]
         # professionals
-        relations = (await self.session.exec(select(ProfessionalBuilding).where(ProfessionalBuilding.building_id == entity.id))).all()
         relates_to.extend(
-            [f"professional:{rel.professional_id}" for rel in relations])
+            [f"professional:{pro.id}" for pro in entity.professionals])
         # building elements
-        relations = (await self.session.exec(select(BuildingElement).where(BuildingElement.building_id == entity.id))).all()
         relates_to.extend(
-            [f"technical-construction:{rel.technical_construction_id}" for rel in relations])
-        be_ids = [rel.id for rel in relations]
+            [f"technical-construction:{be.technical_construction_id}" for be in entity.building_elements])
+        be_ids = [be.id for be in entity.building_elements]
         # building elelement professionals
         for be_id in be_ids:
             relations = (await self.session.exec(select(BuildingElementProfessional).where(BuildingElementProfessional.building_element_id == be_id))).all()
@@ -335,3 +362,6 @@ class BuildingService(EntityService):
 
     async def _get_professionals(self, ids: list[int]):
         return await self.session.exec(select(Professional).filter(Professional.id.in_(ids)))
+
+    def _make_indexer(self):
+        return EntityIndexer(entity_index_service=BuildingIndexService(self.session))

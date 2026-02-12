@@ -155,11 +155,28 @@ export interface TechnicalConstruction extends PhysicalEntity {
   building_material_ids?: number[];
 }
 
+export interface BuildingElementProfessional {
+  professional_id?: number;
+  building_element_id?: number;
+}
+
+export interface BuildingElementMaterial {
+  id?: number;
+  distance?: number | undefined;
+  weight?: number | undefined;
+
+  // draft
+  building_element_id?: number;
+  building_material_id?: number;
+}
+
 export interface BuildingElement {
   id?: number;
   building?: Building;
   technical_construction?: TechnicalConstruction;
-  professionals?: Professional[];
+  professionals?: BuildingElementProfessional[];
+  materials?: BuildingElementMaterial[];
+  type?: string;
 
   // draft
   building_id?: number;
@@ -225,6 +242,7 @@ export interface Document extends Entity {
   identifier?: string;
   type?: string;
   affiliation?: string;
+  building_elements?: BuildingElement[];
 }
 
 export interface SearchResult {

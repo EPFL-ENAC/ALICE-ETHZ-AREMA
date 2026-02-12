@@ -61,7 +61,7 @@ class TechnicalConstructionService(EntityService):
                     tags.extend(entity.types)
                 if entity.materials:
                     tags.extend(entity.materials)
-                indexService.addEntity(
+                await indexService.addEntity(
                     self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
                 count += 1
                 entity.published_at = datetime.now()
@@ -231,7 +231,7 @@ class TechnicalConstructionService(EntityService):
     async def index(self, id: int, user: User = None) -> None:
         """Publish a technical construction by id"""
         entity = await self.get(id)
-        EntityIndexer().updateEntity(
+        await EntityIndexer().updateEntity(
             self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         entity.published_at = datetime.now()
         if user:

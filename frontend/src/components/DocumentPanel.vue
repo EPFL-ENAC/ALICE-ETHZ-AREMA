@@ -45,6 +45,12 @@
           <div v-if="document.article_bottom" class="text-body1">
             <q-markdown :src="document.article_bottom" no-heading-anchor-links />
           </div>
+          <axonometry-panel
+            v-if="document.entity_type === 'building'"
+            :building="document"
+            :relations="relationSummaries"
+            class="q-mt-lg q-mb-lg"
+          />
         </div>
         <div class="col-12 col-md-2">
           <div class="q-mb-md">
@@ -110,6 +116,7 @@ import RelationsPanel from 'src/components/RelationsPanel.vue';
 import AddressPanel from 'src/components/AddressPanel.vue';
 import AuthorsPanel from 'src/components/AuthorsPanel.vue';
 import type { Document } from 'src/models';
+import AxonometryPanel from 'src/components/AxonometryPanel.vue';
 
 const { t } = useI18n();
 const searchService = useSearchService();
@@ -137,7 +144,7 @@ function init() {
   relationSummaries.value = [];
   relatedResources.value = [];
   authors.value = [];
-  const fields = ['id', 'entity_type', 'name', 'description'];
+  const fields = ['id', 'entity_type', 'name', 'description', 'tags'];
   if (props.document.authors && props.document.authors.length > 0) {
     void searchService.getAuthors(props.document.authors).then((authorsResult) => {
       authors.value = authorsResult.data || [];

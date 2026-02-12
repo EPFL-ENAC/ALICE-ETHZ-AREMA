@@ -71,7 +71,7 @@ watch([() => props.modelValue, () => props.technicalContructionId], () => {
 function initBuildingMaterialsOptions() {
   buildingMaterialsOptions.value = [];
   if (!props.technicalContructionId) {
-    return;
+    return [];
   }
   void tcService.get(`${props.technicalContructionId}`).then((response) => {
     buildingMaterialsOptions.value =
