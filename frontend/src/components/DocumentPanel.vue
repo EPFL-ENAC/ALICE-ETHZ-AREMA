@@ -47,6 +47,7 @@
           </div>
           <axonometry-panel
             v-if="document.entity_type === 'building'"
+            :building="document"
             :relations="relationSummaries"
             class="q-mt-lg q-mb-lg"
           />

@@ -78,6 +78,9 @@ export default {
   low: 'Low',
   map: 'Map',
   material: 'Material',
+  materials: 'Materials',
+  material_weight: 'Weight: {weight} kg',
+  material_distance: 'Dist.: {distance} km',
   mechanical: 'Mechanical',
   moisture_buffering_symbol: 'MBV',
   moisture_buffering_unit: 'g/(m²*%RH)',
@@ -88,6 +91,7 @@ export default {
   porosity_unit: '%vol',
   porosity: 'Porosity',
   professional: 'Professional',
+  professionals: 'Professionals',
   purpose_text:
     'We are convinced that renewable biobased materials such as wood and fibers from agriculture, <i>minimally processed geobased materials</i> like earth and stone, as well those derived from reuse, must reclaim there place in the building culture. With over 40% of the annual global greenhouse gas emissions, the construction sector clearly emerges as one of the priority areas requiring tangible measures to achieve <i>carbon reduction by 2050</i>.',
   purpose: 'Purpose',

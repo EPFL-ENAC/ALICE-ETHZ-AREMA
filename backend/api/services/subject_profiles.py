@@ -50,7 +50,7 @@ class SubjectProfileService:
         # add all documents
         count = 0
         for entity in (await self.session.exec(select(SubjectProfile))).all():
-            indexService.addEntity(
+            await indexService.addEntity(
                 self.entityType, entity, [], [])
             count += 1
             entity.published_at = datetime.now()
@@ -61,7 +61,7 @@ class SubjectProfileService:
     async def index(self, id: int) -> None:
         """Publish a subject profile by id"""
         entity = await self.get_by_id(id)
-        EntityIndexer().updateEntity(
+        await EntityIndexer().updateEntity(
             self.entityType, entity, [], [])
         entity.published_at = datetime.now()
         await self.session.commit()

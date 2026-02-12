@@ -58,7 +58,7 @@ class ProfessionalService(EntityService):
         count = 0
         for entity in (await self.session.exec(select(Professional))).all():
             if entity.published_at is not None or entity.state == "to-publish":
-                indexService.addEntity(
+                await indexService.addEntity(
                     self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
                 count += 1
                 entity.published_at = datetime.now()
@@ -252,7 +252,7 @@ class ProfessionalService(EntityService):
     async def index(self, id: int, user: User = None) -> None:
         """Publish a professional by id"""
         entity = await self.get(id)
-        EntityIndexer().updateEntity(
+        await EntityIndexer().updateEntity(
             self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
         entity.published_at = datetime.now()
         if user:

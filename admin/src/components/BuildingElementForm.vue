@@ -2,6 +2,15 @@
   <div>
     <div class="row q-col-gutter-lg">
       <div class="col">
+        <taxonomy-select
+          :disable="disable"
+          v-model="entity.type"
+          entity-type="technical-construction"
+          path="type"
+          :label="t('type') + ' *'"
+        />
+      </div>
+      <div class="col">
         <q-select
           :disable="disable"
           filled
@@ -80,6 +89,7 @@
 import type { BuildingElement } from 'src/models';
 import type { Option } from './models';
 import BuildingElementMaterialForm from './BuildingElementMaterialForm.vue';
+import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 
 interface Props {
   modelValue: BuildingElement;

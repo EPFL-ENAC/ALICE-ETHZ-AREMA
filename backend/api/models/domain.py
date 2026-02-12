@@ -272,6 +272,8 @@ class BuildingElementBase(SQLModel):
         default=None, foreign_key="building.id", ondelete="CASCADE")
     technical_construction_id: Optional[int] = Field(
         default=None, foreign_key="technicalconstruction.id", ondelete="CASCADE")
+    # Technical construction type that applies to this element (leaf of urn:arema:technical-construction:type)
+    type: Optional[str] = Field(default=None)
 
 
 class BuildingElement(BuildingElementBase, table=True):

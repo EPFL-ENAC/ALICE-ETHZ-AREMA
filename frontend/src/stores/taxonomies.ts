@@ -11,6 +11,10 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
   const taxonomies = ref<Taxonomy>();
   const loading = ref(false);
 
+  /**
+   * Initializes the taxonomy store by fetching taxonomies from the API if not already loaded.
+   * @returns {Promise<void>}
+   */
   async function init() {
     if (taxonomies.value) {
       return Promise.resolve();
@@ -26,10 +30,21 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
       });
   }
 
+  /**
+   * Checks if the given string is a valid namespace URN.
+   * @param {string} urn - The string to check.
+   * @returns {boolean} True if the string is a valid namespace URN, false otherwise.
+   */
   function isNamespace(urn: string): boolean {
     return urn.split(':').length === 3 && urn.startsWith(`${URN_PREFIX}:`);
   }
 
+  /**
+   * Converts an entity type and path to a URN string.
+   * @param {string} entityType - The entity type to include in the URN.
+   * @param {string | string[] | undefined} path - The path to include in the URN, either as a string or an array of strings.
+   * @returns {string} The resulting URN string.
+   */
   function toUrn(entityType: string, path: string | string[] | undefined) {
     const namespace = `${URN_PREFIX}:${entityType}`;
     if (!path || (Array.isArray(path) && path.length === 0)) {
@@ -38,6 +53,11 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return `${namespace}:${Array.isArray(path) ? path.join('.') : path}`;
   }
 
+  /**
+   * Retrieves a taxonomy node based on the provided entity type or URN.
+   * @param {string} entityTypeOrUrn - The entity type or URN to search for.
+   * @returns {TaxonomyNode | undefined} The found taxonomy node, or undefined if not found.
+   */
   function getTaxonomy(entityTypeOrUrn: string): TaxonomyNode | undefined {
     if (!taxonomies.value) return undefined;
 
@@ -48,6 +68,12 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return taxonomies.value?.taxonomy.find((tx) => tx.id === entityType);
   }
 
+  /**
+   * Retrieves a taxonomy node based on the provided entity type and path.
+   * @param {string} entityType - The entity type to search for.
+   * @param {string | string[] | undefined} path - The path to the desired node, either as a string or an array of strings.
+   * @returns {TaxonomyNode | undefined} The found taxonomy node, or undefined if not found.
+   */
   function getTaxonomyNode(
     entityType: string,
     path: string | string[] = [],
@@ -57,6 +83,11 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return getNodeFromPath(tx, path);
   }
 
+  /**
+   * Retrieves a taxonomy node based on the provided URN.
+   * @param {string} urn - The URN to search for.
+   * @returns {TaxonomyNode | undefined} The found taxonomy node, or undefined if not found.
+   */
   function getNode(urn: string): TaxonomyNode | undefined {
     const tokens = urn.replace(`${URN_PREFIX}:`, '').split(':');
     if (!tokens || tokens.length === 0) return undefined;
@@ -67,6 +98,12 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return getNodeFromPath(root, tokens[1]);
   }
 
+  /**
+   * Recursively retrieves a taxonomy node based on the provided path.
+   * @param {TaxonomyNode} node - The current taxonomy node to search within.
+   * @param {string | string[]} path - The path to the desired node, either as a string or an array of strings.
+   * @returns {TaxonomyNode | undefined} The found taxonomy node, or undefined if not found.
+   */
   function getNodeFromPath(
     node: TaxonomyNode,
     path: string | string[] = [],
@@ -81,12 +118,25 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return child;
   }
 
+  /**
+   * Retrieves the label for a taxonomy node based on the current locale, with a fallback to English.
+   * @param {Record<string, string> | undefined} labels - A record of locale codes to labels.
+   * @returns {string | undefined} The label for the current locale, or the English label if the current locale is not available, or undefined if no labels are provided.
+   */
   function getLabel(labels: Record<string, string> | undefined): string | undefined {
     if (labels === undefined) return undefined;
     if (labels[locale.value]) return labels[locale.value];
     return labels['en'];
   }
 
+  /**
+   * Converts a taxonomy node and its children into an array of options suitable for use in a dropdown or select component.
+   * @param {string} entityType - The entity type to include in the URN values of the options.
+   * @param {TaxonomyNode | undefined} node - The taxonomy node to convert into options, including its children.
+   * @param {string | string[] | undefined} path - The path to the current node, used for constructing URN values, either as a string or an array of strings.
+   * @param {number} level - The current depth level in the taxonomy tree, used for recursive calls (default is 0).
+   * @returns {Option[]} An array of options representing the taxonomy node and its children, with URN values and localized labels.
+   */
   function asOptions(
     entityType: string,
     node: TaxonomyNode | undefined,

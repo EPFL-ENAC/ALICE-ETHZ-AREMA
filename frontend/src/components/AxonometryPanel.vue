@@ -76,18 +76,83 @@
       />
     </div>
     <q-menu v-model="showMenu" touch-position>
-      <q-list style="min-width: 100px">
-        <template v-for="be in hoveredBuildingElements" :key="be.id">
-          <q-item>
+      <q-list style="min-width: 150px">
+        <template v-for="(be, index) in hoveredBuildingElements" :key="index">
+          <q-item
+            clickable
+            target="_blank"
+            :to="`/_/technical-construction:${be.technical_construction_id}`"
+          >
             <q-item-section>
-              <q-item-label>{{ be.name }}</q-item-label>
-            </q-item-section>
-            <q-item-section side>
-              <router-link :to="`/_/${be.entity_type}:${be.id}`">
-                <q-icon name="arrow_forward" />
-              </router-link>
+              <q-item-label>{{
+                getRelationDocument('technical-construction', be.technical_construction_id)?.name
+              }}</q-item-label>
+              <q-item-label class="text-hint">{{ getNodeName(be.type) }}</q-item-label>
             </q-item-section>
           </q-item>
+          <q-item dense v-if="hasProfessionals(be) || hasMaterials(be)" class="q-pt-none">
+            <q-item-section>
+              <q-item-label class="text-hint">
+                <span v-if="hasProfessionals(be)">{{ t('professionals') }}</span>
+                <span v-if="hasProfessionals(be) && hasMaterials(be)" class="q-mx-xs">/</span>
+                <span v-if="hasMaterials(be)">{{ t('materials') }}</span>
+              </q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-icon name="keyboard_arrow_right" />
+            </q-item-section>
+          </q-item>
+          <q-menu v-if="hasProfessionals(be) || hasMaterials(be)" anchor="top end" self="top start">
+            <q-list style="min-width: 150px">
+              <template v-for="(professional, pIndex) in be.professionals" :key="pIndex">
+                <q-item
+                  clickable
+                  target="_blank"
+                  :to="`/_/professional:${professional.professional_id}`"
+                >
+                  <q-item-section>
+                    <q-item-label>{{
+                      getRelationDocument('professional', professional.professional_id)?.name
+                    }}</q-item-label>
+                    <q-item-label class="text-hint">{{
+                      getRelationDocumentTagTypeNames(
+                        'professional',
+                        professional.professional_id,
+                      )?.join(', ')
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <q-separator v-if="hasProfessionals(be) && hasMaterials(be)" />
+              <template v-for="(material, pIndex) in be.materials" :key="pIndex">
+                <q-item
+                  clickable
+                  target="_blank"
+                  :to="`/_/building-material:${material.building_material_id}`"
+                >
+                  <q-item-section>
+                    <q-item-label>{{
+                      getRelationDocument('building-material', material.building_material_id)?.name
+                    }}</q-item-label>
+                    <q-item-label class="text-hint">{{
+                      getRelationDocumentTagTypeNames(
+                        'building-material',
+                        material.building_material_id,
+                      )?.join(', ')
+                    }}</q-item-label>
+                    <q-item-label class="text-hint text-secondary">
+                      <span v-if="material.weight" class="q-mr-sm">{{
+                        t('material_weight', { weight: toLocalizedNumber(material.weight) })
+                      }}</span>
+                      <span v-if="material.distance">{{
+                        t('material_distance', { distance: toLocalizedNumber(material.distance) })
+                      }}</span>
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-list>
+          </q-menu>
         </template>
       </q-list>
     </q-menu>
@@ -95,14 +160,17 @@
 </template>
 
 <script setup lang="ts">
-import type { Document } from 'src/models';
+import type { BuildingElement, Document } from 'src/models';
 import Axonometry from 'src/assets/axonometry.svg';
+import { toLocalizedNumber } from 'src/utils/number';
+
+const { t } = useI18n();
+const taxonomies = useTaxonomyStore();
 
 interface Props {
+  building: Document;
   relations: Document[];
 }
-
-const TECHNICAL_CONSTRUCTION_TYPE = 'urn:arema:technical-construction:type';
 
 const props = defineProps<Props>();
 
@@ -113,68 +181,78 @@ const ACTIVE_COLOR_FILL = '#dde9da';
 const HOVER_COLOR_STROKE = 'orange'; // '#bf7437';
 const HOVER_COLOR_FILL = '#e5c7af';
 
-const hoveredBuildingElementId = ref<string>('');
+const beTypeHovered = ref<string>('');
 const showMenu = ref(false);
 
+const beTypes = computed(() => {
+  return (
+    props.building.building_elements
+      ?.map((be) => be.type?.split('.').pop())
+      .filter((id) => id && id.startsWith('be')) || []
+  );
+});
 const beColors = computed(() => {
   const tested = [''];
   const colors: Record<string, { stroke: string; fill: string; cursor: string }> = {};
   for (let i = 1; i <= 22; i++) {
-    const beId = `be${i}`;
-    colors[beId] = {
-      stroke: buildingElementIds.value.includes(beId)
-        ? hoveredBuildingElementId.value === beId
+    const beType = `be${i}`;
+    colors[beType] = {
+      stroke: beTypes.value.includes(beType)
+        ? beTypeHovered.value === beType
           ? HOVER_COLOR_STROKE
           : ACTIVE_COLOR_STROKE
-        : tested.includes(beId)
+        : tested.includes(beType)
           ? ACTIVE_COLOR_STROKE
           : DEFAULT_COLOR_STROKE,
-      fill: buildingElementIds.value.includes(beId)
-        ? hoveredBuildingElementId.value === beId
+      fill: beTypes.value.includes(beType)
+        ? beTypeHovered.value === beType
           ? HOVER_COLOR_FILL
           : ACTIVE_COLOR_FILL
-        : tested.includes(beId)
+        : tested.includes(beType)
           ? ACTIVE_COLOR_FILL
           : DEFAULT_COLOR_FILL,
-      cursor: buildingElementIds.value.includes(beId) ? 'pointer' : 'default',
+      cursor: beTypes.value.includes(beType) ? 'pointer' : 'default',
     };
   }
   return colors;
 });
 
-const buildingElements = computed<Document[]>(() => {
-  return (
-    props.relations.filter(
-      (doc) =>
-        doc.tags && doc.tags.filter((tag) => tag.startsWith(TECHNICAL_CONSTRUCTION_TYPE)).length,
-    ) || []
-  );
-});
-const hasBuildingElements = computed(() => buildingElements.value.length > 0);
-const buildingElementIds = computed(() => {
-  // filter tags for technical construction type, extract the id and flatten array of arrays to a single array of ids
-  return buildingElements.value
-    .map((doc) =>
-      doc.tags
-        ?.filter((tag) => tag.startsWith(TECHNICAL_CONSTRUCTION_TYPE))
-        // contains the id of the building element, e.g. "urn:arema:technical-construction:type.envelope.be15" -> "be15"
-        .map((tag) => tag.split('.').pop())
-        .join('|'),
-    )
-    .join('|')
-    .split('|');
+const hasBuildingElements = computed(
+  () => props.building.building_elements && props.building.building_elements.length > 0,
+);
+const buildingElements = computed<BuildingElement[]>(() => {
+  return props.building.building_elements?.map((be) => be) || [];
 });
 const hoveredBuildingElements = computed(() => {
-  return hoveredBuildingElementId.value
-    ? buildingElements.value.filter((doc) =>
-        doc.tags?.find(
-          (tag) =>
-            tag.startsWith(TECHNICAL_CONSTRUCTION_TYPE) &&
-            tag.endsWith(`.${hoveredBuildingElementId.value}`),
-        ),
-      )
+  return beTypeHovered.value
+    ? buildingElements.value.filter((be) => be.type?.endsWith(`.${beTypeHovered.value}`))
     : [];
 });
+
+function hasProfessionals(be: BuildingElement) {
+  return be.professionals && be.professionals.length > 0;
+}
+
+function hasMaterials(be: BuildingElement) {
+  return be.materials && be.materials.length > 0;
+}
+
+function getNodeName(tag: string | undefined) {
+  if (!tag) return '';
+  const node = taxonomies.getNode(tag);
+  return taxonomies.getLabel(node?.names) || tag;
+}
+
+function getRelationDocument(entity_type: string, id: number | string | undefined) {
+  return props.relations.find((doc) => doc.entity_type === entity_type && `${doc.id}` === `${id}`);
+}
+
+function getRelationDocumentTagTypeNames(entity_type: string, id: number | string | undefined) {
+  const doc = getRelationDocument(entity_type, id);
+  if (!doc) return [];
+  const parent = taxonomies.toUrn(entity_type, 'type');
+  return doc.tags?.filter((tag) => tag.startsWith(parent)).map((tag) => getNodeName(tag));
+}
 
 function onSvgClick(evt: MouseEvent) {
   const target = evt.target as Element | null;
@@ -186,10 +264,10 @@ function onSvgClick(evt: MouseEvent) {
   const beClass = Array.from(be.classList).find((c) => /be\d+$/.test(c));
   if (beClass) {
     const beId = beClass.replace('stroke-', '').replace('fill-', '').replace('el-', '');
-    if (buildingElementIds.value.includes(beId)) {
+    if (beTypes.value.includes(beId)) {
       // change to hover stroke and fill colors in beColors logic
-      if (hoveredBuildingElementId.value !== beId) {
-        hoveredBuildingElementId.value = beId; // only allow hovering one element at a time for now
+      if (beTypeHovered.value !== beId) {
+        beTypeHovered.value = beId; // only allow hovering one element at a time for now
       }
     }
   }
