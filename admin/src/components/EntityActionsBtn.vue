@@ -38,7 +38,7 @@
     </q-btn>
     <q-btn
       v-if="authStore.canUnpublish(entity)"
-      color="secondary"
+      color="grey-8"
       size="12px"
       flat
       dense

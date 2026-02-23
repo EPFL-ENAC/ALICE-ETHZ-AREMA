@@ -163,8 +163,9 @@ function init() {
         props.document?.relates_to
           .filter((id) => !realtedIds.includes(id))
           .map((rel) => {
-            return searchService.getDocument(rel, fields);
-          }),
+            return searchService.getDocument(rel, fields).catch(() => undefined);
+          })
+          .filter((p) => p !== undefined) as Promise<Document>[],
       ).then((docs) => {
         relationSummaries.value = relationSummaries.value
           .concat(docs)
