@@ -116,7 +116,7 @@
                 <q-item-section>
                   <address-input
                     :disable="readOnly"
-                    v-if="selected.addresses && selected.addresses[index]"
+                    v-if="selected.addresses && selected.addresses[index] !== undefined"
                     v-model="selected.addresses[index]"
                     :label="t('address')"
                   />
