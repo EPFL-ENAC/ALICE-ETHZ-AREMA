@@ -1,9 +1,13 @@
-import type { StyleSpecification } from 'maplibre-gl';
+import { type StyleSpecification, addProtocol } from 'maplibre-gl';
 import type { ThemeDefinition } from 'maplibregl-theme-switcher';
+import { Protocol } from 'pmtiles';
 import { t } from 'src/boot/i18n';
-import { baseUrl, cdnUrl, martinUrl } from 'src/boot/api';
+import { baseUrl, cdnUrl } from 'src/boot/api';
 
-const mapsUrl = `${cdnUrl}/arema/maps/2025-05-06T09:25`;
+const protocol = new Protocol();
+addProtocol('pmtiles', protocol.tile);
+
+const mapsUrl = `${cdnUrl}/arema/maps/2026-04-01T11:12`;
 
 export const style: StyleSpecification = {
   version: 8,
@@ -17,39 +21,43 @@ export const style: StyleSpecification = {
     },
     hartgestein: {
       type: 'vector',
-      tiles: [`${martinUrl}/Hartgestein/{z}/{x}/{y}`],
+      url: `pmtiles://${mapsUrl}/geojson/Hartgestein.pmtiles`,
     },
     kalkstein: {
       type: 'vector',
-      tiles: [`${martinUrl}/Kalkstein/{z}/{x}/{y}`],
+      url: `pmtiles://${mapsUrl}/geojson/Kalkstein.pmtiles`,
     },
     konglomerat: {
       type: 'vector',
-      tiles: [`${martinUrl}/Konglomerat/{z}/{x}/{y}`],
+      url: `pmtiles://${mapsUrl}/geojson/Konglomerat.pmtiles`,
     },
     sandstein: {
       type: 'vector',
-      tiles: [`${martinUrl}/Sandstein/{z}/{x}/{y}`],
+      url: `pmtiles://${mapsUrl}/geojson/Sandstein.pmtiles`,
     },
     vulkanisch: {
       type: 'vector',
-      tiles: [`${martinUrl}/Vulkanisch/{z}/{x}/{y}`],
+      url: `pmtiles://${mapsUrl}/geojson/Vulkanisch.pmtiles`,
     },
     stroh: {
       type: 'vector',
-      tiles: [`${martinUrl}/Stroh_2025,PailleFR_2024/{z}/{x}/{y}`],
+      url: `pmtiles://${mapsUrl}/geojson/Stroh_2025.pmtiles`,
+    },
+    stroh_fr: {
+      type: 'vector',
+      url: `pmtiles://${mapsUrl}/geojson/PailleFR_2024.pmtiles`,
     },
     hemp: {
       type: 'vector',
-      tiles: [`${martinUrl}/Hanf_2025/{z}/{x}/{y}`],
+      url: `pmtiles://${mapsUrl}/geojson/Hanf_2025.pmtiles`,
     },
     corn: {
       type: 'vector',
-      tiles: [`${martinUrl}/Mais_2025/{z}/{x}/{y}`],
+      url: `pmtiles://${mapsUrl}/geojson/Mais_2025.pmtiles`,
     },
     sheep: {
       type: 'vector',
-      tiles: [`${martinUrl}/Schafe_4326_2025-04-17/{z}/{x}/{y}`],
+      url: `pmtiles://${mapsUrl}/geojson/Schafe_4326_2025-04-17.pmtiles`,
     },
     woods: {
       type: 'raster',
@@ -74,11 +82,11 @@ export const style: StyleSpecification = {
     },
     reynoutria_japonica: {
       type: 'vector',
-      tiles: [`${martinUrl}/Reynoutria_Japonica_2025_2024/{z}/{x}/{y}`],
+      url: `pmtiles://${mapsUrl}/geojson/Reynoutria_Japonica_2025_2024.pmtiles`,
     },
     demolition: {
       type: 'vector',
-      tiles: [`${martinUrl}/Abriss_4326_2025-05-01/{z}/{x}/{y}`],
+      url: `pmtiles://${mapsUrl}/geojson/Abriss_4326_2025-05-01.pmtiles`,
     },
   },
   glyphs: 'https://orangemug.github.io/font-glyphs/glyphs/{fontstack}/{range}.pbf',
@@ -162,7 +170,6 @@ export const style: StyleSpecification = {
       type: 'circle',
       source: 'stroh',
       'source-layer': 'Stroh_2025',
-      minzoom: 7,
       paint: {
         'circle-color': 'rgb(255, 145, 0)',
         'circle-opacity': 0.5,
@@ -170,14 +177,16 @@ export const style: StyleSpecification = {
           'interpolate',
           ['linear'],
           ['zoom'],
-          10,
           1,
+          1,
+          10,
+          2,
           16,
           [
             'interpolate',
             ['linear'],
             ['get', 'flaeche_ha'],
-            0.0001,
+            0.005,
             1,
             0.01,
             2,
@@ -199,9 +208,8 @@ export const style: StyleSpecification = {
     {
       id: 'stroh-fr',
       type: 'circle',
-      source: 'stroh',
+      source: 'stroh_fr',
       'source-layer': 'PailleFR_2024',
-      minzoom: 7,
       paint: {
         'circle-color': 'rgb(255, 145, 0)',
         'circle-opacity': 0.5,
@@ -209,14 +217,16 @@ export const style: StyleSpecification = {
           'interpolate',
           ['linear'],
           ['zoom'],
-          10,
           1,
+          1,
+          10,
+          2,
           16,
           [
             'interpolate',
             ['linear'],
             ['get', 'flaeche_ha'],
-            0.0001,
+            0.005,
             1,
             0.01,
             2,
@@ -236,113 +246,10 @@ export const style: StyleSpecification = {
       },
     },
     {
-      id: 'stroh-heat',
-      type: 'heatmap',
-      source: 'stroh',
-      'source-layer': 'Stroh_2025',
-      maxzoom: 20,
-      paint: {
-        // Increase the heatmap weight based on frequency and property flaeche_m2
-        'heatmap-weight': [
-          'interpolate',
-          ['linear'],
-          ['get', 'flaeche_ha'],
-          0,
-          0,
-          0.01,
-          0.0001,
-          1,
-          0.001,
-          2,
-          0.002,
-          3,
-          0.003,
-        ],
-        // Increase the heatmap color weight by zoom level
-        // heatmap-intensity is a multiplier on top of heatmap-weight
-        'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 0, 0, 9, 3, 16, 10],
-        // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
-        // Begin color ramp at 0-stop with a 0-transparency color
-        // to create a blur-like effect.
-        'heatmap-color': [
-          'interpolate',
-          ['linear'],
-          ['heatmap-density'],
-          0,
-          'rgba(255, 255, 255, 0)',
-          0.2,
-          'rgb(253, 232, 220)',
-          0.4,
-          'rgb(253, 210, 183)',
-          0.6,
-          'rgb(252, 174, 129)',
-          0.8,
-          'rgb(252, 124, 73)',
-          1,
-          'rgb(179, 80, 0)',
-        ],
-        // Adjust the heatmap radius by zoom level
-        'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 2, 9, 20],
-        // Transition from heatmap to circle layer by zoom level
-        'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 7, 0.8, 16, 0],
-      },
-      layout: {
-        visibility: 'none',
-      },
-    },
-    {
-      id: 'stroh-fr-heat',
-      type: 'heatmap',
-      source: 'stroh',
-      'source-layer': 'PailleFR_2024',
-      maxzoom: 20,
-      paint: {
-        'heatmap-weight': [
-          'interpolate',
-          ['linear'],
-          ['get', 'flaeche_ha'],
-          0,
-          0,
-          0.01,
-          0.0001,
-          1,
-          0.001,
-          2,
-          0.002,
-          3,
-          0.003,
-        ],
-        'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 0, 0, 9, 3, 16, 10],
-        'heatmap-color': [
-          'interpolate',
-          ['linear'],
-          ['heatmap-density'],
-          0,
-          'rgba(255, 255, 255, 0)',
-          0.2,
-          'rgb(253, 232, 220)',
-          0.4,
-          'rgb(253, 210, 183)',
-          0.6,
-          'rgb(252, 174, 129)',
-          0.8,
-          'rgb(252, 124, 73)',
-          1,
-          'rgb(179, 80, 0)',
-        ],
-        'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 2, 9, 20],
-        'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 7, 0.8, 16, 0],
-      },
-      layout: {
-        visibility: 'none',
-      },
-    },
-    {
       id: 'hemp',
       type: 'circle',
       source: 'hemp',
       'source-layer': 'Hanf_2025',
-      minzoom: 7,
       paint: {
         'circle-color': 'rgb(30, 255, 0)',
         'circle-opacity': 0.5,
@@ -357,7 +264,7 @@ export const style: StyleSpecification = {
             'interpolate',
             ['linear'],
             ['get', 'flaeche_ha'],
-            0.0001,
+            0.005,
             1,
             0.01,
             2,
@@ -379,66 +286,10 @@ export const style: StyleSpecification = {
       },
     },
     {
-      id: 'hemp-heat',
-      type: 'heatmap',
-      source: 'hemp',
-      'source-layer': 'Hanf_2025',
-      maxzoom: 20,
-      paint: {
-        // Increase the heatmap weight based on frequency and property flaeche_m2
-        'heatmap-weight': [
-          'interpolate',
-          ['linear'],
-          ['get', 'flaeche_ha'],
-          0,
-          0,
-          0.01,
-          0.1,
-          1,
-          1,
-          2,
-          2,
-          3,
-          3,
-        ],
-        // Increase the heatmap color weight by zoom level
-        // heatmap-intensity is a multiplier on top of heatmap-weight
-        'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 0, 0, 9, 3, 16, 10],
-        // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
-        // Begin color ramp at 0-stop with a 0-transparency color
-        // to create a blur-like effect.
-        'heatmap-color': [
-          'interpolate',
-          ['linear'],
-          ['heatmap-density'],
-          0,
-          'rgba(255, 255, 255, 0)',
-          0.2,
-          'rgb(247, 255, 199)',
-          0.4,
-          'rgb(150, 255, 183)',
-          0.6,
-          'rgb(174, 255, 129)',
-          0.8,
-          'rgb(70, 255, 110)',
-          1,
-          'rgb(0, 255, 13)',
-        ],
-        // Adjust the heatmap radius by zoom level
-        'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 2, 9, 20],
-        // Transition from heatmap to circle layer by zoom level
-        'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 7, 0.8, 16, 0],
-      },
-      layout: {
-        visibility: 'none',
-      },
-    },
-    {
       id: 'corn',
       type: 'circle',
       source: 'corn',
       'source-layer': 'Mais_2025',
-      minzoom: 7,
       paint: {
         'circle-color': 'rgb(255, 251, 0)',
         'circle-opacity': 0.5,
@@ -447,13 +298,13 @@ export const style: StyleSpecification = {
           ['linear'],
           ['zoom'],
           10,
-          1,
+          2,
           16,
           [
             'interpolate',
             ['linear'],
             ['coalesce', ['get', 'flaeche_ha'], ['get', 'sf_adm_de'], 0],
-            0.0001,
+            0.005,
             1,
             0.01,
             2,
@@ -467,63 +318,8 @@ export const style: StyleSpecification = {
             30,
           ],
         ],
-        'circle-stroke-color': 'rgb(231, 227, 2)',
+        'circle-stroke-color': 'rgb(231, 197, 2)',
         'circle-stroke-width': 0.2,
-      },
-      layout: {
-        visibility: 'none',
-      },
-    },
-    {
-      id: 'corn-heat',
-      type: 'heatmap',
-      source: 'corn',
-      'source-layer': 'Mais_2025',
-      maxzoom: 20,
-      paint: {
-        // Increase the heatmap weight based on frequency and property flaeche_m2
-        'heatmap-weight': [
-          'interpolate',
-          ['linear'],
-          ['coalesce', ['get', 'flaeche_ha'], ['get', 'sf_adm_de'], 0],
-          0,
-          0,
-          0.01,
-          0.0001,
-          1,
-          0.001,
-          2,
-          0.002,
-          3,
-          0.003,
-        ],
-        // Increase the heatmap color weight by zoom level
-        // heatmap-intensity is a multiplier on top of heatmap-weight
-        'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 0, 0, 9, 3, 16, 10],
-        // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
-        // Begin color ramp at 0-stop with a 0-transparency color
-        // to create a blur-like effect.
-        'heatmap-color': [
-          'interpolate',
-          ['linear'],
-          ['heatmap-density'],
-          0,
-          'rgba(255, 255, 255, 0)',
-          0.2,
-          'rgb(247, 255, 199)',
-          0.4,
-          'rgb(150, 255, 183)',
-          0.6,
-          'rgb(174, 255, 129)',
-          0.8,
-          'rgb(222, 255, 70)',
-          1,
-          'rgb(255, 255, 0)',
-        ],
-        // Adjust the heatmap radius by zoom level
-        'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 2, 9, 20],
-        // Transition from heatmap to circle layer by zoom level
-        'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 7, 0.8, 16, 0],
       },
       layout: {
         visibility: 'none',
@@ -533,8 +329,7 @@ export const style: StyleSpecification = {
       id: 'sheep',
       type: 'circle',
       source: 'sheep',
-      'source-layer': 'Schafe_4326_2025-04-17',
-      minzoom: 7,
+      'source-layer': 'Schafe_4326_20250417',
       paint: {
         'circle-color': '#08519c',
         'circle-opacity': 0.5,
@@ -542,84 +337,13 @@ export const style: StyleSpecification = {
           'interpolate',
           ['linear'],
           ['zoom'],
-          10,
+          8,
           2,
-          12,
-          [
-            'interpolate',
-            ['linear'],
-            ['get', 'count'],
-            1,
-            2,
-            50,
-            10,
-            100,
-            20,
-            200,
-            25,
-            300,
-            30,
-            400,
-            35,
-          ],
+          10,
+          ['interpolate', ['linear'], ['get', 'count'], 1, 5, 500, 20],
         ],
         'circle-stroke-color': 'rgb(37, 14, 240)',
         'circle-stroke-width': 0.2,
-      },
-      layout: {
-        visibility: 'none',
-      },
-    },
-    {
-      id: 'sheep-heat',
-      type: 'heatmap',
-      source: 'sheep',
-      'source-layer': 'Schafe_4326_2025-04-17',
-      maxzoom: 20,
-      paint: {
-        // Increase the heatmap weight based on frequency and property flaeche_m2
-        'heatmap-weight': [
-          'interpolate',
-          ['linear'],
-          ['get', 'count'],
-          0,
-          0,
-          100,
-          0.1,
-          10000,
-          1,
-          20000,
-          2,
-          30000,
-          3,
-        ],
-        // Increase the heatmap color weight by zoom level
-        // heatmap-intensity is a multiplier on top of heatmap-weight
-        'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 0, 0, 9, 3, 16, 10],
-        // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
-        // Begin color ramp at 0-stop with a 0-transparency color
-        // to create a blur-like effect.
-        'heatmap-color': [
-          'interpolate',
-          ['linear'],
-          ['heatmap-density'],
-          0,
-          'rgba(255, 255, 255, 0)',
-          0.2,
-          '#eff3ff',
-          0.4,
-          '#bdd7e7',
-          0.6,
-          '#6baed6',
-          0.8,
-          '#3182bd',
-          1,
-          '#08519c',
-        ],
-        // Adjust the heatmap radius by zoom level
-        'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 2, 9, 20],
-        // Transition from heatmap to circle layer by zoom level
-        'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 7, 0.8, 16, 0],
       },
       layout: {
         visibility: 'none',
@@ -630,11 +354,10 @@ export const style: StyleSpecification = {
       type: 'circle',
       source: 'reynoutria_japonica',
       'source-layer': 'Reynoutria_Japonica_2025_2024',
-      minzoom: 1,
       paint: {
         'circle-color': 'rgb(255, 0, 234)',
         'circle-opacity': 0.5,
-        'circle-radius': ['interpolate', ['linear'], ['zoom'], 7, 1, 10, 2, 16, 5],
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 1, 5, 10, 5, 16, 10],
         'circle-stroke-color': 'rgb(214, 2, 197)',
         'circle-stroke-width': 0.2,
       },
@@ -646,12 +369,11 @@ export const style: StyleSpecification = {
       id: 'demolition',
       type: 'circle',
       source: 'demolition',
-      'source-layer': 'Abriss_4326_2025-05-01',
-      minzoom: 1,
+      'source-layer': 'Abriss_4326_20250501',
       paint: {
         'circle-color': '#08519c',
         'circle-opacity': 0.5,
-        'circle-radius': ['interpolate', ['linear'], ['zoom'], 7, 1, 10, ['get', 'surface_area']],
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 1, 5, 16, ['get', 'surface_area']],
         'circle-stroke-color': 'rgb(37, 14, 240)',
         'circle-stroke-width': 0.2,
       },
