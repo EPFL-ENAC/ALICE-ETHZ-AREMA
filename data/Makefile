@@ -35,6 +35,13 @@ tif-nodata:
 	cd work && \
 	gdal_translate -a_nodata ${value} ${name}.tif ${name}_nodata.tif
 
+pmtiles:
+	for f in geojson/*.geojson; do \
+		base=$$(basename $$f .geojson); \
+		tippecanoe -zg -o geojson/$$base.pmtiles --drop-densest-as-needed --extend-zooms-if-still-dropping --force $$f; \
+	done
+
+
 cdn:
 	s3cmd put --recursive --acl-public --guess-mime-type ${version} s3://${bucket}/${folder}/
 
