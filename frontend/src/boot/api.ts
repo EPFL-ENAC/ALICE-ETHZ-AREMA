@@ -6,7 +6,6 @@ declare global {
     env: {
       API_URL: string;
       API_PATH: string;
-      MARTIN_URL?: string;
       UMAMI_URL?: string;
       UMAMI_WEBSITE_ID?: string;
     };
