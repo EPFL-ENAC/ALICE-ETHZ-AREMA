@@ -16,26 +16,71 @@
     >
       {{ t('atlas') }}
     </div>
-    <div class="row q-mb-md q-ml-md">
-      <q-btn
-        no-caps
-        size="xl"
-        to="/about"
-        :label="t('about')"
-        class="text-primary q-pl-none"
-      ></q-btn>
-      <q-icon name="horizontal_rule" size="md" class="q-mt-md" />
-      <q-btn
-        no-caps
-        size="xl"
-        to="/contribute"
-        :label="t('contribute')"
-        class="text-primary"
-      ></q-btn>
-      <q-icon name="horizontal_rule" size="md" class="q-mt-md" />
-      <q-btn no-caps size="xl" to="/search" :label="t('search')" class="text-primary"></q-btn>
-      <q-icon name="horizontal_rule" size="md" class="q-mt-md" />
-      <q-btn no-caps size="xl" to="/videos" :label="t('videos')" class="text-primary"></q-btn>
+    <div class="q-mb-md q-ml-md">
+      <div>
+        <q-btn
+          no-caps
+          size="xl"
+          to="/manifesto"
+          :label="t('manifesto')"
+          class="text-primary q-pa-none"
+        ></q-btn>
+      </div>
+      <div>
+        <q-btn
+          no-caps
+          size="xl"
+          to="/about"
+          :label="t('about')"
+          class="text-primary q-pa-none"
+        ></q-btn>
+      </div>
+      <div>
+        <q-btn
+          no-caps
+          size="xl"
+          to="/contribute"
+          :label="t('contribute')"
+          class="text-primary q-pa-none"
+        ></q-btn>
+      </div>
+    </div>
+    <q-separator class="bg-primary" size="2px" />
+    <div
+      :style="`font-size: ${$q.screen.gt.sm ? 48 : 36}px; font-weight: 500; line-height: 1.715em`"
+      class="q-ml-md q-pt-md"
+    >
+      {{ t('documentation') }}
+    </div>
+    <div class="q-mb-md q-ml-md">
+      <div>
+        <q-btn
+          no-caps
+          size="xl"
+          to="/search"
+          :label="t('search')"
+          class="text-primary q-pa-none"
+        ></q-btn>
+      </div>
+      <div>
+        <q-btn
+          no-caps
+          size="xl"
+          to="/videos"
+          :label="t('videos')"
+          class="text-primary q-pa-none"
+        ></q-btn>
+      </div>
+      <div>
+        <q-btn
+          no-caps
+          size="xl"
+          href="https://www.regenerativematerials.org/library"
+          target="_blank"
+          :label="t('library')"
+          class="text-primary q-pa-none"
+        ></q-btn>
+      </div>
     </div>
     <q-separator class="bg-primary" size="2px" />
     <q-btn
