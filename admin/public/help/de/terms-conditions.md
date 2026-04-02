@@ -1,39 +1,77 @@
-### Nutzungsbedingungen
+## Nutzungsbedingungen für die Online-Wissensplattform «Atlas of Regenerative Materials»
 
-Willkommen bei unserer Anwendung. Durch den Zugriff auf oder die Nutzung unserer Dienste erklären Sie sich mit den folgenden Nutzungsbedingungen einverstanden. Bitte lesen Sie diese sorgfältig durch.
+Version: [26.03.2026]
 
-#### 1. Annahme der Bedingungen
+Willkommen auf unserer öffentlichen Online-Wissensplattform (nachfolgend «Plattform»). Durch das Ankreuzen des Feldes «Ich akzeptiere die Nutzungsbedingungen» erklären Sie sich mit den nachstehenden Nutzungsbedingungen einverstanden. Bitte lesen Sie diese sorgfältig durch.
 
-Durch die Nutzung unserer Anwendung erklären Sie sich damit einverstanden, diese Nutzungsbedingungen einzuhalten und an sie gebunden zu sein. Wenn Sie mit diesen Bedingungen nicht einverstanden sind, nutzen Sie bitte unsere Dienste nicht.
+### 1. Annahme der Bedingungen
 
-#### 2. Verantwortlichkeiten der Benutzer
+Durch das Ankreuzen des Feldes «Ich akzeptiere die Nutzungsbedingungen» erklären Sie sich damit einverstanden, diese Nutzungsbedingungen einzuhalten und rechtlich an sie gebunden zu sein. Wenn Sie mit diesen Bedingungen nicht einverstanden sind, dürfen Sie sich nicht registrieren und die Plattform nicht nutzen.
 
-Sie sind verantwortlich für die Wahrung der Vertraulichkeit Ihrer Kontoinformationen und für alle Aktivitäten, die unter Ihrem Konto stattfinden. Sie verpflichten sich, uns unverzüglich über jede unbefugte Nutzung Ihres Kontos zu informieren.
+### 2. Verantwortlichkeiten der Nutzer:innen
 
-#### 3. Verbotene Aktivitäten
+Die Nutzer:innen sind verantwortlich für die Wahrung der Vertraulichkeit Ihrer Zugangsdaten sowie für alle Aktivitäten, die unter ihrem Benutzerkonto erfolgen. Sie verpflichten sich, die im Impressum genannte Stelle unverzüglich über jede unbefugte Nutzung ihres Kontos oder andere sicherheitsrelevante Vorfälle zu informieren.
 
-Sie verpflichten sich, unsere Dienste nicht für rechtswidrige oder verbotene Aktivitäten zu nutzen, einschließlich, aber nicht beschränkt auf:
+### 3. Verbotene Aktivitäten
 
-- Verletzung geltender Gesetze oder Vorschriften.
-- Verletzung der Rechte anderer.
-- Übermittlung schädlicher oder bösartiger Inhalte.
+Die Nutzung der Plattform ist ausschließlich im Rahmen der geltenden Gesetze und dieser Nutzungsbedingungen zulässig.
+Insbesondere ist es untersagt:
 
-#### 4. Geistiges Eigentum
+- geltende Gesetze oder Vorschriften zu verletzen,
+- die Rechte Dritter zu verletzen,
+- schädliche, irreführende oder bösartige Inhalte zu übermitteln oder zu verbreiten,
+- Technische Schutzmassnahmen der Plattform zu umgehen oder zu beeinträchtigen,
+- Inhalte entgegen den Bedingungen der jeweils anwendbaren Lizenz, insbesondere der Creative-Commons-Lizenz der CC BY-SA 4.0, zu nutzen.
 
-Alle über unsere Dienste bereitgestellten Inhalte und Materialien sind geistiges Eigentum unseres Unternehmens oder seiner Lizenzgeber. Sie verpflichten sich, unsere Inhalte ohne unsere vorherige schriftliche Zustimmung nicht zu reproduzieren, zu verbreiten oder davon abgeleitete Werke zu erstellen.
+### 4. Inhalte, Lizenz und Nachnutzung (Open Science)
 
-#### 5. Haftungsbeschränkung
+Sofern nicht ausdrücklich anders gekennzeichnet, stehen sämtliche auf dieser Plattform veröffentlichten Inhalte, einschliesslich von Nutzer:innen-Beiträgen, unter der Creative‑Commons‑Lizenz CC BY‑SA 4.0.
+Die Nutzer:innen sind berechtigt, diese Inhalte zu kopieren, zu verbreiten, öffentlich zugänglich zu machen, zu bearbeiten und weiterzuverwenden, auch für kommerzielle Zwecke, unter der Voraussetzung, dass:
+a) die Urheber:innen und die Quelle in angemessener Weise genannt werden,
+b) ein Hinweis auf die Lizenz CC BY‑SA 4.0 erfolgt (inklusive eines Verweises auf den Lizenztext), und
+c) Bearbeitungen oder abgeleitete Werke unter derselben oder einer kompatiblen Lizenz weitergegeben werden.
+Die konkreten Lizenzbedingungen ergeben sich aus dem vollständigen Lizenztext unter
+https://creativecommons.org/licenses/by-sa/4.0/
 
-Im größtmöglichen gesetzlich zulässigen Umfang haften wir nicht für indirekte, zufällige, besondere, Folge- oder Strafschäden, die sich aus oder im Zusammenhang mit Ihrer Nutzung unserer Dienste ergeben.
+#### 4a. Nutzer:innen‑Beiträge und Rechte daran
 
-#### 6. Änderungen der Bedingungen
+Nutzer:innen können eigene Inhalte (z. B. Texte, Daten, Abbildungen oder andere Materialien) auf der Plattform veröffentlichen («Nutzer:innen‑Beiträge»).
+Das Urheberrecht an diesen Nutzer:innen‑Beiträgen verbleibt vollständig bei den jeweiligen Urheber:innen oder sonstigen Rechteinhaber:innen.
+Mit dem Einstellen eines Nutzer:innen‑Beitrags räumen die Nutzer:innen der ETH Zürich ein unentgeltliches, nicht exklusives, zeitlich und räumlich unbeschränktes Nutzungsrecht ein, den jeweiligen Beitrag:
 
-Wir behalten uns das Recht vor, diese Nutzungsbedingungen jederzeit zu ändern. Alle Änderungen werden sofort nach Veröffentlichung auf unserer Website wirksam. Ihre fortgesetzte Nutzung unserer Dienste nach Änderungen stellt Ihre Annahme der neuen Bedingungen dar.
+- auf der Plattform zu speichern,
+- öffentlich zugänglich zu machen,
+- im Rahmen der Plattform zu vervielfältigen und zu verbreiten, sowie
+- unter der Creative‑Commons‑Lizenz CC BY‑SA 4.0 weiterzugeben.
 
-#### 7. Anwendbares Recht
+Die Nutzer:innen bestätigen, dass sie über die erforderlichen Rechte an den eingestellten Inhalten verfügen und durch deren Veröffentlichung keine Rechte Dritter verletzt werden.
 
-Diese Nutzungsbedingungen unterliegen den Gesetzen der Gerichtsbarkeit, in der unser Unternehmen ansässig ist, und werden in Übereinstimmung mit diesen ausgelegt, ohne Berücksichtigung von Kollisionsnormen.
+### 5. Zitierempfehlung
 
-#### 8. Kontaktinformationen
+Zur Unterstützung einer korrekten wissenschaftlichen Nachnutzung empfehlen wir folgende Zitierform:
+Autor:in(nen), Titel des Beitrags, Atlas of Regenerative Materials, Jahr, Lizenz CC BY‑SA 4.0.
 
-Wenn Sie Fragen oder Bedenken zu diesen Nutzungsbedingungen haben, kontaktieren Sie uns bitte unter atlas@ibi.baug.ethz.ch.
+### 6. Haftungsausschluss
+
+Die Inhalte der Plattform werden im Rahmen eines Forschungs‑ und Wissensprojekts bereitgestellt. Trotz sorgfältiger Erstellung übernehmen wir keine Gewähr für Vollständigkeit, Aktualität, inhaltliche Richtigkeit oder dauerhafte Verfügbarkeit der Inhalte.
+Im gesetzlich zulässigen Umfang wird die Haftung für leichte Fahrlässigkeit ausgeschlossen.
+
+### 7. Änderungen der Nutzungsbedingungen
+
+Wir behalten uns das Recht vor, diese Nutzungsbedingungen jederzeit zu ändern. Über wesentliche Änderungen werden die Nutzer:innen in geeigneter Weise informiert. Die jeweils aktuelle Fassung ist auf der Plattform einsehbar.
+
+### 8. Anwendbares Recht und Gerichtsstand
+
+Diese Nutzungsbedingungen sowie der Vertrag, der mit ihrer Annahme zustande kommt, unterliegen schweizerischem Recht, mit Ausnahme der kollisionsrechtlichen Normen und dem Übereinkommen der Vereinten Nationen über Verträge über den internationalen Warenkauf (Wiener Kaufrecht). Für sämtliche Ansprüche aus oder im Zusammenhang mit diesen Nutzungsbedingungen und diesem Vertrag sind ausschliesslich die Gerichte in der Stadt Zürich zuständig.
+
+### 9. Anbieterin und Kontakt
+
+ETH Zürich
+Institute of Construction & Infrastructure Management
+Chair of Sustainable Construction
+Stefano-Franscini-Platz 5
+8093 Zürich
+Switzerland
+
+Kontakt: +41 44 633 46 32
+atlas@ibi.baug.ethz.ch.
