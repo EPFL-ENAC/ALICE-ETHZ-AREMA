@@ -23,7 +23,7 @@ async def create_subject_profile_task(appUser: AppUser):
                 "Error creating subject profile for user")
     # send welcome email
     try:
-        Mailer().send_welcome_email(appUser)
+        await Mailer().send_welcome_email(appUser)
     except Exception as e:
         logging.error(f"Failed to send welcome email to {appUser.email}: {e}")
 

@@ -25,14 +25,23 @@ class Mailer:
         self.smtp_username = config.SMTP_USERNAME
         self.smtp_subject_prefix = config.MAIL_SUBJECT_PREFIX
 
-    def send_welcome_email(self, app_user: AppUser):
+    async def send_welcome_email(self, app_user: AppUser):
         """Send a welcome email to a new user"""
         subject = "Welcome to the Atlas of Regenerative Materials"
+        full_name = f"{app_user.first_name} {app_user.last_name}" if app_user.first_name and app_user.last_name else app_user.username
         context = {
-            "full_name": f"{app_user.first_name} {app_user.last_name}" if app_user.first_name and app_user.last_name else app_user.username,
+            "full_name": full_name,
             "username": app_user.username
         }
         self.send_email(app_user.email, subject, "welcome.html", context)
+        # Send email to all administrators
+        for user in await self._get_admin_users():
+            context["full_name"] = self._get_full_name(user)
+            context["new_full_name"] = full_name
+            context["new_username"] = app_user.username
+            context["new_email"] = app_user.email
+            self.send_email(user.email, subject,
+                            "signup.html", context)
 
     async def send_review_assigned_email(self, entity_type: str, entity_id: int, entity_name: str, assignee: str, from_user: User = None):
         """Send an email to the assignee when a review is assigned"""
@@ -62,13 +71,8 @@ class Mailer:
             "entity_id": entity_id,
             "state": state,
         }
-        users = await kc_admin_service.get_users_for_role("app-administrator")
-        if not users:
-            return
         # Send email to all administrators
-        for user in users:
-            if config.MAIL_ADMINISTRATORS != "" and user.email not in config.MAIL_ADMINISTRATORS.split(","):
-                continue
+        for user in await self._get_admin_users():
             context["full_name"] = self._get_full_name(user)
             context["from_full_name"] = self._get_full_name(from_user)
             self.send_email(user.email, subject,
@@ -120,3 +124,8 @@ class Mailer:
             return "resource"
         else:
             return entity_type.replace("-", " ")
+
+    async def _get_admin_users(self) -> list[User]:
+        """Get the administrator users"""
+        admins = await kc_admin_service.get_users_for_role("app-administrator")
+        return [admin for admin in admins if config.MAIL_ADMINISTRATORS is None or config.MAIL_ADMINISTRATORS == "" or admin.email in config.MAIL_ADMINISTRATORS.split(",")]
