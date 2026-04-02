@@ -102,6 +102,7 @@ export default {
   relates_to: 'Relates to',
   resource_potentials: 'Resource Potentials',
   resources: 'Resources',
+  results: 'No result | 1 result | {count} results',
   search: 'Search',
   settlement_symbol: 'mm/m',
   settlement_unit: 'mm/m',
