@@ -1,0 +1,2 @@
+- Ergänzende Informationen: Kooperationen (Beschaffung, Verbände, andere Unternehmen)
+- Ca. 10 Zeilen

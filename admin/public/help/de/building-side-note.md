@@ -1,0 +1,2 @@
+- Ergänzende Informationen (z.B. beteiligte Fachleute, die nicht im Atlas verzeichnet sind)
+- Ca. 10 Zeilen

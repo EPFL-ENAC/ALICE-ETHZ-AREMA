@@ -1,0 +1,4 @@
+- Erklärung aller Eigenschaften (Erscheinungsbild visuell und haptisch, mechanisch, hygrothermisch, Brandschutz, Akustik, Toxizität, Wärmespeichermasse, Schädlinge, Schimmel-/Feuchtigkeitsbeständigkeit)
+- Falls verfügbar: Kosten / Langlebigkeit / Kreislaufwirtschaft / soziale Aspekte
+- Falls verfügbar: Schwund / Setzung?
+- Ca. 10 Sätze; für kleine Überschriften ##### verwenden

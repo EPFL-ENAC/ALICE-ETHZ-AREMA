@@ -54,7 +54,7 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits(['update:modelValue']);
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const text = ref(props.modelValue);
 const tab = ref('write');
@@ -62,7 +62,7 @@ const helpContent = ref('');
 
 onMounted(() => {
   if (props.help) {
-    void fetch(`/admin/help/en/${props.help}.md`).then((response) => {
+    void fetch(`/admin/help/${locale.value}/${props.help}.md`).then((response) => {
       void response.text().then((text) => {
         helpContent.value = text;
         tab.value = 'write';

@@ -1,0 +1,4 @@
+- Description de toutes les propriétés (apparence visuelle et haptique, mécanique, hygrothermique, feu, acoustique, toxicité, masse thermique, nuisibles, résistance à l'humidité/moisissures)
+- Si disponible : coûts / durabilité / circularité / aspects sociaux
+- Si disponible : retrait / tassement ?
+- Environ 10 phrases ; pour les petits titres, utiliser #####

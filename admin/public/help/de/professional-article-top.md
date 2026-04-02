@@ -1,0 +1,7 @@
+- Geschichte des Unternehmens oder der Person (Gründung, Entwicklung, Hintergrund?), Standort(e)
+- Kerngeschäft, Werte, Bezug zu regenerativen Materialien
+- Besondere Expertise, Techniken, Ansätze?
+- Art und Größe der Tätigkeiten / Projekte?
+- Geografischer Aktionsradius?
+- (falls passend: Gründer + Hintergrund)
+- Ca. 10 Sätze; für kleine Überschriften ##### verwenden

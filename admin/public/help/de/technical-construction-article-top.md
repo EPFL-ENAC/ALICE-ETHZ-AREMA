@@ -1,0 +1,3 @@
+- Eigenschaften: strukturell, hygrothermisch, Erscheinungsbild visuell und haptisch, Atmungsaktivität, Wärmespeichermasse, Akustik, Umwelt inkl. Toxizität, Brandschutz, Luftdichtigkeit, Schädlinge, Feuchtigkeits- und Schimmelsbeständigkeit
+- Baubarkeit / Kosten / Soziales / Wirtschaftlichkeit
+- Ca. 10 Sätze; für kleine Überschriften ##### verwenden

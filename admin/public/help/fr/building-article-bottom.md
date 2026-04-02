@@ -1,0 +1,4 @@
+- Particularités et détails (mise en œuvre, matériaux, systèmes constructifs, gestion de l'énergie/du chauffage/de l'eau/CVC)
+- Avantages / Inconvénients des techniques/systèmes/choix de conception utilisés ?
+- Labels, Impact
+- Environ 10 phrases ; pour les petits titres, utiliser #####

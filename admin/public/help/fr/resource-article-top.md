@@ -1,0 +1,4 @@
+- Disponibilité dans l'environnement (forme, quantités, CH/UE/mondial)
+- Complexité de la récolte / extraction
+- Propriétés physiques et chimiques (mécanique, hygrothermique, feu, acoustique, nuisibles, moisissures, résistance aux acides / produits chimiques...)
+- Environ 10 phrases ; pour les petits titres, utiliser #####

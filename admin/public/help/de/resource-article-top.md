@@ -1,0 +1,4 @@
+- Verfügbarkeit in der Umwelt (Form, Mengen, CH/EU/weltweit)
+- Komplexität der Ernte / Extraktion
+- Physikalische und chemische Eigenschaften (mechanisch, hygrothermisch, Brandschutz, Akustik, Schädlinge, Schimmel, Beständigkeit gegen Säuren/Chemikalien...)
+- Ca. 10 Sätze; für kleine Überschriften ##### verwenden

@@ -1,0 +1,2 @@
+- Sources : `[nom du lien](https://example.org)`, année, langue, source
+- Liens vers les sources cartographiques !

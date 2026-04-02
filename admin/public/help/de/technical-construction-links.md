@@ -1,0 +1,2 @@
+- Quellen: `[Name des Links](https://example.org)`, Jahr, Sprache, Quelle
+- Weitere (z.B. Videos)

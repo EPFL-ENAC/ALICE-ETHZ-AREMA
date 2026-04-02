@@ -62,11 +62,11 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const publicationFlowContent = ref('');
 
 onMounted(() => {
-  void fetch(`/admin/help/en/publication-flow.md`).then((response) => {
+  void fetch(`/admin/help/${locale.value}/publication-flow.md`).then((response) => {
     void response.text().then((text) => {
       publicationFlowContent.value = text;
     });

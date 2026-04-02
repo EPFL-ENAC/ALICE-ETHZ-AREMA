@@ -1,0 +1,4 @@
+- Geschichte
+- Produktionsdetails (falls zutreffend)
+- Verwendung
+- Ca. 10 Sätze; für kleine Überschriften ##### verwenden

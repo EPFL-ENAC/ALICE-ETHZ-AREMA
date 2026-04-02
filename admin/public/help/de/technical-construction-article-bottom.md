@@ -1,0 +1,5 @@
+- Entwurf und Detailplanung (Tragwerk, Öffnungen, Oberflächen, Details z.B.)
+- Herstellungs-/Fertigungs-/Bauprozess (Verbindung/Haftung zwischen Materialien, Fugen, Rahmen, Schalung z.B.)
+- Trocknung / Sonnenschutz / Schwund / Setzung
+- Reparatur und Wartung / Lebensende (Wiederverwendung, Abfallart)
+- Ca. 10 Sätze; für kleine Überschriften ##### verwenden

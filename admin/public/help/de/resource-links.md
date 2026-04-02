@@ -1,0 +1,2 @@
+- Quellen: `[Name des Links](https://example.org)`, Jahr, Sprache, Quelle
+- Links zu Kartenquellen!

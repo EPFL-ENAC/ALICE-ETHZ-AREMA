@@ -1,0 +1,4 @@
+- Courte introduction
+- Composants, assemblage
+- Bref aperçu (historique) de l'utilisation dans les bâtiments
+- Environ 5 phrases

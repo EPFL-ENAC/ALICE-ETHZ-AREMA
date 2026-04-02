@@ -1,0 +1,5 @@
+- Conception et détails (structure portante, ouvertures, finitions, détails, etc.)
+- Processus de production / fabrication / construction (connexion / liaison entre matériaux, joints, ossatures, coffrage, etc.)
+- Séchage / Protection solaire / Retrait / Tassement
+- Réparation et entretien / Fin de vie (réemploi, type de déchet)
+- Environ 10 phrases ; pour les petits titres, utiliser #####

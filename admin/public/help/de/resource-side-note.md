@@ -1,0 +1,3 @@
+- Ergänzende Informationen
+- Karteninformationen
+- Ca. 10 Zeilen

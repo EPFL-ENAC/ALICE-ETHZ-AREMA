@@ -1,0 +1,5 @@
+- Historique (si disponible)
+- Processus de production / fabrication (transformation mécanique / chimique nécessaire ?) / Séchage
+- Utilisation / Mise en œuvre
+- Entretien / fin de vie (réemploi, type de déchet...)
+- Environ 10 phrases ; pour les petits titres, utiliser #####

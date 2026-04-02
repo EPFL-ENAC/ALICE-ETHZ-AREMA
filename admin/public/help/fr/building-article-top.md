@@ -1,0 +1,4 @@
+- Contexte, dates clés, concept architectural
+- Techniques et matériaux, réemploi (?), fournisseur (régionalité)
+- Gestion / processus de construction (maître d'œuvre général, participatif, collaboratif, préfabrication ?)
+- Environ 10 phrases ; pour les petits titres, utiliser #####

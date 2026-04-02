@@ -1,0 +1,3 @@
+- Propriétés : structurelles, hygrothermiques, apparence visuelle et haptique, respirabilité, masse thermique, acoustique, environnementales (incl. toxicité), feu, étanchéité à l'air, nuisibles, résistance à l'humidité et aux moisissures
+- Facilité de mise en œuvre / coûts / aspects sociaux / économiques
+- Environ 10 phrases ; pour les petits titres, utiliser #####

@@ -1,0 +1,4 @@
+- Kurze Einleitung
+- Inhalt der Ressource (chemisch)
+- Haupteigenschaften (tragend, zugfest, isolierend, hygrothermisch...)
+- Ca. 5 Sätze
