@@ -246,6 +246,7 @@ export default {
   tensile_strength: 'Résistance à la traction',
   terms_and_conditions: 'Conditions générales',
   terms_and_conditions_accept: "J'accepte les conditions générales",
+  terms_and_conditions_reminder: 'Rappel: assurez-vous que votre contribution respecte les conditions générales.',
   terms_and_conditions_show: 'Voir les conditions générales',
   thermal_capacity_hint: 'c, J(kg*K)',
   thermal_capacity: 'Capacité thermique',
