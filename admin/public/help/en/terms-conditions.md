@@ -1,39 +1,81 @@
-### Terms and Conditions
+# Terms of Use for the Online Knowledge Platform “Atlas of Regenerative Materials”
 
-Welcome to our application. By accessing or using our services, you agree to be bound by the following terms and conditions. Please read them carefully.
+Version: [26.03.2026]
 
-#### 1. Acceptance of Terms
+Welcome to our public online knowledge platform (hereinafter the “Platform”). By ticking the box “I accept the Terms of Use”, you agree to the following Terms of Use. Please read them carefully.
 
-By using our application, you agree to comply with and be bound by these terms and conditions. If you do not agree to these terms, please do not use our services.
+### 1. Acceptance of the Terms
 
-#### 2. User Responsibilities
+By ticking the box “I accept the Terms of Use”, you agree to comply with these Terms of Use and to be legally bound by them. If you do not agree with these Terms, you must not register for or use the Platform.
 
-You are responsible for maintaining the confidentiality of your account information and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use of your account.
+### 2. User Responsibilities
 
-#### 3. Prohibited Activities
+Users are responsible for maintaining the confidentiality of their access credentials and for all activities carried out under their user account. Users undertake to inform the entity indicated in the Imprint without undue delay of any unauthorised use of their account or any other security-related incidents.
 
-You agree not to use our services for any unlawful or prohibited activities, including but not limited to:
+### 3. Prohibited Activities
 
-- Violating any applicable laws or regulations.
-- Infringing on the rights of others.
-- Transmitting harmful or malicious content.
+The Platform may only be used in compliance with applicable laws and these Terms of Use.
+In particular, users are prohibited from:
 
-#### 4. Intellectual Property
+- violating applicable laws or regulations,
+- infringing the rights of third parties,
+- transmitting or disseminating harmful, misleading, or malicious content,
+- circumventing or impairing technical protection measures of the Platform,
+- using content in violation of the terms of the applicable licence, in particular the Creative Commons licence CC BY-SA 4.0.
 
-All content and materials provided through our services are the intellectual property of our company or its licensors. You agree not to reproduce, distribute, or create derivative works based on our content without our prior written consent.
+### 4. Content, Licence and Reuse (Open Science)
 
-#### 5. Limitation of Liability
+Unless expressly indicated otherwise, all content published on this Platform, including user contributions, is made available under the Creative Commons licence CC BY-SA 4.0.
 
-To the maximum extent permitted by law, we shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or related to your use of our services.
+Users are entitled to copy, distribute, make publicly available, adapt and reuse such content, including for commercial purposes, provided that:
+a) the authors and the source are appropriately acknowledged,
+b) a reference to the CC BY-SA 4.0 licence is provided (including a link to the licence text), and
+c) any adaptations or derivative works are distributed under the same or a compatible licence.
 
-#### 6. Changes to Terms
+The full licence terms are available at:
+[https://creativecommons.org/licenses/by-sa/4.0/](https://creativecommons.org/licenses/by-sa/4.0/)
 
-We reserve the right to modify these terms and conditions at any time. Any changes will be effective immediately upon posting on our website. Your continued use of our services after changes constitutes your acceptance of the new terms.
+#### 4a. User Contributions and Related Rights
 
-#### 7. Governing Law
+Users may publish their own content (e.g. texts, data, images, or other materials) on the Platform (“User Contributions”).
+Copyright in such User Contributions remains fully with the respective authors or other rights holders.
+By submitting a User Contribution, users grant ETH Zurich a free of charge, non-exclusive, worldwide and perpetual right to:
 
-These terms and conditions shall be governed by and construed in accordance with the laws of the jurisdiction in which our company is established, without regard to its conflict of law principles.
+- store the contribution on the Platform,
+- make it publicly accessible,
+- reproduce and distribute it within the scope of the Platform, and
+- make it available under the Creative Commons licence CC BY-SA 4.0.
 
-#### 8. Contact Information
+Users confirm that they hold the necessary rights to the content they upload and that its publication does not infringe any third-party rights.
 
-If you have any questions or concerns about these terms and conditions, please contact us at atlas@ibi.baug.ethz.ch.
+### 5. Recommended Citation
+
+To support proper academic reuse, we recommend the following citation format:
+Author(s), Title of Contribution, Atlas of Regenerative Materials, Year, Licence CC BY-SA 4.0.
+
+### 6. Disclaimer of Liability
+
+The content of the Platform is provided as part of a research and knowledge project. Despite careful preparation, we do not warrant the completeness, timeliness, accuracy, or continuous availability of the content.
+To the extent permitted by law, liability for slight negligence is excluded.
+
+### 7. Amendments to the Terms of Use
+
+We reserve the right to amend these Terms of Use at any time. Users will be informed of any material changes in an appropriate manner. [IL3.1] The current version is available on the Platform.
+
+### 8. Applicable Law and Jurisdiction
+
+These Terms of Use and any contract concluded upon their acceptance shall be governed by Swiss law, excluding conflict-of-law provisions and the United Nations Convention on Contracts for the International Sale of Goods (CISG).
+The courts of the City of Zurich shall have exclusive jurisdiction over all claims arising out of or in connection with these Terms of Use and the related contract.
+
+### 9. Provider and Contact
+
+ETH Zurich
+Institute of Construction & Infrastructure Management
+Chair of Sustainable Construction
+Stefano-Franscini-Platz 5
+8093 Zurich
+Switzerland
+
+Contact:
++41 44 633 46 32
+atlas@ibi.baug.ethz.ch

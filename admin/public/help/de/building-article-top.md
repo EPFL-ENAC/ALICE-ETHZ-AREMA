@@ -1,0 +1,4 @@
+- Kontext, wichtige Daten, architektonisches Konzept
+- Techniken & Materialien, Wiederverwendung(?), Lieferant (Regionalität)
+- Management / Bauprozess (Generalplaner, partizipativ, kollaborativ, Vorfertigung?)
+- Ca. 10 Sätze; für kleine Überschriften ##### verwenden

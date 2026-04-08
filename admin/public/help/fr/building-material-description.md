@@ -1,0 +1,5 @@
+- Courte introduction
+- Composition / méthode de cohésion / liaison / assemblage
+- Propriétés principales
+- Usages historiques et/ou actuels
+- Environ 5 phrases

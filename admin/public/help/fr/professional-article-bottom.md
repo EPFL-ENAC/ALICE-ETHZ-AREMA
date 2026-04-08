@@ -1,0 +1,4 @@
+- Principaux projets, faits marquants ou réalisations
+- Prix / Labels / Certifications
+- Collaborations avec d'autres professionnels
+- Environ 10 phrases ; pour les petits titres, utiliser #####

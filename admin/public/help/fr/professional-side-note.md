@@ -1,0 +1,2 @@
+- Informations complémentaires : collaborations (approvisionnement, associations, autres entreprises)
+- Environ 10 lignes

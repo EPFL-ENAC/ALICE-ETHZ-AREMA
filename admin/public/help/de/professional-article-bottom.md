@@ -1,0 +1,4 @@
+- Hauptprojekte oder Highlights oder Errungenschaften
+- Preise / Labels / Zertifizierungen
+- Kooperationen mit anderen Fachleuten
+- Ca. 10 Sätze; für kleine Überschriften ##### verwenden

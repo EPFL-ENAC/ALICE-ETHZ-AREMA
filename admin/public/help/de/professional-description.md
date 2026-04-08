@@ -1,0 +1,3 @@
+- Zuerst eine Überschrift von 1 Zeile in fett mit ** (z.B. "**Maurer, der mit Kalk-Hanf arbeitet\*\*")
+- Allgemeine Beschreibung: Art des Fachmanns / der Fachfrau, Hauptexpertise ...
+- Ca. 5 Sätze

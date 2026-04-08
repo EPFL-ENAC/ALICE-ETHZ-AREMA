@@ -10,10 +10,7 @@
       />
     </div>
     <div class="col-12 col-md-4">
-      <div v-if="!searchService.searching && rows.length === 0">
-        {{ t('no_results') }}
-      </div>
-      <q-scroll-area v-else style="height: 600px">
+      <q-scroll-area style="height: 600px">
         <q-list separator>
           <template v-for="row in rows" :key="`${row.entity_type}:${row.id}`">
             <q-item

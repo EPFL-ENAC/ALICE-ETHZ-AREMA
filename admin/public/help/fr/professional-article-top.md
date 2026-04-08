@@ -1,0 +1,7 @@
+- Historique de l'entreprise ou de la personne (fondation, évolution, parcours ?), lieu(x)
+- Activité principale, valeurs, lien avec les matériaux régénératifs
+- Expertises, techniques, approches particulières ?
+- Type et envergure des activités / projets ?
+- Rayon géographique d'intervention ?
+- (si pertinent : fondateurs et parcours)
+- Environ 10 phrases ; pour les petits titres, utiliser #####

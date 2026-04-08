@@ -1,0 +1,4 @@
+- Courte introduction
+- Composition de la ressource (chimique)
+- Propriétés principales utilisées (porteur, résistance à la traction, isolation, hygrothermique...)
+- Environ 5 phrases

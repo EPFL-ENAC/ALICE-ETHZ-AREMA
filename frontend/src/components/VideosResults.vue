@@ -1,6 +1,7 @@
 <template>
   <div>
     <div>
+      <div class="q-mb-md">{{ t('results', { count: total }) }}</div>
       <div v-if="!loading" class="row q-col-gutter-lg">
         <template v-for="row in rows" :key="`${row.entity_type}:${row.id}`">
           <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
@@ -35,9 +36,6 @@
             </q-card>
           </div>
         </template>
-        <div v-if="rows.length === 0">
-          {{ t('no_results') }}
-        </div>
       </div>
     </div>
     <div v-if="count < total" class="q-mt-md">

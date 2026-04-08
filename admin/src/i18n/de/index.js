@@ -244,6 +244,7 @@ export default {
   tensile_strength: 'Zugfestigkeit',
   terms_and_conditions: 'Nutzungsbedingungen',
   terms_and_conditions_accept: 'Ich akzeptiere die Nutzungsbedingungen',
+  terms_and_conditions_reminder: 'Erinnerung: Stellen Sie sicher, dass Ihr Beitrag den Nutzungsbedingungen entspricht.',
   terms_and_conditions_show: 'Nutzungsbedingungen anzeigen',
   thermal_capacity_hint: 'c, J(kg*K)',
   thermal_capacity: 'Wärmekapazität',

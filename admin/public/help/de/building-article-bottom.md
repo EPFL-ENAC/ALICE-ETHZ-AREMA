@@ -1,0 +1,4 @@
+- Besondere Merkmale und Details (Umsetzung, Materialien, konstruktive Systeme, Energie-/Heizungs-/Wassermanagement/HVAC)
+- Vor-/Nachteile der verwendeten Techniken/Systeme/Planung?
+- Labels, Auswirkungen
+- Ca. 10 Sätze; für kleine Überschriften ##### verwenden

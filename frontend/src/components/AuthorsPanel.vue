@@ -9,6 +9,7 @@
         @click="onDocument(doc)"
       >
         <span>{{ doc.name }}</span>
+        <span v-if="doc.affiliation" class="text-secondary q-ml-xs">[{{ doc.affiliation }}]</span>
         <span v-if="index < authors.length - 1">, </span>
       </span>
     </div>

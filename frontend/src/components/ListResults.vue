@@ -26,9 +26,6 @@
             </q-card-section>
           </q-card>
         </template>
-        <div v-if="rows.length === 0">
-          {{ t('no_results') }}
-        </div>
       </div>
     </div>
     <div v-if="count < total" class="q-mt-md">

@@ -38,6 +38,7 @@
         @click="onViewSelect(view)"
       />
       <q-spinner-dots v-if="searchService.searching" size="md" />
+      <span v-else>{{ t('results', { count: totalResults }) }}</span>
     </div>
     <list-results v-if="searchService.selectedView === 'list'" />
     <map-results v-if="searchService.selectedView === 'map'" />
@@ -54,6 +55,15 @@ const taxonomyStore = useTaxonomyStore();
 const searchService = useSearchService();
 
 const views = ['list', 'map'];
+
+const totalResults = computed(() => {
+  if (searchService.selectedView === 'list') {
+    return searchService.results?.total ?? 0;
+  } else {
+    return searchService.geoResults?.total ?? 0;
+  }
+});
+
 onMounted(() => {
   if (!taxonomyStore.taxonomies) {
     void taxonomyStore.init().then(() => {

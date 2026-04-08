@@ -7,7 +7,10 @@ We warmly welcome architects, engineers, building physicists, craftsmen and -wom
 The scientific review committee of the Atlas reserves the right to reject submissions that do not meet the value presented in the Manifesto of Regenerative Materials. Each project or professional submission will be reviewed by a committee of experts specialized in regenerative materials and practices to assess its relevance for inclusion.
 
 Please note that this is not a commercial site, and under no circumstances do we intend to promote products or serve as an advertising platform.
-If you agree to contribute to the Atlas of Regenerative Materials you will also become an active reviewer of the new or edited entries.
+
+## Reviewing and publication process
+
+Contributions to categories “Professionals” and “Buildings” can be made by anyone in the community. A simple formulary guides through the process of editing with instructions or rather recommendations for the inputs. As soon as the contribution is put into review, members of the review committee assess the alignment with the Atlas content-wise and give their approval. An administrator subsequently checks layout/style before publishing the article online.
 
 ## Atlas Registration
 

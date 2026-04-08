@@ -8,18 +8,18 @@
 
 <p>
   <a href="https://www.ricolafoundation.org/regeneratives-bauen" target="_blank">
-    <img src="images/ricola.png" alt="Ricola Foundation" height="100" class="q-mr-lg" />
+    <img src="images/ricola.png" alt="Ricola Foundation" height="80" class="q-mr-lg" />
   </a>
   <a href="https://materiautheque.ch/" target="_blank">
-    <img src="images/materiautheque.png" alt="La Matériauthèque MATILDA" height="100" class="q-mr-lg" />
+    <img src="images/materiautheque.png" alt="La Matériauthèque MATILDA" height="80" class="q-mr-lg" />
   </a>
   <a href="https://ethrat.ch/en/eth-domain/open-research-data/" target="_blank">
     <img src="images/ethboard.png" alt="ETH Board" height="70" class="q-mr-lg q-mb-md" />
   </a>
   <a href="https://www.innosuisse.admin.ch/en/innovation-cheque" target="_blank">
-    <img src="images/innosuisse.svg" alt="Innosuisse" height="150" class="q-mr-lg" />
+    <img src="images/innosuisse.svg" alt="Innosuisse" height="120" class="q-mr-lg" />
   </a>
   <a href="https://www.datascience.ch/" target="_blank">
-    <img src="images/sdsc.png" alt="Swiss Data Science Center" height="100" class="q-mr-lg" />
+    <img src="images/sdsc.png" alt="Swiss Data Science Center" height="80" class="q-mr-lg" />
   </a>
 </p>

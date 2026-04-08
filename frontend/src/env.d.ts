@@ -5,6 +5,5 @@ declare namespace NodeJS {
     VUE_ROUTER_BASE: string | undefined;
     API_URL: string | undefined;
     API_PATH: string | undefined;
-    MARTIN_URL: string | undefined;
   }
 }

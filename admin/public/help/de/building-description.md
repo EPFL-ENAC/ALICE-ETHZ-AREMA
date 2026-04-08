@@ -1,0 +1,3 @@
+- Zuerst eine Überschrift von 1 Zeile in fett mit ** (z.B. "**Einfamilienhaus partizipativ mit Kalk-Hanf gebaut\*\*")
+- Allgemeine Beschreibung: Gebäudetyp, Materialien/Techniken, Nutzung des Gebäudes
+- Ca. 5 Sätze

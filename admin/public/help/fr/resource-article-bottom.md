@@ -1,0 +1,4 @@
+- Historique
+- Détails de production (si applicable)
+- Utilisation
+- Environ 10 phrases ; pour les petits titres, utiliser #####

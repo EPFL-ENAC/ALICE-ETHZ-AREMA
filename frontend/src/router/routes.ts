@@ -22,6 +22,7 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: () => import('layouts/AltLayout.vue'),
     children: [
+      { path: 'manifesto', component: () => import('pages/ManifestoPage.vue') },
       { path: 'about', component: () => import('pages/AboutPage.vue') },
       { path: 'imprint', component: () => import('pages/ImprintPage.vue') },
       { path: 'disclaimer', component: () => import('pages/DisclaimerPage.vue') },

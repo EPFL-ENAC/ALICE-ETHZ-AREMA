@@ -1,0 +1,5 @@
+- Kurze Einleitung
+- Zusammensetzung / Methode der Kohäsion / Bindung / des Zusammenhalts
+- Haupteigenschaften
+- Historische und/oder aktuelle Verwendungszwecke
+- Ca. 5 Sätze

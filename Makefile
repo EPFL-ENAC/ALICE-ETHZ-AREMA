@@ -21,10 +21,6 @@ run: run-db run-es
 
 stop: stop-db stop-es
 
-run-gis: run-postgis run-martin
-
-stop-gis: stop-martin stop-postgis
-
 # PostgreSQL
 
 run-db:
@@ -49,31 +45,6 @@ stop-es:
 
 down-es:
 	docker compose down es8
-
-# Martin
-
-run-martin:
-	docker compose up -d --pull=always martin
-
-stop-martin:
-	docker compose stop martin
-
-down-martin:
-	docker compose down martin
-
-# POSTGIS
-
-run-postgis:
-	docker compose up -d --pull=always postgis
-
-stop-postgis:
-	docker compose stop postgis
-
-down-postgis:
-	docker compose down postgis
-
-connect-postgis:
-	docker compose exec postgis psql -U postgres -d arema_gis
 
 workflow:
 	# .secrets should have GITHUB_TOKEN

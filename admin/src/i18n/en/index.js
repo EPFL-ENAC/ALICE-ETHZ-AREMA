@@ -244,6 +244,7 @@ export default {
   tensile_strength: 'Tensile strength',
   terms_and_conditions: 'Terms and Conditions',
   terms_and_conditions_accept: 'I accept the terms and conditions',
+  terms_and_conditions_reminder: 'Reminder: make sure that your contribution complies with the terms and conditions.',
   terms_and_conditions_show: 'View terms and conditions',
   thermal_capacity_hint: 'c, J(kg*K)',
   thermal_capacity: 'Thermal capacity',

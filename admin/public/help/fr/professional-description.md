@@ -1,0 +1,3 @@
+- D'abord un titre d'une ligne en gras avec ** (p. ex. "**Maçon travaillant avec la chaux-chanvre**")
+- Description générale : type de professionnel, expertise principale...
+- Environ 5 phrases

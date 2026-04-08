@@ -1,0 +1,5 @@
+- Geschichte (falls verfügbar)
+- Herstellungs-/Fertigungsprozess (mechanische/chemische Transformation erforderlich?) / Trocknung
+- Verwendung / Umsetzung
+- Wartung / Lebensende (Wiederverwendung, Abfallart...)
+- Ca. 10 Sätze; für kleine Überschriften ##### verwenden

@@ -1,0 +1,3 @@
+- Ergänzende Informationen
+- Geschichte
+- Ca. 10 Zeilen

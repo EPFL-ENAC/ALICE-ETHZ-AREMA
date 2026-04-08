@@ -1,0 +1,3 @@
+- D'abord un titre d'une ligne en gras avec ** (p. ex. "**Maison individuelle construite participativement avec chaux-chanvre**")
+- Description générale : type de bâtiment, matériaux / techniques, usage du bâtiment
+- Environ 5 phrases

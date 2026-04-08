@@ -115,7 +115,10 @@
 
       <q-separator />
 
-      <q-card-actions align="right" class="bg-grey-3">
+      <q-card-actions class="bg-grey-3">
+        <q-icon name="warning" color="warning" class="q-mr-sm" />
+        <div class="text-hint">{{ t('terms_and_conditions_reminder') }}</div>
+        <q-space />
         <q-btn
           v-if="readOnly"
           flat
