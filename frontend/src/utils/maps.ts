@@ -7,7 +7,7 @@ import { baseUrl, cdnUrl } from 'src/boot/api';
 const protocol = new Protocol();
 addProtocol('pmtiles', protocol.tile);
 
-const mapsUrl = `${cdnUrl}/arema/maps/2026-04-20T13:52`;
+const mapsUrl = `${cdnUrl}/arema/maps/2026-04-20T15:31`;
 
 export const style: StyleSpecification = {
   version: 8,
@@ -23,9 +23,17 @@ export const style: StyleSpecification = {
       type: 'vector',
       url: `pmtiles://${mapsUrl}/geojson/Hartgestein.pmtiles`,
     },
+    hartgestein_fr: {
+      type: 'vector',
+      url: `pmtiles://${mapsUrl}/geojson/HartgesteinFR.pmtiles`,
+    },
     kalkstein: {
       type: 'vector',
       url: `pmtiles://${mapsUrl}/geojson/Kalkstein.pmtiles`,
+    },
+    kalkstein_fr: {
+      type: 'vector',
+      url: `pmtiles://${mapsUrl}/geojson/KalksteinFR.pmtiles`,
     },
     konglomerat: {
       type: 'vector',
@@ -35,9 +43,17 @@ export const style: StyleSpecification = {
       type: 'vector',
       url: `pmtiles://${mapsUrl}/geojson/Sandstein.pmtiles`,
     },
+    sandstein_fr: {
+      type: 'vector',
+      url: `pmtiles://${mapsUrl}/geojson/SandsteinFR.pmtiles`,
+    },
     vulkanisch: {
       type: 'vector',
       url: `pmtiles://${mapsUrl}/geojson/Vulkanisch.pmtiles`,
+    },
+    vulkanisch_fr: {
+      type: 'vector',
+      url: `pmtiles://${mapsUrl}/geojson/VulkanischFR.pmtiles`,
     },
     stroh: {
       type: 'vector',
@@ -51,13 +67,17 @@ export const style: StyleSpecification = {
       type: 'vector',
       url: `pmtiles://${mapsUrl}/geojson/Hanf_2025.pmtiles`,
     },
+    hemp_fr: {
+      type: 'vector',
+      url: `pmtiles://${mapsUrl}/geojson/ChanvreFR_2024.pmtiles`,
+    },
     corn: {
       type: 'vector',
       url: `pmtiles://${mapsUrl}/geojson/Mais_2025.pmtiles`,
     },
     sheep: {
       type: 'vector',
-      url: `pmtiles://${mapsUrl}/geojson/Schafe_4326_2025-04-17.pmtiles`,
+      url: `pmtiles://${mapsUrl}/geojson/Schafe_4326_2026-04-13.pmtiles`,
     },
     woods: {
       type: 'raster',
@@ -89,11 +109,11 @@ export const style: StyleSpecification = {
     },
     reynoutria_japonica: {
       type: 'vector',
-      url: `pmtiles://${mapsUrl}/geojson/Reynoutria_Japonica_2025_2024.pmtiles`,
+      url: `pmtiles://${mapsUrl}/geojson/Reynoutria_Japonica_2026_2025.pmtiles`,
     },
     demolition: {
       type: 'vector',
-      url: `pmtiles://${mapsUrl}/geojson/Abriss_4326_2025-05-01.pmtiles`,
+      url: `pmtiles://${mapsUrl}/geojson/Abriss_4326_2025.pmtiles`,
     },
   },
   glyphs: 'https://orangemug.github.io/font-glyphs/glyphs/{fontstack}/{range}.pbf',
@@ -121,10 +141,36 @@ export const style: StyleSpecification = {
       },
     },
     {
+      id: 'hartgestein-fr',
+      type: 'fill',
+      source: 'hartgestein_fr',
+      'source-layer': 'HartgesteinFR',
+      paint: {
+        'fill-color': 'rgb(25, 118, 210)',
+        'fill-opacity': 0.5,
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
       id: 'kalkstein',
       type: 'fill',
       source: 'kalkstein',
       'source-layer': 'Kalkstein',
+      paint: {
+        'fill-color': 'rgb(84, 110, 122)',
+        'fill-opacity': 0.5,
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'kalkstein-fr',
+      type: 'fill',
+      source: 'kalkstein_fr',
+      'source-layer': 'KalksteinFR',
       paint: {
         'fill-color': 'rgb(84, 110, 122)',
         'fill-opacity': 0.5,
@@ -160,10 +206,36 @@ export const style: StyleSpecification = {
       },
     },
     {
+      id: 'sandstein-fr',
+      type: 'fill',
+      source: 'sandstein_fr',
+      'source-layer': 'SandsteinFR',
+      paint: {
+        'fill-color': 'rgb(251, 192, 45)',
+        'fill-opacity': 0.5,
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
       id: 'vulkanisch',
       type: 'fill',
       source: 'vulkanisch',
       'source-layer': 'Vulkanisch',
+      paint: {
+        'fill-color': 'rgb(216, 27, 96)',
+        'fill-opacity': 0.5,
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'vulkanisch-fr',
+      type: 'fill',
+      source: 'vulkanisch_fr',
+      'source-layer': 'VulkanischFR',
       paint: {
         'fill-color': 'rgb(216, 27, 96)',
         'fill-opacity': 0.5,
@@ -293,6 +365,46 @@ export const style: StyleSpecification = {
       },
     },
     {
+      id: 'hemp-fr',
+      type: 'circle',
+      source: 'hemp_fr',
+      'source-layer': 'ChanvreFR_2024',
+      paint: {
+        'circle-color': 'rgb(30, 255, 0)',
+        'circle-opacity': 0.5,
+        'circle-radius': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          10,
+          5,
+          16,
+          [
+            'interpolate',
+            ['linear'],
+            ['get', 'flaeche_ha'],
+            0.005,
+            1,
+            0.01,
+            2,
+            0.1,
+            5,
+            1,
+            10,
+            2,
+            20,
+            3,
+            30,
+          ],
+        ],
+        'circle-stroke-color': 'rgb(25, 204, 2)',
+        'circle-stroke-width': 0.2,
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
       id: 'corn',
       type: 'circle',
       source: 'corn',
@@ -336,7 +448,7 @@ export const style: StyleSpecification = {
       id: 'sheep',
       type: 'circle',
       source: 'sheep',
-      'source-layer': 'Schafe_4326_20250417',
+      'source-layer': 'Schafe_4326_20260413',
       paint: {
         'circle-color': '#08519c',
         'circle-opacity': 0.5,
@@ -360,7 +472,7 @@ export const style: StyleSpecification = {
       id: 'reynoutria_japonica',
       type: 'circle',
       source: 'reynoutria_japonica',
-      'source-layer': 'Reynoutria_Japonica_2025_2024',
+      'source-layer': 'Reynoutria_Japonica_2026_2025',
       paint: {
         'circle-color': 'rgb(255, 0, 234)',
         'circle-opacity': 0.5,
@@ -376,7 +488,7 @@ export const style: StyleSpecification = {
       id: 'demolition',
       type: 'circle',
       source: 'demolition',
-      'source-layer': 'Abriss_4326_20250501',
+      'source-layer': 'Abriss_4326_2025',
       paint: {
         'circle-color': '#08519c',
         'circle-opacity': 0.5,
