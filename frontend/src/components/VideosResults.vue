@@ -2,10 +2,10 @@
   <div>
     <div>
       <div class="q-mb-md">{{ t('results', { count: total }) }}</div>
-      <div v-if="!loading" class="row q-col-gutter-lg">
+      <div v-if="!loading" class="masonry">
         <template v-for="row in rows" :key="`${row.entity_type}:${row.id}`">
           <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
-            <q-card flat bordered class="q-ma-none" style="min-height: 360px">
+            <q-card flat bordered class="card">
               <q-card-section
                 class="q-pa-md"
                 style="cursor: pointer; height: 100%"
@@ -79,3 +79,30 @@ function loadMore() {
   void searchService.search_videos(searchService.limit + 100);
 }
 </script>
+
+<style scoped>
+.masonry {
+  column-count: 6;
+  column-gap: 1rem;
+}
+
+.card {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+}
+@media (max-width: 1024px) {
+  .masonry {
+    column-count: 4;
+  }
+}
+@media (max-width: 768px) {
+  .masonry {
+    column-count: 2;
+  }
+}
+@media (max-width: 480px) {
+  .masonry {
+    column-count: 1;
+  }
+}
+</style>
