@@ -2,7 +2,7 @@ import { defineBoot } from '#q-app/wrappers';
 import axios, { type AxiosInstance } from 'axios';
 import Keycloak from 'keycloak-js';
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
   interface ComponentCustomProperties {
     $axios: AxiosInstance;
     $api: AxiosInstance;
