@@ -7,7 +7,7 @@ import { baseUrl, cdnUrl } from 'src/boot/api';
 const protocol = new Protocol();
 addProtocol('pmtiles', protocol.tile);
 
-const mapsUrl = `${cdnUrl}/arema/maps/2026-04-01T11:12`;
+const mapsUrl = `${cdnUrl}/arema/maps/2026-04-20T13:52`;
 
 export const style: StyleSpecification = {
   version: 8,
@@ -63,6 +63,13 @@ export const style: StyleSpecification = {
       type: 'raster',
       tiles: [
         `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?rescale=1,255&nodata=255&colormap_name=algae&bidx=1&url=${mapsUrl}/raster/Wald_nodata_4326_cog.tif`,
+      ],
+      tileSize: 256,
+    },
+    woods_fr: {
+      type: 'raster',
+      tiles: [
+        `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?rescale=1,255&nodata=255&colormap_name=algae&bidx=1&url=${mapsUrl}/raster/Foret_FR_4326_cog.tif`,
       ],
       tileSize: 256,
     },
@@ -385,6 +392,17 @@ export const style: StyleSpecification = {
       id: 'woods',
       type: 'raster',
       source: 'woods',
+      paint: {
+        'raster-opacity': 0.5,
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'woods-fr',
+      type: 'raster',
+      source: 'woods_fr',
       paint: {
         'raster-opacity': 0.5,
       },
