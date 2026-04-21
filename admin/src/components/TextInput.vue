@@ -22,7 +22,7 @@
               />
             </div>
             <div v-if="helpContent" class="col-3 q-pa-sm">
-              <div class="text-bold q-pl-md">{{ t('instructions') }}</div>
+              <div class="text-bold q-pl-md">{{ t('guidelines') }}</div>
               <div style="font-size: smaller; overflow: auto">
                 <q-markdown :src="helpContent" no-heading-anchor-links />
               </div>

@@ -189,35 +189,48 @@
 
       <q-separator />
 
+      <q-card-section v-if="!readOnly && isDraft" class="bg-warning q-py-sm q-px-md">
+        <q-checkbox
+          v-model="termsAccepted"
+          :label="t('copyright_confirmation')"
+          size="sm"
+          class="text-caption"
+        />
+      </q-card-section>
+      <q-separator v-if="!readOnly && isDraft" />
+
       <q-card-actions class="bg-grey-3">
-        <q-icon name="warning" color="warning" class="q-mr-sm" />
-        <div class="text-hint">{{ t('terms_and_conditions_reminder') }}</div>
+        <div v-if="!readOnly && isDraft" class="text-hint q-pl-sm" style="max-width: 800px">
+          {{ t('terms_and_conditions_reminder') }}
+        </div>
         <q-space />
-        <q-btn
-          v-if="readOnly"
-          flat
-          :label="t('close')"
-          color="secondary"
-          @click="onCancel"
-          v-close-popup
-        />
-        <q-btn
-          v-if="!readOnly"
-          flat
-          :label="t('cancel')"
-          color="secondary"
-          @click="onCancel"
-          :disable="saving"
-          v-close-popup
-        />
-        <q-btn
-          v-if="!readOnly"
-          :label="t('save')"
-          color="primary"
-          @click="onSave"
-          :disable="!isValid || saving"
-          :loading="saving"
-        />
+        <div>
+          <q-btn
+            v-if="readOnly"
+            flat
+            :label="t('close')"
+            color="secondary"
+            @click="onCancel"
+            v-close-popup
+          />
+          <q-btn
+            v-if="!readOnly"
+            flat
+            :label="t('cancel')"
+            color="secondary"
+            @click="onCancel"
+            :disable="saving"
+            v-close-popup
+          />
+          <q-btn
+            v-if="!readOnly"
+            :label="t('save')"
+            color="primary"
+            @click="onSave"
+            :disable="!isValid || !termsAccepted || saving"
+            :loading="saving"
+          />
+        </div>
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -266,6 +279,11 @@ const buildingMaterialsOptions = ref<Option[]>([]);
 const technicalConstructions = ref<number[]>([]);
 const technicalConstructionsOptions = ref<Option[]>([]);
 const saving = ref(false);
+const termsAccepted = ref(false);
+
+const isDraft = computed(() => {
+  return selected.value.state === 'draft';
+});
 
 const isValid = computed(() => {
   return (
@@ -373,6 +391,7 @@ function init(value: boolean) {
   if (selected.value.addresses === undefined) {
     selected.value.addresses = [];
   }
+  termsAccepted.value = isDraft.value ? false : true;
   showDialog.value = value;
 }
 
