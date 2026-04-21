@@ -67,6 +67,8 @@ We reserve the right to amend these Terms of Use at any time. Users will be info
 These Terms of Use and any contract concluded upon their acceptance shall be governed by Swiss law, excluding conflict-of-law provisions and the United Nations Convention on Contracts for the International Sale of Goods (CISG).
 The courts of the City of Zurich shall have exclusive jurisdiction over all claims arising out of or in connection with these Terms of Use and the related contract.
 
+**Only the German version of these Terms of Use shall be legally binding.**
+
 ### 9. Provider and Contact
 
 ETH Zurich
