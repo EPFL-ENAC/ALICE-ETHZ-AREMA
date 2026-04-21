@@ -86,7 +86,7 @@ function onDownload(file: FileItem) {
   window.open(toFileUrl(file), '_blank');
 }
 
-function onSwipe(event: { direction: string }) {
+function onSwipe(event: { direction?: 'left' | 'right' | 'up' | 'down' }) {
   if (!props.document.files || props.document.files.length <= 1) return;
   if (event.direction === 'left') {
     slide.value = Math.min(slide.value + 1, props.document.files.length - 1);
