@@ -1,18 +1,26 @@
-FROM python:3.11.7-bullseye
-ENV POETRY_VERSION=1.8.3
-RUN pip install "poetry==$POETRY_VERSION"
+FROM python:3.11-slim-bookworm
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
 ENV PYTHONPATH="$PYTHONPATH:/app"
 
 WORKDIR /app
 
-COPY poetry.lock pyproject.toml /app/
-RUN poetry config installer.max-workers 10
-RUN poetry config virtualenvs.create false
-RUN apt-get update && apt-get install -y g++ libpq-dev libgl1 gdal-bin libgdal-dev
-RUN poetry install --no-interaction --no-root
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends \
+    git \
+		g++ \
+		libpq-dev \
+		libgl1 \
+		gdal-bin \
+		libgdal-dev \
+	&& rm -rf /var/lib/apt/lists/*
+
+COPY pyproject.toml uv.lock /app/
+RUN uv sync --frozen --no-install-project
 
 COPY alembic.ini start.sh /app/
 COPY migrations /app/migrations
 COPY api /app/api
 
-ENTRYPOINT sh start.sh
+ENV PATH="/app/.venv/bin:$PATH"
+
+ENTRYPOINT ["sh", "start.sh"]

@@ -1,22 +1,22 @@
 env_path=../.env
 
 install:
-	poetry install
+	uv sync
 
 run:
-	poetry run dotenv -f "$(env_path)" run uvicorn api.main:app
+	uv run dotenv -f "$(env_path)" run uvicorn api.main:app
 
 lint:
-	poetry run pre-commit run --all-files
+	uv run pre-commit run --all-files
 
 db-upgrade:
-	poetry run dotenv -f "$(env_path)" run alembic upgrade head
+	uv run dotenv -f "$(env_path)" run alembic upgrade head
 
 db-downgrade:
-	poetry run dotenv -f "$(env_path)" run alembic downgrade -1
+	uv run dotenv -f "$(env_path)" run alembic downgrade -1
 
 db-revision:
-	poetry run dotenv -f "$(env_path)" run alembic revision --autogenerate -m "$(name)"
+	uv run dotenv -f "$(env_path)" run alembic revision --autogenerate -m "$(name)"
 
 seed:
 	curl -X PUT 'http://localhost:8000/seed' -H 'accept: application/json'
@@ -24,3 +24,5 @@ seed:
 es-health:
 	curl http://localhost:9200/_cluster/health?pretty
 
+docker-build:
+	docker build -t alice-arema-backend .
