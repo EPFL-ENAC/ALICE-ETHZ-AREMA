@@ -66,7 +66,6 @@ function onFetchIGLehmProjects() {
   void importerService
     .fetchIGLehmProjects()
     .then((data: IGLehmProjectSummary[]) => {
-      console.log('IG Lehm projects:', data);
       projects.value = data;
     })
     .catch(notifyError)

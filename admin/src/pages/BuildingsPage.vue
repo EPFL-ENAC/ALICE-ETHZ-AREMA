@@ -30,7 +30,7 @@
             v-if="authStore.isAdmin"
             size="sm"
             color="primary"
-            :label="t('import')"
+            :label="t('importer.import')"
             class="on-right"
           >
             <q-list>
@@ -459,21 +459,24 @@ function onShowIGLehmImport() {
 
 function onIGLehmImport(project: IGLehmProjectSummary | null) {
   if (!project) return;
-  void importerService.fetchIGLehmProject(project.cId).then((data: IGLehmProject) => {
-    selected.value = {
-      name: data.title,
-      description: data.content || '',
-      article_top: data.description || '',
-      external_links: data.pageUrl ? `[IG Lehm: ${data.title}](${data.pageUrl})` : '',
-      address: data.location || '',
-      files: data.images
-        ? data.images.map((image) => ({
-            url: image.url,
-            legend: image.description || '',
-          }))
-        : [],
-    };
-    showEditDialog.value = true;
-  });
+  void importerService
+    .fetchIGLehmProject(project.cId)
+    .then((data: IGLehmProject) => {
+      selected.value = {
+        name: data.title,
+        description: data.content || '',
+        article_top: data.description || '',
+        external_links: data.pageUrl ? `[IG Lehm: ${data.title}](${data.pageUrl})` : '',
+        address: data.location || '',
+        files: data.images
+          ? data.images.map((image) => ({
+              url: image.url,
+              legend: image.description || '',
+            }))
+          : [],
+      };
+      showEditDialog.value = true;
+    })
+    .catch(notifyError);
 }
 </script>

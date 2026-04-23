@@ -49,6 +49,9 @@ watch(
   () => props.modelValue,
   (value) => {
     showDialog.value = value;
+    if (value) {
+      project.value = null;
+    }
   },
 );
 

@@ -44,6 +44,7 @@ export default {
     locked: 'Verrouillé',
   },
   importer: {
+    import: 'Importer',
     iglehm: {
       project_import: {
         title: 'Import d\'un projet IG Lehm',
