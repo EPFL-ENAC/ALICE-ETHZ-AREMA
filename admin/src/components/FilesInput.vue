@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-list bordered separator v-if="files.length" class="q-mb-md">
-      <template v-for="(file, idx) in files" :key="file.ref?.path || file.url">
+      <template v-for="(file, idx) in files" :key="file.ref?.path || file.url || idx">
         <q-item>
           <q-item-section>
             <a :href="getURL(file)" target="_blank" class="epfl q-mb-md">

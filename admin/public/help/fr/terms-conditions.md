@@ -67,6 +67,8 @@ Nous nous réservons le droit de modifier ces Conditions d'utilisation à tout m
 Les présentes Conditions d'utilisation et tout contrat conclu lors de leur acceptation sont régis par le droit suisse, à l'exclusion des règles de conflit de lois et de la Convention des Nations Unies sur les contrats de vente internationale de marchandises (CVIM).
 Les tribunaux de la ville de Zurich auront compétence exclusive pour toutes les réclamations découlant des présentes Conditions d'utilisation ou en lien avec celles-ci et le contrat y relatif.
 
+**Seule la version allemande des Conditions d'Utilisation est juridiquement contraignante.**
+
 ### 9. Prestataire et contact
 
 ETH Zurich
