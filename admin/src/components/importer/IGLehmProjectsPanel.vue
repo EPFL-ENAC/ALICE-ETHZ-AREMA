@@ -19,7 +19,7 @@
               />
             </q-item-section>
             <q-item-section>
-              <a :href="project.pageUrl" target="_blank" class="epfl">
+              <a :href="project.pageUrl" target="_blank" rel="noopener noreferrer" class="epfl">
                 {{ project.title }}
                 <q-icon name="open_in_new" />
               </a>
