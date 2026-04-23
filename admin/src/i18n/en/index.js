@@ -43,6 +43,15 @@ export default {
     'to-delete': 'To delete',
     locked: 'Locked',
   },
+  importer: {
+    import: 'Import',
+    iglehm: {
+      project_import: {
+        title: 'IG Lehm project import',
+        hint: 'Select an IG Lehm project. This will create a new article with the same title as the IG Lehm project and a content containing all the information of the project.',
+      },
+    }
+  },
   error: {
     accept_terms_and_conditions: 'You must accept the terms and conditions.',
     form_invalid: 'Some fields are invalid.',

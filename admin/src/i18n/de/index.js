@@ -43,6 +43,15 @@ export default {
     'to-delete': 'Zu löschen',
     locked: 'Gesperrt',
   },
+  importer: {
+    import: 'Importieren',
+    iglehm: {
+      project_import: {
+        title: 'IG Lehm Projektimport',
+        hint: 'Wählen Sie ein IG Lehm Projekt aus. Dadurch wird ein neuer Artikel mit demselben Titel wie das IG Lehm Projekt und einem Inhalt erstellt, der alle Informationen des Projekts enthält.',
+      },
+    }
+  },
   error: {
     accept_terms_and_conditions: 'Sie müssen die Nutzungsbedingungen akzeptieren.',
     form_invalid: 'Einige Felder sind ungültig.',

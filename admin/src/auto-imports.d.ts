@@ -88,6 +88,7 @@ declare global {
   const useFilesStore: typeof import('./stores/files')['useFilesStore']
   const useI18n: typeof import('vue-i18n')['useI18n']
   const useId: typeof import('vue')['useId']
+  const useImporterService: typeof import('./stores/importer')['useImporterService']
   const useInstanceDefaults: typeof import('feathers-pinia')['useInstanceDefaults']
   const useLink: typeof import('vue-router')['useLink']
   const useModel: typeof import('vue')['useModel']
@@ -197,6 +198,7 @@ declare module 'vue' {
     readonly useFilesStore: UnwrapRef<typeof import('./stores/files')['useFilesStore']>
     readonly useI18n: UnwrapRef<typeof import('vue-i18n')['useI18n']>
     readonly useId: UnwrapRef<typeof import('vue')['useId']>
+    readonly useImporterService: UnwrapRef<typeof import('./stores/importer')['useImporterService']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
     readonly useModel: UnwrapRef<typeof import('vue')['useModel']>
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>

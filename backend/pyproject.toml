@@ -26,6 +26,8 @@ dependencies = [
     "titiler-core==0.22.0",
     "jinja2>=3.1.6",
     "slowapi>=0.1.9",
+    "markdownify>=1.2.2",
+    "beautifulsoup4>=4.14.3",
 ]
 
 [tool.uv.sources]

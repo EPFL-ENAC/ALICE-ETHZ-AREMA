@@ -258,3 +258,31 @@ export interface GroupByResult {
   field: string;
   counts: GroupByCount[];
 }
+
+// IG Lehm specific interfaces
+export interface IGLehmImage {
+  id: number;
+  title?: string;
+  description?: string;
+  url: string;
+}
+export interface IGLehmProjectSummary {
+  cId: number;
+  pageUrl: string;
+  title: string;
+  previewImage?: string;
+}
+
+export interface IGLehmProject {
+  cId: number;
+  pageUrl: string;
+  title: string;
+  content?: string;
+  description?: string;
+  previewImage?: string;
+  location?: string;
+  yearOfConstruction?: string;
+  regions?: string[];
+  fields?: string[];
+  images?: IGLehmImage[];
+}

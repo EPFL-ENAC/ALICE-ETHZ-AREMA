@@ -26,6 +26,21 @@
             icon="add"
             @click="onAdd"
           />
+          <q-btn-dropdown
+            v-if="authStore.isAdmin"
+            size="sm"
+            color="primary"
+            :label="t('importer.import')"
+            class="on-right"
+          >
+            <q-list>
+              <q-item clickable v-close-popup @click="onShowIGLehmImport">
+                <q-item-section>
+                  <q-item-label>IG Lehm</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
           <q-btn
             v-if="authStore.isAdmin"
             size="sm"
@@ -105,6 +120,8 @@
         :read-only="readOnly"
         @saved="onRefresh"
       />
+
+      <IGLehmProjectImporterDialog v-model="showIGLehmImporter" @import="onIGLehmImport" />
     </div>
   </q-page>
 </template>
@@ -123,10 +140,13 @@ import type { Feature, Point, GeoJsonProperties } from 'geojson';
 import EntityActionsBtn from 'src/components/EntityActionsBtn.vue';
 import EntityStateBtn from 'src/components/EntityStateBtn.vue';
 import EntityAssigneeBtn from 'src/components/EntityAssigneeBtn.vue';
+import IGLehmProjectImporterDialog from 'src/components/importer/IGLehmProjectImporterDialog.vue';
+import type { IGLehmProjectSummary, IGLehmProject } from 'src/models';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
 const taxonomyStore = useTaxonomyStore();
+const importerService = useImporterService();
 const services = useServices();
 const service = services.make('building');
 
@@ -272,6 +292,7 @@ const pagination = ref<PaginationOptions>({
   rowsPerPage: 50,
 });
 const bldTypes = ref<Option[]>([]);
+const showIGLehmImporter = ref(false);
 
 onMounted(() => {
   onRefresh();
@@ -430,5 +451,32 @@ function onRemove(item: Building) {
 
 function getTypeLabel(val: string): string {
   return bldTypes.value.find((opt) => opt.value === val)?.label || val;
+}
+
+function onShowIGLehmImport() {
+  showIGLehmImporter.value = true;
+}
+
+function onIGLehmImport(project: IGLehmProjectSummary | null) {
+  if (!project) return;
+  void importerService
+    .fetchIGLehmProject(project.cId)
+    .then((data: IGLehmProject) => {
+      selected.value = {
+        name: data.title,
+        description: data.content || '',
+        article_top: data.description || '',
+        external_links: data.pageUrl ? `[IG Lehm: ${data.title}](${data.pageUrl})` : '',
+        address: data.location || '',
+        files: data.images
+          ? data.images.map((image) => ({
+              url: image.url,
+              legend: image.description || '',
+            }))
+          : [],
+      };
+      showEditDialog.value = true;
+    })
+    .catch(notifyError);
 }
 </script>
