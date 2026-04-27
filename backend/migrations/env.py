@@ -1,10 +1,10 @@
 import asyncio
+import os
 from logging.config import fileConfig
 
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-from api.config import config as app_config
 from alembic import context
 from sqlmodel import SQLModel
 
@@ -26,7 +26,15 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 target_metadata = SQLModel.metadata
 
-config.set_main_option("sqlalchemy.url", app_config.DB_URL)
+_db_url = os.environ.get("DB_URL") or "{prefix}://{user}:{password}@{host}:{port}/{db}".format(
+    prefix=os.environ.get("DB_PREFIX", "postgresql+asyncpg"),
+    user=os.environ.get("DB_USER", ""),
+    password=os.environ.get("DB_PASSWORD", ""),
+    host=os.environ.get("DB_HOST", ""),
+    port=os.environ.get("DB_PORT", "5432"),
+    db=os.environ.get("DB_NAME", ""),
+)
+config.set_main_option("sqlalchemy.url", _db_url)
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
