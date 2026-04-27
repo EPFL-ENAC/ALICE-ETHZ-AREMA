@@ -348,7 +348,7 @@ function init(value: boolean) {
     selected.value = JSON.parse(JSON.stringify(props.item));
     editMode.value = selected.value.id !== undefined;
     location.value = {} as Feature;
-    if (editMode.value) {
+    if (selected.value.address) {
       location.value = {
         type: 'Feature',
         properties: {

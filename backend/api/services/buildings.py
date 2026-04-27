@@ -180,6 +180,19 @@ class BuildingService(EntityService):
             data=entities
         )
 
+    async def find_by_source(self, source: str) -> Building | None:
+        """Find a building by its source"""
+        query = select(Building).where(Building.source == source)
+        res = await self.session.exec(query)
+        return res.first()
+
+    async def find_by_source_prefix(self, source_prefix: str) -> list[Building]:
+        """Find buildings by source prefix"""
+        query = select(Building).where(
+            Building.source.startswith(source_prefix))
+        res = await self.session.exec(query)
+        return res.all()
+
     async def create(self, payload: BuildingDraft, user: User = None) -> Building:
         """Create a new building"""
         entity = Building()

@@ -14,6 +14,7 @@ class IGLehmProjectSummary(BaseModel):
     pageUrl: str
     title: str
     previewImage: Optional[str] = None
+    building_id: Optional[int] = None
 
 
 class IGLehmProject(BaseModel):
@@ -28,3 +29,4 @@ class IGLehmProject(BaseModel):
     regions: Optional[List[str]] = None
     fields: Optional[List[str]] = None
     images: Optional[List[IGLehmImage]] = None
+    building_id: Optional[int] = None

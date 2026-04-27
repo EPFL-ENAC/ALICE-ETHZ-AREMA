@@ -49,6 +49,7 @@ export interface Entity {
   assigned_to?: string;
 
   state?: string;
+  source?: string;
 }
 
 export interface PhysicalEntity extends Entity {
@@ -180,7 +181,7 @@ export interface Building extends Entity {
   materials?: string[];
   client?: string;
   gross_internal_area?: number;
-  year?: number;
+  year?: number | undefined;
   address?: string | undefined;
   long?: number | undefined;
   lat?: number | undefined;
@@ -271,6 +272,7 @@ export interface IGLehmProjectSummary {
   pageUrl: string;
   title: string;
   previewImage?: string;
+  building_id?: number;
 }
 
 export interface IGLehmProject {
@@ -285,4 +287,5 @@ export interface IGLehmProject {
   regions?: string[];
   fields?: string[];
   images?: IGLehmImage[];
+  building_id?: number;
 }
