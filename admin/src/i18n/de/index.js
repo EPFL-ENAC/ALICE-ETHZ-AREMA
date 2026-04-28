@@ -50,7 +50,17 @@ export default {
         title: 'IG Lehm Projektimport',
         hint: 'Wählen Sie ein IG Lehm Projekt aus. Dadurch wird ein neuer Artikel mit demselben Titel wie das IG Lehm Projekt und einem Inhalt erstellt, der alle Informationen des Projekts enthält.',
       },
-    }
+      specialist_import: {
+        title: 'IG Lehm Spezialist Import',
+        hint: 'Wählen Sie einen IG Lehm Spezialist aus. Dadurch wird ein neuer Artikel mit demselben Namen wie der IG Lehm Spezialist und einem Inhalt erstellt, der alle Informationen des Spezialisten enthält.',
+      },
+    },
+    all: 'Alle',
+    new: 'Neu',
+    update: 'Aktualisieren',
+    regions: 'Regionen',
+    sectors: 'Sektoren',
+    fields: 'Felder',
   },
   error: {
     accept_terms_and_conditions: 'Sie müssen die Nutzungsbedingungen akzeptieren.',

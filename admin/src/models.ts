@@ -267,18 +267,19 @@ export interface IGLehmImage {
   description?: string;
   url: string;
 }
-export interface IGLehmProjectSummary {
+
+export interface IGLehmEntity {
   cId: number;
-  pageUrl: string;
   title: string;
+}
+export interface IGLehmProjectSummary extends IGLehmEntity {
+  pageUrl: string;
   previewImage?: string;
   building_id?: number;
 }
 
-export interface IGLehmProject {
-  cId: number;
+export interface IGLehmProject extends IGLehmEntity {
   pageUrl: string;
-  title: string;
   content?: string;
   description?: string;
   previewImage?: string;
@@ -288,4 +289,29 @@ export interface IGLehmProject {
   fields?: string[];
   images?: IGLehmImage[];
   building_id?: number;
+}
+
+export interface IGLehmSpecialistSummary extends IGLehmEntity {
+  pageUrl: string;
+  professional_id?: number;
+}
+
+export interface IGLehmSpecialist extends IGLehmEntity {
+  pageUrl: string;
+  description?: string;
+  address?: string;
+  contactPerson?: string;
+  phone?: string;
+  mobile?: string;
+  fax?: string;
+  email?: string;
+  website?: string;
+  branchLocation?: string;
+  brancCantons?: string;
+  sectors?: string[];
+  specialityFields?: string[];
+  images?: IGLehmImage[];
+  projects?: IGLehmEntity[];
+  professional_id?: number;
+  building_ids?: number[];
 }

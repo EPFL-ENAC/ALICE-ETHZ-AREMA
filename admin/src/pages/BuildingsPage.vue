@@ -459,12 +459,25 @@ function onShowIGLehmImport() {
 
 function onIGLehmImport(project: IGLehmProjectSummary | null) {
   if (!project) return;
+
+  function list_to_md(title: string, list: string[] | undefined): string {
+    if (!list || list.length === 0) {
+      return '';
+    }
+    const md = `**${title}**\n`;
+    return md + list.map((item) => `* ${item}`).join('\n');
+  }
+
   void importerService
     .fetchIGLehmProject(project.cId)
     .then((data: IGLehmProject) => {
+      const description = [
+        list_to_md(t('importer.regions'), data.regions),
+        list_to_md(t('importer.fields'), data.fields),
+      ].join('\n\n');
       const project_building = {
         name: data.title,
-        description: data.content || '',
+        description: (data.content || '') + '\n\n' + description,
         article_top: data.description || '',
         external_links: data.pageUrl ? `[IG Lehm: ${data.title}](${data.pageUrl})` : '',
         address: data.location || '',

@@ -26,6 +26,21 @@
             icon="add"
             @click="onAdd"
           />
+          <q-btn-dropdown
+            v-if="authStore.isAdmin"
+            size="sm"
+            color="primary"
+            :label="t('importer.import')"
+            class="on-right"
+          >
+            <q-list>
+              <q-item clickable v-close-popup @click="onShowIGLehmImport">
+                <q-item-section>
+                  <q-item-label>IG Lehm</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
           <q-btn
             v-if="authStore.isAdmin"
             size="sm"
@@ -137,13 +152,15 @@
         :read-only="readOnly"
         @saved="onRefresh"
       />
+
+      <IGLehmSpecialistImporterDialog v-model="showIGLehmImporter" @import="onIGLehmImport" />
     </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
 import type { Option, Query } from 'src/components/models';
-import type { Professional } from 'src/models';
+import type { IGLehmSpecialist, Professional } from 'src/models';
 import { makePaginationRequestHandler } from 'src/utils/pagination';
 import type { PaginationOptions } from 'src/utils/pagination';
 import MapView from 'src/components/MapView.vue';
@@ -156,10 +173,13 @@ import type { Feature, GeoJsonProperties, Polygon } from 'geojson';
 import EntityActionsBtn from 'src/components/EntityActionsBtn.vue';
 import EntityStateBtn from 'src/components/EntityStateBtn.vue';
 import EntityAssigneeBtn from 'src/components/EntityAssigneeBtn.vue';
+import IGLehmSpecialistImporterDialog from 'src/components/importer/IGLehmSpecialistImporterDialog.vue';
+import type { IGLehmSpecialistSummary } from 'src/models';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
 const taxonomyStore = useTaxonomyStore();
+const importerService = useImporterService();
 const services = useServices();
 const service = services.make('professional');
 //const serviceType = services.make('professional-type');
@@ -315,6 +335,7 @@ const pagination = ref<PaginationOptions>({
   rowsPerPage: 50,
 });
 const professionalTypes = ref<Option[]>([]);
+const showIGLehmImporter = ref(false);
 
 onMounted(() => {
   onRefresh();
@@ -500,5 +521,75 @@ function onRemove(item: Professional) {
 
 function getTypeLabel(val: string): string {
   return professionalTypes.value.find((opt) => opt.value === val)?.label || val;
+}
+
+function onShowIGLehmImport() {
+  showIGLehmImporter.value = true;
+}
+
+function onIGLehmImport(project: IGLehmSpecialistSummary | null) {
+  if (!project) return;
+
+  function list_to_md(title: string, list: string[] | undefined): string {
+    if (!list || list.length === 0) {
+      return '';
+    }
+    const md = `**${title}**\n`;
+    return md + list.map((item) => `* ${item}`).join('\n');
+  }
+
+  void importerService
+    .fetchIGLehmSpecialist(project.cId)
+    .then((data: IGLehmSpecialist) => {
+      const specialist_professional = {
+        name: data.title,
+        article_top: data.description || '',
+        description: [
+          list_to_md(t('importer.sectors'), data.sectors),
+          list_to_md(t('importer.fields'), data.specialityFields),
+        ].join('\n\n'),
+        external_links: data.pageUrl ? `[IG Lehm: ${data.title}](${data.pageUrl})` : '',
+        address: data.address || '',
+        email: data.email || '',
+        web: data.website || '',
+        tel: data.phone || data.mobile || '',
+        files: data.images
+          ? data.images.map((image) => ({
+              url: image.url,
+              legend: image.description || '',
+            }))
+          : [],
+        source: `iglehm:${data.cId}`,
+      };
+      if (data.professional_id) {
+        service
+          .get(`${data.professional_id}`)
+          .then((professional) => {
+            selected.value = professional as Professional;
+            // update professional with IG Lehm data
+            // except name and external_links which should be preserved
+            selected.value.article_top = specialist_professional.article_top;
+            selected.value.description = specialist_professional.description;
+            selected.value.address = specialist_professional.address;
+            selected.value.email = specialist_professional.email;
+            selected.value.web = specialist_professional.web;
+            selected.value.tel = specialist_professional.tel;
+            if (specialist_professional.files.length) {
+              // append files not already in professional's file list
+              const existingUrls = new Set(selected.value.files?.map((f) => f.url));
+              const newFiles = specialist_professional.files.filter(
+                (f) => !existingUrls.has(f.url),
+              );
+              selected.value.files = [...(selected.value.files || []), ...newFiles];
+            }
+            showEditDialog.value = true;
+          })
+          .catch(notifyError);
+      } else {
+        selected.value = specialist_professional as Professional;
+        showEditDialog.value = true;
+      }
+    })
+    .catch(notifyError);
 }
 </script>

@@ -312,13 +312,13 @@ function init(value: boolean) {
     selected.value = JSON.parse(JSON.stringify(props.item));
     editMode.value = selected.value.id !== undefined;
     circle.value = {};
-    if (editMode.value) {
-      const center = unref([selected.value.long, selected.value.lat]);
+    if (selected.value.address) {
+      const center = unref([selected.value.long || 0, selected.value.lat || 0]);
       circle.value = {
         type: 'Feature',
         properties: {
           addressInput: selected.value.address,
-          circleRadius: selected.value.radius,
+          circleRadius: selected.value.radius || 10,
         },
         geometry: {
           type: 'Polygon',
@@ -449,7 +449,7 @@ function onCircleInputUpdated(newValue: Feature) {
 
   if (newValue && newValue.properties && newValue.geometry) {
     selected.value.address = newValue.properties.addressInput;
-    selected.value.radius = newValue.properties.circleRadius;
+    selected.value.radius = newValue.properties.circleRadius || 10;
     selected.value.long = newValue.geometry.coordinates[0][0][0];
     selected.value.lat = newValue.geometry.coordinates[0][0][1];
     if (selected.value.long && selected.value.lat)

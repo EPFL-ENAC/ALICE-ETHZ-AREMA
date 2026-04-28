@@ -50,7 +50,17 @@ export default {
         title: 'IG Lehm project import',
         hint: 'Select an IG Lehm project. This will create a new article with the same title as the IG Lehm project and a content containing all the information of the project.',
       },
-    }
+      specialist_import: {
+        title: 'IG Lehm specialist import',
+        hint: 'Select an IG Lehm specialist. This will create a new article with the same title as the IG Lehm specialist and a content containing all the information of the specialist.',
+      },
+    },
+    all: 'All',
+    new: 'New',
+    update: 'Update',
+    regions: 'Regions',
+    sectors: 'Sectors',
+    fields: 'Fields',
   },
   error: {
     accept_terms_and_conditions: 'You must accept the terms and conditions.',

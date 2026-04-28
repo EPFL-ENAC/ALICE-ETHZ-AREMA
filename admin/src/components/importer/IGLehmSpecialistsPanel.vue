@@ -31,27 +31,29 @@
         </q-input>
       </q-toolbar>
       <q-scroll-area style="height: 500px">
-        <q-list bordered separator v-if="filteredProjects.length" class="q-mb-md">
-          <template v-for="project in filteredProjects" :key="project.cId">
-            <q-item :active="selected?.cId === project.cId" active-class="bg-teal-1">
-              <q-item-section clickable @click="onSelectProject(project)" avatar>
+        <q-list bordered separator v-if="filteredSpecialists.length" class="q-mb-md">
+          <template v-for="specialist in filteredSpecialists" :key="specialist.cId">
+            <q-item :active="selected?.cId === specialist.cId" active-class="bg-teal-1">
+              <q-item-section clickable @click="onSelectSpecialist(specialist)" avatar>
                 <q-icon
-                  :name="project.cId === selected?.cId ? 'check_box' : 'check_box_outline_blank'"
+                  :name="specialist.cId === selected?.cId ? 'check_box' : 'check_box_outline_blank'"
                 />
               </q-item-section>
               <q-item-section>
                 <div>
-                  <a :href="project.pageUrl" target="_blank" rel="noopener noreferrer" class="epfl">
-                    {{ project.title }}
+                  <a
+                    :href="specialist.pageUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="epfl"
+                  >
+                    {{ specialist.title }}
                     <q-icon name="open_in_new" />
                   </a>
                 </div>
-                <div v-if="!project.building_id">
+                <div v-if="!specialist.professional_id">
                   <q-badge color="primary" :label="t('importer.new')" />
                 </div>
-              </q-item-section>
-              <q-item-section avatar v-if="project.previewImage">
-                <q-img :src="project.previewImage" width="100px" fit="scale-down" />
               </q-item-section>
             </q-item>
           </template>
@@ -62,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { type IGLehmProjectSummary } from 'src/models';
+import { type IGLehmSpecialistSummary } from 'src/models';
 import { notifyError } from 'src/utils/notify';
 
 const emit = defineEmits(['update:modelValue']);
@@ -71,41 +73,43 @@ const { t } = useI18n();
 const importerService = useImporterService();
 
 const loading = ref(false);
-const projects = ref<IGLehmProjectSummary[]>([]);
+const specialists = ref<IGLehmSpecialistSummary[]>([]);
 const status_filter = ref<'all' | 'new' | 'update'>('all');
 const filter = ref('');
-const selected = ref<IGLehmProjectSummary | null>(null);
+const selected = ref<IGLehmSpecialistSummary | null>(null);
 
-const filteredProjects = computed(() => {
+const filteredSpecialists = computed(() => {
   const lowerFilter = filter.value?.toLowerCase();
-  return projects.value
-    .filter((project) => (lowerFilter ? project.title.toLowerCase().includes(lowerFilter) : true))
-    .filter((project) => {
+  return specialists.value
+    .filter((specialist) =>
+      lowerFilter ? specialist.title.toLowerCase().includes(lowerFilter) : true,
+    )
+    .filter((specialist) => {
       if (status_filter.value === 'all') {
         return true;
       }
       if (status_filter.value === 'new') {
-        return !project.building_id;
+        return !specialist.professional_id;
       }
       if (status_filter.value === 'update') {
-        return project.building_id;
+        return specialist.professional_id;
       }
       return true;
     });
 });
 
 onMounted(() => {
-  void onFetchIGLehmProjects();
+  void onFetchIGLehmSpecialists();
 });
 
-function onFetchIGLehmProjects() {
-  // fetch IG Lehm projects from https://www.iglehm.ch/ccm/api/v1/projects
+function onFetchIGLehmSpecialists() {
+  // fetch IG Lehm specialists from https://www.iglehm.ch/ccm/api/v1/specialists
   // accept json
   loading.value = true;
   void importerService
-    .fetchIGLehmProjects()
-    .then((data: IGLehmProjectSummary[]) => {
-      projects.value = data.sort((a, b) => a.title.localeCompare(b.title));
+    .fetchIGLehmSpecialists()
+    .then((data: IGLehmSpecialistSummary[]) => {
+      specialists.value = data.sort((a, b) => a.title.localeCompare(b.title));
     })
     .catch(notifyError)
     .finally(() => {
@@ -113,13 +117,13 @@ function onFetchIGLehmProjects() {
     });
 }
 
-function onSelectProject(project: IGLehmProjectSummary) {
-  if (selected.value?.cId === project.cId) {
+function onSelectSpecialist(specialist: IGLehmSpecialistSummary) {
+  if (selected.value?.cId === specialist.cId) {
     selected.value = null;
     emit('update:modelValue', null);
     return;
   }
-  selected.value = project;
+  selected.value = specialist;
   if (selected.value) {
     emit('update:modelValue', selected.value);
   }
