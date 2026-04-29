@@ -150,6 +150,7 @@ const taxonomyStore = useTaxonomyStore();
 const importerService = useImporterService();
 const services = useServices();
 const service = services.make('building');
+const professionalService = services.make('professional');
 
 const columns = computed(() => {
   const cols = [
@@ -472,9 +473,32 @@ function onShowIGLehmImport() {
   showIGLehmImporter.value = true;
 }
 
-function onIGLehmImport(project: IGLehmProjectSummary | null) {
+async function onIGLehmImport(project: IGLehmProjectSummary | null) {
   if (!project) return;
 
+  let related_professional_ids: number[] = [];
+  try {
+    const relations_result = await professionalService.find({
+      $limit: 100,
+      filter: { related_sources: { $contains: [`iglehm:${project.cId}`] } },
+      $select: ['id', 'name'], // only fetch id and name to reduce payload
+    });
+    if (relations_result.total) {
+      related_professional_ids = relations_result.data.map((pro: { id: number }) => pro.id);
+    }
+  } catch (error) {
+    console.error('Error fetching related professionals:', error);
+  }
+
+  try {
+    const data = await importerService.fetchIGLehmProject(project.cId);
+    onIGLehmImportData(data, related_professional_ids);
+  } catch (error) {
+    notifyError(error);
+  }
+}
+
+function onIGLehmImportData(data: IGLehmProject, related_professional_ids: number[]) {
   function list_to_md(title: string, list: string[] | undefined): string {
     if (!list || list.length === 0) {
       return '';
@@ -483,55 +507,52 @@ function onIGLehmImport(project: IGLehmProjectSummary | null) {
     return md + list.map((item) => `* ${item}`).join('\n');
   }
 
-  void importerService
-    .fetchIGLehmProject(project.cId)
-    .then((data: IGLehmProject) => {
-      const description = [
-        list_to_md(t('importer.regions'), data.regions),
-        list_to_md(t('importer.fields'), data.fields),
-      ].join('\n\n');
-      const project_building = {
-        name: data.title,
-        description: (data.content || '') + '\n\n' + description,
-        article_top: data.description || '',
-        external_links: data.pageUrl ? `[IG Lehm: ${data.title}](${data.pageUrl})` : '',
-        address: data.location || '',
-        year: data.yearOfConstruction ? Number(data.yearOfConstruction) : undefined,
-        files: data.images
-          ? data.images.map((image) => ({
-              url: image.url,
-              legend: image.description || '',
-            }))
-          : [],
-        source: `iglehm:${data.cId}`,
-      } as Building;
-      if (data.building_id) {
-        service
-          .get(`${data.building_id}`)
-          .then((building) => {
-            selected.value = building as Building;
-            original.value = JSON.parse(JSON.stringify(building)) as Building;
-            // update building with IG Lehm data
-            // except name and external_links which should be preserved
-            selected.value.description = project_building.description || '';
-            selected.value.article_top = project_building.article_top || '';
-            selected.value.address = project_building.address || '';
-            selected.value.year = project_building.year;
-            if (project_building.files?.length) {
-              // append files not already in building's file list
-              const existingUrls = new Set(selected.value.files?.map((f) => f.url));
-              const newFiles = project_building.files.filter((f) => !existingUrls.has(f.url));
-              selected.value.files = [...(selected.value.files || []), ...newFiles];
-            }
-            showEditDialog.value = true;
-          })
-          .catch(notifyError);
-      } else {
-        selected.value = project_building;
-        original.value = undefined;
+  const description = [
+    list_to_md(t('importer.regions'), data.regions),
+    list_to_md(t('importer.fields'), data.fields),
+  ].join('\n\n');
+  const project_building = {
+    name: data.title,
+    description: (data.content || '') + '\n\n' + description,
+    article_top: data.description || '',
+    external_links: data.pageUrl ? `[IG Lehm: ${data.title}](${data.pageUrl})` : '',
+    address: data.location || '',
+    year: data.yearOfConstruction ? Number(data.yearOfConstruction) : undefined,
+    files: data.images
+      ? data.images.map((image) => ({
+          url: image.url,
+          legend: image.description || '',
+        }))
+      : [],
+    source: `iglehm:${data.cId}`,
+    professional_ids: related_professional_ids,
+    state: 'draft',
+  } as Building;
+  if (data.building_id) {
+    service
+      .get(`${data.building_id}`)
+      .then((building) => {
+        selected.value = building as Building;
+        original.value = JSON.parse(JSON.stringify(building)) as Building;
+        // update building with IG Lehm data
+        // except name and external_links which should be preserved
+        selected.value.description = project_building.description || '';
+        selected.value.article_top = project_building.article_top || '';
+        selected.value.address = project_building.address || '';
+        selected.value.year = project_building.year;
+        if (project_building.files?.length) {
+          // append files not already in building's file list
+          const existingUrls = new Set(selected.value.files?.map((f) => f.url));
+          const newFiles = project_building.files.filter((f) => !existingUrls.has(f.url));
+          selected.value.files = [...(selected.value.files || []), ...newFiles];
+        }
         showEditDialog.value = true;
-      }
-    })
-    .catch(notifyError);
+      })
+      .catch(notifyError);
+  } else {
+    selected.value = project_building;
+    original.value = undefined;
+    showEditDialog.value = true;
+  }
 }
 </script>

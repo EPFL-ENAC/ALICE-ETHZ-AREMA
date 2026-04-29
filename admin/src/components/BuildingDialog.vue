@@ -412,9 +412,13 @@ function init(value: boolean) {
           value: item.id,
         }));
       });
-    if (editMode.value) {
-      professionals.value =
-        selected.value.professionals?.map((item: Professional) => item.id || 0) || [];
+    professionals.value =
+      selected.value.professionals?.map((item: Professional) => item.id || 0) || [];
+    if (selected.value.professional_ids) {
+      // merge professional_ids
+      professionals.value = [...professionals.value, ...selected.value.professional_ids];
+      // remove duplicates
+      professionals.value = Array.from(new Set(professionals.value));
     }
 
     buildingElements.value = [];

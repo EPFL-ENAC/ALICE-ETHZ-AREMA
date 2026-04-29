@@ -121,6 +121,7 @@ export interface NaturalResource extends PhysicalEntity {
   type: string;
   files?: FileItem[];
   authors?: string[];
+  related_sources?: string[];
   building_materials?: BuildingMaterial[];
 }
 
@@ -129,6 +130,7 @@ export interface BuildingMaterial extends PhysicalEntity {
   materials?: string[];
   files?: FileItem[];
   authors?: string[];
+  related_sources?: string[];
   natural_resources?: NaturalResource[];
   technical_constructions?: TechnicalConstruction[];
   buildings?: Building[];
@@ -143,6 +145,7 @@ export interface TechnicalConstruction extends PhysicalEntity {
   materials?: string[];
   files?: FileItem[];
   authors?: string[];
+  related_sources?: string[];
   building_materials?: BuildingMaterial[];
   professionals?: Professional[];
   buildings?: Building[];
@@ -189,6 +192,7 @@ export interface Building extends Entity {
   geom?: Geometry | undefined;
   files?: FileItem[];
   authors?: string[];
+  related_sources?: string[];
 
   building_materials?: BuildingMaterial[];
   professionals?: Professional[];
@@ -214,6 +218,7 @@ export interface Professional extends Entity {
   geom?: Geometry | undefined;
   files?: FileItem[];
   authors?: string[];
+  related_sources?: string[];
 
   professionals?: Professional[];
   buildings?: Building[];

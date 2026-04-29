@@ -563,6 +563,8 @@ function onIGLehmImport(project: IGLehmSpecialistSummary | null) {
             }))
           : [],
         source: `iglehm:${data.cId}`,
+        related_sources: data.projects ? data.projects.map((proj) => `iglehm:${proj.cId}`) : [],
+        state: 'draft',
       } as Professional;
       if (data.professional_id) {
         service
