@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy import func
 from sqlmodel import select
 from fastapi import HTTPException
-from api.models.domain import FileItem, Building, BuildingMaterial, BuildingElement, BuildingElementProfessional, BuildingElementMaterial, Professional, BuildingBuildingMaterial, ProfessionalBuilding
+from api.models.domain import Entity, FileItem, Building, BuildingMaterial, BuildingElement, BuildingElementProfessional, BuildingElementMaterial, Professional, BuildingBuildingMaterial, ProfessionalBuilding
 from api.models.query import BuildingDraft, BuildingResult, BuildingElementDraft, GroupByCount, GroupByResult
 from api.services.building_elements import BuildingElementService
 from enacit4r_sql.utils.query import QueryBuilder
@@ -229,6 +229,11 @@ class BuildingService(EntityService):
         # handle building elements
         await self._apply_building_elements(entity.id, payload.building_elements)
         return entity
+
+    def can_edit(self, entity: Building, user: User) -> bool:
+        if entity.authors and f"user:{user.username}" in entity.authors:
+            return True
+        return super().can_edit(entity, user)
 
     async def update(self, id: int, payload: BuildingDraft, user: User = None) -> Building:
         """Update a building"""

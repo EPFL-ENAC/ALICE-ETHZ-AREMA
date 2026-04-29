@@ -385,24 +385,26 @@ function fetchFromServer(
     $limit: count,
     $sort: [sortBy, descending],
   };
-  query.filter = {};
+  const queryFilter = { $and: [] as Array<Record<string, unknown>> };
+  query.filter = queryFilter;
   if (authStore.isContributor) {
-    query.filter.created_by = authStore.profile?.username || authStore.profile?.email || '';
+    const created_by_filter = {
+      $eq: authStore.profile?.username || authStore.profile?.email || '',
+    };
+    const authors_filter = { $contains: [`user:${authStore.profile?.username}`] };
+    queryFilter.$and.push({
+      $or: [{ created_by: created_by_filter }, { authors: authors_filter }],
+    });
   }
   if (types.value?.length) {
-    // AND
-    // query.filter = {
-    //   types: {
-    //     $contains: types.value,
-    //   },
-    // };
-    // OR
-    query.filter.$or = types.value.map((val) => {
-      return {
-        types: {
-          $contains: [val],
-        },
-      };
+    queryFilter.$and.push({
+      $or: types.value.map((val) => {
+        return {
+          types: {
+            $contains: [val],
+          },
+        };
+      }),
     });
   }
   if (filter) {
@@ -418,13 +420,9 @@ function fetchFromServer(
         },
       },
     ];
-    if (query.filter.$or) {
-      const typesClause = query.filter.$or;
-      delete query.filter.$or;
-      query.filter.$and = [{ $or: typesClause }, { $or: criteria }];
-    } else {
-      query.filter.$or = criteria;
-    }
+    queryFilter.$and.push({
+      $or: criteria,
+    });
   }
   return service
     .find(query)

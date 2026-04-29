@@ -338,12 +338,19 @@ function fetchFromServer(
     $limit: count,
     $sort: [sortBy, descending],
   };
-  query.filter = {};
+  const queryFilter = { $and: [] as Array<Record<string, unknown>> };
+  query.filter = queryFilter;
   if (authStore.isContributor) {
-    query.filter.created_by = authStore.profile?.username || authStore.profile?.email || '';
+    const created_by_filter = {
+      $eq: authStore.profile?.username || authStore.profile?.email || '',
+    };
+    const authors_filter = { $contains: [`user:${authStore.profile?.username}`] };
+    queryFilter.$and.push({
+      $or: [{ created_by: created_by_filter }, { authors: authors_filter }],
+    });
   }
   if (filter) {
-    query.filter.$or = [
+    const filter_conditions = [
       {
         name: {
           $ilike: `%${filter}%`,
@@ -355,6 +362,9 @@ function fetchFromServer(
         },
       },
     ];
+    queryFilter.$and.push({
+      $or: filter_conditions,
+    });
   }
   return service
     .find(query)

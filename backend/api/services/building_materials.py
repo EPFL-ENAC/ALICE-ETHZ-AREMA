@@ -173,6 +173,11 @@ class BuildingMaterialService(EntityService):
             await self.session.commit()
         return entity
 
+    def can_edit(self, entity: BuildingMaterial, user: User) -> bool:
+        if entity.authors and f"user:{user.username}" in entity.authors:
+            return True
+        return super().can_edit(entity, user)
+
     async def update(self, id: int, payload: BuildingMaterialDraft, user: User = None) -> BuildingMaterial:
         """Update a building material"""
         res = await self.session.exec(

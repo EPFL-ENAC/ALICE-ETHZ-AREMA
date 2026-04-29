@@ -203,6 +203,11 @@ class ProfessionalService(EntityService):
 
         return entity
 
+    def can_edit(self, entity: Professional, user: User) -> bool:
+        if entity.authors and f"user:{user.username}" in entity.authors:
+            return True
+        return super().can_edit(entity, user)
+
     async def update(self, id: int, payload: ProfessionalDraft, user: User = None) -> Professional:
         """Update a professional"""
         res = await self.session.exec(

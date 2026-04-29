@@ -85,7 +85,15 @@ export const useAuthStore = defineStore('auth', () => {
     const userName = profile.value?.username;
     if (isReviewer.value && entity.assigned_to === userName) return true;
     if (entity.state !== 'draft') return false;
-    return entity.created_by === userName || entity.updated_by === userName;
+    let authors: string[] = [];
+    if ((entity as { authors?: string[] }).authors) {
+      authors = (entity as { authors?: string[] }).authors!;
+    }
+    return (
+      entity.created_by === userName ||
+      entity.updated_by === userName ||
+      authors?.includes(`user:${userName}`)
+    );
   }
 
   function canPublish(entity: Entity) {
