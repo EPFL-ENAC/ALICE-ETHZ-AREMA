@@ -170,7 +170,7 @@ import { toDatetimeString, isDatetimeBefore } from 'src/utils/time';
 import { notifyError, notifySuccess } from 'src/utils/notify';
 import TaxonomySelect from 'src/components/TaxonomySelect.vue';
 import type { Alignment } from 'src/components/models';
-import type { Feature, GeoJsonProperties, Polygon } from 'geojson';
+import type { Feature, Polygon } from 'geojson';
 import EntityActionsBtn from 'src/components/EntityActionsBtn.vue';
 import EntityStateBtn from 'src/components/EntityStateBtn.vue';
 import EntityAssigneeBtn from 'src/components/EntityAssigneeBtn.vue';
@@ -360,11 +360,11 @@ const features = computed(() => {
         description: row.description,
         address: row.address,
         circleRadius: row.radius,
-      } as GeoJsonProperties,
+      },
       geometry: {
         type: 'Polygon',
         coordinates: [[asPoint(row), asPoint(row), asPoint(row), asPoint(row)]],
-      } as Polygon,
+      },
     } as Feature<Polygon>;
   });
 });

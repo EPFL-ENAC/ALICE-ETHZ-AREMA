@@ -137,7 +137,7 @@ import BuildingDialog from 'src/components/BuildingDialog.vue';
 import { toDatetimeString, isDatetimeBefore } from 'src/utils/time';
 import { notifyError, notifySuccess } from 'src/utils/notify';
 import type { Alignment } from 'src/components/models';
-import type { Feature, Point, GeoJsonProperties } from 'geojson';
+import type { Feature, Point } from 'geojson';
 import EntityActionsBtn from 'src/components/EntityActionsBtn.vue';
 import EntityStateBtn from 'src/components/EntityStateBtn.vue';
 import EntityAssigneeBtn from 'src/components/EntityAssigneeBtn.vue';
@@ -316,11 +316,11 @@ const features = computed(() => {
         name: row.name,
         description: row.description,
         address: row.address,
-      } as GeoJsonProperties,
+      },
       geometry: {
         type: 'Point',
         coordinates: [row.long, row.lat],
-      } as Point,
+      },
     };
   }) as Feature<Point>[];
 });
