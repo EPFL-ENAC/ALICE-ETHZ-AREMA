@@ -294,6 +294,9 @@ export interface IGLehmProject extends IGLehmEntity {
   fields?: string[];
   images?: IGLehmImage[];
   building_id?: number;
+  // added by arema during import
+  long?: number;
+  lat?: number;
 }
 
 export interface IGLehmSpecialistSummary extends IGLehmEntity {
@@ -319,4 +322,7 @@ export interface IGLehmSpecialist extends IGLehmEntity {
   projects?: IGLehmEntity[];
   professional_id?: number;
   building_ids?: number[];
+  // added by arema during import
+  long?: number;
+  lat?: number;
 }

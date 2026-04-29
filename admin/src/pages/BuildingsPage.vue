@@ -143,6 +143,7 @@ import EntityStateBtn from 'src/components/EntityStateBtn.vue';
 import EntityAssigneeBtn from 'src/components/EntityAssigneeBtn.vue';
 import IGLehmProjectImporterDialog from 'src/components/importer/IGLehmProjectImporterDialog.vue';
 import type { IGLehmProjectSummary, IGLehmProject } from 'src/models';
+import { geocoderApi } from 'src/utils/geocoder';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
@@ -492,6 +493,24 @@ async function onIGLehmImport(project: IGLehmProjectSummary | null) {
 
   try {
     const data = await importerService.fetchIGLehmProject(project.cId);
+    if (data.location) {
+      try {
+        const { features } = await geocoderApi.forwardGeocode({
+          query: data.location,
+          limit: 5,
+          countries: [],
+        });
+        if (features && features.length) {
+          const feature = features[0];
+          data.lat = feature.geometry.coordinates[1];
+          data.long = feature.geometry.coordinates[0];
+        } else {
+          console.warn('No geocoding results for location:', data.location);
+        }
+      } catch (error) {
+        console.error('Error geocoding location:', error);
+      }
+    }
     onIGLehmImportData(data, related_professional_ids);
   } catch (error) {
     notifyError(error);
@@ -517,6 +536,8 @@ function onIGLehmImportData(data: IGLehmProject, related_professional_ids: numbe
     article_top: data.description || '',
     external_links: data.pageUrl ? `[IG Lehm: ${data.title}](${data.pageUrl})` : '',
     address: data.location || '',
+    long: data.long,
+    lat: data.lat,
     year: data.yearOfConstruction ? Number(data.yearOfConstruction) : undefined,
     files: data.images
       ? data.images.map((image) => ({

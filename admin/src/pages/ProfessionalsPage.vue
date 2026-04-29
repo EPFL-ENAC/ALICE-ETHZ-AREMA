@@ -176,6 +176,7 @@ import EntityStateBtn from 'src/components/EntityStateBtn.vue';
 import EntityAssigneeBtn from 'src/components/EntityAssigneeBtn.vue';
 import IGLehmSpecialistImporterDialog from 'src/components/importer/IGLehmSpecialistImporterDialog.vue';
 import type { IGLehmSpecialistSummary } from 'src/models';
+import { geocoderApi } from 'src/utils/geocoder';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
@@ -530,7 +531,7 @@ function onShowIGLehmImport() {
   showIGLehmImporter.value = true;
 }
 
-function onIGLehmImport(project: IGLehmSpecialistSummary | null) {
+async function onIGLehmImport(project: IGLehmSpecialistSummary | null) {
   if (!project) return;
 
   function list_to_md(title: string, list: string[] | undefined): string {
@@ -541,62 +542,80 @@ function onIGLehmImport(project: IGLehmSpecialistSummary | null) {
     return md + list.map((item) => `* ${item}`).join('\n');
   }
 
-  void importerService
-    .fetchIGLehmSpecialist(project.cId)
-    .then((data: IGLehmSpecialist) => {
-      const specialist_professional = {
-        name: data.title,
-        article_top: data.description || '',
-        description: [
-          list_to_md(t('importer.sectors'), data.sectors),
-          list_to_md(t('importer.fields'), data.specialityFields),
-        ].join('\n\n'),
-        external_links: data.pageUrl ? `[IG Lehm: ${data.title}](${data.pageUrl})` : '',
-        address: data.address || '',
-        email: data.email || '',
-        web: data.website || '',
-        tel: data.phone || data.mobile || '',
-        files: data.images
-          ? data.images.map((image) => ({
-              url: image.url,
-              legend: image.description || '',
-            }))
-          : [],
-        source: `iglehm:${data.cId}`,
-        related_sources: data.projects ? data.projects.map((proj) => `iglehm:${proj.cId}`) : [],
-        state: 'draft',
-      } as Professional;
-      if (data.professional_id) {
-        service
-          .get(`${data.professional_id}`)
-          .then((professional) => {
-            selected.value = professional as Professional;
-            original.value = JSON.parse(JSON.stringify(professional)) as Professional;
-            // update professional with IG Lehm data
-            // except name and external_links which should be preserved
-            selected.value.article_top = specialist_professional.article_top || '';
-            selected.value.description = specialist_professional.description || '';
-            selected.value.address = specialist_professional.address || '';
-            selected.value.email = specialist_professional.email || '';
-            selected.value.web = specialist_professional.web || '';
-            selected.value.tel = specialist_professional.tel || '';
-            if (specialist_professional.files?.length) {
-              // append files not already in professional's file list
-              const existingUrls = new Set(selected.value.files?.map((f) => f.url));
-              const newFiles = specialist_professional.files.filter(
-                (f) => !existingUrls.has(f.url),
-              );
-              selected.value.files = [...(selected.value.files || []), ...newFiles];
-            }
-            showEditDialog.value = true;
-          })
-          .catch(notifyError);
-      } else {
-        selected.value = specialist_professional;
-        original.value = undefined;
-        showEditDialog.value = true;
+  try {
+    const data: IGLehmSpecialist = await importerService.fetchIGLehmSpecialist(project.cId);
+    if (data.address) {
+      try {
+        const { features } = await geocoderApi.forwardGeocode({
+          query: data.address,
+          limit: 5,
+          countries: [],
+        });
+        if (features && features.length) {
+          const feature = features[0];
+          data.lat = feature.geometry.coordinates[1];
+          data.long = feature.geometry.coordinates[0];
+        } else {
+          console.warn('No geocoding results for location:', data.address);
+        }
+      } catch (error) {
+        console.error('Error geocoding location:', error);
       }
-    })
-    .catch(notifyError);
+    }
+    const specialist_professional = {
+      name: data.title,
+      article_top: data.description || '',
+      description: [
+        list_to_md(t('importer.sectors'), data.sectors),
+        list_to_md(t('importer.fields'), data.specialityFields),
+      ].join('\n\n'),
+      external_links: data.pageUrl ? `[IG Lehm: ${data.title}](${data.pageUrl})` : '',
+      address: data.address || '',
+      long: data.long,
+      lat: data.lat,
+      email: data.email || '',
+      web: data.website || '',
+      tel: data.phone || data.mobile || '',
+      files: data.images
+        ? data.images.map((image) => ({
+            url: image.url,
+            legend: image.description || '',
+          }))
+        : [],
+      source: `iglehm:${data.cId}`,
+      related_sources: data.projects ? data.projects.map((proj) => `iglehm:${proj.cId}`) : [],
+      state: 'draft',
+    } as Professional;
+    if (data.professional_id) {
+      service
+        .get(`${data.professional_id}`)
+        .then((professional) => {
+          selected.value = professional as Professional;
+          original.value = JSON.parse(JSON.stringify(professional)) as Professional;
+          // update professional with IG Lehm data
+          // except name and external_links which should be preserved
+          selected.value.article_top = specialist_professional.article_top || '';
+          selected.value.description = specialist_professional.description || '';
+          selected.value.address = specialist_professional.address || '';
+          selected.value.email = specialist_professional.email || '';
+          selected.value.web = specialist_professional.web || '';
+          selected.value.tel = specialist_professional.tel || '';
+          if (specialist_professional.files?.length) {
+            // append files not already in professional's file list
+            const existingUrls = new Set(selected.value.files?.map((f) => f.url));
+            const newFiles = specialist_professional.files.filter((f) => !existingUrls.has(f.url));
+            selected.value.files = [...(selected.value.files || []), ...newFiles];
+          }
+          showEditDialog.value = true;
+        })
+        .catch(notifyError);
+    } else {
+      selected.value = specialist_professional;
+      original.value = undefined;
+      showEditDialog.value = true;
+    }
+  } catch (error) {
+    notifyError(error);
+  }
 }
 </script>
