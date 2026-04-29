@@ -91,3 +91,18 @@ li + li {
   padding-left: 20px;
   font-size: smaller;
 }
+
+.diff-added {
+  background: #d9f99d;
+  color: #14532d;
+  padding: 1px 3px;
+  border-radius: 4px;
+}
+
+.diff-removed {
+  background: #fecaca;
+  color: #7f1d1d;
+  text-decoration: line-through;
+  padding: 1px 3px;
+  border-radius: 4px;
+}

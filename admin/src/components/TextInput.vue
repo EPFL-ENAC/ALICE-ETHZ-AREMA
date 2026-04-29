@@ -4,6 +4,13 @@
       <q-tabs v-model="tab" dense align="left" class="bg-grey-1 text-grey-6" active-color="grey-8">
         <q-tab name="write" :label="label" no-caps />
         <q-tab name="preview" :label="t('preview')" no-caps />
+        <q-tab
+          v-if="!disable"
+          name="diff"
+          :label="t('diff')"
+          :alert="diffsCount > 0 ? 'info' : false"
+          no-caps
+        />
       </q-tabs>
       <q-separator />
       <q-tab-panels v-model="tab">
@@ -34,6 +41,11 @@
             <q-markdown :src="text" no-heading-anchor-links />
           </q-card>
         </q-tab-panel>
+        <q-tab-panel v-if="!disable" name="diff" class="q-pa-none">
+          <q-card flat bordered class="q-pa-md" style="border-top: none">
+            <diff-text :oldText="original" :newText="text" />
+          </q-card>
+        </q-tab-panel>
       </q-tab-panels>
     </q-card>
     <div v-if="hint && tab === 'write'" class="q-pt-xs on-right text-hint">{{ hint }}</div>
@@ -41,8 +53,12 @@
 </template>
 
 <script setup lang="ts">
+import DiffText from 'src/components/DiffText.vue';
+import { countDiffs } from 'src/utils/strings';
+
 interface Props {
   modelValue: string | undefined;
+  original?: string | null | undefined;
   label?: string;
   hint?: string;
   help?: string;
@@ -59,6 +75,10 @@ const { t, locale } = useI18n();
 const text = ref(props.modelValue);
 const tab = ref('write');
 const helpContent = ref('');
+
+const diffsCount = computed(() => {
+  return countDiffs(props.original || '', text.value);
+});
 
 onMounted(() => {
   if (props.help) {

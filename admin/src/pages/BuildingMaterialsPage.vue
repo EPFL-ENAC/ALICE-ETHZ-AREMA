@@ -102,6 +102,7 @@
         v-if="selected"
         v-model="showEditDialog"
         :item="selected"
+        :original="original"
         :read-only="readOnly"
         @saved="onRefresh"
       ></building-material-dialog>
@@ -227,6 +228,7 @@ const columns = computed(() => {
 });
 
 const selected = ref<BuildingMaterial>();
+const original = ref<BuildingMaterial | undefined>();
 const showEditDialog = ref(false);
 const readOnly = ref(false);
 const tableRef = ref();
@@ -297,6 +299,7 @@ function onIndex() {
 
 function onAdd() {
   selected.value = { name: '' };
+  original.value = undefined;
   showEditDialog.value = true;
 }
 
@@ -331,12 +334,14 @@ function onAction(item: BuildingMaterial, action: string) {
 
 function onEdit(item: BuildingMaterial) {
   selected.value = { ...item };
+  original.value = JSON.parse(JSON.stringify(item)) as BuildingMaterial;
   readOnly.value = false;
   showEditDialog.value = true;
 }
 
 function onView(resource: BuildingMaterial) {
   selected.value = { ...resource };
+  original.value = JSON.parse(JSON.stringify(resource)) as BuildingMaterial;
   readOnly.value = true;
   showEditDialog.value = true;
 }

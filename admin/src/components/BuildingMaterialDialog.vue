@@ -52,6 +52,7 @@
             </div>
             <text-input
               :disable="readOnly"
+              :original="original?.description"
               v-model="selected.description"
               :label="t('description')"
               help="building-material-description"
@@ -60,6 +61,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.article_top"
+              :original="original?.article_top"
               :label="t('article_top')"
               help="building-material-article-top"
               class="q-mb-md"
@@ -67,6 +69,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.article_bottom"
+              :original="original?.article_bottom"
               :label="t('article_bottom')"
               help="building-material-article-bottom"
               class="q-mb-md"
@@ -74,6 +77,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.side_note"
+              :original="original?.side_note"
               :label="t('side_note')"
               help="building-material-side-note"
               class="q-mb-md"
@@ -81,6 +85,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.external_links"
+              :original="original?.external_links"
               :label="t('external_links')"
               help="building-material-links"
               class="q-mb-md"
@@ -174,6 +179,7 @@ import AuthorsInput from 'src/components/AuthorsInput.vue';
 interface DialogProps {
   modelValue: boolean;
   item: BuildingMaterial;
+  original?: BuildingMaterial | undefined;
   readOnly?: boolean;
 }
 

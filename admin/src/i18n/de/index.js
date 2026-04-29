@@ -133,6 +133,7 @@ export default {
   density_hint: 'ρ, kg/m³',
   density: 'Dichte',
   description: 'Beschreibung',
+  diff: 'Diff',
   diffusivity_hint: 'D, *10⁻⁶*m²/s',
   diffusivity: 'Diffusivität',
   dimension: 'Abmessung',

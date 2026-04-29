@@ -90,6 +90,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.description"
+              :original="original?.description"
               :label="t('description')"
               help="building-description"
               class="q-mb-md"
@@ -97,6 +98,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.article_top"
+              :original="original?.article_top"
               :label="t('article_top')"
               help="building-article-top"
               class="q-mb-md"
@@ -104,6 +106,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.article_bottom"
+              :original="original?.article_bottom"
               :label="t('article_bottom')"
               help="building-article-bottom"
               class="q-mb-md"
@@ -111,6 +114,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.side_note"
+              :original="original?.side_note"
               :label="t('side_note')"
               help="building-side-note"
               class="q-mb-md"
@@ -118,6 +122,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.external_links"
+              :original="original?.external_links"
               :label="t('external_links')"
               help="building-links"
               class="q-mb-md"
@@ -283,6 +288,7 @@ import type { Feature } from '@turf/turf';
 interface DialogProps {
   modelValue: boolean;
   item: Building;
+  original?: Building | null | undefined;
   readOnly?: boolean;
 }
 

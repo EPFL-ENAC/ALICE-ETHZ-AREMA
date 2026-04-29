@@ -77,6 +77,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.article_top"
+              :original="original?.article_top"
               :label="t('article_top')"
               help="professional-article-top"
               class="q-mb-md"
@@ -84,6 +85,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.article_bottom"
+              :original="original?.article_bottom"
               :label="t('article_bottom')"
               help="professional-article-bottom"
               class="q-mb-md"
@@ -91,6 +93,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.side_note"
+              :original="original?.side_note"
               :label="t('side_note')"
               help="professional-side-note"
               class="q-mb-md"
@@ -98,6 +101,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.external_links"
+              :original="original?.external_links"
               :label="t('external_links')"
               help="professional-links"
               class="q-mb-md"
@@ -251,6 +255,7 @@ import type { Option } from 'src/components/models';
 interface DialogProps {
   modelValue: boolean;
   item: Professional;
+  original?: Professional | null | undefined;
   readOnly?: boolean;
 }
 

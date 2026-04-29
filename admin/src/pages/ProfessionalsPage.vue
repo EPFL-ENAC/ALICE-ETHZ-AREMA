@@ -149,6 +149,7 @@
         v-if="selected"
         v-model="showEditDialog"
         :item="selected"
+        :original="original"
         :read-only="readOnly"
         @saved="onRefresh"
       />
@@ -321,6 +322,7 @@ const columns = computed(() => {
 });
 
 const selected = ref<Professional>();
+const original = ref<Professional | null | undefined>();
 const showEditDialog = ref(false);
 const readOnly = ref(false);
 const tableRef = ref();
@@ -452,6 +454,7 @@ function onIndex() {
 
 function onAdd() {
   selected.value = { name: '' };
+  original.value = undefined;
   showEditDialog.value = true;
 }
 
@@ -486,12 +489,14 @@ function onAction(item: Professional, action: string) {
 
 function onEdit(resource: Professional) {
   selected.value = { ...resource };
+  original.value = JSON.parse(JSON.stringify(resource)) as Professional;
   readOnly.value = false;
   showEditDialog.value = true;
 }
 
 function onView(resource: Professional) {
   selected.value = { ...resource };
+  original.value = JSON.parse(JSON.stringify(resource)) as Professional;
   readOnly.value = true;
   showEditDialog.value = true;
 }
@@ -560,21 +565,22 @@ function onIGLehmImport(project: IGLehmSpecialistSummary | null) {
             }))
           : [],
         source: `iglehm:${data.cId}`,
-      };
+      } as Professional;
       if (data.professional_id) {
         service
           .get(`${data.professional_id}`)
           .then((professional) => {
             selected.value = professional as Professional;
+            original.value = JSON.parse(JSON.stringify(professional)) as Professional;
             // update professional with IG Lehm data
             // except name and external_links which should be preserved
-            selected.value.article_top = specialist_professional.article_top;
-            selected.value.description = specialist_professional.description;
-            selected.value.address = specialist_professional.address;
-            selected.value.email = specialist_professional.email;
-            selected.value.web = specialist_professional.web;
-            selected.value.tel = specialist_professional.tel;
-            if (specialist_professional.files.length) {
+            selected.value.article_top = specialist_professional.article_top || '';
+            selected.value.description = specialist_professional.description || '';
+            selected.value.address = specialist_professional.address || '';
+            selected.value.email = specialist_professional.email || '';
+            selected.value.web = specialist_professional.web || '';
+            selected.value.tel = specialist_professional.tel || '';
+            if (specialist_professional.files?.length) {
               // append files not already in professional's file list
               const existingUrls = new Set(selected.value.files?.map((f) => f.url));
               const newFiles = specialist_professional.files.filter(
@@ -586,7 +592,8 @@ function onIGLehmImport(project: IGLehmSpecialistSummary | null) {
           })
           .catch(notifyError);
       } else {
-        selected.value = specialist_professional as Professional;
+        selected.value = specialist_professional;
+        original.value = undefined;
         showEditDialog.value = true;
       }
     })

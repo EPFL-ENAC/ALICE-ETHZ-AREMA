@@ -117,6 +117,7 @@
         v-if="selected"
         v-model="showEditDialog"
         :item="selected"
+        :original="original"
         :read-only="readOnly"
         @saved="onRefresh"
       />
@@ -279,6 +280,7 @@ const columns = computed(() => {
 });
 
 const selected = ref<Building>();
+const original = ref<Building>();
 const showEditDialog = ref(false);
 const readOnly = ref(false);
 const tableRef = ref();
@@ -382,6 +384,7 @@ function onIndex() {
 
 function onAdd() {
   selected.value = { name: '' };
+  original.value = undefined;
   showEditDialog.value = true;
 }
 
@@ -416,12 +419,14 @@ function onAction(item: Building, action: string) {
 
 function onEdit(resource: Building) {
   selected.value = { ...resource };
+  original.value = { ...resource };
   readOnly.value = false;
   showEditDialog.value = true;
 }
 
 function onView(resource: Building) {
   selected.value = { ...resource };
+  original.value = undefined;
   readOnly.value = true;
   showEditDialog.value = true;
 }
@@ -489,19 +494,20 @@ function onIGLehmImport(project: IGLehmProjectSummary | null) {
             }))
           : [],
         source: `iglehm:${data.cId}`,
-      };
+      } as Building;
       if (data.building_id) {
         service
           .get(`${data.building_id}`)
           .then((building) => {
             selected.value = building as Building;
+            original.value = JSON.parse(JSON.stringify(building)) as Building;
             // update building with IG Lehm data
             // except name and external_links which should be preserved
-            selected.value.description = project_building.description;
-            selected.value.article_top = project_building.article_top;
-            selected.value.address = project_building.address;
+            selected.value.description = project_building.description || '';
+            selected.value.article_top = project_building.article_top || '';
+            selected.value.address = project_building.address || '';
             selected.value.year = project_building.year;
-            if (project_building.files.length) {
+            if (project_building.files?.length) {
               // append files not already in building's file list
               const existingUrls = new Set(selected.value.files?.map((f) => f.url));
               const newFiles = project_building.files.filter((f) => !existingUrls.has(f.url));
@@ -512,6 +518,7 @@ function onIGLehmImport(project: IGLehmProjectSummary | null) {
           .catch(notifyError);
       } else {
         selected.value = project_building;
+        original.value = undefined;
         showEditDialog.value = true;
       }
     })
