@@ -53,6 +53,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.description"
+              :original="original?.description"
               :label="t('description')"
               help="professional-description"
               class="q-mb-md"
