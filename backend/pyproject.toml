@@ -31,7 +31,7 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-enacit4r-files = {git = "https://github.com/EPFL-ENAC/enacit4r-files", rev = "0.6.0"}
+enacit4r-files = {git = "https://github.com/EPFL-ENAC/enacit4r-files", rev = "1.0.0"}
 enacit4r-auth = {git = "https://github.com/EPFL-ENAC/enacit4r-auth", rev = "0.6.1"}
 enacit4r-sql = {git = "https://github.com/EPFL-ENAC/enacit4r-sql", rev = "0.4.1"}
 
