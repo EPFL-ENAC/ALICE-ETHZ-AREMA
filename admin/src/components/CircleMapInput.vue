@@ -153,15 +153,6 @@ function onRadiusUpdate() {
   }
 }
 
-// function onAddressUpdate() {
-//   const feature = toFeature();
-//   if (feature && feature.properties && feature.properties.addressInput !== address.value) {
-//     feature.properties.circleRadius = radius.value;
-//     feature.properties.addressInput = address.value;
-//     emit('update:modelValue', feature);
-//   }
-// }
-
 function deleteAll() {
   address.value = undefined;
   search.value = undefined;
@@ -196,7 +187,6 @@ function updateWithLocation(location: Feature) {
 
 function onAddressUpdate(newAddress: string) {
   address.value = newAddress;
-  updateWithLocation(unref(props.modelValue) as Feature<Polygon | MultiPolygon>);
 }
 
 function toFeature() {

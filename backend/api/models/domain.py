@@ -60,6 +60,7 @@ class Entity(SQLModel):
     published_by: Optional[str] = Field(default=None)
     assigned_to: Optional[str] = Field(default=None)
     state: Optional[str] = Field(default="draft")
+    source: Optional[str] = Field(default=None)
 
 
 class PhysicalEntity(Entity):
@@ -200,6 +201,8 @@ class NaturalResourceBase(PhysicalEntity):
     type: str
     files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
     authors: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
+    related_sources: Optional[List[str]] = Field(
+        default=None, sa_column=Column(JSON))
 
 
 class NaturalResource(NaturalResourceBase, table=True):
@@ -221,6 +224,8 @@ class BuildingMaterialBase(PhysicalEntity):
         default=None, sa_column=Column(JSON))
     files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
     authors: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
+    related_sources: Optional[List[str]] = Field(
+        default=None, sa_column=Column(JSON))
 
 
 class BuildingMaterial(BuildingMaterialBase, table=True):
@@ -248,6 +253,8 @@ class TechnicalConstructionBase(PhysicalEntity):
         default=None, sa_column=Column(JSON))
     files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
     authors: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
+    related_sources: Optional[List[str]] = Field(
+        default=None, sa_column=Column(JSON))
 
 
 class TechnicalConstruction(TechnicalConstructionBase, table=True):
@@ -329,6 +336,8 @@ class BuildingBase(Entity):
     geom: Optional[Dict] = Field(default=None, sa_column=Column(JSON))
     files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
     authors: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
+    related_sources: Optional[List[str]] = Field(
+        default=None, sa_column=Column(JSON))
 
 
 class Building(BuildingBase, table=True):
@@ -364,6 +373,8 @@ class ProfessionalBase(Entity):
     geom: Optional[Dict] = Field(default=None, sa_column=Column(JSON))
     files: Optional[List[Dict]] = Field(default=None, sa_column=Column(JSON))
     authors: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
+    related_sources: Optional[List[str]] = Field(
+        default=None, sa_column=Column(JSON))
 
 
 class Professional(ProfessionalBase, table=True):

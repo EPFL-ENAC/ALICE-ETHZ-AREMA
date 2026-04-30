@@ -7,7 +7,7 @@ import { baseUrl, cdnUrl } from 'src/boot/api';
 const protocol = new Protocol();
 addProtocol('pmtiles', protocol.tile);
 
-const mapsUrl = `${cdnUrl}/arema/maps/2026-04-20T15:31`;
+const mapsUrl = `${cdnUrl}/arema/maps/2026-04-27T12:46`;
 
 export const style: StyleSpecification = {
   version: 8,

@@ -54,6 +54,7 @@
               v-model="selected.description"
               :label="t('description')"
               help="technical-construction-description"
+              :original="original?.description"
               class="q-mb-md"
             />
             <text-input
@@ -61,6 +62,7 @@
               v-model="selected.article_top"
               :label="t('article_top')"
               help="technical-construction-article-top"
+              :original="original?.article_top"
               class="q-mb-md"
             />
             <text-input
@@ -68,6 +70,7 @@
               v-model="selected.article_bottom"
               :label="t('article_bottom')"
               help="technical-construction-article-bottom"
+              :original="original?.article_bottom"
               class="q-mb-md"
             />
             <text-input
@@ -75,6 +78,7 @@
               v-model="selected.side_note"
               :label="t('side_note')"
               help="technical-construction-side-note"
+              :original="original?.side_note"
               class="q-mb-md"
             />
             <text-input
@@ -82,6 +86,7 @@
               v-model="selected.external_links"
               :label="t('external_links')"
               help="technical-construction-links"
+              :original="original?.external_links"
               class="q-mb-md"
             />
           </q-tab-panel>
@@ -169,6 +174,7 @@ import AuthorsInput from 'src/components/AuthorsInput.vue';
 interface DialogProps {
   modelValue: boolean;
   item: TechnicalConstruction;
+  original?: TechnicalConstruction | undefined;
   readOnly?: boolean;
 }
 

@@ -57,12 +57,12 @@ class Config(BaseSettings):
             values[
                 "DB_URL"
             ] = "{prefix}://{user}:{password}@{host}:{port}/{db}".format(
-                prefix=values["DB_PREFIX"],
-                user=values["DB_USER"],
-                password=values["DB_PASSWORD"],
-                host=values["DB_HOST"],
-                port=values["DB_PORT"],
-                db=values["DB_NAME"],
+                prefix=values.get("DB_PREFIX", "postgresql+asyncpg"),
+                user=values.get("DB_USER", ""),
+                password=values.get("DB_PASSWORD", ""),
+                host=values.get("DB_HOST", ""),
+                port=values.get("DB_PORT", 5432),
+                db=values.get("DB_NAME", ""),
             )
         return values
 

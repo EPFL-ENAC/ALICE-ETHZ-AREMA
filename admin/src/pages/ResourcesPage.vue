@@ -107,6 +107,7 @@
         v-if="selected"
         v-model="showEditDialog"
         :item="selected"
+        :original="original"
         :read-only="readOnly"
         @saved="onRefresh"
       ></resource-dialog>
@@ -223,6 +224,7 @@ const columns = computed(() => {
 });
 
 const selected = ref<NaturalResource>();
+const original = ref<NaturalResource | null | undefined>();
 const showEditDialog = ref(false);
 const readOnly = ref(false);
 const tableRef = ref();
@@ -306,6 +308,7 @@ function onIndex() {
 
 function onAdd() {
   selected.value = { name: '', type: '' };
+  original.value = undefined;
   showEditDialog.value = true;
 }
 
@@ -340,12 +343,14 @@ function onAction(item: NaturalResource, action: string) {
 
 function onEdit(item: NaturalResource) {
   selected.value = { ...item };
+  original.value = JSON.parse(JSON.stringify(item)) as NaturalResource;
   readOnly.value = false;
   showEditDialog.value = true;
 }
 
 function onView(resource: NaturalResource) {
   selected.value = { ...resource };
+  original.value = JSON.parse(JSON.stringify(resource)) as NaturalResource;
   readOnly.value = true;
   showEditDialog.value = true;
 }

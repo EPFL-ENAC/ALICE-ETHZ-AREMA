@@ -154,6 +154,19 @@ class ProfessionalService(EntityService):
             data=entities
         )
 
+    async def find_by_source(self, source: str) -> Professional | None:
+        """Find a professional by its source"""
+        query = select(Professional).where(Professional.source == source)
+        res = await self.session.exec(query)
+        return res.first()
+
+    async def find_by_source_prefix(self, source_prefix: str) -> list[Professional]:
+        """Find professionals by source prefix"""
+        query = select(Professional).where(
+            Professional.source.startswith(source_prefix))
+        res = await self.session.exec(query)
+        return res.all()
+
     async def create(self, payload: ProfessionalDraft, user: User = None) -> Professional:
         """Create a new professional"""
         entity = Professional(**payload.model_dump())
@@ -189,6 +202,11 @@ class ProfessionalService(EntityService):
             await self.session.commit()
 
         return entity
+
+    def can_edit(self, entity: Professional, user: User) -> bool:
+        if entity.authors and f"user:{user.username}" in entity.authors:
+            return True
+        return super().can_edit(entity, user)
 
     async def update(self, id: int, payload: ProfessionalDraft, user: User = None) -> Professional:
         """Update a professional"""

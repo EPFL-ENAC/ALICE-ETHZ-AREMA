@@ -26,6 +26,21 @@
             icon="add"
             @click="onAdd"
           />
+          <q-btn-dropdown
+            v-if="authStore.isAdmin"
+            size="sm"
+            color="primary"
+            :label="t('importer.import')"
+            class="on-right"
+          >
+            <q-list>
+              <q-item clickable v-close-popup @click="onShowIGLehmImport">
+                <q-item-section>
+                  <q-item-label>IG Lehm</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
           <q-btn
             v-if="authStore.isAdmin"
             size="sm"
@@ -102,9 +117,12 @@
         v-if="selected"
         v-model="showEditDialog"
         :item="selected"
+        :original="original"
         :read-only="readOnly"
         @saved="onRefresh"
       />
+
+      <IGLehmProjectImporterDialog v-model="showIGLehmImporter" @import="onIGLehmImport" />
     </div>
   </q-page>
 </template>
@@ -119,16 +137,21 @@ import BuildingDialog from 'src/components/BuildingDialog.vue';
 import { toDatetimeString, isDatetimeBefore } from 'src/utils/time';
 import { notifyError, notifySuccess } from 'src/utils/notify';
 import type { Alignment } from 'src/components/models';
-import type { Feature, Point, GeoJsonProperties } from 'geojson';
+import type { Feature, Point } from 'geojson';
 import EntityActionsBtn from 'src/components/EntityActionsBtn.vue';
 import EntityStateBtn from 'src/components/EntityStateBtn.vue';
 import EntityAssigneeBtn from 'src/components/EntityAssigneeBtn.vue';
+import IGLehmProjectImporterDialog from 'src/components/importer/IGLehmProjectImporterDialog.vue';
+import type { IGLehmProjectSummary, IGLehmProject } from 'src/models';
+import { geocoderApi } from 'src/utils/geocoder';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
 const taxonomyStore = useTaxonomyStore();
+const importerService = useImporterService();
 const services = useServices();
 const service = services.make('building');
+const professionalService = services.make('professional');
 
 const columns = computed(() => {
   const cols = [
@@ -259,6 +282,7 @@ const columns = computed(() => {
 });
 
 const selected = ref<Building>();
+const original = ref<Building>();
 const showEditDialog = ref(false);
 const readOnly = ref(false);
 const tableRef = ref();
@@ -272,6 +296,7 @@ const pagination = ref<PaginationOptions>({
   rowsPerPage: 50,
 });
 const bldTypes = ref<Option[]>([]);
+const showIGLehmImporter = ref(false);
 
 onMounted(() => {
   onRefresh();
@@ -293,11 +318,11 @@ const features = computed(() => {
         name: row.name,
         description: row.description,
         address: row.address,
-      } as GeoJsonProperties,
+      },
       geometry: {
         type: 'Point',
         coordinates: [row.long, row.lat],
-      } as Point,
+      },
     };
   }) as Feature<Point>[];
 });
@@ -315,12 +340,19 @@ function fetchFromServer(
     $limit: count,
     $sort: [sortBy, descending],
   };
-  query.filter = {};
+  const queryFilter = { $and: [] as Array<Record<string, unknown>> };
+  query.filter = queryFilter;
   if (authStore.isContributor) {
-    query.filter.created_by = authStore.profile?.username || authStore.profile?.email || '';
+    const created_by_filter = {
+      $eq: authStore.profile?.username || authStore.profile?.email || '',
+    };
+    const authors_filter = { $contains: [`user:${authStore.profile?.username}`] };
+    queryFilter.$and.push({
+      $or: [{ created_by: created_by_filter }, { authors: authors_filter }],
+    });
   }
   if (filter) {
-    query.filter.$or = [
+    const filter_conditions = [
       {
         name: {
           $ilike: `%${filter}%`,
@@ -332,6 +364,9 @@ function fetchFromServer(
         },
       },
     ];
+    queryFilter.$and.push({
+      $or: filter_conditions,
+    });
   }
   return service
     .find(query)
@@ -361,6 +396,7 @@ function onIndex() {
 
 function onAdd() {
   selected.value = { name: '' };
+  original.value = undefined;
   showEditDialog.value = true;
 }
 
@@ -395,12 +431,14 @@ function onAction(item: Building, action: string) {
 
 function onEdit(resource: Building) {
   selected.value = { ...resource };
+  original.value = { ...resource };
   readOnly.value = false;
   showEditDialog.value = true;
 }
 
 function onView(resource: Building) {
   selected.value = { ...resource };
+  original.value = undefined;
   readOnly.value = true;
   showEditDialog.value = true;
 }
@@ -430,5 +468,112 @@ function onRemove(item: Building) {
 
 function getTypeLabel(val: string): string {
   return bldTypes.value.find((opt) => opt.value === val)?.label || val;
+}
+
+function onShowIGLehmImport() {
+  showIGLehmImporter.value = true;
+}
+
+async function onIGLehmImport(project: IGLehmProjectSummary | null) {
+  if (!project) return;
+
+  let related_professional_ids: number[] = [];
+  try {
+    const relations_result = await professionalService.find({
+      $limit: 100,
+      filter: { related_sources: { $contains: [`iglehm:${project.cId}`] } },
+      $select: ['id', 'name'], // only fetch id and name to reduce payload
+    });
+    if (relations_result.total) {
+      related_professional_ids = relations_result.data.map((pro: { id: number }) => pro.id);
+    }
+  } catch (error) {
+    console.error('Error fetching related professionals:', error);
+  }
+
+  try {
+    const data = await importerService.fetchIGLehmProject(project.cId);
+    if (data.location) {
+      try {
+        const { features } = await geocoderApi.forwardGeocode({
+          query: data.location,
+          limit: 5,
+          countries: [],
+        });
+        if (features && features.length) {
+          const feature = features[0];
+          data.lat = feature.geometry.coordinates[1];
+          data.long = feature.geometry.coordinates[0];
+        } else {
+          console.warn('No geocoding results for location:', data.location);
+        }
+      } catch (error) {
+        console.error('Error geocoding location:', error);
+      }
+    }
+    onIGLehmImportData(data, related_professional_ids);
+  } catch (error) {
+    notifyError(error);
+  }
+}
+
+function onIGLehmImportData(data: IGLehmProject, related_professional_ids: number[]) {
+  function list_to_md(title: string, list: string[] | undefined): string {
+    if (!list || list.length === 0) {
+      return '';
+    }
+    const md = `**${title}**\n`;
+    return md + list.map((item) => `* ${item}`).join('\n');
+  }
+
+  const description = [
+    list_to_md(t('importer.regions'), data.regions),
+    list_to_md(t('importer.fields'), data.fields),
+  ].join('\n\n');
+  const project_building = {
+    name: data.title,
+    description: (data.content || '') + '\n\n' + description,
+    article_top: data.description || '',
+    external_links: data.pageUrl ? `[IG Lehm: ${data.title}](${data.pageUrl})` : '',
+    address: data.location || '',
+    long: data.long,
+    lat: data.lat,
+    year: data.yearOfConstruction ? Number(data.yearOfConstruction) : undefined,
+    files: data.images
+      ? data.images.map((image) => ({
+          url: image.url,
+          legend: image.description || '',
+        }))
+      : [],
+    source: `iglehm:${data.cId}`,
+    professional_ids: related_professional_ids,
+    state: 'draft',
+  } as Building;
+  if (data.building_id) {
+    service
+      .get(`${data.building_id}`)
+      .then((building) => {
+        selected.value = building as Building;
+        original.value = JSON.parse(JSON.stringify(building)) as Building;
+        // update building with IG Lehm data
+        // except name and external_links which should be preserved
+        selected.value.description = project_building.description || '';
+        selected.value.article_top = project_building.article_top || '';
+        selected.value.address = project_building.address || '';
+        selected.value.year = project_building.year;
+        if (project_building.files?.length) {
+          // append files not already in building's file list
+          const existingUrls = new Set(selected.value.files?.map((f) => f.url));
+          const newFiles = project_building.files.filter((f) => !existingUrls.has(f.url));
+          selected.value.files = [...(selected.value.files || []), ...newFiles];
+        }
+        showEditDialog.value = true;
+      })
+      .catch(notifyError);
+  } else {
+    selected.value = project_building;
+    original.value = undefined;
+    showEditDialog.value = true;
+  }
 }
 </script>

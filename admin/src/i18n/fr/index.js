@@ -43,6 +43,25 @@ export default {
     'to-delete': 'À supprimer',
     locked: 'Verrouillé',
   },
+  importer: {
+    import: 'Importer',
+    iglehm: {
+      project_import: {
+        title: 'Import d\'un projet IG Lehm',
+        hint: 'Sélectionnez un projet IG Lehm. Cela créera un nouvel article avec le même titre que le projet IG Lehm et un contenu contenant toutes les informations du projet.',
+      },
+      specialist_import: {
+        title: 'Import d\'un spécialiste IG Lehm',
+        hint: 'Sélectionnez un spécialiste IG Lehm. Cela créera un nouvel article avec le même nom que le spécialiste IG Lehm et un contenu contenant toutes les informations du spécialiste.',
+      },
+    },
+    all: 'Tout',
+    new: 'Nouveau',
+    update: 'Mise à jour',
+    regions: 'Régions',
+    sectors: 'Secteurs',
+    fields: 'Domaines',
+  },
   error: {
     accept_terms_and_conditions: 'Vous devez accepter les termes et conditions.',
     form_invalid: 'Certains champs sont invalides.',
@@ -116,6 +135,7 @@ export default {
   density_hint: 'ρ, kg/m³',
   density: 'Densité',
   description: 'Description',
+  diff: 'Diff',
   diffusivity_hint: 'D, *10⁻⁶*m²/s',
   diffusivity: 'Diffusivité',
   dimension: 'Dimension',

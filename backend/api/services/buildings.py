@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy import func
 from sqlmodel import select
 from fastapi import HTTPException
-from api.models.domain import FileItem, Building, BuildingMaterial, BuildingElement, BuildingElementProfessional, BuildingElementMaterial, Professional, BuildingBuildingMaterial, ProfessionalBuilding
+from api.models.domain import Entity, FileItem, Building, BuildingMaterial, BuildingElement, BuildingElementProfessional, BuildingElementMaterial, Professional, BuildingBuildingMaterial, ProfessionalBuilding
 from api.models.query import BuildingDraft, BuildingResult, BuildingElementDraft, GroupByCount, GroupByResult
 from api.services.building_elements import BuildingElementService
 from enacit4r_sql.utils.query import QueryBuilder
@@ -180,6 +180,19 @@ class BuildingService(EntityService):
             data=entities
         )
 
+    async def find_by_source(self, source: str) -> Building | None:
+        """Find a building by its source"""
+        query = select(Building).where(Building.source == source)
+        res = await self.session.exec(query)
+        return res.first()
+
+    async def find_by_source_prefix(self, source_prefix: str) -> list[Building]:
+        """Find buildings by source prefix"""
+        query = select(Building).where(
+            Building.source.startswith(source_prefix))
+        res = await self.session.exec(query)
+        return res.all()
+
     async def create(self, payload: BuildingDraft, user: User = None) -> Building:
         """Create a new building"""
         entity = Building()
@@ -216,6 +229,11 @@ class BuildingService(EntityService):
         # handle building elements
         await self._apply_building_elements(entity.id, payload.building_elements)
         return entity
+
+    def can_edit(self, entity: Building, user: User) -> bool:
+        if entity.authors and f"user:{user.username}" in entity.authors:
+            return True
+        return super().can_edit(entity, user)
 
     async def update(self, id: int, payload: BuildingDraft, user: User = None) -> Building:
         """Update a building"""

@@ -53,6 +53,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.description"
+              :original="original?.description"
               :label="t('description')"
               help="professional-description"
               class="q-mb-md"
@@ -77,6 +78,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.article_top"
+              :original="original?.article_top"
               :label="t('article_top')"
               help="professional-article-top"
               class="q-mb-md"
@@ -84,6 +86,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.article_bottom"
+              :original="original?.article_bottom"
               :label="t('article_bottom')"
               help="professional-article-bottom"
               class="q-mb-md"
@@ -91,6 +94,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.side_note"
+              :original="original?.side_note"
               :label="t('side_note')"
               help="professional-side-note"
               class="q-mb-md"
@@ -98,6 +102,7 @@
             <text-input
               :disable="readOnly"
               v-model="selected.external_links"
+              :original="original?.external_links"
               :label="t('external_links')"
               help="professional-links"
               class="q-mb-md"
@@ -251,6 +256,7 @@ import type { Option } from 'src/components/models';
 interface DialogProps {
   modelValue: boolean;
   item: Professional;
+  original?: Professional | null | undefined;
   readOnly?: boolean;
 }
 
@@ -312,13 +318,13 @@ function init(value: boolean) {
     selected.value = JSON.parse(JSON.stringify(props.item));
     editMode.value = selected.value.id !== undefined;
     circle.value = {};
-    if (editMode.value) {
-      const center = unref([selected.value.long, selected.value.lat]);
+    if (selected.value.address) {
+      const center = unref([selected.value.long || 0, selected.value.lat || 0]);
       circle.value = {
         type: 'Feature',
         properties: {
           addressInput: selected.value.address,
-          circleRadius: selected.value.radius,
+          circleRadius: selected.value.radius || 10,
         },
         geometry: {
           type: 'Polygon',
@@ -449,7 +455,7 @@ function onCircleInputUpdated(newValue: Feature) {
 
   if (newValue && newValue.properties && newValue.geometry) {
     selected.value.address = newValue.properties.addressInput;
-    selected.value.radius = newValue.properties.circleRadius;
+    selected.value.radius = newValue.properties.circleRadius || 10;
     selected.value.long = newValue.geometry.coordinates[0][0][0];
     selected.value.lat = newValue.geometry.coordinates[0][0][1];
     if (selected.value.long && selected.value.lat)

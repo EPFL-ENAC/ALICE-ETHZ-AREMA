@@ -102,6 +102,7 @@
         v-if="selected"
         v-model="showEditDialog"
         :item="selected"
+        :original="original"
         :read-only="readOnly"
         @saved="onRefresh"
       ></construction-technique-dialog>
@@ -229,6 +230,7 @@ const columns = computed(() => {
 });
 
 const selected = ref<TechnicalConstruction>();
+const original = ref<TechnicalConstruction | undefined>();
 const showEditDialog = ref(false);
 const readOnly = ref(false);
 const tableRef = ref();
@@ -299,6 +301,7 @@ function onIndex() {
 
 function onAdd() {
   selected.value = { name: '' };
+  original.value = undefined;
   showEditDialog.value = true;
 }
 
@@ -333,12 +336,14 @@ function onAction(item: TechnicalConstruction, action: string) {
 
 function onEdit(item: TechnicalConstruction) {
   selected.value = { ...item };
+  original.value = JSON.parse(JSON.stringify(item)) as TechnicalConstruction;
   readOnly.value = false;
   showEditDialog.value = true;
 }
 
 function onView(resource: TechnicalConstruction) {
   selected.value = { ...resource };
+  original.value = JSON.parse(JSON.stringify(resource)) as TechnicalConstruction;
   readOnly.value = true;
   showEditDialog.value = true;
 }

@@ -179,6 +179,11 @@ class TechnicalConstructionService(EntityService):
             await self.session.commit()
         return entity
 
+    def can_edit(self, entity: TechnicalConstruction, user: User) -> bool:
+        if entity.authors and f"user:{user.username}" in entity.authors:
+            return True
+        return super().can_edit(entity, user)
+
     async def update(self, id: int, payload: TechnicalConstructionDraft, user: User = None) -> TechnicalConstruction:
         """Update a technical construction"""
         res = await self.session.exec(

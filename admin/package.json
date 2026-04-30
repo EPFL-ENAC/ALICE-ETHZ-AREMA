@@ -19,6 +19,7 @@
     "@quasar/extras": "^1.16.4",
     "@turf/turf": "^6.5.0",
     "axios": "^1.12.0",
+    "diff": "^9.0.0",
     "keycloak-js": "^26.0.5",
     "lodash": "^4.17.21",
     "mapbox-gl-draw-geodesic": "^2.1.3",

@@ -149,13 +149,23 @@ function drawFeature(feature: Feature<Point | Polygon | MultiPolygon>) {
     marker.remove();
     marker = undefined;
   }
-  if (!feature || !feature.geometry || !feature.geometry.coordinates) {
+  if (
+    !feature ||
+    !feature.geometry ||
+    !feature.geometry.coordinates ||
+    feature.geometry.coordinates.length === 0
+  ) {
     deleteAll();
     return;
   }
   if (MapboxDrawGeodesic.isCircle(feature)) {
     // a circle is not a geojson type, then prevent changes in representation using the geodesic API
     const center = MapboxDrawGeodesic.getCircleCenter(feature);
+    if (!center) {
+      console.error('Invalid circle feature: missing center');
+      deleteAll();
+      return;
+    }
     const radius = MapboxDrawGeodesic.getCircleRadius(feature);
     const circle = MapboxDrawGeodesic.createCircle(center, radius);
     draw?.deleteAll(); // single circle

@@ -26,10 +26,12 @@ dependencies = [
     "titiler-core==0.22.0",
     "jinja2>=3.1.6",
     "slowapi>=0.1.9",
+    "markdownify>=1.2.2",
+    "beautifulsoup4>=4.14.3",
 ]
 
 [tool.uv.sources]
-enacit4r-files = {git = "https://github.com/EPFL-ENAC/enacit4r-files", rev = "0.6.0"}
+enacit4r-files = {git = "https://github.com/EPFL-ENAC/enacit4r-files", rev = "1.0.0"}
 enacit4r-auth = {git = "https://github.com/EPFL-ENAC/enacit4r-auth", rev = "0.6.1"}
 enacit4r-sql = {git = "https://github.com/EPFL-ENAC/enacit4r-sql", rev = "0.4.1"}
 

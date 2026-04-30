@@ -39,6 +39,7 @@
             </div>
             <text-input
               :disable="readOnly"
+              :original="original?.description"
               v-model="selected.description"
               :label="t('description')"
               help="resource-description"
@@ -46,6 +47,7 @@
             />
             <text-input
               :disable="readOnly"
+              :original="original?.article_top"
               v-model="selected.article_top"
               :label="t('article_top')"
               help="resource-article-top"
@@ -53,6 +55,7 @@
             />
             <text-input
               :disable="readOnly"
+              :original="original?.article_bottom"
               v-model="selected.article_bottom"
               :label="t('article_bottom')"
               help="resource-article-bottom"
@@ -60,6 +63,7 @@
             />
             <text-input
               :disable="readOnly"
+              :original="original?.side_note"
               v-model="selected.side_note"
               :label="t('side_note')"
               help="resource-side-note"
@@ -67,6 +71,7 @@
             />
             <text-input
               :disable="readOnly"
+              :original="original?.external_links"
               v-model="selected.external_links"
               :label="t('external_links')"
               help="resource-links"
@@ -142,6 +147,7 @@ import AuthorsInput from 'src/components/AuthorsInput.vue';
 interface DialogProps {
   modelValue: boolean;
   item: NaturalResource;
+  original?: NaturalResource | null | undefined;
   readOnly?: boolean;
 }
 

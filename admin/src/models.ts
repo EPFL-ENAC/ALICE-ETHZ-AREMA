@@ -49,6 +49,7 @@ export interface Entity {
   assigned_to?: string;
 
   state?: string;
+  source?: string;
 }
 
 export interface PhysicalEntity extends Entity {
@@ -120,6 +121,7 @@ export interface NaturalResource extends PhysicalEntity {
   type: string;
   files?: FileItem[];
   authors?: string[];
+  related_sources?: string[];
   building_materials?: BuildingMaterial[];
 }
 
@@ -128,6 +130,7 @@ export interface BuildingMaterial extends PhysicalEntity {
   materials?: string[];
   files?: FileItem[];
   authors?: string[];
+  related_sources?: string[];
   natural_resources?: NaturalResource[];
   technical_constructions?: TechnicalConstruction[];
   buildings?: Building[];
@@ -142,6 +145,7 @@ export interface TechnicalConstruction extends PhysicalEntity {
   materials?: string[];
   files?: FileItem[];
   authors?: string[];
+  related_sources?: string[];
   building_materials?: BuildingMaterial[];
   professionals?: Professional[];
   buildings?: Building[];
@@ -180,7 +184,7 @@ export interface Building extends Entity {
   materials?: string[];
   client?: string;
   gross_internal_area?: number;
-  year?: number;
+  year?: number | undefined;
   address?: string | undefined;
   long?: number | undefined;
   lat?: number | undefined;
@@ -188,6 +192,7 @@ export interface Building extends Entity {
   geom?: Geometry | undefined;
   files?: FileItem[];
   authors?: string[];
+  related_sources?: string[];
 
   building_materials?: BuildingMaterial[];
   professionals?: Professional[];
@@ -213,6 +218,7 @@ export interface Professional extends Entity {
   geom?: Geometry | undefined;
   files?: FileItem[];
   authors?: string[];
+  related_sources?: string[];
 
   professionals?: Professional[];
   buildings?: Building[];
@@ -257,4 +263,66 @@ export interface GroupByCount {
 export interface GroupByResult {
   field: string;
   counts: GroupByCount[];
+}
+
+// IG Lehm specific interfaces
+export interface IGLehmImage {
+  id: number;
+  title?: string;
+  description?: string;
+  url: string;
+}
+
+export interface IGLehmEntity {
+  cId: number;
+  title: string;
+}
+export interface IGLehmProjectSummary extends IGLehmEntity {
+  pageUrl: string;
+  previewImage?: string;
+  building_id?: number;
+}
+
+export interface IGLehmProject extends IGLehmEntity {
+  pageUrl: string;
+  content?: string;
+  description?: string;
+  previewImage?: string;
+  location?: string;
+  yearOfConstruction?: string;
+  regions?: string[];
+  fields?: string[];
+  images?: IGLehmImage[];
+  building_id?: number;
+  // added by arema during import
+  long?: number;
+  lat?: number;
+}
+
+export interface IGLehmSpecialistSummary extends IGLehmEntity {
+  pageUrl: string;
+  professional_id?: number;
+}
+
+export interface IGLehmSpecialist extends IGLehmEntity {
+  pageUrl: string;
+  description?: string;
+  address?: string;
+  contactPerson?: string;
+  phone?: string;
+  mobile?: string;
+  fax?: string;
+  email?: string;
+  website?: string;
+  branchLocation?: string;
+  brancCantons?: string;
+  sectors?: string[];
+  specialityFields?: string[];
+  images?: IGLehmImage[];
+  projects?: IGLehmEntity[];
+  professional_id?: number;
+  building_ids?: number[];
+  // added by arema during import
+  long?: number;
+  lat?: number;
 }

@@ -161,6 +161,11 @@ class NaturalResourceService(EntityService):
             await self.session.commit()
         return entity
 
+    def can_edit(self, entity: NaturalResource, user: User) -> bool:
+        if entity.authors and f"user:{user.username}" in entity.authors:
+            return True
+        return super().can_edit(entity, user)
+
     async def update(self, id: int, payload: NaturalResource, user: User = None) -> NaturalResource:
         """Update a natural resource"""
         entity = await self.get(id)

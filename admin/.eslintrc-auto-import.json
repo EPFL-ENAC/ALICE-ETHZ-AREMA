@@ -104,6 +104,7 @@
     "watchPostEffect": true,
     "watchSyncEffect": true,
     "useStatsService": true,
-    "useStatsStore": true
+    "useStatsStore": true,
+    "useImporterService": true
   }
 }

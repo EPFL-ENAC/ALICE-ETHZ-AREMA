@@ -14,7 +14,7 @@ RUN apt-get update \
 		libgdal-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
-COPY pyproject.toml uv.lock /app/
+COPY pyproject.toml uv.lock README.md /app/
 RUN uv sync --frozen --no-install-project
 
 COPY alembic.ini start.sh /app/
