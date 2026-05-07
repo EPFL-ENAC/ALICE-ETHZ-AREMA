@@ -1,16 +1,16 @@
 <template>
-  <div class="row q-col-gutter-md">
+  <div ref="containerRef" class="row q-col-gutter-md">
     <div class="col-12 col-md-8">
       <map-view
         :features="searchService.features"
-        :height="'600px'"
+        :height="height"
         :bbox="searchService.bbox"
         :mark="mark"
         @map:box="onBoundingBox"
       />
     </div>
     <div class="col-12 col-md-4">
-      <q-scroll-area style="height: 600px">
+      <q-scroll-area :style="{ height: height }">
         <q-list separator>
           <template v-for="row in rows" :key="`${row.entity_type}:${row.id}`">
             <q-item
@@ -49,6 +49,7 @@
 </template>
 
 <script setup lang="ts">
+import { useWindowSize, useDebounceFn, useEventListener } from '@vueuse/core';
 import MapView from 'src/components/MapView.vue';
 import TagsBadges from 'src/components/TagsBadges.vue';
 import type { Document } from 'src/models';
@@ -60,8 +61,29 @@ const searchService = useSearchService();
 
 const hoverDocument = ref<Document>();
 const mark = ref<[number, number]>();
+const containerRef = ref<HTMLElement>();
+const containerTop = ref(0);
+const { height: windowHeight } = useWindowSize();
+
+function updateTop() {
+  containerTop.value = containerRef.value?.getBoundingClientRect().top ?? 0;
+}
+
+const debouncedUpdateTop = useDebounceFn(updateTop, 100);
+
+onMounted(updateTop);
+watch(windowHeight, updateTop);
+useEventListener(
+  window,
+  'scroll',
+  () => {
+    void debouncedUpdateTop();
+  },
+  { passive: true },
+);
 
 const rows = computed(() => searchService.geoResults?.data || []);
+const height = computed(() => `${Math.max(600, windowHeight.value - containerTop.value - 100)}px`);
 
 function onDocument(row: Document) {
   void router.push({ name: 'doc', params: { id: `${row.entity_type}:${row.id}` } });
