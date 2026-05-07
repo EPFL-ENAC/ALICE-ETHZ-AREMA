@@ -7,7 +7,7 @@ import { baseUrl, cdnUrl } from 'src/boot/api';
 const protocol = new Protocol();
 addProtocol('pmtiles', protocol.tile);
 
-const mapsUrl = `${cdnUrl}/arema/maps/2026-04-27T12:46`;
+const mapsUrl = `${cdnUrl}/arema/maps/2026-05-07T16:31`;
 
 export const style: StyleSpecification = {
   version: 8,
@@ -62,6 +62,10 @@ export const style: StyleSpecification = {
     stroh_fr: {
       type: 'vector',
       url: `pmtiles://${mapsUrl}/geojson/PailleFR_2024.pmtiles`,
+    },
+    stroh_de: {
+      type: 'vector',
+      url: `pmtiles://${mapsUrl}/geojson/StrohDE8_2025.pmtiles`,
     },
     hemp: {
       type: 'vector',
@@ -289,6 +293,46 @@ export const style: StyleSpecification = {
       type: 'circle',
       source: 'stroh_fr',
       'source-layer': 'PailleFR_2024',
+      paint: {
+        'circle-color': 'rgb(255, 145, 0)',
+        'circle-opacity': 0.5,
+        'circle-radius': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          1,
+          1,
+          10,
+          2,
+          16,
+          [
+            'interpolate',
+            ['linear'],
+            ['get', 'flaeche_ha'],
+            0.005,
+            1,
+            0.01,
+            2,
+            0.1,
+            5,
+            1,
+            10,
+            2,
+            20,
+            3,
+            30,
+          ],
+        ],
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'stroh-de',
+      type: 'circle',
+      source: 'stroh_de',
+      'source-layer': 'StrohDE8_2025',
       paint: {
         'circle-color': 'rgb(255, 145, 0)',
         'circle-opacity': 0.5,
