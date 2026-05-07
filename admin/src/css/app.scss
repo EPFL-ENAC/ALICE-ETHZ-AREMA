@@ -106,3 +106,9 @@ li + li {
   padding: 1px 3px;
   border-radius: 4px;
 }
+
+.md-tooltip {
+  border-bottom: 1px dashed currentColor;
+  font-weight: bold;
+  cursor: help;
+}

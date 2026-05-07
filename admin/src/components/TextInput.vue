@@ -37,8 +37,8 @@
           </div>
         </q-tab-panel>
         <q-tab-panel name="preview" class="q-pa-none">
-          <q-card flat bordered class="q-pa-md" style="border-top: none">
-            <q-markdown :src="text" no-heading-anchor-links />
+          <q-card ref="previewCard" v-tippy flat bordered class="q-pa-md" style="border-top: none">
+            <q-markdown :plugins="[tooltipMarkdown]" :src="text" no-heading-anchor-links />
           </q-card>
         </q-tab-panel>
         <q-tab-panel v-if="!disable" name="diff" class="q-pa-none">
@@ -55,6 +55,8 @@
 <script setup lang="ts">
 import DiffText from 'src/components/DiffText.vue';
 import { countDiffs } from 'src/utils/strings';
+import { tooltipMarkdown } from 'src/utils/tooltip';
+import type { QCard } from 'quasar';
 
 interface Props {
   modelValue: string | undefined;
@@ -68,16 +70,33 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits<{
+  'update:modelValue': [value: string | undefined];
+  'tooltip-click': [payload: { label: string; tip: string }];
+}>();
 
 const { t, locale } = useI18n();
 
 const text = ref(props.modelValue);
 const tab = ref('write');
 const helpContent = ref('');
+const previewCard = ref<InstanceType<typeof QCard> | null>(null);
+
+function onTooltipClick(e: MouseEvent) {
+  const target = (e.target as HTMLElement).closest<HTMLElement>('.md-tooltip');
+  if (!target) return;
+  const tip = target.dataset.tip ?? '';
+  const label = target.textContent ?? '';
+  emit('tooltip-click', { label, tip });
+}
 
 const diffsCount = computed(() => {
   return countDiffs(props.original || '', text.value);
+});
+
+watch(previewCard, (newCard, oldCard) => {
+  (oldCard?.$el as HTMLElement | undefined)?.removeEventListener('click', onTooltipClick);
+  (newCard?.$el as HTMLElement | undefined)?.addEventListener('click', onTooltipClick);
 });
 
 onMounted(() => {
@@ -89,6 +108,10 @@ onMounted(() => {
       });
     });
   }
+});
+
+onBeforeUnmount(() => {
+  (previewCard.value?.$el as HTMLElement | undefined)?.removeEventListener('click', onTooltipClick);
 });
 
 watch(
