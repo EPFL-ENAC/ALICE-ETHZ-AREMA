@@ -107,8 +107,8 @@ li + li {
   border-radius: 4px;
 }
 
-.md-tooltip {
-  border-bottom: 1px dashed currentColor;
+.md-term {
+  text-decoration: dashed underline;
   font-weight: bold;
   cursor: help;
 }
