@@ -20,10 +20,12 @@ class TaxonomyService:
         """Get a taxonomy by entity type"""
         package_name = "api.data"
         resource_name = f"{type}.yml"
-        with resources.open_text(package_name, resource_name) as yaml_file:
-            yaml_data = yaml.safe_load(yaml_file)
-        taxonomy = Taxonomy(**yaml_data)
-        return taxonomy
+        try:
+            with resources.open_text(package_name, resource_name) as yaml_file:
+                yaml_data = yaml.safe_load(yaml_file)
+            return Taxonomy(**yaml_data)
+        except FileNotFoundError:
+            return Taxonomy(taxonomy=[])
 
     def as_labels_map(self, taxonomy: Taxonomy, locale: str = "en") -> Dict[str, Term]:
         """"""

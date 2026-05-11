@@ -25,12 +25,12 @@ async def get_terms_map(type: str, locale: str = Query("en")) -> Dict[str, Term]
     return terms
 
 
-@router.post("/{type}/_match", response_class=PlainTextResponse)
-async def match_terms(type: str, body: str = Body(..., media_type="text/plain"), locale: str = Query("en")) -> PlainTextResponse:
+@router.post("/{types}/_match", response_class=PlainTextResponse)
+async def match_terms(types: str, body: str = Body(..., media_type="text/plain"), locale: str = Query("en")) -> PlainTextResponse:
     """Match terms in the input text against the taxonomy of the given type and return the transformed text with markdown links.
 
     Args:
-      type (str): the taxonomy type to use for matching
+      types (str): the comma-separated taxonomy types to use for matching
       body (str): the input text to match, sent as raw text/plain in the request body
       locale (str): the locale to use for matching terms (default: "en")
     Returns:
@@ -38,8 +38,12 @@ async def match_terms(type: str, body: str = Body(..., media_type="text/plain"),
     """
     text = body.strip()
     service = TaxonomyService()
-    taxonomy = service.get(type)
-    terms = service.as_labels_map(taxonomy, locale)
+    taxonomy_types = types.split(",")
+    taxonomies = [service.get(taxonomy_type)
+                  for taxonomy_type in taxonomy_types]
+    terms = {}
+    for taxonomy in taxonomies:
+        terms.update(service.as_labels_map(taxonomy, locale))
     matcher = Matcher(terms, allow_multiword_fuzzy=True, locale=locale)
     transformer = MarkdownTransformer(matcher)
     transformed = transformer.transform(text)
