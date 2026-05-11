@@ -114,7 +114,7 @@ function onTermClick(e: MouseEvent) {
   const label = target.textContent ?? '';
   let msg = title;
   if (urn) {
-    msg += ` -- ${urn}`;
+    msg += title === '' ? urn : ` -- ${urn}`;
   }
   notifyInfo(msg);
   emit('term-click', { label, title, urn });
@@ -153,7 +153,11 @@ async function onDecorate() {
   }
   try {
     decorating.value = true;
-    const decorated = await taxonomyStore.decorateText(props.taxonomyType, text.value);
+    const decorated = await taxonomyStore.decorateText(
+      props.taxonomyType,
+      text.value,
+      locale.value.toLowerCase(),
+    );
     text.value = decorated;
     emit('update:modelValue', decorated);
   } catch (error) {
