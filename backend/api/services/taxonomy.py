@@ -45,13 +45,18 @@ class TaxonomyService:
         labels_map = {}
         urn = f"{urn_prefix}{node.id}" if urn_prefix.endswith(
             ":") else f"{urn_prefix}.{node.id}"
-        if node.id == "other":
-            return labels_map  # skip "other" nodes as they are too generic to be useful for matching
-        for locale_key, name in node.names.items():
-            if locale_key == locale:
-                labels_map[name] = Term(urn=urn, locale=locale, name=name, description=node.descriptions.get(
-                    locale) if node.descriptions else None)
         if node.children:
             for child in node.children:
                 labels_map.update(self._as_labels_map(urn, child, locale))
+        elif node.id == "other":
+            return labels_map  # skip "other" nodes as they are too generic to be useful for matching
+        elif node.names and locale in node.names:
+            # Add the term for the current node
+            labels_map[node.names.get(locale, node.id)] = Term(
+                urn=urn,
+                locale=locale,
+                name=node.names.get(locale, node.id),
+                description=node.descriptions.get(
+                    locale) if node.descriptions else None
+            )
         return labels_map
