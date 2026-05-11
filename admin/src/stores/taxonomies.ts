@@ -92,6 +92,20 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     return options;
   }
 
+  async function decorateText(
+    type: string,
+    text: string | undefined,
+    locale: string = 'en',
+  ): Promise<string> {
+    if (!text) return Promise.resolve(text || '');
+    return api
+      .post(`/terms/${type}/_match`, text, {
+        params: { locale },
+        headers: { 'Content-Type': 'text/plain', Accept: 'text/plain' },
+      })
+      .then((resp) => resp.data);
+  }
+
   return {
     getTaxonomy,
     getTaxonomyNode,
@@ -99,5 +113,6 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     getLabel,
     toUrn,
     asOptions,
+    decorateText,
   };
 });

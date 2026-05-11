@@ -118,3 +118,9 @@ a {
   color: $grey-7;
   font-size: 0.8em;
 }
+
+.md-term {
+  border-bottom: dotted 2px $grey-6;
+  font-weight: bold;
+  cursor: help;
+}

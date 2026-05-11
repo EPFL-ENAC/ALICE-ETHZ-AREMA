@@ -9,6 +9,9 @@ run:
 lint:
 	uv run pre-commit run --all-files
 
+test:
+	uv run pytest
+
 db-upgrade:
 	uv run dotenv -f "$(env_path)" run alembic upgrade head
 

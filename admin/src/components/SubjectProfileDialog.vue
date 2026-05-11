@@ -52,11 +52,7 @@
               placeholder="https://example.com"
               class="q-mb-md"
             />
-            <text-input
-              v-model="selected.description"
-              :label="t('profile.description')"
-              min-height="50px"
-            />
+            <text-input v-model="selected.description" :label="t('profile.description')" />
           </div>
         </q-form>
       </q-card-section>

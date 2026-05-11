@@ -130,6 +130,8 @@ export default {
   credits: 'Credits',
   dark: 'Dark',
   dashboard: 'Dashboard',
+  decorate: 'Decorate',
+  decorate_hint: 'Enrich text with terminology entries.',
   density_hint: 'ρ, kg/m³',
   density: 'Density',
   description: 'Description',

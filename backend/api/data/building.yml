@@ -19,36 +19,66 @@ taxonomy:
               de: Mehrfamilienhaus
               fr: Immeuble d'habitation
               it: Edificio plurifamiliare
+            descriptions:
+              en: "A multi-storey residential building with multiple housing units, typically with shared walls and common areas."
+              de: "Ein mehrstöckiges Wohngebäude mit mehreren Wohneinheiten, typischerweise mit gemeinsamen Wänden und Gemeinschaftsbereichen."
+              fr: "Un bâtiment résidentiel à plusieurs étages avec plusieurs unités d'habitation, généralement avec des murs partagés et des espaces communs."
+              it: "Un edificio residenziale a più piani con più unità abitative, tipicamente con pareti condivise e aree comuni."
           - id: single-family-house
             names:
               en: Single Family House
               de: Einfamilienhaus
               fr: Maison individuelle
               it: Casa unifamiliare
+            descriptions:
+              en: "A single-family residential building designed to house one family, typically detached and with its own yard."
+              de: "Ein Einfamilienhaus, das für eine Familie konzipiert ist, typischerweise freistehend und mit eigenem Garten."
+              fr: "Une maison individuelle conçue pour abriter une famille, généralement détachée et avec son propre jardin."
+              it: "Una casa unifamiliare progettata per ospitare una famiglia, tipicamente indipendente e con il proprio giardino."
           - id: office-building
             names:
               en: Office Building
               de: Bürogebäude
               fr: Immeuble de bureaux
               it: Edificio per uffici
+            descriptions:
+              en: "A building primarily used for commercial office space, typically with multiple floors and shared facilities."
+              de: "Ein Gebäude, das hauptsächlich für kommerzielle Büroflächen genutzt wird, typischerweise mit mehreren Etagen und gemeinsamen Einrichtungen."
+              fr: "Un bâtiment principalement utilisé pour les espaces de bureaux commerciaux, généralement avec plusieurs étages et des installations partagées."
+              it: "Un edificio principalmente utilizzato per spazi per uffici commerciali, tipicamente con più piani e strutture condivise."
           - id: industrial-building
             names:
               en: Industrial Building
               de: Industriegebäude
               fr: Bâtiment industriel
               it: Edificio industriale
+            descriptions:
+              en: "A building used for industrial purposes, such as manufacturing, warehousing, or distribution, often characterized by large open spaces and specialized infrastructure."
+              de: "Ein Gebäude, das für industrielle Zwecke genutzt wird, wie z.B. Herstellung, Lagerung oder Vertrieb, oft gekennzeichnet durch große offene Räume und spezialisierte Infrastruktur."
+              fr: "Un bâtiment utilisé à des fins industrielles, telles que la fabrication, l'entreposage ou la distribution, souvent caractérisé par de grands espaces ouverts et une infrastructure spécialisée."
+              it: "Un edificio utilizzato per scopi industriali, come la produzione, il magazzinaggio o la distribuzione, spesso caratterizzato da grandi spazi aperti e infrastrutture specializzate."
           - id: public-building
             names:
               en: Public Building
               de: Öffentliches Gebäude
               fr: Bâtiment public
               it: Edificio pubblico
+            descriptions:
+              en: "A building used for public purposes, such as schools, hospitals, or government offices."
+              de: "Ein Gebäude, das für öffentliche Zwecke genutzt wird, wie z.B. Schulen, Krankenhäuser oder Regierungsämter."
+              fr: "Un bâtiment utilisé à des fins publiques, tel que les écoles, les hôpitaux ou les bureaux gouvernementaux."
+              it: "Un edificio utilizzato per scopi pubblici, come scuole, ospedali o uffici governativi."
           - id: simple-structure
             names:
               en: Simple Structure
               de: Einfache Struktur
               fr: Structure simple
               it: Struttura semplice
+            descriptions:
+              en: "A simple structure that does not fit into the other categories, such as a shed, garage, or pavilion."
+              de: "Eine einfache Struktur, die nicht in die anderen Kategorien passt, wie z.B. ein Schuppen, eine Garage oder ein Pavillon."
+              fr: "Une structure simple qui ne correspond pas aux autres catégories, comme un abri, un garage ou un pavillon."
+              it: "Una struttura semplice che non rientra nelle altre categorie, come un capanno, un garage o un padiglione."
       - id: status
         names:
           en: Intervention
@@ -62,9 +92,19 @@ taxonomy:
               de: Neu
               fr: Nouveau
               it: Nuovo
+            descriptions:
+              en: "Construction of a new building on an undeveloped site."
+              de: "Errichtung eines neuen Gebäudes auf einem unbebauten Grundstück."
+              fr: "Construction d'un nouveau bâtiment sur un site non développé."
+              it: "Costruzione di un nuovo edificio su un sito non sviluppato."
           - id: renovation
             names:
               en: Renovation
               de: Renovierung
               fr: Rénovation
               it: Ristrutturazione
+            descriptions:
+              en: "Renovation of an existing building, including changes to the building envelope, but excluding interior renovations that do not affect the building envelope."
+              de: "Renovierung eines bestehenden Gebäudes, einschließlich Änderungen an der Gebäudehülle, aber ohne Innenrenovierungen, die die Gebäudehülle nicht betreffen."
+              fr: "Rénovation d'un bâtiment existant, y compris les modifications de l'enveloppe du bâtiment, mais excluant les rénovations intérieures qui n'affectent pas l'enveloppe du bâtiment."
+              it: "Ristrutturazione di un edificio esistente, comprese le modifiche all'involucro edilizio, ma escludendo le ristrutturazioni interne che non interessano l'involucro edilizio."
