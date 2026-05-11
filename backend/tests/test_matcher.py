@@ -283,3 +283,49 @@ class TestMarkdownTransformer:
         # With max_ngram=1, "recycled brick" can't be matched as a 2-gram
         result = t.transform("recycled brick")
         assert ":term[recycled brick]" not in result
+
+    # -----------------------------------------------------------------------
+    # clear
+    # -----------------------------------------------------------------------
+
+    def test_clear_single_term(self, transformer):
+        transformed = ":term[concrete]{urn:concrete}"
+        assert MarkdownTransformer.clear(transformed) == "concrete"
+
+    def test_clear_term_with_description(self, transformer):
+        transformed = ":term[glass wool]{Thermal insulation|urn:glass-wool}"
+        assert MarkdownTransformer.clear(transformed) == "glass wool"
+
+    def test_clear_mixed_text(self, transformer):
+        transformed = "Use :term[concrete]{urn:concrete} and :term[steel]{urn:steel} here"
+        assert MarkdownTransformer.clear(
+            transformed) == "Use concrete and steel here"
+
+    def test_clear_untransformed_text_unchanged(self, transformer):
+        plain = "Use concrete and steel here"
+        assert MarkdownTransformer.clear(plain) == plain
+
+    def test_clear_empty_string(self, transformer):
+        assert MarkdownTransformer.clear("") == ""
+
+    # -----------------------------------------------------------------------
+    # idempotency
+    # -----------------------------------------------------------------------
+
+    def test_transform_twice_is_idempotent(self, transformer):
+        once = transformer.transform("Use concrete and glass wool here")
+        twice = transformer.transform(once)
+        assert once == twice
+
+    def test_transform_three_times_is_idempotent(self, transformer):
+        once = transformer.transform("Use steel and timber here")
+        twice = transformer.transform(once)
+        thrice = transformer.transform(twice)
+        assert once == thrice
+
+    def test_clear_then_transform_equals_transform(self, transformer):
+        text = "Use concrete here"
+        transformed = transformer.transform(text)
+        cleared = MarkdownTransformer.clear(transformed)
+        retransformed = transformer.transform(cleared)
+        assert transformed == retransformed

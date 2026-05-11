@@ -215,6 +215,9 @@ class Matcher:
 
 
 class MarkdownTransformer:
+    # Matches :term[some text]{description|urn} or :term[some text]{urn}
+    _TERM_RE = re.compile(r":term\[([^\]]+)\]\{[^}]+\}")
+
     def __init__(self, matcher: Matcher, max_ngram: int = 5):
         """Transformer that uses a Matcher to find terms in text and replace them with markdown links.
         Args:
@@ -224,13 +227,28 @@ class MarkdownTransformer:
         self.matcher = matcher
         self.max_ngram = max_ngram
 
+    @classmethod
+    def clear(cls, text: str) -> str:
+        """Strip all :term[...]{...} markers from previously transformed text, returning plain text.
+        This is idempotent and safe to call on text that was never transformed.
+        Args:
+          text (str): text that may contain :term[...]{...} markers
+        Returns:
+          str: plain text with all markers replaced by their display label
+        """
+        return cls._TERM_RE.sub(lambda m: m.group(1), text)
+
     def transform(self, text: str) -> str:
         """Transform input text by matching n-grams and replacing them with markdown links to terms.
+        Already-transformed text is cleared first so re-transforming is safe and idempotent.
         Args:
-          text (str): the input text to transform
+          text (str): the input text to transform (may already be transformed)
         Returns:
           str: the transformed text with matched terms replaced by markdown links
         """
+        # Clear any prior transformation so re-runs are safe
+        text = self.clear(text)
+
         words = text.split()
         i = 0
         result_tokens = []
