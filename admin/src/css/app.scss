@@ -106,3 +106,9 @@ li + li {
   padding: 1px 3px;
   border-radius: 4px;
 }
+
+.md-term {
+  border-bottom: dotted 2px $grey-6;
+  font-weight: bold;
+  cursor: help;
+}

@@ -26,60 +26,110 @@ taxonomy:
                   de: Fundament
                   fr: Fondation
                   it: Fondazione
+                descriptions:
+                  en: "The foundation is the lowest part of a building that provides support and stability, typically made of concrete, stone, or other materials, and is designed to distribute the weight of the building to the ground."
+                  de: "Das Fundament ist der unterste Teil eines Gebäudes, der Unterstützung und Stabilität bietet, typischerweise aus Beton, Stein oder anderen Materialien besteht und dazu dient, das Gewicht des Gebäudes auf den Boden zu verteilen."
+                  fr: "La fondation est la partie la plus basse d'un bâtiment qui fournit un support et une stabilité, généralement faite de béton, de pierre ou d'autres matériaux, et est conçue pour répartir le poids du bâtiment sur le sol."
+                  it: "La fondazione è la parte più bassa di un edificio che fornisce supporto e stabilità, tipicamente realizzata in cemento, pietra o altri materiali, e progettata per distribuire il peso dell'edificio al terreno."
               - id: be2
                 names:
                   en: Floor slab ground floor
                   de: Bodenplatte EG
                   fr: Dalle de sol
                   it: Pavimento terra
+                descriptions:
+                  en: "The floor slab of the ground floor is the horizontal structural element that forms the base of the building, providing support for the upper floors and distributing loads to the foundation."
+                  de: "Die Bodenplatte des Erdgeschosses ist das horizontale Strukturelement, das die Basis des Gebäudes bildet, Unterstützung für die oberen Stockwerke bietet und Lasten auf das Fundament verteilt."
+                  fr: "La dalle de sol du rez-de-chaussée est l'élément structurel horizontal qui forme la base du bâtiment, fournissant un support pour les étages supérieurs et répartissant les charges sur la fondation."
+                  it: "La pavimentazione del piano terra è l'elemento strutturale orizzontale che forma la base dell'edificio, fornendo supporto per i piani superiori e distribuendo i carichi alla fondazione."
               - id: be3
                 names:
                   en: Exterior wall above ground
                   de: Aussenwand über Terrain
                   fr: Mur extérieur au-dessus du sol
                   it: Parete esterna sopra il terreno
+                descriptions:
+                  en: "The exterior wall above ground is the vertical structural element that forms the outer shell of the building, providing support for the roof and upper floors, and protecting the interior from the elements."
+                  de: "Die Außenwand über dem Boden ist das vertikale Strukturelement, das die äußere Hülle des Gebäudes bildet, Unterstützung für das Dach und die oberen Stockwerke bietet und das Innere vor den Elementen schützt."
+                  fr: "Le mur extérieur au-dessus du sol est l'élément structurel vertical qui forme la coque extérieure du bâtiment, fournissant un support pour le toit et les étages supérieurs, et protégeant l'intérieur des éléments."
+                  it: "La parete esterna sopra il terreno è l'elemento strutturale verticale che forma la shell esterna dell'edificio, fornendo supporto per il tetto e i piani superiori, e proteggendo l'interno dagli elementi."
               - id: be4
                 names:
                   en: Exterior wall under ground
                   de: Aussenwand unter Terrain
                   fr: Mur extérieur sous le sol
                   it: Parete esterna sotto il terreno
+                descriptions:
+                  en: "The exterior wall under ground is the vertical structural element that forms the outer shell of the building below ground level, providing support for the upper floors and protecting the interior from moisture and soil pressure."
+                  de: "Die Außenwand unter dem Boden ist das vertikale Strukturelement, das die äußere Hülle des Gebäudes unterhalb des Bodenniveaus bildet, Unterstützung für die oberen Stockwerke bietet und das Innere vor Feuchtigkeit und Bodendruck schützt."
+                  fr: "Le mur extérieur sous le sol est l'élément structurel vertical qui forme la coque extérieure du bâtiment en dessous du niveau du sol, fournissant un support pour les étages supérieurs et protégeant l'intérieur de l'humidité et de la pression du sol."
+                  it: "La parete esterna sotto il terreno è l'elemento strutturale verticale che forma la shell esterna dell'edificio sotto il livello del terreno, fornendo supporto per i piani superiori e proteggendo l'interno dall'umidità e dalla pressione del suolo."
               - id: be5
                 names:
                   en: Balcony
                   de: Balkon
                   fr: Balcon
                   it: Balcone
+                descriptions:
+                  en: "A balcony is a platform that extends from the exterior wall of a building, providing outdoor space for occupants and often supported by brackets or columns."
+                  de: "Ein Balkon ist eine Plattform, die von der Außenwand eines Gebäudes auskragt und den Bewohnern einen Außenraum bietet, der oft von Konsolen oder Säulen getragen wird."
+                  fr: "Un balcon est une plateforme qui s'étend à partir de la paroi extérieure d'un bâtiment, offrant un espace extérieur pour les occupants et souvent soutenu par des supports ou des colonnes."
+                  it: "Un balcon è una piattaforma che si estende dalla parete esterna di un edificio, fornendo uno spazio esterno per gli occupanti e spesso supportato da staffe o colonne."
               - id: be6
                 names:
                   en: Interior wall
                   de: Innenwand
                   fr: Mur intérieur
                   it: Parete interna
+                descriptions:
+                  en: "An interior wall is a vertical structural element that divides the interior space of a building, providing support for the upper floors and roof, and creating separate rooms and spaces within the building."
+                  de: "Eine Innenwand ist ein vertikales Strukturelement, das den Innenraum eines Gebäudes unterteilt, Unterstützung für die oberen Stockwerke und das Dach bietet und separate Räume und Bereiche innerhalb des Gebäudes schafft."
+                  fr: "Un mur intérieur est un élément structurel vertical qui divise l'espace intérieur d'un bâtiment, fournissant un support pour les étages supérieurs et le toit, et créant des pièces et des espaces séparés à l'intérieur du bâtiment."
+                  it: "Una parete interna è un elemento strutturale verticale che divide lo spazio interno di un edificio, fornendo supporto per i piani superiori e il tetto, e creando stanze e spazi separati all'interno dell'edificio."
               - id: be7
                 names:
                   en: Roof
                   de: Dach
                   fr: Toit
                   it: Tetto
+                descriptions:
+                  en: "The roof is the uppermost part of a building that provides protection from the elements, typically made of materials such as tiles, shingles, or metal, and is designed to shed water and provide insulation."
+                  de: "Das Dach ist der oberste Teil eines Gebäudes, der Schutz vor den Elementen bietet, typischerweise aus Materialien wie Ziegeln, Schindeln oder Metall besteht und dazu dient, Wasser abzuleiten und Isolierung zu bieten."
+                  fr: "Le toit est la partie la plus haute d'un bâtiment qui offre une protection contre les éléments, généralement faite de matériaux tels que des tuiles, des bardeaux ou du métal, et est conçu pour évacuer l'eau et fournir une isolation."
+                  it: "Il tetto è la parte più alta di un edificio che fornisce protezione dagli elementi, tipicamente realizzato in materiali come tegole, scandole o metallo, e progettato per defluire l'acqua e fornire isolamento."
               - id: be8
                 names:
                   en: Ceiling
                   de: Decke
                   fr: Plafond
                   it: Soffitto
+                descriptions:
+                  en: "The ceiling is the upper interior surface of a room that provides a finished surface and can also provide insulation and soundproofing, typically made of materials such as drywall, plaster, or wood."
+                  de: "Die Decke ist die obere Innenfläche eines Raumes, die eine fertige Oberfläche bietet und auch Isolierung und Schalldämmung bieten kann, typischerweise aus Materialien wie Trockenbau, Putz oder Holz besteht."
+                  fr: "Le plafond est la surface intérieure supérieure d'une pièce qui fournit une surface finie et peut également fournir une isolation et une insonorisation, généralement faite de matériaux tels que le plâtre, le plâtre ou le bois."
+                  it: "Il soffitto è la superficie interna superiore di una stanza che fornisce una superficie finita e può anche fornire isolamento e insonorizzazione, tipicamente realizzato in materiali come cartongesso, intonaco o legno."
               - id: be9
                 names:
                   en: Column
                   de: Stütze
                   fr: Colonne
                   it: Colonna
+                descriptions:
+                  en: "A column is a vertical structural element that provides support for the upper floors and roof of a building, typically made of materials such as concrete, steel, or wood, and can be decorative as well as functional."
+                  de: "Eine Stütze ist ein vertikales Strukturelement, das Unterstützung für die oberen Stockwerke und das Dach eines Gebäudes bietet, typischerweise aus Materialien wie Beton, Stahl oder Holz besteht und sowohl dekorativ als auch funktional sein kann."
+                  fr: "Une colonne est un élément structurel vertical qui fournit un support pour les étages supérieurs et le toit d'un bâtiment, généralement faite de matériaux tels que le béton, l'acier ou le bois, et peut être à la fois décorative et fonctionnelle."
+                  it: "Una colonna è un elemento strutturale verticale che fornisce supporto per i piani superiori e il tetto di un edificio, tipicamente realizzato in materiali come cemento, acciaio o legno, e può essere decorativa oltre che funzionale."
               - id: be10
                 names:
                   en: Stair
                   de: Treppe
                   fr: Escalier
                   it: Scala
+                descriptions:
+                  en: "A stair is a series of steps that provide access between different levels of a building, typically made of materials such as wood, concrete, or metal, and can be designed in various configurations such as straight, spiral, or switchback."
+                  de: "Eine Treppe ist eine Reihe von Stufen, die den Zugang zwischen verschiedenen Ebenen eines Gebäudes ermöglichen, typischerweise aus Materialien wie Holz, Beton oder Metall besteht und in verschiedenen Konfigurationen wie gerade, spiralförmig oder gewendelt gestaltet werden kann."
+                  fr: "Un escalier est une série de marches qui permettent l'accès entre différents niveaux d'un bâtiment, généralement faite de matériaux tels que le bois, le béton ou le métal, et peut être conçue dans différentes configurations telles que droite, en spirale ou en colimaçon."
+                  it: "Una scala è una serie di gradini che forniscono accesso tra diversi livelli di un edificio, tipicamente realizzata in materiali come legno, cemento o metallo, e può essere progettata in varie configurazioni come dritta, a spirale o a chiocciola."
           - id: envelope
             names:
               en: Envelope
@@ -93,36 +143,66 @@ taxonomy:
                   de: Bedachung
                   fr: Couverture de toit
                   it: Copertura del tetto
+                descriptions:
+                  en: "The roof covering is the outermost layer of the roof that provides protection from the elements, typically made of materials such as tiles, shingles, or metal, and is designed to shed water and provide insulation."
+                  de: "Die Bedachung ist die äußerste Schicht des Daches, die Schutz vor den Elementen bietet, typischerweise aus Materialien wie Ziegeln, Schindeln oder Metall besteht und dazu dient, Wasser abzuleiten und Isolierung zu bieten."
+                  fr: "La couverture de toit est la couche la plus externe du toit qui offre une protection contre les éléments, généralement faite de matériaux tels que des tuiles, des bardeaux ou du métal, et est conçue pour évacuer l'eau et fournir une isolation."
+                  it: "La copertura del tetto è lo strato più esterno del tetto che fornisce protezione dagli elementi, tipicamente realizzata in materiali come tegole, scandole o metallo, e progettata per defluire l'acqua e fornire isolamento."
               - id: be12
                 names:
                   en: Exterior thermal insulation
                   de: Aussenwärmedämmung
                   fr: Isolation thermique extérieure
                   it: Isolamento termico esterno
+                descriptions:
+                  en: "Exterior thermal insulation is a layer of insulating material applied to the exterior of a building to improve energy efficiency and reduce heat loss, typically made of materials such as foam, mineral wool, or fiberglass."
+                  de: "Die Außenwärmedämmung ist eine Schicht aus isolierendem Material, die auf die Außenseite eines Gebäudes aufgetragen wird, um die Energieeffizienz zu verbessern und den Wärmeverlust zu reduzieren, typischerweise aus Materialien wie Schaum, Mineralwolle oder Glasfaser besteht."
+                  fr: "L'isolation thermique extérieure est une couche de matériau isolant appliquée à l'extérieur d'un bâtiment pour améliorer l'efficacité énergétique et réduire les pertes de chaleur, généralement faite de matériaux tels que la mousse, la laine minérale ou la fibre de verre."
+                  it: "L'isolamento termico esterno è uno strato di materiale isolante applicato all'esterno di un edificio per migliorare l'efficienza energetica e ridurre la perdita di calore, tipicamente realizzato in materiali come schiuma, lana minerale o fibra di vetro."
               - id: be13
                 names:
                   en: Window & door
                   de: Fenster & Türen
                   fr: Fenêtre & Porte
                   it: Finestra & Porta
+                descriptions:
+                  en: "Windows and doors are openings in the exterior walls of a building that provide access, ventilation, and natural light, typically made of materials such as wood, metal, or vinyl, and can be designed in various styles and configurations."
+                  de: "Fenster und Türen sind Öffnungen in den Außenwänden eines Gebäudes, die Zugang, Belüftung und natürliches Licht bieten, typischerweise aus Materialien wie Holz, Metall oder Vinyl bestehen und in verschiedenen Stilen und Konfigurationen gestaltet werden können."
+                  fr: "Les fenêtres et les portes sont des ouvertures dans les murs extérieurs d'un bâtiment qui fournissent un accès, une ventilation et de la lumière naturelle, généralement faites de matériaux tels que le bois, le métal ou le vinyle, et peuvent être conçues dans différents styles et configurations."
+                  it: "Finestre e porte sono aperture nelle pareti esterne di un edificio che forniscono accesso, ventilazione e luce naturale, tipicamente realizzate in materiali come legno, metallo o vinile, e possono essere progettate in vari stili e configurazioni."
               - id: be14
                 names:
                   en: Exterior wall finishing basement
                   de: Äussere Beschichtung unter Terrain
                   fr: Finition mur extérieur sous-sol
                   it: Rivestimento parete esterna seminterrato
+                descriptions:
+                  en: "The exterior wall finishing of the basement is the outermost layer of the exterior wall below ground level, providing protection from moisture and soil pressure, typically made of materials such as waterproofing membranes, coatings, or cladding."
+                  de: "Die äußere Beschichtung der Kellerwand ist die äußerste Schicht der Außenwand unterhalb des Bodenniveaus, die Schutz vor Feuchtigkeit und Bodendruck bietet, typischerweise aus Materialien wie Abdichtungsbahnen, Beschichtungen oder Verkleidungen besteht."
+                  fr: "La finition du mur extérieur du sous-sol est la couche la plus externe du mur extérieur en dessous du niveau du sol, fournissant une protection contre l'humidité et la pression du sol, généralement faite de matériaux tels que des membranes d'étanchéité, des revêtements ou des bardages."
+                  it: "Il rivestimento della parete esterna del seminterrato è lo strato più esterno della parete esterna sotto il livello del terreno, fornendo protezione dall'umidità e dalla pressione del suolo, tipicamente realizzato in materiali come membrane impermeabilizzanti, rivestimenti o rivestimenti."
               - id: be15
                 names:
                   en: Exterior wall finishing above ground
                   de: Fassadenbekleidung
                   fr: Finition mur extérieur au-dessus du sol
                   it: Rivestimento parete esterna sopra il terreno
+                descriptions:
+                  en: "The exterior wall finishing above ground is the outermost layer of the exterior wall above ground level, providing protection from the elements and contributing to the aesthetic appearance of the building, typically made of materials such as cladding, stucco, or paint."
+                  de: "Die Fassadenbekleidung ist die äußerste Schicht der Außenwand über dem Bodenniveau, die Schutz vor den Elementen bietet und zum ästhetischen Erscheinungsbild des Gebäudes beiträgt, typischerweise aus Materialien wie Verkleidung, Putz oder Farbe besteht."
+                  fr: "La finition du mur extérieur au-dessus du sol est la couche la plus externe du mur extérieur au-dessus du niveau du sol, fournissant une protection contre les éléments et contribuant à l'apparence esthétique du bâtiment, généralement faite de matériaux tels que le bardage, le stuc ou la peinture."
+                  it: "Il rivestimento della parete esterna sopra il terreno è lo strato più esterno della parete esterna sopra il livello del terreno, fornendo protezione dagli elementi e contribuendo all'aspetto estetico dell'edificio, tipicamente realizzato in materiali come rivestimenti, stucco o vernice."
               - id: be16
                 names:
                   en: Sun & weather protection
                   de: Sonnen & Wetterschutz
                   fr: Protection solaire et contre les intempéries
                   it: Protezione solare e contro le intemperie
+                descriptions:
+                  en: "Sun and weather protection refers to features and materials used to protect a building from the effects of sun exposure and weather conditions, such as awnings, shutters, or weather-resistant coatings, which help to improve energy efficiency and comfort for occupants."
+                  de: "Sonnen- und Wetterschutz bezieht sich auf Merkmale und Materialien, die verwendet werden, um ein Gebäude vor den Auswirkungen von Sonneneinstrahlung und Wetterbedingungen zu schützen, wie z.B. Markisen, Fensterläden oder wetterbeständige Beschichtungen, die dazu beitragen, die Energieeffizienz und den Komfort für die Bewohner zu verbessern."
+                  fr: "La protection solaire et contre les intempéries fait référence aux caractéristiques et aux matériaux utilisés pour protéger un bâtiment des effets de l'exposition au soleil et des conditions météorologiques, tels que les auvents, les volets ou les revêtements résistants aux intempéries, qui aident à améliorer l'efficacité énergétique et le confort des occupants."
+                  it: "La protezione solare e contro le intemperie si riferisce a caratteristiche e materiali utilizzati per proteggere un edificio dagli effetti dell'esposizione al sole e dalle condizioni meteorologiche, come tende da sole, persiane o rivestimenti resistenti alle intemperie, che aiutano a migliorare l'efficienza energetica e il comfort per gli occupanti."
           - id: finishing
             names:
               en: Finishing
@@ -136,30 +216,54 @@ taxonomy:
                   de: Wandbekleidung
                   fr: Finition mur intérieur
                   it: Rivestimento parete interna
+                descriptions:
+                  en: "Interior wall finishing refers to the materials and techniques used to create a finished surface on the interior walls of a building, providing aesthetic appeal and sometimes additional functionality such as soundproofing or insulation, typically made of materials such as drywall, plaster, or wood paneling."
+                  de: "Die Wandbekleidung bezieht sich auf die Materialien und Techniken, die verwendet werden, um eine fertige Oberfläche an den Innenwänden eines Gebäudes zu schaffen, die ästhetische Anziehungskraft bietet und manchmal zusätzliche Funktionen wie Schalldämmung oder Isolierung bietet, typischerweise aus Materialien wie Trockenbau, Putz oder Holzverkleidung besteht."
+                  fr: "La finition des murs intérieurs fait référence aux matériaux et techniques utilisés pour créer une surface finie sur les murs intérieurs d'un bâtiment, offrant une attrait esthétique et parfois une fonctionnalité supplémentaire telle que l'insonorisation ou l'isolation, généralement faite de matériaux tels que le plâtre, le plâtre ou le bois."
+                  it: "Il rivestimento delle pareti interne si riferisce ai materiali e alle tecniche utilizzati per creare una superficie finita sulle pareti interne di un edificio, fornendo un'attrattiva estetica e talvolta una funzionalità aggiuntiva come l'insonorizzazione o l'isolamento, tipicamente realizzato in materiali come cartongesso, intonaco o pannelli di legno."
               - id: be18
                 names:
                   en: Interior door
                   de: Innentür
                   fr: Porte intérieure
                   it: Porta interna
+                descriptions:
+                  en: "An interior door is a door that is located within the interior of a building, providing access between rooms and spaces, typically made of materials such as wood, metal, or glass, and can be designed in various styles and configurations."
+                  de: "Eine Innentür ist eine Tür, die sich im Inneren eines Gebäudes befindet und Zugang zwischen Räumen und Bereichen bietet, typischerweise aus Materialien wie Holz, Metall oder Glas besteht und in verschiedenen Stilen und Konfigurationen gestaltet werden kann."
+                  fr: "Une porte intérieure est une porte située à l'intérieur d'un bâtiment, fournissant un accès entre les pièces et les espaces, généralement faite de matériaux tels que le bois, le métal ou le verre, et peut être conçue dans différents styles et configurations."
+                  it: "Una porta interna è una porta che si trova all'interno di un edificio, fornendo accesso tra stanze e spazi, tipicamente realizzata in materiali come legno, metallo o vetro, e può essere progettata in vari stili e configurazioni."
               - id: be19
                 names:
                   en: Partition wall
                   de: Trennwand
                   fr: Cloison
                   it: Parete divisoria
+                descriptions:
+                  en: "A partition wall is a non-load-bearing wall that divides the interior space of a building, providing separation between rooms and spaces, typically made of materials such as drywall, plaster, or wood paneling, and can be designed in various configurations such as straight, curved, or movable."
+                  de: "Eine Trennwand ist eine nicht tragende Wand, die den Innenraum eines Gebäudes unterteilt und Trennung zwischen Räumen und Bereichen bietet, typischerweise aus Materialien wie Trockenbau, Putz oder Holzverkleidung besteht und in verschiedenen Konfigurationen wie gerade, gebogen oder beweglich gestaltet werden kann."
+                  fr: "Une cloison est un mur non porteur qui divise l'espace intérieur d'un bâtiment, fournissant une séparation entre les pièces et les espaces, généralement faite de matériaux tels que le plâtre, le plâtre ou le bois, et peut être conçue dans différentes configurations telles que droite, courbe ou mobile."
               - id: be20
                 names:
                   en: Ceiling finishing
                   de: Deckenbekleidung
                   fr: Finition de plafond
                   it: Rivestimento soffitto
+                descriptions:
+                  en: "Ceiling finishing refers to the materials and techniques used to create a finished surface on the ceiling of a building, providing aesthetic appeal and sometimes additional functionality such as soundproofing or insulation, typically made of materials such as drywall, plaster, or wood paneling."
+                  de: "Die Deckenbekleidung bezieht sich auf die Materialien und Techniken, die verwendet werden, um eine fertige Oberfläche an der Decke eines Gebäudes zu schaffen, die ästhetische Anziehungskraft bietet und manchmal zusätzliche Funktionen wie Schalldämmung oder Isolierung bietet, typischerweise aus Materialien wie Trockenbau, Putz oder Holzverkleidung besteht."
+                  fr: "La finition de plafond fait référence aux matériaux et techniques utilisés pour créer une surface finie sur le plafond d'un bâtiment, offrant une attrait esthétique et parfois une fonctionnalité supplémentaire telle que l'insonorisation ou l'isolation, généralement faite de matériaux tels que le plâtre, le plâtre ou le bois."
+                  it: "Il rivestimento del soffitto si riferisce ai materiali e alle tecniche utilizzati per creare una superficie finita sul soffitto di un edificio, fornendo un'attrattiva estetica e talvolta una funzionalità aggiuntiva come l'insonorizzazione o l'isolamento, tipicamente realizzato in materiali come cartongesso, intonaco o pannelli di legno."
               - id: be21
                 names:
                   en: Floor covering
                   de: Bodenbelag
                   fr: Revêtement de sol
                   it: Rivestimento del pavimento
+                descriptions:
+                  en: "Floor covering refers to the materials and techniques used to create a finished surface on the floor of a building, providing aesthetic appeal and sometimes additional functionality such as durability or slip resistance, typically made of materials such as hardwood, tile, or carpet."
+                  de: "Der Bodenbelag bezieht sich auf die Materialien und Techniken, die verwendet werden, um eine fertige Oberfläche auf dem Boden eines Gebäudes zu schaffen, die ästhetische Anziehungskraft bietet und manchmal zusätzliche Funktionen wie Haltbarkeit oder Rutschfestigkeit bietet, typischerweise aus Materialien wie Hartholz, Fliesen oder Teppich besteht."
+                  fr: "Le revêtement de sol fait référence aux matériaux et techniques utilisés pour créer une surface finie sur le sol d'un bâtiment, offrant une attrait esthétique et parfois une fonctionnalité supplémentaire telle que la durabilité ou la résistance au glissement, généralement faite de matériaux tels que le bois franc, les carreaux ou la moquette."
+                  it: "Il rivestimento del pavimento si riferisce ai materiali e alle tecniche utilizzati per creare una superficie finita sul pavimento di un edificio, fornendo un'attrattiva estetica e talvolta una funzionalità aggiuntiva come la durabilità o la resistenza allo scivolamento, tipicamente realizzato in materiali come legno duro, piastrelle o moquette."
           - id: other
             names:
               en: Other
@@ -173,3 +277,8 @@ taxonomy:
                   de: Technik
                   fr: Équipement technique
                   it: Attrezzatura tecnica
+                descriptions:
+                  en: "Technical equipment refers to the various systems and components that are installed in a building to provide functionality and support for the occupants, such as electrical systems, plumbing, HVAC (heating, ventilation, and air conditioning), and fire protection systems."
+                  de: "Technische Ausrüstung bezieht sich auf die verschiedenen Systeme und Komponenten, die in einem Gebäude installiert sind, um Funktionalität und Unterstützung für die Bewohner zu bieten, wie z.B. elektrische Systeme, Sanitäranlagen, HLK (Heizung, Lüftung und Klimaanlage) und Brandschutzsysteme."
+                  fr: "L'équipement technique fait référence aux différents systèmes et composants qui sont installés dans un bâtiment pour fournir fonctionnalité et support aux occupants, tels que les systèmes électriques, la plomberie, le CVC (chauffage, ventilation et climatisation) et les systèmes de protection contre les incendies."
+                  it: "L'attrezzatura tecnica si riferisce ai vari sistemi e componenti che sono installati in un edificio per fornire funzionalità e supporto agli occupanti, come i sistemi elettrici, l'impianto idraulico, HVAC (riscaldamento, ventilazione e aria condizionata) e i sistemi di protezione antincendio."

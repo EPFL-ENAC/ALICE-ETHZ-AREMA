@@ -16,3 +16,10 @@ TaxonomyNode.model_rebuild()
 
 class Taxonomy(BaseModel):
     taxonomy: List[TaxonomyNode]
+
+
+class Term(BaseModel):
+    urn: str
+    locale: str
+    name: str
+    description: Optional[str]

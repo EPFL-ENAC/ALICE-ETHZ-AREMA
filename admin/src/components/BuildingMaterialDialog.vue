@@ -56,6 +56,7 @@
               v-model="selected.description"
               :label="t('description')"
               help="building-material-description"
+              :taxonomy-type="'building-material'"
               class="q-mb-md"
             />
             <text-input
@@ -64,6 +65,7 @@
               :original="original?.article_top"
               :label="t('article_top')"
               help="building-material-article-top"
+              :taxonomy-type="'building-material'"
               class="q-mb-md"
             />
             <text-input
@@ -72,6 +74,7 @@
               :original="original?.article_bottom"
               :label="t('article_bottom')"
               help="building-material-article-bottom"
+              :taxonomy-type="'building-material'"
               class="q-mb-md"
             />
             <text-input

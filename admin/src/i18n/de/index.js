@@ -130,6 +130,8 @@ export default {
   credits: 'Mitwirkende',
   dark: 'Dunkel',
   dashboard: 'Dashboard',
+  decorate: 'Dekorieren',
+  decorate_hint: 'Text mit terminologischen Einträgen anreichern.',
   density_hint: 'ρ, kg/m³',
   density: 'Dichte',
   description: 'Beschreibung',
