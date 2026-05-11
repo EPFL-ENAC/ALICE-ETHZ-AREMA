@@ -118,7 +118,7 @@
     <q-dialog v-model="showTerm">
       <q-card>
         <q-card-section>
-          <div class="text-h6">{{ term?.label }}</div>
+          <div class="text-h6">&laquo;{{ term?.label }}&raquo;</div>
           <q-markdown :src="term?.title" no-heading-anchor-links class="q-mt-md" />
           <div class="text-caption text-secondary">{{ term?.urn }}</div>
         </q-card-section>

@@ -58,7 +58,7 @@ function termPlugin(md: MarkdownIt): void {
 
           // Push the term span as html_inline
           const spanToken = new state.Token('html_inline', '', 0);
-          spanToken.content = `<span class="md-term" title="${escapeAttr(title)}" data-urn="${escapeAttr(urn)}">${escapeHtml(label)}</span>`;
+          spanToken.content = `<span class="md-term" data-title="${escapeAttr(title)}" data-urn="${escapeAttr(urn)}">${escapeHtml(label)}</span>`;
           newChildren.push(spanToken);
 
           lastIndex = match.index + fullMatch.length;

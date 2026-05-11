@@ -10,6 +10,11 @@ import type Token from 'markdown-it/lib/token.mjs';
 // * urn is a reference to a taxonomy node (e.g., 'urn:taxonomy:123')
 const TOOLTIP_REGEX = /:term\[([^\]]+)\]\{([^}]+)\}/g;
 
+/**
+ * Markdown-it plugin to render :term[label]{content|urn} syntax as spans with tooltips.
+ * The content inside the curly braces can be either a simple text (shown in the tooltip) or a pipe-separated pair of title and urn.
+ * The label inside the square brackets is what will be shown in the document.
+ */
 function termPlugin(md: MarkdownIt): void {
   const handler = (state: StateCore) => {
     state.tokens.forEach((blockToken: Token) => {
@@ -97,6 +102,33 @@ function escapeAttr(str: string): string {
     .replace(/>/g, '&gt;');
 }
 
+/**
+ * Hides the term syntax and shows only the label, without any tooltip.
+ */
+function noTermPlugin(md: MarkdownIt): void {
+  const handler = (state: StateCore) => {
+    state.tokens.forEach((blockToken: Token) => {
+      if (blockToken.type !== 'inline' || !blockToken.children) return;
+
+      blockToken.children.forEach((token: Token) => {
+        if (token.type === 'text') {
+          token.content = token.content.replace(TOOLTIP_REGEX, '$1');
+        }
+      });
+    });
+  };
+
+  try {
+    md.core.ruler.before('linkify', 'no_term', handler);
+  } catch {
+    md.core.ruler.push('no_term', handler);
+  }
+}
+
 export function termMarkdown(md: MarkdownIt): void {
   md.use(termPlugin);
+}
+
+export function noTermMarkdown(md: MarkdownIt): void {
+  md.use(noTermPlugin);
 }

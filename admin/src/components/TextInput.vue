@@ -110,9 +110,13 @@ function onTermClick(e: MouseEvent) {
   const target = (e.target as HTMLElement).closest<HTMLElement>('.md-term');
   if (!target) return;
   const urn = target.dataset.urn ?? '';
-  const title = target.getAttribute('title') ?? '';
+  const title = target.dataset.title ?? '';
   const label = target.textContent ?? '';
-  notifyInfo(title);
+  let msg = title;
+  if (urn) {
+    msg += ` -- ${urn}`;
+  }
+  notifyInfo(msg);
   emit('term-click', { label, title, urn });
 }
 

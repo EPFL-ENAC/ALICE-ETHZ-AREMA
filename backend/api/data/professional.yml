@@ -19,57 +19,103 @@ taxonomy:
               de: Architekt
               fr: Architecte
               it: Architetto
+            descriptions:
+              en: "An architect is a professional who designs buildings and oversees their construction, ensuring that they are functional, safe, and aesthetically pleasing."
+              de: "Ein Architekt ist ein Fachmann, der Gebäude entwirft und deren Bau überwacht, um sicherzustellen, dass sie funktional, sicher und ästhetisch ansprechend sind."
+              fr: "Un architecte est un professionnel qui conçoit des bâtiments et supervise leur construction, en veillant à ce qu'ils soient fonctionnels, sûrs et esthétiquement agréables."
+              it: "Un architetto è un professionista che progetta edifici e supervisiona la loro costruzione, assicurandosi che siano funzionali, sicuri e esteticamente piacevoli."
           - id: civil-engineer
             names:
               en: Civil engineer
               de: Bauingenieur
               fr: Ingénieur civil
               it: Ingegnere civile
+            descriptions:
+              en: "A civil engineer is a professional who designs and supervises the construction of infrastructure projects, such as roads, bridges, and buildings, ensuring their safety and functionality."
+              de: "Ein Bauingenieur ist ein Fachmann, der Infrastrukturprojekte wie Straßen, Brücken und Gebäude entwirft und überwacht, um ihre Sicherheit und Funktionalität zu gewährleisten."
+              fr: "Un ingénieur civil est un professionnel qui conçoit et supervise la construction de projets d'infrastructure, tels que les routes, les ponts et les bâtiments, en veillant à leur sécurité et à leur fonctionnalité."
+              it: "Un ingegnere civile è un professionista che progetta e supervisiona la costruzione di progetti di infrastruttura, come strade, ponti e edifici, assicurandosi della loro sicurezza e funzionalità."
           - id: craftsman
             names:
               en: Craftsman
               de: Handwerker
               fr: Artisan
-              it: Artigiano      
+              it: Artigiano
+            descriptions:
+              en: "A craftsman is a skilled worker who creates or repairs buildings and structures using traditional techniques and materials, often specializing in a particular trade such as carpentry, masonry, or roofing."
+              de: "Ein Handwerker ist ein Facharbeiter, der Gebäude und Strukturen mit traditionellen Techniken und Materialien erstellt oder repariert, oft spezialisiert auf ein bestimmtes Handwerk wie Tischlerei, Maurerarbeit oder Dachdeckerei."
+              fr: "Un artisan est un travailleur qualifié qui crée ou répare des bâtiments et des structures en utilisant des techniques et des matériaux traditionnels, souvent spécialisé dans un métier particulier tel que la menuiserie, la maçonnerie ou la couverture."
+              it: "Un artigiano è un lavoratore qualificato che crea o ripara edifici e strutture utilizzando tecniche e materiali tradizionali, spesso specializzato in un mestiere particolare come la carpenteria, la muratura o la copertura."
           - id: material-producer
             names:
               en: Material Producer
               de: Materialhersteller
               fr: Producteur de matériaux
               it: Produttore di materiali
+            descriptions:
+              en: "A material producer is a professional who manufactures building materials, ensuring their quality and compliance with industry standards."
+              de: "Ein Materialhersteller ist ein Fachmann, der Baustoffe herstellt und sicherstellt, dass diese die Qualitäts- und Normen des Industrie-standards entsprechen."
+              fr: "Un producteur de matériaux est un professionnel qui fabrique des matériaux de construction, en veillant à leur qualité et à leur conformité aux normes de l'industrie."
+              it: "Un produttore di materiali è un professionista che produce materiali da costruzione, assicurandosi della loro qualità e conformità agli standard dell'industria."
           - id: building-physics
             names:
               en: Building Physics
               de: Bauphysik
               fr: Physique du bâtiment
               it: Fisica dell'edificio
+            descriptions:
+              en: "A building physicist is a professional who specializes in the study of the physical properties of buildings, such as heat transfer, moisture control, and acoustics, to ensure the comfort and energy efficiency of buildings."
+              de: "Ein Bauphysiker ist ein Fachmann, der sich auf die Untersuchung der physikalischen Eigenschaften von Gebäuden spezialisiert hat, wie z.B. Wärmeübertragung, Feuchtigkeitskontrolle und Akustik, um den Komfort und die Energieeffienz von Gebäuden zu gewährleisten."
+              fr: "Un physicien du bâtiment est un professionnel spécialisé dans l'étude des propriétés physiques des bâtiments, telles que le transfert de chaleur, le contrôle de l'humidité et l'acoustique, pour assurer le confort et l'efficacité énergétique des bâtiments." 
+              it: "Un fisico dell'edificio è un professionista specializzato nello studio delle proprietà fisiche degli edifici, come il trasferimento di calore, il controllo dell'umidità e l'acustica, per garantire il comfort e l'efficienza energetica degli edifici."
           - id: association
             names:
               en: Association
               de: Verband
               fr: Association
               it: Associazione
+            descriptions:
+              en: "An association is a professional organization that represents the interests of its members, such as architects, engineers, or builders, and provides resources, networking opportunities, and advocacy for the industry."
+              de: "Ein Verband ist eine professionelle Organisation, die die Interessen ihrer Mitglieder vertritt, wie z.B. Architekten, Ingenieure oder Bauherren, und Ressourcen, Networking-Möglichkeiten und Interessenvertretung für die Branche bietet."
+              fr: "Une association est une organisation professionnelle qui représente les intérêts de ses membres, tels que les architectes, les ingénieurs ou les constructeurs, et fournit des ressources, des opportunités de réseautage et de plaidoyer pour l'industrie."
+              it: "Un'associazione è un'organizzazione professionale che rappresenta gli interessi dei suoi membri, come architetti, ingegneri o costruttori, e fornisce risorse, opportunità di networking e advocacy per l'industria."
           - id: construction-firm
             names: 
               en: Construction Firm
               de: Bauunternehmen
               fr: Entreprise de construction
               it: Impresa di costruzioni
+            descriptions:
+              en: "A construction firm is a company that specializes in the construction of buildings and infrastructure projects, managing the entire construction process from planning and design to execution and completion."
+              de: "Ein Bauunternehmen ist ein Unternehmen, das sich auf die Konstruktion von Gebäuden und Infrastrukturprojekten spezialisiert hat und den gesamten Bauprozess von der Planung und Gestaltung bis zur Ausführung und Fertigstellung verwaltet."
+              fr: "Une entreprise de construction est une société spécialisée dans la construction de bâtiments et de projets d'infrastructure, gérant l'ensemble du processus de construction, de la planification et de la conception à l'exécution et à l'achèvement."
+              it: "Un'impresa di costruzioni è una società specializzata nella costruzione di edifici e progetti di infrastruttura, gestendo l'intero processo di costruzione, dalla pianificazione e progettazione all'esecuzione e completamento."
           - id: researcher
             names:
               en: Researcher
               de: Forscher
               fr: Chercheur
               it: Ricercatore
+            descriptions:
+              en: "A researcher is a professional who conducts research and analysis in the field of construction, contributing to the advancement of knowledge and innovation in the industry."
+              de: "Ein Forscher ist ein Fachmann, der Forschung und Analyse im Bereich des Bauwesens durchführt und zur Weiterentwicklung von Wissen und Innovation in der Branche beiträgt."
+              fr: "Un chercheur est un professionnel qui mène des recherches et des analyses dans le domaine de la construction, contribuant à l'avancement des connaissances et de l'innovation dans l'industrie."
+              it: "Un ricercatore è un professionista che conduce ricerche e analisi nel campo della costruzione, contribuendo all'avanzamento della conoscenza e dell'innovazione nell'industria."
           - id: reseller
             names:
               en: Reseller
               de: Wiederverkäufer
               fr: Revendeur
               it: Rivenditore
+            descriptions:
+              en: "A reseller is a professional who sells building materials and products to contractors, builders, and other customers in the construction industry, providing access to a wide range of materials and products for construction projects."
+              de: "Ein Wiederverkäufer ist ein Fachmann, der Baustoffe und Produkte an Auftragnehmer, Bauherren und andere Kunden in der Baubranche verkauft und Zugang zu einer breiten Palette von Materialien und Produkten für Bauprojekte bietet."
+              fr: "Un revendeur est un professionnel qui vend des matériaux de construction et des produits aux entrepreneurs, aux constructeurs et à d'autres clients dans l'industrie de la construction, fournissant un accès à une large gamme de matériaux et de produits pour les projets de construction."
+              it: "Un rivenditore è un professionista che vende materiali da costruzione e prodotti a appaltatori, costruttori e altri clienti nell'industria delle costruzioni, fornendo accesso a una vasta gamma di materiali e prodotti per i progetti di costruzione."
           - id: other
             names:
               en: Other
               de: Andere
               fr: Autre
               it: Altro
+            

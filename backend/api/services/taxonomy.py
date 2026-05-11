@@ -38,6 +38,8 @@ class TaxonomyService:
         labels_map = {}
         urn = f"{urn_prefix}{node.id}" if urn_prefix.endswith(
             ":") else f"{urn_prefix}.{node.id}"
+        if node.id == "other":
+            return labels_map  # skip "other" nodes as they are too generic to be useful for matching
         for locale_key, name in node.names.items():
             if locale_key == locale:
                 labels_map[name] = Term(urn=urn, locale=locale, name=name, description=node.descriptions.get(
