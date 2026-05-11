@@ -13,5 +13,5 @@ async def find() -> Taxonomy:
 
 @router.get("/{type}", response_model=Taxonomy, response_model_exclude_none=True)
 async def get(type: str) -> Taxonomy:
-    """Get a natural resource by id"""
+    """Get a taxonomy by type"""
     return TaxonomyService().get(type)

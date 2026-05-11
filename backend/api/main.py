@@ -13,6 +13,7 @@ from api.views.buildings import router as buildings_router
 from api.views.professionals import router as professionals_router
 from api.views.building_elements import router as building_elements_router
 from api.views.taxonomy import router as taxonomy_router
+from api.views.terms import router as terms_router
 from api.views.search import router as search_router
 from api.views.users import router as users_router
 from api.views.authz import router as authz_router
@@ -83,6 +84,8 @@ app.include_router(building_elements_router,
                    prefix="/building-element", tags=["Building Elements"])
 app.include_router(taxonomy_router,
                    prefix="/taxonomy", tags=["Taxonomies"])
+app.include_router(terms_router,
+                   prefix="/terms", tags=["Terms"])
 app.include_router(search_router,
                    prefix="/search", tags=["Search"])
 app.include_router(users_router,
