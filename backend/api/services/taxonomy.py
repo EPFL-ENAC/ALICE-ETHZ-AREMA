@@ -11,8 +11,13 @@ class TaxonomyService:
 
     def getAll(self) -> Taxonomy:
         """Get all taxonomies"""
-        all = [self.get("natural-resource"), self.get("building-material"), self.get(
-            "technical-construction"), self.get("building"), self.get("professional")]
+        all = [
+            self.get("natural-resource"),
+            self.get("building-material"),
+            self.get("technical-construction"),
+            self.get("building"),
+            self.get("professional"),
+            self.get("physical-characteristics")]
         all.reverse()
         return Taxonomy(taxonomy=[taxo.taxonomy[0] for taxo in all])
 
@@ -59,6 +64,7 @@ class TaxonomyService:
                 locale=locale,
                 name=node.names.get(locale, node.id),
                 description=node.descriptions.get(
-                    locale) if node.descriptions else None
+                    locale) if node.descriptions else None,
+                unit=node.unit
             )
         return labels_map

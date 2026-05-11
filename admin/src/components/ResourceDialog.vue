@@ -52,7 +52,7 @@
               v-model="selected.article_top"
               :label="t('article_top')"
               help="resource-article-top"
-              :taxonomy-type="'natural-resource'"
+              :taxonomy-type="'natural-resource,physical-characteristics'"
               class="q-mb-md"
             />
             <text-input
@@ -61,7 +61,7 @@
               v-model="selected.article_bottom"
               :label="t('article_bottom')"
               help="resource-article-bottom"
-              :taxonomy-type="'natural-resource'"
+              :taxonomy-type="'natural-resource,physical-characteristics'"
               class="q-mb-md"
             />
             <text-input
@@ -70,6 +70,7 @@
               v-model="selected.side_note"
               :label="t('side_note')"
               help="resource-side-note"
+              :taxonomy-type="'natural-resource,physical-characteristics'"
               class="q-mb-md"
             />
             <text-input

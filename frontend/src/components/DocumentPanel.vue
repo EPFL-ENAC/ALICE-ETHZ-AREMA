@@ -130,6 +130,7 @@
             no-heading-anchor-links
             class="q-mt-md"
           />
+          <div class="text-caption q-mb-md">{{ getTermNodeAttr(termNode, 'unit') }}</div>
           <div class="text-caption text-secondary">{{ term?.urn }}</div>
         </q-card-section>
       </q-card>
