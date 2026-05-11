@@ -258,7 +258,7 @@ class TestMarkdownTransformer:
 
     def test_multiword_ngram_match(self, transformer):
         result = transformer.transform("Use glass wool here")
-        assert ":term[glass wool]{Thermal insulation|urn:glass-wool}" in result
+        assert ":term[glass wool]{urn:glass-wool}" in result
 
     def test_no_match_word_unchanged(self, transformer):
         result = transformer.transform("Use unobtanium here")
@@ -380,7 +380,7 @@ class TestMarkdownTransformerWhitespace:
         # Multiple spaces between words on the same line: 2-gram match still works,
         # collapsed spaces within the matched span are absorbed into the marker
         result = transformer.transform("glass  wool")
-        assert ":term[glass wool]{Thermal insulation|urn:glass-wool}" in result
+        assert ":term[glass wool]{urn:glass-wool}" in result
 
     def test_multiline_text_each_line_transformed_independently(self, transformer):
         text = "Use concrete here\nUse steel there"

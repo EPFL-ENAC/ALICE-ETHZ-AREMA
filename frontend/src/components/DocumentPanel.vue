@@ -117,9 +117,19 @@
     </div>
     <q-dialog v-model="showTerm">
       <q-card>
+        <q-card-actions>
+          <div class="text-h6 q-ml-sm">&laquo;{{ term?.label }}&raquo;</div>
+          <q-space />
+          <q-btn flat icon="close" color="primary" v-close-popup />
+        </q-card-actions>
+        <q-separator />
         <q-card-section>
-          <div class="text-h6">&laquo;{{ term?.label }}&raquo;</div>
-          <q-markdown :src="term?.title" no-heading-anchor-links class="q-mt-md" />
+          <div class="text-bold q-mt-sm">{{ getTermNodeAttr(termNode, 'names') }}</div>
+          <q-markdown
+            :src="getTermNodeAttr(termNode, 'descriptions')"
+            no-heading-anchor-links
+            class="q-mt-md"
+          />
           <div class="text-caption text-secondary">{{ term?.urn }}</div>
         </q-card-section>
       </q-card>
@@ -136,12 +146,13 @@ import ExternalLinksPanel from 'src/components/ExternalLinksPanel.vue';
 import RelationsPanel from 'src/components/RelationsPanel.vue';
 import AddressPanel from 'src/components/AddressPanel.vue';
 import AuthorsPanel from 'src/components/AuthorsPanel.vue';
-import type { Document } from 'src/models';
+import type { Document, TaxonomyNode } from 'src/models';
 import AxonometryPanel from 'src/components/AxonometryPanel.vue';
 import { termMarkdown } from 'src/utils/md';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const searchService = useSearchService();
+const taxonomyStore = useTaxonomyStore();
 const router = useRouter();
 const $q = useQuasar();
 
@@ -163,6 +174,12 @@ const relatedResources = ref<Document[]>([]);
 const authors = ref<Document[]>([]);
 const showTerm = ref(false);
 const term = ref(null as Term | null);
+
+const termNode = computed<TaxonomyNode | undefined>(() => {
+  if (!term.value?.urn) return undefined;
+  return taxonomyStore.getNode(term.value.urn);
+});
+
 onMounted(init);
 
 watch(() => props.document, init);
@@ -239,5 +256,18 @@ function onTermClick(e: MouseEvent) {
   const label = target.textContent ?? '';
   term.value = { urn, title, label };
   showTerm.value = true;
+}
+
+function getTermNodeAttr(node: TaxonomyNode | undefined, attr: string) {
+  if (!node) return '';
+  const value = node[attr as keyof TaxonomyNode];
+  if (typeof value === 'string') return value;
+  if (
+    typeof value === 'object' &&
+    value !== null &&
+    (value as Record<string, string>)[locale.value]
+  )
+    return (value as Record<string, string>)[locale.value];
+  return '';
 }
 </script>

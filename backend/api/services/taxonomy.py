@@ -37,7 +37,9 @@ class TaxonomyService:
         labels_map = {}
         urn_prefix = "urn:arema:"
         for node in taxonomy.taxonomy:
-            labels_map.update(self._as_labels_map(urn_prefix, node, locale))
+            urn = f"{urn_prefix}{node.id}:"
+            for child in node.children:
+                labels_map.update(self._as_labels_map(urn, child, locale))
         return labels_map
 
     def _as_labels_map(self, urn_prefix: str, node: TaxonomyNode, locale: str = "en") -> Dict[str, Term]:

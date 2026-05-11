@@ -276,11 +276,8 @@ class MarkdownTransformer:
                 term = self.matcher.match(ngram)
                 if term:
                     logger.debug(f"Matched n-gram: '{ngram}' -> {term}")
-                    target = f"{term.urn}"
-                    if term.description:
-                        target = f"{term.description}|{term.urn}"
                     # Write marker into the first word's slot
-                    parts[ng_wis[0][0]] = f":term[{ngram}]{{{target}}}"
+                    parts[ng_wis[0][0]] = f":term[{ngram}]{{{term.urn}}}"
                     # Erase intermediate separators and word slots
                     for k in range(1, n):
                         # separator between word k-1 and k

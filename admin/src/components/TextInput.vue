@@ -111,11 +111,17 @@ function onTermClick(e: MouseEvent) {
   const urn = target.dataset.urn ?? '';
   const title = target.dataset.title ?? '';
   const label = target.textContent ?? '';
-  let msg = title;
   if (urn) {
-    msg += title === '' ? urn : ` -- ${urn}`;
+    const node = taxonomyStore.getNode(urn);
+    let msg = urn;
+    if (node) {
+      const description = node.descriptions?.[locale.value];
+      if (description) {
+        msg = description;
+      }
+    }
+    notifyInfo(msg);
   }
-  notifyInfo(msg);
   emit('term-click', { label, title, urn });
 }
 
