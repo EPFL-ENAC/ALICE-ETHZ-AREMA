@@ -36,7 +36,13 @@ async def match_terms(types: str, body: str = Body(..., media_type="text/plain")
     Returns:
       PlainTextResponse: the transformed text with matched terms replaced by markdown links
     """
-    text = body.strip()
+    if body is None:
+        return PlainTextResponse("No input text provided", status_code=400)
+    if body.strip() == "":
+        # return same text without transformation
+        return PlainTextResponse(body)
+
+    text = body
     service = TaxonomyService()
     taxonomy_types = types.split(",")
     taxonomies = [service.get(taxonomy_type)

@@ -86,7 +86,6 @@ interface Props {
   hint?: string;
   help?: string;
   disable?: boolean | undefined;
-  minHeight?: string | undefined;
   rows?: number | undefined;
   taxonomyType?: string | undefined;
 }

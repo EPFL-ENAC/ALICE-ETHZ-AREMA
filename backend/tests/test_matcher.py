@@ -329,3 +329,73 @@ class TestMarkdownTransformer:
         cleared = MarkdownTransformer.clear(transformed)
         retransformed = transformer.transform(cleared)
         assert transformed == retransformed
+
+
+# ---------------------------------------------------------------------------
+# MarkdownTransformer — whitespace preservation
+# ---------------------------------------------------------------------------
+
+class TestMarkdownTransformerWhitespace:
+    @pytest.fixture
+    def transformer(self, simple_label_map):
+        m = Matcher(simple_label_map)
+        return MarkdownTransformer(m)
+
+    def test_preserves_newline_before_term(self, transformer):
+        # Newline between words must survive in the output
+        result = transformer.transform("Use\nconcrete here")
+        assert "Use\n" in result
+        assert ":term[concrete]{urn:concrete}" in result
+
+    def test_preserves_newline_after_term(self, transformer):
+        result = transformer.transform("concrete\nhere")
+        assert ":term[concrete]{urn:concrete}\n" in result
+
+    def test_preserves_leading_indentation(self, transformer):
+        result = transformer.transform("  concrete")
+        assert result == "  :term[concrete]{urn:concrete}"
+
+    def test_preserves_tab_indentation(self, transformer):
+        result = transformer.transform("\tconcrete")
+        assert result == "\t:term[concrete]{urn:concrete}"
+
+    def test_preserves_blank_line_between_terms(self, transformer):
+        # Two paragraphs separated by a blank line must keep that blank line
+        result = transformer.transform("concrete\n\nsteel")
+        assert result == ":term[concrete]{urn:concrete}\n\n:term[steel]{urn:steel}"
+
+    def test_preserves_markdown_list_formatting(self, transformer):
+        text = "- concrete\n- steel"
+        result = transformer.transform(text)
+        assert result == "- :term[concrete]{urn:concrete}\n- :term[steel]{urn:steel}"
+
+    def test_no_cross_line_ngram_match(self, transformer):
+        # "glass" and "wool" on separate lines must NOT be joined into a 2-gram
+        text = "glass\nwool"
+        result = transformer.transform(text)
+        assert ":term[glass wool]" not in result
+        assert "\n" in result
+
+    def test_inline_multispace_still_matches_ngram(self, transformer):
+        # Multiple spaces between words on the same line: 2-gram match still works,
+        # collapsed spaces within the matched span are absorbed into the marker
+        result = transformer.transform("glass  wool")
+        assert ":term[glass wool]{Thermal insulation|urn:glass-wool}" in result
+
+    def test_multiline_text_each_line_transformed_independently(self, transformer):
+        text = "Use concrete here\nUse steel there"
+        result = transformer.transform(text)
+        assert ":term[concrete]{urn:concrete}" in result
+        assert ":term[steel]{urn:steel}" in result
+        assert "\n" in result
+
+    def test_transform_preserves_surrounding_newlines(self, transformer):
+        # Text that starts and ends with newlines keeps them
+        result = transformer.transform("\nconcrete\n")
+        assert result == "\n:term[concrete]{urn:concrete}\n"
+
+    def test_idempotent_on_multiline_text(self, transformer):
+        text = "- concrete\n- steel\n\nglass wool"
+        once = transformer.transform(text)
+        twice = transformer.transform(once)
+        assert once == twice

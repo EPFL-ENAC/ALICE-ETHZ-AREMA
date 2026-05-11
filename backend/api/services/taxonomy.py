@@ -28,7 +28,12 @@ class TaxonomyService:
             return Taxonomy(taxonomy=[])
 
     def as_labels_map(self, taxonomy: Taxonomy, locale: str = "en") -> Dict[str, Term]:
-        """"""
+        """Return a map of localized label strings to Term objects for the given locale.
+
+         The dictionary keys are taxonomy node names in the requested locale, and the
+         values are `Term` instances containing the corresponding URN, localized name,
+         locale, and description. Only labels for the requested locale are included.
+         """
         labels_map = {}
         urn_prefix = "urn:arema:"
         for node in taxonomy.taxonomy:

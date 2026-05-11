@@ -241,6 +241,8 @@ class MarkdownTransformer:
     def transform(self, text: str) -> str:
         """Transform input text by matching n-grams and replacing them with markdown links to terms.
         Already-transformed text is cleared first so re-transforming is safe and idempotent.
+        Original whitespace (newlines, indentation, multiple spaces) is preserved exactly.
+        N-grams are never matched across line boundaries.
         Args:
           text (str): the input text to transform (may already be transformed)
         Returns:
@@ -248,30 +250,47 @@ class MarkdownTransformer:
         """
         # Clear any prior transformation so re-runs are safe
         text = self.clear(text)
+        if not text:
+            return text
 
-        words = text.split()
-        i = 0
-        result_tokens = []
+        # Split into alternating [word, sep, word, sep, ...] preserving all whitespace.
+        # Even indices (0, 2, 4, …) are word tokens; odd indices are whitespace separators.
+        # When text starts/ends with whitespace, the edge word slots are empty strings.
+        parts = re.split(r'(\s+)', text)
 
-        while i < len(words):
+        # Build a pre-computed index of non-empty word tokens: (parts_index, word_string)
+        word_indices = [(idx, parts[idx])
+                        for idx in range(0, len(parts), 2) if parts[idx]]
+
+        i = 0  # position in word_indices
+        while i < len(word_indices):
             matched = False
-            # Try longest n-grams first
-            for n in range(self.max_ngram, 0, -1):
-                if i + n > len(words):
+            for n in range(min(self.max_ngram, len(word_indices) - i), 0, -1):
+                ng_wis = word_indices[i:i + n]
+
+                # Do not match n-grams that span line boundaries
+                if any('\n' in parts[ng_wis[k][0] + 1] for k in range(n - 1)):
                     continue
-                ngram = " ".join(words[i:i + n])
+
+                ngram = " ".join(w for _, w in ng_wis)
                 term = self.matcher.match(ngram)
                 if term:
                     logger.debug(f"Matched n-gram: '{ngram}' -> {term}")
                     target = f"{term.urn}"
                     if term.description:
                         target = f"{term.description}|{term.urn}"
-                    result_tokens.append(f":term[{ngram}]{{{target}}}")
+                    # Write marker into the first word's slot
+                    parts[ng_wis[0][0]] = f":term[{ngram}]{{{target}}}"
+                    # Erase intermediate separators and word slots
+                    for k in range(1, n):
+                        # separator between word k-1 and k
+                        parts[ng_wis[k - 1][0] + 1] = ""
+                        parts[ng_wis[k][0]] = ""           # word k itself
                     i += n
                     matched = True
-                    break  # break n-gram loop, go to next i
+                    break  # break n-gram loop, advance to next position
+
             if not matched:
-                result_tokens.append(words[i])
                 i += 1
 
-        return " ".join(result_tokens)
+        return "".join(parts)

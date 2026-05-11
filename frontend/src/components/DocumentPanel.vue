@@ -237,7 +237,6 @@ function onTermClick(e: MouseEvent) {
   const urn = target.dataset.urn ?? '';
   const title = target.dataset.title ?? '';
   const label = target.textContent ?? '';
-  console.log('term click', { urn, title, label });
   term.value = { urn, title, label };
   showTerm.value = true;
 }
