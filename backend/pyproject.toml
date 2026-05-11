@@ -31,6 +31,11 @@ dependencies = [
     "rapidfuzz>=3.14.5",
 ]
 
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+]
+
 [tool.uv.sources]
 enacit4r-files = {git = "https://github.com/EPFL-ENAC/enacit4r-files", rev = "1.0.0"}
 enacit4r-auth = {git = "https://github.com/EPFL-ENAC/enacit4r-auth", rev = "0.6.1"}
