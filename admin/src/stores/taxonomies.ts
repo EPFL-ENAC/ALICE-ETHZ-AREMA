@@ -5,6 +5,8 @@ import type { Taxonomy, TaxonomyNode } from 'src/models';
 
 const URN_PREFIX = 'urn:arema';
 
+const authStore = useAuthStore();
+
 export const useTaxonomyStore = defineStore('taxonomies', () => {
   const { locale } = useI18n({ useScope: 'global' });
 
@@ -98,10 +100,16 @@ export const useTaxonomyStore = defineStore('taxonomies', () => {
     locale: string = 'en',
   ): Promise<string> {
     if (!text) return Promise.resolve(text || '');
+    await authStore.updateToken();
+
     return api
       .post(`/terms/${type}/_match`, text, {
         params: { locale },
-        headers: { 'Content-Type': 'text/plain', Accept: 'text/plain' },
+        headers: {
+          'Content-Type': 'text/plain',
+          Accept: 'text/plain',
+          Authorization: `Bearer ${authStore.getAccessToken()}`,
+        },
       })
       .then((resp) => resp.data);
   }

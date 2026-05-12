@@ -56,7 +56,7 @@
               :original="original?.description"
               :label="t('description')"
               help="professional-description"
-              :taxonomy-type="'professional'"
+              :taxonomy-type="'*'"
               class="q-mb-md"
             />
             <div class="row q-mb-md q-col-gutter-md">
@@ -82,7 +82,7 @@
               :original="original?.article_top"
               :label="t('article_top')"
               help="professional-article-top"
-              :taxonomy-type="'professional'"
+              :taxonomy-type="'*'"
               class="q-mb-md"
             />
             <text-input
@@ -91,7 +91,7 @@
               :original="original?.article_bottom"
               :label="t('article_bottom')"
               help="professional-article-bottom"
-              :taxonomy-type="'professional'"
+              :taxonomy-type="'*'"
               class="q-mb-md"
             />
             <text-input
