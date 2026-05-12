@@ -45,7 +45,7 @@ class Matcher:
     ) -> None:
         """
         Args:
-          label_map (Dict[str, Term]): mapping from label (human text) -> taxonomy term (with urn, name, description)
+          label_map (Dict[str, Term]): mapping from label (human text) -> taxonomy term (with urn, name, etc.)
           log_matches (bool): whether to emit debug logs for match decisions
           stopwords (Optional[set]): optional set of stopwords to override default
           allow_multiword_fuzzy (bool): if True, allow fuzzy matching of multi-word tokens;
@@ -215,7 +215,7 @@ class Matcher:
 
 
 class MarkdownTransformer:
-    # Matches :term[some text]{description|urn} or :term[some text]{urn}
+    # Matches :term[some text]{urn}
     _TERM_RE = re.compile(r":term\[([^\]]+)\]\{[^}]+\}")
 
     def __init__(self, matcher: Matcher, max_ngram: int = 5):

@@ -49,14 +49,7 @@
           </div>
         </q-tab-panel>
         <q-tab-panel name="preview" class="q-pa-none">
-          <q-card
-            v-tippy
-            flat
-            bordered
-            class="q-pa-md"
-            style="border-top: none"
-            @click="onTermClick"
-          >
+          <q-card flat bordered class="q-pa-md" style="border-top: none" @click="onTermClick">
             <q-markdown :plugins="[termMarkdown]" :src="text" no-heading-anchor-links />
           </q-card>
         </q-tab-panel>
