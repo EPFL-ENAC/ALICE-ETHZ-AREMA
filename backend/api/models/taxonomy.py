@@ -6,6 +6,8 @@ class TaxonomyNode(BaseModel):
     id: str
     names: Dict[str, str]
     descriptions: Optional[Dict[str, str]] = None
+    attributes: Optional[Dict[str, str]] = None
+    enum: Optional[List[str]] = None
     # Recursive type for nesting
     children: Optional[List["TaxonomyNode"]] = None
 

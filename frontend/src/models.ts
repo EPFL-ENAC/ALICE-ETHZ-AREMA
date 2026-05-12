@@ -23,6 +23,8 @@ export interface TaxonomyNode {
   id: string;
   names: Record<string, string>;
   descriptions?: Record<string, string>;
+  attributes?: Record<string, string>;
+  enum?: string[];
   children?: TaxonomyNode[];
 }
 

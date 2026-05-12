@@ -71,7 +71,6 @@
     <div class="row q-col-gutter-lg">
       <div class="col">
         <property-form-suggest
-          v-if="reactionToFireClasses"
           v-model="entity"
           :property="'reaction_to_fire'"
           :suggestions="reactionToFireClasses"
@@ -81,7 +80,6 @@
       </div>
       <div class="col">
         <property-form-suggest
-          v-if="fireResistanceClasses"
           v-model="entity"
           :property="'fire_resistance_class'"
           :suggestions="fireResistanceClasses"

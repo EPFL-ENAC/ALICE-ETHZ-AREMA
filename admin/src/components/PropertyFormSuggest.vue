@@ -87,7 +87,7 @@ import type { Suggestions } from 'src/components/models';
 interface Props {
   modelValue: { [key: string]: string | number | null };
   property: string;
-  suggestions?: Suggestions;
+  suggestions?: Suggestions | undefined;
   disable?: boolean | undefined;
 }
 
