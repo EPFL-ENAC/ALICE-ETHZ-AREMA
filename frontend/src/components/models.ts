@@ -47,3 +47,9 @@ export interface TermOption {
   urn: string;
   children?: TermOption[];
 }
+
+export interface Term {
+  urn: string;
+  title: string;
+  label: string;
+}

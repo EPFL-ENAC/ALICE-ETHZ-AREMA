@@ -6,7 +6,8 @@ class TaxonomyNode(BaseModel):
     id: str
     names: Dict[str, str]
     descriptions: Optional[Dict[str, str]] = None
-    unit: Optional[str] = None
+    attributes: Optional[Dict[str, str]] = None
+    enum: Optional[List[str]] = None
     # Recursive type for nesting
     children: Optional[List["TaxonomyNode"]] = None
 
@@ -24,4 +25,3 @@ class Term(BaseModel):
     locale: str
     name: str
     description: Optional[str]
-    unit: Optional[str]

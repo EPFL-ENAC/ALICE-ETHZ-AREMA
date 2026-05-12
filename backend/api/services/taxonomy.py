@@ -64,7 +64,6 @@ class TaxonomyService:
                 locale=locale,
                 name=node.names.get(locale, node.id),
                 description=node.descriptions.get(
-                    locale) if node.descriptions else None,
-                unit=node.unit
+                    locale) if node.descriptions else None
             )
         return labels_map
