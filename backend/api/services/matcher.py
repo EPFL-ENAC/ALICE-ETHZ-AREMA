@@ -273,11 +273,18 @@ class MarkdownTransformer:
                     continue
 
                 ngram = " ".join(w for _, w in ng_wis)
+                # From the ngram, split the trailing punctuation chars (if any)
+                # so that "steel," can match "steel" in the taxonomy. We only strip trailing punctuation to avoid breaking up valid multi-word terms like "glass wool".
+                # keep the stripped punctuation in the original text so that it remains after transformation (e.g. "steel," -> ":term[steel]{urn},")
+                punctuation = re.search(r"[.,;:!?]+$", ngram)
+                if punctuation:
+                    ngram = ngram[:-len(punctuation.group())]
                 term = self.matcher.match(ngram)
                 if term:
                     logger.debug(f"Matched n-gram: '{ngram}' -> {term}")
                     # Write marker into the first word's slot
-                    parts[ng_wis[0][0]] = f":term[{ngram}]{{{term.urn}}}"
+                    parts[ng_wis[0][0]
+                          ] = f":term[{ngram}]{{{term.urn}}}{punctuation.group() if punctuation else ''}"
                     # Erase intermediate separators and word slots
                     for k in range(1, n):
                         # separator between word k-1 and k

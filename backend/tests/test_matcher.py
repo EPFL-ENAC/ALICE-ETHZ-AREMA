@@ -134,6 +134,11 @@ class TestMatchExact:
         assert term is not None
         assert term.urn == "urn:timber"
 
+    def test_exact_match_extra_punctuation(self, matcher):
+        term = matcher.match("  timber,  ")
+        assert term is not None
+        assert term.urn == "urn:timber"
+
     def test_exact_multiword_match(self, matcher):
         term = matcher.match("recycled brick")
         assert term is not None
@@ -267,6 +272,10 @@ class TestMarkdownTransformer:
     def test_term_without_description(self, transformer):
         result = transformer.transform("Use steel here")
         assert ":term[steel]{urn:steel}" in result
+
+    def test_term_with_extra_punctuation(self, transformer):
+        result = transformer.transform("Use steel, here")
+        assert ":term[steel]{urn:steel}," in result
 
     def test_greedy_longest_ngram_first(self, transformer):
         # "glass wool" should be matched as a 2-gram, not as two separate 1-grams

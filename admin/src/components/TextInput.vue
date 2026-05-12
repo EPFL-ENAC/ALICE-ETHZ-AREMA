@@ -26,7 +26,7 @@
                 @update:model-value="onUpdate"
                 :disable="props.disable || decorating"
               />
-              <div v-if="taxonomyType">
+              <div v-if="taxonomyType && !props.disable">
                 <q-btn
                   flat
                   no-caps
