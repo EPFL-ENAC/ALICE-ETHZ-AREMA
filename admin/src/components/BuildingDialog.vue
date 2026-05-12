@@ -92,7 +92,7 @@
               v-model="selected.description"
               :original="original?.description"
               :label="t('description')"
-              :taxonomy-type="'building'"
+              :taxonomy-type="'*'"
               help="building-description"
               class="q-mb-md"
             />
@@ -101,7 +101,7 @@
               v-model="selected.article_top"
               :original="original?.article_top"
               :label="t('article_top')"
-              :taxonomy-type="'building'"
+              :taxonomy-type="'*'"
               help="building-article-top"
               class="q-mb-md"
             />
@@ -110,7 +110,7 @@
               v-model="selected.article_bottom"
               :original="original?.article_bottom"
               :label="t('article_bottom')"
-              :taxonomy-type="'building'"
+              :taxonomy-type="'*'"
               help="building-article-bottom"
               class="q-mb-md"
             />

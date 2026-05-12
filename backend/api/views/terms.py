@@ -1,7 +1,8 @@
 from typing import Dict
 
-from fastapi import APIRouter, Body, Query
+from fastapi import APIRouter, Body, Query, Depends
 from fastapi.responses import PlainTextResponse
+from api.auth import kc_service, User
 from api.models.taxonomy import Term
 from api.services.matcher import Matcher, MarkdownTransformer
 from api.services.taxonomy import TaxonomyService
@@ -26,7 +27,12 @@ async def get_terms_map(type: str, locale: str = Query("en")) -> Dict[str, Term]
 
 
 @router.post("/{types}/_match", response_class=PlainTextResponse)
-async def match_terms(types: str, body: str = Body(..., media_type="text/plain"), locale: str = Query("en")) -> PlainTextResponse:
+async def match_terms(
+    types: str,
+    body: str = Body(..., media_type="text/plain"),
+    locale: str = Query("en"),
+    user: User = Depends(kc_service.get_user_info())
+) -> PlainTextResponse:
     """Match terms in the input text against the taxonomy of the given type and return the transformed text with markdown links.
 
     Args:
@@ -45,8 +51,8 @@ async def match_terms(types: str, body: str = Body(..., media_type="text/plain")
     text = body
     service = TaxonomyService()
     taxonomy_types = types.split(",")
-    taxonomies = [service.get(taxonomy_type)
-                  for taxonomy_type in taxonomy_types]
+    taxonomies = [service.getAll()] if "*" in taxonomy_types else [service.get(taxonomy_type)
+                                                                   for taxonomy_type in taxonomy_types]
     terms = {}
     for taxonomy in taxonomies:
         terms.update(service.as_labels_map(taxonomy, locale))
