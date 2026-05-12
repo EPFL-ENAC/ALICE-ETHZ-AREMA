@@ -150,7 +150,7 @@ const relationSummaries = ref<Document[]>([]);
 const relatedResources = ref<Document[]>([]);
 const authors = ref<Document[]>([]);
 const showTerm = ref(false);
-const term = ref(null as Term | null);
+const term = ref<Term | null>(null);
 
 onMounted(init);
 
