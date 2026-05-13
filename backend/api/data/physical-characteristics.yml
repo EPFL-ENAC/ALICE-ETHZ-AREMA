@@ -32,6 +32,21 @@ taxonomy:
             attributes:
               unit: kg/m³
               symbol: ρ
+            ranges:
+              - id: very_low
+                max: 50
+              - id: low
+                min: 50
+                max: 200
+              - id: medium
+                min: 200
+                max: 1000
+              - id: high
+                min: 1000
+                max: 3000
+              - id: very_high
+                min: 3000
+
 
           - id: compressive_strength
             names:
@@ -345,6 +360,8 @@ taxonomy:
               de: Klassifizierung des Brandverhaltens eines Materials nach europäischer Norm EN 13501-1 (z.B. A1, A2, B, C, D, E, F).
               fr: Classification de la contribution d'un matériau au développement d'un incendie, selon la norme européenne EN 13501-1 (ex. A1, A2, B, C, D, E, F).
               it: Classificazione del contributo di un materiale allo sviluppo di un incendio, secondo la norma europea EN 13501-1 (es. A1, A2, B, C, D, E, F).
+            attributes:
+              unit: DIN EN 13501-2
             enum: [A1, A2, B, C, D, E, F]
 
           - id: fire_resistance_class
@@ -358,6 +375,8 @@ taxonomy:
               de: Klassifizierung der Dauer, während der ein Bauelement einer Brandeinwirkung standhalten kann und dabei seine tragende und/oder trennende Funktion beibehält (z.B. R30, EI60, REI90).
               fr: Classification de la durée pendant laquelle un élément de construction peut résister à l'exposition au feu tout en maintenant sa fonction portante et/ou séparante (ex. R30, EI60, REI90).
               it: Classificazione della durata per cui un elemento edilizio può resistere all'esposizione al fuoco mantenendo la sua funzione portante e/o separante (es. R30, EI60, REI90).
+            attributes:
+              unit: DIN EN 13501-1
             enum: [R, RE, REI, EI]
 
       - id: other
