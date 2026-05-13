@@ -32,6 +32,20 @@ taxonomy:
             attributes:
               unit: kg/m³
               symbol: ρ
+            ranges:
+              - id: very_low
+                max: 50
+              - id: low
+                min: 50
+                max: 200
+              - id: medium
+                min: 200
+                max: 1000
+              - id: high
+                min: 1000
+                max: 3000
+              - id: very_high
+                min: 3000
 
           - id: compressive_strength
             names:
@@ -47,6 +61,20 @@ taxonomy:
             attributes:
               unit: MPa
               symbol: σc
+            ranges:
+              - id: very_low
+                max: 1
+              - id: low
+                min: 1
+                max: 5
+              - id: medium
+                min: 5
+                max: 10
+              - id: high
+                min: 10
+                max: 100
+              - id: very_high
+                min: 100
 
           - id: tensile_strength
             names:
@@ -62,6 +90,20 @@ taxonomy:
             attributes:
               unit: MPa
               symbol: σ
+            ranges:
+              - id: very_low
+                max: 1
+              - id: low
+                min: 1
+                max: 5
+              - id: medium
+                min: 5
+                max: 10
+              - id: high
+                min: 10
+                max: 200
+              - id: very_high
+                min: 200
 
           - id: youngs_modulus
             names:
@@ -77,6 +119,20 @@ taxonomy:
             attributes:
               unit: GPa
               symbol: E
+            ranges:
+              - id: very_low
+                max: 1
+              - id: low
+                min: 1
+                max: 5
+              - id: medium
+                min: 5
+                max: 10
+              - id: high
+                min: 10
+                max: 100
+              - id: very_high
+                min: 100
 
           - id: shrinkage
             names:
@@ -132,6 +188,20 @@ taxonomy:
             attributes:
               unit: W/(m·K)
               symbol: λ
+            ranges:
+              - id: very_low
+                max: 0.05
+              - id: low
+                min: 0.05
+                max: 0.1
+              - id: medium
+                min: 0.1
+                max: 0.5
+              - id: high
+                min: 0.5
+                max: 2
+              - id: very_high
+                min: 2
 
           - id: thermal_capacity
             names:
@@ -147,6 +217,20 @@ taxonomy:
             attributes:
               unit: J/(kg·K)
               symbol: c
+            ranges:
+              - id: very_low
+                max: 500
+              - id: low
+                min: 500
+                max: 1000
+              - id: medium
+                min: 1000
+                max: 1500
+              - id: high
+                min: 1500
+                max: 3000
+              - id: very_high
+                min: 3000
 
           - id: vapor_diffusion_resistance
             names:
@@ -161,6 +245,20 @@ taxonomy:
               it: Fattore adimensionale che indica quanto un materiale sia più resistente alla diffusione del vapore rispetto all'aria ferma (valore µ).
             attributes:
               unit: µ
+            ranges:
+              - id: very_low
+                max: 5
+              - id: low
+                min: 5
+                max: 10
+              - id: medium
+                min: 10
+                max: 20
+              - id: high
+                min: 20
+                max: 100
+              - id: very_high
+                min: 100
 
           - id: moisture_buffering
             names:
@@ -176,6 +274,20 @@ taxonomy:
             attributes:
               unit: g/(m²·%RH)
               symbol: MBV
+            ranges:
+              - id: very_low
+                max: 0.2
+              - id: low
+                min: 0.2
+                max: 0.5
+              - id: medium
+                min: 0.5
+                max: 1
+              - id: high
+                min: 1
+                max: 2
+              - id: very_high
+                min: 2
 
           - id: porosity
             names:
@@ -191,6 +303,20 @@ taxonomy:
             attributes:
               unit: "%vol"
               symbol: ξ
+            ranges:
+              - id: very_low
+                max: 10
+              - id: low
+                min: 10
+                max: 30
+              - id: medium
+                min: 30
+                max: 50
+              - id: high
+                min: 50
+                max: 80
+              - id: very_high
+                min: 80
 
           - id: water_content
             names:
@@ -205,6 +331,20 @@ taxonomy:
               it: Quantità di acqua contenuta in un materiale, espressa come frazione della massa secca o del volume.
             attributes:
               unit: kg/m³
+            ranges:
+              - id: very_low
+                max: 10
+              - id: low
+                min: 10
+                max: 50
+              - id: medium
+                min: 50
+                max: 100
+              - id: high
+                min: 100
+                max: 200
+              - id: very_high
+                min: 200
 
           - id: free_saturation
             names:
@@ -220,6 +360,20 @@ taxonomy:
             attributes:
               unit: kg/m³
               symbol: "w80%"
+            ranges:
+              - id: very_low
+                max: 100
+              - id: low
+                min: 100
+                max: 200
+              - id: medium
+                min: 200
+                max: 350
+              - id: high
+                min: 350
+                max: 600
+              - id: very_high
+                min: 600
 
           - id: liquid_transfer_coefficient
             names:
@@ -235,6 +389,20 @@ taxonomy:
             attributes:
               unit: kg/(m²·√(s))
               symbol: A
+            ranges:
+              - id: very_low
+                max: 0.001
+              - id: low
+                min: 0.001
+                max: 0.02
+              - id: medium
+                min: 0.02
+                max: 0.06
+              - id: high
+                min: 0.06
+                max: 0.1
+              - id: very_high
+                min: 0.1
 
           - id: u
             names:
@@ -265,6 +433,20 @@ taxonomy:
             attributes:
               unit: W·√(h)/(m²·K)
               symbol: E
+            ranges:
+              - id: very_low
+                max: 0.1
+              - id: low
+                min: 0.1
+                max: 0.5
+              - id: medium
+                min: 0.5
+                max: 1.6
+              - id: high
+                min: 1.6
+                max: 3
+              - id: very_high
+                min: 3
 
           - id: diffusivity
             names:
@@ -306,6 +488,20 @@ taxonomy:
               it: Frazione dell'energia sonora incidente assorbita dalla superficie di un materiale, da 0 (riflessione perfetta) a 1 (assorbimento perfetto).
             attributes:
               symbol: α
+            ranges:
+              - id: very_low
+                max: 0.1
+              - id: low
+                min: 0.1
+                max: 0.3
+              - id: medium
+                min: 0.3
+                max: 0.5
+              - id: high
+                min: 0.5
+                max: 0.9
+              - id: very_high
+                min: 0.9
 
           - id: sound_reduction_index
             names:
@@ -345,6 +541,8 @@ taxonomy:
               de: Klassifizierung des Brandverhaltens eines Materials nach europäischer Norm EN 13501-1 (z.B. A1, A2, B, C, D, E, F).
               fr: Classification de la contribution d'un matériau au développement d'un incendie, selon la norme européenne EN 13501-1 (ex. A1, A2, B, C, D, E, F).
               it: Classificazione del contributo di un materiale allo sviluppo di un incendio, secondo la norma europea EN 13501-1 (es. A1, A2, B, C, D, E, F).
+            attributes:
+              unit: DIN EN 13501-1
             enum: [A1, A2, B, C, D, E, F]
 
           - id: fire_resistance_class
@@ -354,10 +552,12 @@ taxonomy:
               fr: Classe de résistance au feu
               it: Classe di resistenza al fuoco
             descriptions:
-              en: Classification of the duration a building element can withstand fire exposure while maintaining its load-bearing and/or separating function (e.g. R30, EI60, REI90).
-              de: Klassifizierung der Dauer, während der ein Bauelement einer Brandeinwirkung standhalten kann und dabei seine tragende und/oder trennende Funktion beibehält (z.B. R30, EI60, REI90).
-              fr: Classification de la durée pendant laquelle un élément de construction peut résister à l'exposition au feu tout en maintenant sa fonction portante et/ou séparante (ex. R30, EI60, REI90).
-              it: Classificazione della durata per cui un elemento edilizio può resistere all'esposizione al fuoco mantenendo la sua funzione portante e/o separante (es. R30, EI60, REI90).
+              en: Classification of the duration a building element can withstand fire exposure while maintaining its load-bearing and/or separating function (e.g. R, EI, REI).
+              de: Klassifizierung der Dauer, während der ein Bauelement einer Brandeinwirkung standhalten kann und dabei seine tragende und/oder trennende Funktion beibehält (z.B. R, EI, RE).
+              fr: Classification de la durée pendant laquelle un élément de construction peut résister à l'exposition au feu tout en maintenant sa fonction portante et/ou séparante (ex. R, EI, REI).
+              it: Classificazione della durata per cui un elemento edilizio può resistere all'esposizione al fuoco mantenendo la sua funzione portante e/o separante (es. R, EI, REI).
+            attributes:
+              unit: DIN EN 13501-2
             enum: [R, RE, REI, EI]
 
       - id: other
