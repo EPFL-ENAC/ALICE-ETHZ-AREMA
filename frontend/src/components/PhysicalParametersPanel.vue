@@ -1,5 +1,5 @@
 <template>
-  <div class="row q-col-gutter-md">
+  <div class="masonry">
     <template v-for="section in sections" :key="section">
       <div class="col-12 col-lg-6" v-if="hasValues(section)">
         <div class="text-h6" :title="getSectionDescription(section)">
@@ -24,13 +24,17 @@
                   >
                 </q-item-label>
               </q-item-section>
-              <q-item-section avatar>
+            </q-item>
+            <q-item v-if="hasFieldValue(field)" class="q-pa-none" style="padding: 0 !important">
+              <q-item-section>
                 <range-panel
                   :urn="toUrn(section, field)"
                   :property="field"
-                  :min="getFieldValues(field)[0]"
+                  :low="getFieldValues(field)[0]"
                   :std="getFieldValues(field)[1]"
-                  :max="getFieldValues(field)[2]"
+                  :high="getFieldValues(field)[2]"
+                  style="width: 100%"
+                  class="q-mb-sm"
                 />
               </q-item-section>
             </q-item>
@@ -136,3 +140,15 @@ function getFieldValues(field: string) {
   return [doc[`${field}_low`], doc[field], doc[`${field}_high`]];
 }
 </script>
+
+<style scoped>
+.masonry {
+  column-count: 2;
+  column-gap: 1rem;
+}
+@media (max-width: 1024px) {
+  .masonry {
+    column-count: 1;
+  }
+}
+</style>

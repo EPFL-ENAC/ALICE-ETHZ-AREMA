@@ -2,11 +2,11 @@
   <q-dialog v-model="showDialog" @hide="onHide">
     <q-card class="dialog-sm">
       <q-card-actions>
-        <div class="text-h6 q-ml-sm">&laquo;{{ label }}&raquo;</div>
+        <div v-if="label" class="text-h6 q-ml-sm">&laquo;{{ label }}&raquo;</div>
         <q-space />
         <q-btn flat icon="close" color="primary" v-close-popup />
       </q-card-actions>
-      <q-separator />
+      <q-separator v-if="label" />
       <q-card-section>
         <div class="text-bold q-mt-sm">{{ getLocaleProp('names') }}</div>
         <q-markdown :src="getLocaleProp('descriptions')" no-heading-anchor-links class="q-mt-md" />
