@@ -242,13 +242,12 @@ const naturalResourcesTypes = ref<Option[]>([]);
 
 onMounted(() => {
   onRefresh();
-  void taxonomyStore.getTaxonomyNode('natural-resource', 'type').then((types) => {
-    if (!types) {
-      console.warn('No taxonomy found for natural-resource type');
-      return;
-    }
+  const types = taxonomyStore.getTaxonomyNode('natural-resource', 'type');
+  if (types) {
     naturalResourcesTypes.value = taxonomyStore.asOptions('natural-resource', types, 'type');
-  });
+  } else {
+    console.warn('No taxonomy found for natural-resource type');
+  }
 });
 
 function fetchFromServer(

@@ -342,13 +342,12 @@ const showIGLehmImporter = ref(false);
 
 onMounted(() => {
   onRefresh();
-  void taxonomyStore.getTaxonomyNode('professional', 'type').then((types) => {
-    if (!types) {
-      console.warn('No taxonomy found for professional type');
-      return;
-    }
+  const types = taxonomyStore.getTaxonomyNode('professional', 'type');
+  if (types) {
     professionalTypes.value = taxonomyStore.asOptions('professional', types, 'type');
-  });
+  } else {
+    console.warn('No taxonomy found for professional type');
+  }
 });
 
 const features = computed(() => {

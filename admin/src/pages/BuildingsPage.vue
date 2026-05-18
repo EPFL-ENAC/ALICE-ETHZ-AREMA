@@ -300,13 +300,12 @@ const showIGLehmImporter = ref(false);
 
 onMounted(() => {
   onRefresh();
-  void taxonomyStore.getTaxonomyNode('building', 'type').then((types) => {
-    if (!types) {
-      console.warn('No taxonomy found for building type');
-      return;
-    }
+  const types = taxonomyStore.getTaxonomyNode('building', 'type');
+  if (types) {
     bldTypes.value = taxonomyStore.asOptions('building', types, 'type');
-  });
+  } else {
+    console.warn('No taxonomy found for building type');
+  }
 });
 
 const features = computed(() => {
