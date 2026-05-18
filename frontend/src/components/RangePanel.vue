@@ -32,11 +32,16 @@
         <div
           v-if="valueParts.veryLowPct > 0"
           class="values"
+          :class="veryLowPctClass"
           :style="`width: ${valueParts.veryLowPct}%`"
         ></div>
         <div :style="`width: ${valueParts.midMarginPct}%`"></div>
-        <div class="values" :style="`width: ${valueParts.midPct}%`"></div>
-        <div class="values" :style="`width: ${valueParts.veryHighPct}%`"></div>
+        <div class="values" :class="midPctClass" :style="`width: ${valueParts.midPct}%`"></div>
+        <div
+          class="values"
+          :class="veryHighPctClass"
+          :style="`width: ${valueParts.veryHighPct}%`"
+        ></div>
       </div>
     </div>
     <div v-else-if="node?.enum" class="row no-wrap">
@@ -130,6 +135,37 @@ const valueParts = computed(() => {
   return { veryLowMarginPct, veryLowPct, midMarginPct, midPct, veryHighPct };
 });
 
+const veryLowPctClass = computed(() => {
+  let classes = '';
+  if (valueParts.value.veryLowPct > 0) {
+    classes = 'values-low';
+  }
+  if (valueParts.value.midPct === 0 && valueParts.value.veryHighPct === 0) {
+    classes += ' values-high';
+  }
+  return classes;
+});
+const midPctClass = computed(() => {
+  let classes = '';
+  if (valueParts.value.veryLowPct === 0) {
+    classes += ' values-low';
+  }
+  if (valueParts.value.veryHighPct === 0) {
+    classes += ' values-high';
+  }
+  return classes;
+});
+const veryHighPctClass = computed(() => {
+  let classes = '';
+  if (valueParts.value.midPct === 0) {
+    classes += ' values-low';
+  }
+  if (valueParts.value.veryHighPct > 0) {
+    classes = 'values-high';
+  }
+  return classes;
+});
+
 function getRangeLabel(range: ValueRange) {
   if (range.min === undefined && range.max === undefined) {
     return '';
@@ -186,6 +222,28 @@ function getEnumClass(value: string | number) {
 .values {
   height: 8px;
   background-color: var(--q-primary);
+}
+.values-low {
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--q-primary) 30%, transparent),
+    color-mix(in srgb, var(--q-primary) 100%, transparent)
+  );
+}
+.values-high {
+  background: linear-gradient(
+    to left,
+    color-mix(in srgb, var(--q-primary) 30%, transparent),
+    color-mix(in srgb, var(--q-primary) 100%, transparent)
+  );
+}
+.values-low.values-high {
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--q-primary) 30%, transparent),
+    color-mix(in srgb, var(--q-primary) 100%, transparent) 50%,
+    color-mix(in srgb, var(--q-primary) 30%, transparent)
+  );
 }
 .enum {
   height: 18px;
