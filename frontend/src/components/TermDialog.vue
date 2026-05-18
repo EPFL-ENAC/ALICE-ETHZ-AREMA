@@ -3,12 +3,13 @@
     <q-card class="dialog-sm">
       <q-card-actions>
         <div v-if="label" class="text-h6 q-ml-sm">&laquo;{{ label }}&raquo;</div>
+        <div v-else class="text-h6 q-ml-sm">{{ getLocaleProp('names') }}</div>
         <q-space />
         <q-btn flat icon="close" color="primary" v-close-popup />
       </q-card-actions>
-      <q-separator v-if="label" />
-      <q-card-section>
-        <div class="text-bold q-mt-sm">{{ getLocaleProp('names') }}</div>
+      <q-separator />
+      <q-card-section class="q-pt-none">
+        <div v-if="label" class="text-bold q-mt-md">{{ getLocaleProp('names') }}</div>
         <q-markdown :src="getLocaleProp('descriptions')" no-heading-anchor-links class="q-mt-md" />
         <div v-if="hasAttributes" class="text-caption q-mb-md">
           <q-list dense>
@@ -25,10 +26,7 @@
             </template>
           </q-list>
         </div>
-        <div v-if="hasEnum" class="text-caption q-mb-md">
-          {{ enums.join(', ') }}
-        </div>
-        <div class="text-caption text-secondary">{{ urn }}</div>
+        <!-- <div class="text-caption text-secondary">{{ urn }}</div> -->
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -52,7 +50,7 @@ const emit = defineEmits(['update:modelValue']);
 const showDialog = ref(props.modelValue);
 const termNode = ref<TaxonomyNode | undefined>();
 const label = computed(() => props.term?.label || '');
-const urn = computed(() => props.term?.urn || '');
+// const urn = computed(() => props.term?.urn || '');
 const attributes = computed(() => {
   if (!termNode.value) return {};
   return termNode.value.attributes || {};
@@ -60,14 +58,6 @@ const attributes = computed(() => {
 const hasAttributes = computed(() => {
   if (!termNode.value) return false;
   return !!termNode.value.attributes;
-});
-const enums = computed(() => {
-  if (!termNode.value) return [];
-  return termNode.value.enum || [];
-});
-const hasEnum = computed(() => {
-  if (!termNode.value) return false;
-  return !!termNode.value.enum && termNode.value.enum.length > 0;
 });
 
 watch(
