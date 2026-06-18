@@ -2,8 +2,11 @@ import datetime
 import os
 import shutil
 import csv
+import logging
+
 from api.services.search import SearchService
 from api.services.taxonomy import TaxonomyService, TAXONOMY_NAMES
+from api.services.s3 import s3_client
 
 
 class SnapshotService:
@@ -27,6 +30,8 @@ class SnapshotService:
         os.makedirs(local_entities_folder, exist_ok=True)
         local_taxonomies_folder = f"{local_folder}/taxonomies"
         os.makedirs(local_taxonomies_folder, exist_ok=True)
+        local_files_folder = f"{local_folder}/files"
+        os.makedirs(local_files_folder, exist_ok=True)
 
         indexService = SearchService.fromIndex("entities")
         entity_types = [
@@ -71,6 +76,16 @@ class SnapshotService:
                             value = e.get(f, "")
                             if isinstance(value, list) and len(value) == 0:
                                 value = ""
+                            if f == "files" and isinstance(value, list):
+                                # When file object, download file from s3 into local temp folder, and replace value with local url
+                                for i, file in enumerate(value):
+                                    if isinstance(file, dict) and "ref" in file:
+                                        file_ref = file["ref"]
+                                        filename = file_ref.get('name', '')
+                                        local_file_path = f"{local_files_folder}/{filename}"
+                                        await self._download_file(file_ref.get('path', ''), local_file_path)
+                                        value[i] = {"file": filename}
+
                             row[f] = value
                         rows.append(row)
                     writer.writerows(rows)
@@ -85,7 +100,21 @@ class SnapshotService:
         shutil.make_archive(local_folder, 'zip', local_folder)
 
         # Clean up local temp folder
-        shutil.rmtree(local_folder)
+        # shutil.rmtree(local_folder)
 
         # Return local path of the zip file
         return f"{local_folder}.zip"
+
+    async def _download_file(self, s3_path: str, dest_path: str):
+        """Download a file from S3 to a local destination path."""
+        if not s3_path:
+            return
+        (body, content_type) = await s3_client.get_file(s3_path)
+        # Check body is a byte-like object
+        if not isinstance(body, (bytes, bytearray)):
+            logging.error(
+                f"Expected bytes-like object for file content {s3_path}, got {type(body)}")
+            return
+        # Write the file to the destination path
+        with open(dest_path, "wb") as f:
+            f.write(body)
