@@ -52,10 +52,28 @@ class SnapshotService:
                     fieldnames = []
                     for e in entities:
                         fieldnames.extend(e.keys())
+                    exclude_fields = [
+                        "state", "created_at", "created_by", "updated_at", "updated_by", "published_by"]
+                    fieldnames = [
+                        f for f in fieldnames if f not in exclude_fields]
                     fieldnames = list(set(fieldnames))
+                    # ensure field 'id' is first column
+                    if "id" in fieldnames:
+                        fieldnames.remove("id")
+                        fieldnames.insert(0, "id")
                     writer = csv.DictWriter(f, fieldnames=fieldnames)
                     writer.writeheader()
-                    writer.writerows(entities)
+                    # Write only the fields in fieldnames, and lists as empty strings if they are empty
+                    rows = []
+                    for e in entities:
+                        row = {}
+                        for f in fieldnames:
+                            value = e.get(f, "")
+                            if isinstance(value, list) and len(value) == 0:
+                                value = ""
+                            row[f] = value
+                        rows.append(row)
+                    writer.writerows(rows)
 
         # Taxonomies as yaml files
         taxoService = TaxonomyService()

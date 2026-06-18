@@ -177,7 +177,7 @@ function onSnapshotDownload() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `snapshot_${timestamp}.zip`;
+      a.download = `arema_snapshot_${timestamp}.zip`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
