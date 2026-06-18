@@ -64,7 +64,8 @@
           <q-btn
             size="sm"
             color="primary"
-            :disable="searchService.indexing"
+            :disable="searchService.indexing || snapshotService.downloading"
+            :loading="snapshotService.downloading"
             :label="t('snapshot_download')"
             icon="download"
             @click="onSnapshotDownload"
