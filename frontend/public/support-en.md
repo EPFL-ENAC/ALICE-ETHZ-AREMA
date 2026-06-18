@@ -1,5 +1,7 @@
 # Supports
 
+The Atlas has, over the years, been made possible through the support of multiple partners. We gratefully acknowledge their essential contributions and the trust they have consistently placed in this initiative.
+
 - [Ricola Foundation](https://www.ricolafoundation.org/regeneratives-bauen)
 - [La Matériauthèque MATILDA](https://materiautheque.ch/)
 - [Open Research Data Program of the ETH Board](https://ethrat.ch/en/eth-domain/open-research-data/)
