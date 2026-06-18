@@ -100,7 +100,7 @@ class SnapshotService:
         shutil.make_archive(local_folder, 'zip', local_folder)
 
         # Clean up local temp folder
-        # shutil.rmtree(local_folder)
+        shutil.rmtree(local_folder)
 
         # Return local path of the zip file
         return f"{local_folder}.zip"
