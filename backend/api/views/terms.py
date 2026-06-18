@@ -51,8 +51,8 @@ async def match_terms(
     text = body
     service = TaxonomyService()
     taxonomy_types = types.split(",")
-    taxonomies = [service.getAll()] if "*" in taxonomy_types else [service.get(taxonomy_type)
-                                                                   for taxonomy_type in taxonomy_types]
+    taxonomies = [service.get_all()] if "*" in taxonomy_types else [service.get(taxonomy_type)
+                                                                    for taxonomy_type in taxonomy_types]
     terms = {}
     for taxonomy in taxonomies:
         terms.update(service.as_labels_map(taxonomy, locale))

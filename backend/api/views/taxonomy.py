@@ -8,7 +8,7 @@ router = APIRouter()
 @router.get("/", response_model=Taxonomy, response_model_exclude_none=True)
 async def find() -> Taxonomy:
     """Get all taxonomies"""
-    return TaxonomyService().getAll()
+    return TaxonomyService().get_all()
 
 
 @router.get("/{type}", response_model=Taxonomy, response_model_exclude_none=True)

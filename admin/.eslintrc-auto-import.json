@@ -105,6 +105,7 @@
     "watchSyncEffect": true,
     "useStatsService": true,
     "useStatsStore": true,
-    "useImporterService": true
+    "useImporterService": true,
+    "useSnapshotService": true
   }
 }

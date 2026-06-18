@@ -1,7 +1,17 @@
 from importlib import resources
+import shutil
 import yaml
 from typing import Dict
 from api.models.taxonomy import Taxonomy, TaxonomyNode, Term
+
+TAXONOMY_NAMES = [
+    "natural-resource",
+    "building-material",
+    "technical-construction",
+    "building",
+    "professional",
+    "physical-characteristics"
+]
 
 
 class TaxonomyService:
@@ -9,15 +19,9 @@ class TaxonomyService:
     def __init__(self):
         pass
 
-    def getAll(self) -> Taxonomy:
+    def get_all(self) -> Taxonomy:
         """Get all taxonomies"""
-        all = [
-            self.get("natural-resource"),
-            self.get("building-material"),
-            self.get("technical-construction"),
-            self.get("building"),
-            self.get("professional"),
-            self.get("physical-characteristics")]
+        all = [self.get(name) for name in TAXONOMY_NAMES]
         all.reverse()
         return Taxonomy(taxonomy=[taxo.taxonomy[0] for taxo in all])
 
@@ -31,6 +35,13 @@ class TaxonomyService:
             return Taxonomy(**yaml_data)
         except FileNotFoundError:
             return Taxonomy(taxonomy=[])
+
+    def copy_file(self, type: str, dest_path: str):
+        package_name = "api.data"
+        resource_name = f"{type}.yml"
+        with resources.files(package_name).joinpath(resource_name).open("rb") as src:
+            with open(dest_path, "wb") as dst:
+                shutil.copyfileobj(src, dst)
 
     def as_labels_map(self, taxonomy: Taxonomy, locale: str = "en") -> Dict[str, Term]:
         """Return a map of localized label strings to Term objects for the given locale.

@@ -98,6 +98,7 @@ declare global {
   const useServiceInstance: typeof import('feathers-pinia')['useServiceInstance']
   const useServices: typeof import('./stores/services')['useServices']
   const useSlots: typeof import('vue')['useSlots']
+  const useSnapshotService: typeof import('./stores/snapshot')['useSnapshotService']
   const useStatsService: typeof import('./stores/stats')['useStatsService']
   const useStatsStore: typeof import('./stores/stats')['useStatsStore']
   const useTaxonomy: typeof import('./stores/taxonomies')['useTaxonomy']
@@ -206,6 +207,7 @@ declare module 'vue' {
     readonly useSearchService: UnwrapRef<typeof import('./stores/search')['useSearchService']>
     readonly useServices: UnwrapRef<typeof import('./stores/services')['useServices']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
+    readonly useSnapshotService: UnwrapRef<typeof import('./stores/snapshot')['useSnapshotService']>
     readonly useStatsStore: UnwrapRef<typeof import('./stores/stats')['useStatsStore']>
     readonly useTaxonomyStore: UnwrapRef<typeof import('./stores/taxonomies')['useTaxonomyStore']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
