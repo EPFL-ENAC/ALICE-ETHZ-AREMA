@@ -29,7 +29,7 @@ class IndexService(ABC):
         self.client.indices.delete(
             index=self.index_name, ignore_unavailable=True)
 
-    def search(self, query: dict, skip: int = 0, limit: int = 10):
+    def search(self, query: dict, skip: int = 0, limit: int = 10) -> SearchResult:
         """Search documents in the index
 
         Args:
