@@ -58,6 +58,18 @@
             class="on-right"
           />
         </div>
+        <div class="text-h6 q-mb-md q-mt-lg">{{ t('snapshot') }}</div>
+        <div class="text-help q-mb-md">{{ t('snapshot_help') }}</div>
+        <div class="q-mb-md">
+          <q-btn
+            size="sm"
+            color="primary"
+            :disable="searchService.indexing"
+            :label="t('snapshot_download')"
+            icon="download"
+            @click="onSnapshotDownload"
+          />
+        </div>
       </div>
     </div>
   </q-page>
@@ -70,6 +82,7 @@ import { notifyError } from 'src/utils/notify';
 
 const authStore = useAuthStore();
 const searchService = useSearchService();
+const snapshotService = useSnapshotService();
 const statsStore = useStatsStore();
 const $q = useQuasar();
 const { t } = useI18n();
@@ -147,6 +160,33 @@ function onDropIndex() {
       console.error(err);
       $q.notify({
         message: t('index_drop_error'),
+        type: 'negative',
+      });
+    });
+}
+
+function onSnapshotDownload() {
+  snapshotService
+    .downloadSnapshot()
+    .then((blob) => {
+      const timestamp = new Date()
+        .toISOString()
+        .slice(0, 19)
+        .replace(/[:]/g, '-')
+        .replace('T', '_');
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `snapshot_${timestamp}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    })
+    .catch((err) => {
+      console.error(err);
+      $q.notify({
+        message: t('snapshot_download_error'),
         type: 'negative',
       });
     });
