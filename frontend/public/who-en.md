@@ -8,6 +8,7 @@ Initial nodes are:
 - ETH Zurich with the team of Prof. Guillaume Habert
 - Politecnico di Torino with the team of Prof. Andrea Bocco
 - Technische Universität München with the team of Prof. Niklas Fanelsa
+
 This structure is intended to expand organically, as new bioregional nodes emerge and take stewardship of their own contexts.
 More than a database, the Atlas is a collective effort to re-anchor construction practices within ecological and cultural realities. Its strength lies in those who contribute to it, across disciplines, regions, and practices, gradually weaving a shared, situated knowledge of regenerative materials.
 
