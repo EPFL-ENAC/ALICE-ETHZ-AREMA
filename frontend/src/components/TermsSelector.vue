@@ -122,14 +122,16 @@ const selectedNode = ref<TaxonomyNodeOption>();
 
 const nodes = computed<TaxonomyNodeOption[]>(() => {
   return (
-    taxonomyStore.taxonomies?.taxonomy.map((tx) => {
-      const children = taxonomyStore.asOptions(tx.id, tx) as TaxonomyNodeOption[];
-      return {
-        value: taxonomyStore.toUrn(tx.id, []),
-        label: taxonomyStore.getLabel(tx.names),
-        children: children.length > 1 ? children : children[0]?.children || [],
-      } as TaxonomyNodeOption;
-    }) || []
+    taxonomyStore.taxonomies?.taxonomy
+      .filter((tx) => tx.id !== 'physical-characteristics')
+      .map((tx) => {
+        const children = taxonomyStore.asOptions(tx.id, tx) as TaxonomyNodeOption[];
+        return {
+          value: taxonomyStore.toUrn(tx.id, []),
+          label: taxonomyStore.getLabel(tx.names),
+          children: children.length > 1 ? children : children[0]?.children || [],
+        } as TaxonomyNodeOption;
+      }) || []
   );
 });
 
