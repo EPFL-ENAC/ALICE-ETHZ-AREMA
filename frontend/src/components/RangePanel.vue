@@ -19,29 +19,40 @@
             v-else
             class="text-white range range-part"
             :title="`${t(range.id)} (${getRangeLabel(range)})`"
-            :style="`width: ${(Math.abs((range.max || 0) - (range.min || 0)) / rangeLength) * (100 - 2 * endsPct)}%`"
+            :style="`width: ${(Math.abs((range.max || 0) - (range.min || 0)) / (rangeLength || 1)) * (100 - 2 * endsPct)}%`"
           ></div>
         </template>
       </div>
       <div
-        class="row no-wrap"
-        style="margin-top: -8px"
-        :title="`${t('low')}: ${low || '-'} / ${t('standard')}: ${std || '-'} / ${t('high')}: ${high || '-'}`"
+        :title="`${t('low')}: ${props.low || '-'} / ${t('standard')}: ${props.std || '-'} / ${t('high')}: ${props.high || '-'}`"
       >
-        <div :style="`width: ${valueParts.veryLowMarginPct}%`"></div>
-        <div
-          v-if="valueParts.veryLowPct > 0"
-          class="values"
-          :class="veryLowPctClass"
-          :style="`width: ${valueParts.veryLowPct}%`"
-        ></div>
-        <div :style="`width: ${valueParts.midMarginPct}%`"></div>
-        <div class="values" :class="midPctClass" :style="`width: ${valueParts.midPct}%`"></div>
-        <div
-          class="values"
-          :class="veryHighPctClass"
-          :style="`width: ${valueParts.veryHighPct}%`"
-        ></div>
+        <div style="margin-top: -8px; position: relative; height: 10px">
+          <div
+            v-if="barSpan !== null"
+            :style="`left: ${barSpan.left}%; width: ${barSpan.width}%`"
+            class="value-bar"
+          ></div>
+        </div>
+        <div style="margin-top: -11px; position: relative; height: 14px">
+          <div
+            v-if="props.low !== null && lowPct !== null"
+            :style="`left: ${lowPct}%`"
+            class="bar"
+            :title="`${t('low')}: ${props.low}`"
+          ></div>
+          <div
+            v-if="props.std !== null && stdPct !== null"
+            :style="`left: ${stdPct}%`"
+            class="circle"
+            :title="`${t('standard')}: ${props.std}`"
+          ></div>
+          <div
+            v-if="props.high !== null && highPct !== null"
+            :style="`left: ${highPct}%`"
+            class="bar"
+            :title="`${t('high')}: ${props.high}`"
+          ></div>
+        </div>
       </div>
     </div>
     <div v-else-if="node?.enum" class="row no-wrap">
@@ -83,87 +94,76 @@ const props = defineProps<Props>();
 const endsPct = 10;
 const node = computed(() => taxonomyStore.getNode(props.urn));
 const rangeLength = computed(() => {
-  if (!node.value?.ranges) return 0;
+  if (!node.value?.ranges) return null;
   return node.value.ranges
     .filter((range) => range.min !== undefined && range.max !== undefined)
     .map((range) => Math.abs((range.max || 0) - (range.min || 0)))
     .reduce((acc, val) => acc + val, 0);
 });
 const rangeMin = computed(() => {
-  if (!node.value?.ranges) return 0;
+  if (!node.value?.ranges) return null;
   return Math.min(
     ...node.value.ranges
-      .filter((range) => range.min !== undefined)
+      .filter((range) => range.min !== undefined && range.min !== null)
       .map((range) => range.min as number),
   );
 });
-const rangeMax = computed(() => {
-  if (!node.value?.ranges) return 0;
-  return Math.max(
-    ...node.value.ranges
-      .filter((range) => range.max !== undefined)
-      .map((range) => range.max as number),
-  );
-});
 const lowValue = computed(() => {
-  return Math.min(props.low as number, props.std as number, props.high as number);
-});
-const highValue = computed(() => {
-  return Math.max(props.low as number, props.std as number, props.high as number);
-});
-const valueParts = computed(() => {
-  if (rangeLength.value === 0)
-    return { veryLowMarginPct: endsPct, veryLowPct: 0, midMarginPct: 0, midPct: 0, veryHighPct: 0 };
-
-  let lowVal = lowValue.value;
-  let veryLowMarginPct = endsPct;
-  let veryLowPct = 0;
-  if (lowValue.value < rangeMin.value) {
-    veryLowPct = (endsPct * (rangeMin.value - lowValue.value)) / rangeMin.value;
-    veryLowMarginPct = endsPct - veryLowPct;
-    lowVal = rangeMin.value;
+  // handle null values by excluding them from the min calculation
+  let min: number | null = null;
+  if (props.low !== undefined && props.low !== null) {
+    min = Number(props.low);
+  } else if (props.std !== undefined && props.std !== null) {
+    min = Number(props.std);
+  } else if (props.high !== undefined && props.high !== null) {
+    min = Number(props.high);
   }
-
-  const pctFacto = (100 - 2 * endsPct) / rangeLength.value;
-  const midMarginPct = pctFacto * (lowVal - rangeMin.value);
-  let midPct = pctFacto * (highValue.value - lowVal);
-  let veryHighPct = 0;
-  if (highValue.value > rangeMax.value) {
-    midPct = pctFacto * (rangeMax.value - lowVal);
-    veryHighPct = (endsPct * (highValue.value - rangeMax.value)) / rangeMax.value;
-  }
-  return { veryLowMarginPct, veryLowPct, midMarginPct, midPct, veryHighPct };
+  return min;
 });
 
-const veryLowPctClass = computed(() => {
-  let classes = '';
-  if (valueParts.value.veryLowPct > 0) {
-    classes = 'values-low';
+// position of the low, std and high values in the range bar,
+// taking into account margins between range segments
+const lowPct = computed(() => {
+  if (
+    props.low === null ||
+    props.low === undefined ||
+    lowValue.value === null ||
+    rangeLength.value === null
+  )
+    return null;
+  if (lowValue.value < rangeMin.value!) {
+    return (endsPct * lowValue.value) / rangeMin.value!;
   }
-  if (valueParts.value.midPct === 0 && valueParts.value.veryHighPct === 0) {
-    classes += ' values-high';
-  }
-  return classes;
+  return endsPct + ((lowValue.value - rangeMin.value!) / rangeLength.value) * (100 - 2 * endsPct);
 });
-const midPctClass = computed(() => {
-  let classes = '';
-  if (valueParts.value.veryLowPct === 0) {
-    classes += ' values-low';
+const stdPct = computed(() => {
+  if (props.std === null || props.std === undefined || rangeLength.value === null) return null;
+  let rval = null;
+  if (Number(props.std) < rangeMin.value!) {
+    rval = (endsPct * Number(props.std)) / rangeMin.value!;
+  } else {
+    rval =
+      endsPct + ((Number(props.std) - rangeMin.value!) / rangeLength.value) * (100 - 2 * endsPct);
   }
-  if (valueParts.value.veryHighPct === 0) {
-    classes += ' values-high';
-  }
-  return classes;
+  return Math.min(100, rval);
 });
-const veryHighPctClass = computed(() => {
-  let classes = '';
-  if (valueParts.value.midPct === 0) {
-    classes += ' values-low';
+const highPct = computed(() => {
+  if (props.high === null || props.high === undefined || rangeLength.value === null) return null;
+  let rval = null;
+  if (Number(props.high) < rangeMin.value!) {
+    rval = (endsPct * Number(props.high)) / rangeMin.value!;
+  } else {
+    rval =
+      endsPct + ((Number(props.high) - rangeMin.value!) / rangeLength.value) * (100 - 2 * endsPct);
   }
-  if (valueParts.value.veryHighPct > 0) {
-    classes = 'values-high';
-  }
-  return classes;
+  return Math.min(100, rval);
+});
+
+const barSpan = computed(() => {
+  const left = lowPct.value ?? stdPct.value ?? highPct.value;
+  const right = highPct.value ?? stdPct.value ?? lowPct.value;
+  if (left === null || right === null) return null;
+  return { left, width: right - left };
 });
 
 function getRangeLabel(range: ValueRange) {
@@ -195,6 +195,29 @@ function getEnumClass(value: string | number) {
 </script>
 
 <style scoped>
+.value-bar {
+  position: absolute;
+  height: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--q-primary);
+  opacity: 0.6;
+}
+.bar {
+  position: absolute;
+  width: 4px;
+  height: 12px;
+  background: var(--q-accent);
+  transform: translateX(-50%);
+}
+.circle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--q-accent);
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
 .range {
   height: 18px;
   background-color: var(--q-secondary);
@@ -217,32 +240,6 @@ function getEnumClass(value: string | number) {
     to left,
     color-mix(in srgb, var(--q-secondary) 40%, transparent),
     color-mix(in srgb, var(--q-secondary) 100%, transparent)
-  );
-}
-.values {
-  height: 8px;
-  background-color: var(--q-primary);
-}
-.values-low {
-  background: linear-gradient(
-    to right,
-    color-mix(in srgb, var(--q-primary) 30%, transparent),
-    color-mix(in srgb, var(--q-primary) 100%, transparent)
-  );
-}
-.values-high {
-  background: linear-gradient(
-    to left,
-    color-mix(in srgb, var(--q-primary) 30%, transparent),
-    color-mix(in srgb, var(--q-primary) 100%, transparent)
-  );
-}
-.values-low.values-high {
-  background: linear-gradient(
-    to right,
-    color-mix(in srgb, var(--q-primary) 30%, transparent),
-    color-mix(in srgb, var(--q-primary) 100%, transparent) 50%,
-    color-mix(in srgb, var(--q-primary) 30%, transparent)
   );
 }
 .enum {
