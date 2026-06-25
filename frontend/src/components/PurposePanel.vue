@@ -7,7 +7,7 @@
       <span v-html="t('purpose_text')"></span>
     </div>
     <div class="q-mt-lg">
-      <router-link to="/about" class="text-uppercase" style="font-size: larger"
+      <router-link to="/manifesto" class="text-uppercase" style="font-size: larger"
         >{{ t('read_manifesto') }} <q-icon name="open_in_new"
       /></router-link>
     </div>

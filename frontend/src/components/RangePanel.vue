@@ -207,14 +207,14 @@ function getEnumClass(value: string | number) {
   position: absolute;
   width: 4px;
   height: 12px;
-  background: var(--q-accent);
+  background: var(--q-primary);
   transform: translateX(-50%);
 }
 .circle {
   position: absolute;
   width: 12px;
   height: 12px;
-  background: var(--q-accent);
+  background: var(--q-primary);
   border-radius: 50%;
   transform: translateX(-50%);
 }
