@@ -19,39 +19,74 @@ taxonomy:
               de: Erde
               fr: Terre
               it: Terra
+            descriptions:
+              en: "Earth is the natural material that makes up the ground and soil, commonly used in construction for its availability and thermal properties."
+              de: "Erde ist das natürliche Material, das den Boden und die Erde bildet und aufgrund seiner Verfügbarkeit und thermischen Eigenschaften häufig im Bauwesen verwendet wird."
+              fr: "La terre est le matériau naturel qui compose le sol et la terre, couramment utilisé dans la construction pour sa disponibilité et ses propriétés thermiques."
+              it: "La terra è il materiale naturale che costituisce il terreno e il suolo, comunemente usato nella costruzione per la sua disponibilità e proprietà termiche."
           - id: rock
             names:
               en: Stone
               de: Stein
               fr: Pierre
               it: Pietra
+            descriptions:
+              en: "Rock is a naturally occurring solid mineral material, often used in construction for its strength, durability, and aesthetic appeal."
+              de: "Stein ist ein natürlich vorkommendes festes Mineralmaterial, das aufgrund seiner Stärke, Haltbarkeit und ästhetischen Anziehungskraft häufig im Bauwesen verwendet wird."
+              fr: "La pierre est un matériau minéral solide naturellement présent, souvent utilisé dans la construction pour sa résistance, sa durabilité et son attrait esthétique."
+              it: "La pietra è un materiale minerale solido che si trova in natura, spesso usato nella costruzione per la sua resistenza, durata e appeal estetico."
           - id: straw
             names:
               en: Straw
               de: Stroh
               fr: Paille
               it: Paglia
+            descriptions:
+              en: "Straw is a natural fiber derived from cereal plants, commonly used in construction for its availability and thermal properties."
+              de: "Stroh ist eine natürliche Faser, die aus Getreidepflanzen gewonnen wird und aufgrund seiner Verfügbarkeit und thermischen Eigenschaften häufig im Bauwesen verwendet wird."
+              fr: "La paille est une fibre naturelle dérivée des plantes céréaliers, couramment utilisée dans la construction pour sa disponibilité et ses propriétés thermiques."
+              it: "La paglia è una fibra naturale derivata dalle piante cerealicole, comunemente usata nella costruzione per la sua disponibilità e proprietà termiche."
           - id: hemp
             names:
               en: Hemp
               de: Hanf
               fr: Chanvre
               it: Canapa
+            descriptions:
+              en: "Hemp is a versatile natural fiber derived from the Cannabis sativa plant, used in construction for its strength, durability, and sustainability."
+              de: "Hanf ist eine vielseitige natürliche Faser, die aus der Cannabis sativa-Pflanze gewonnen wird und aufgrund ihrer Stärke, Haltbarkeit und Nachhaltigkeit im Bauwesen verwendet wird."
+              fr: "Le chanvre est une fibre naturelle polyvalente dérivée de la plante Cannabis sativa, utilisée dans la construction pour sa résistance, sa durabilité et sa durabilité."
+              it: "La canapa è una fibra naturale versatile derivata dalla pianta di Cannabis sativa, utilizzata nella costruzione per la sua resistenza, durata e sostenibilità."
           - id: wood
             names:
               en: Wood
               de: Holz
               fr: Bois
               it: Legno
+            descriptions:
+              en: "Wood is a natural material derived from trees and other plants, commonly used in construction for its strength, versatility, and aesthetic appeal."
+              de: "Holz ist ein natürliches Material, das aus Bäumen und anderen Pflanzen gewonnen wird und aufgrund seiner Stärke, Vielseitigkeit und ästhetischen Anziehungskraft häufig im Bauwesen verwendet wird."
+              fr: "Le bois est un matériau naturel dérivé des arbres et d'autres plantes, couramment utilisé dans la construction pour sa résistance, sa polyvalence et son attrait esthétique."
+              it: "Il legno è un materiale naturale derivato dagli alberi e da altre piante, comunemente usato nella costruzione per la sua resistenza, versatilità e appeal estetico."
           - id: other-fibers
             names:
               en: "Other Fibres"
               de: "Andere Fasern"
               fr: "Autres fibres"
               it: "Altre fibre"
+            descriptions:
+              en: "Other natural fibers used in construction, such as jute, coir, or flax, valued for their sustainability and thermal properties."
+              de: "Andere natürliche Fasern, die im Bauwesen verwendet werden, wie Jute, Kokos oder Flachs, geschätzt für ihre Nachhaltigkeit und thermischen Eigenschaften."
+              fr: "D'autres fibres naturelles utilisées dans la construction, telles que le jute, la fibre de coco ou le lin, appréciées pour leur durabilité et leurs propriétés thermiques."
+              it: "Altre fibre naturali usate nella costruzione, come juta, fibra di cocco o lino, apprezzate per la loro sostenibilità e proprietà termiche."
           - id: reused
             names:
               en: Re-Used
               de: Wiederverwendet
               fr: Réutilisé
               it: Riutilizzato
+            descriptions:
+              en: "Materials that have been previously used in construction and are being repurposed for new construction projects, contributing to sustainability and waste reduction."
+              de: "Materialien, die bereits in der Konstruktion verwendet wurden und für neue Bauprojekte wiederverwendet werden, tragen zur Nachhaltigkeit und Abfallreduzierung bei."
+              fr: "Des matériaux qui ont déjà été utilisés dans la construction et qui sont réutilisés pour de nouveaux projets de construction, contribuant à la durabilité et à la réduction des déchets."
+              it: "Materiali che sono stati precedentemente utilizzati nella costruzione e che vengono riutilizzati per nuovi progetti di costruzione, contribuendo alla sostenibilità e alla riduzione dei rifiuti."

@@ -14,7 +14,12 @@
               <div>
                 <tags-badges :item="row" />
               </div>
-              <q-markdown :src="row.description" class="fade-text" no-heading-anchor-links />
+              <q-markdown
+                :plugins="[noTermMarkdown]"
+                :src="row.description"
+                class="fade-text"
+                no-heading-anchor-links
+              />
               <div v-if="getImageUrls(row).length" class="q-mt-md">
                 <q-img
                   :src="getImageUrls(row)[0]"
@@ -46,6 +51,7 @@
 import type { Document } from 'src/models';
 import TagsBadges from 'src/components/TagsBadges.vue';
 import { getImageUrls } from 'src/utils/files';
+import { noTermMarkdown } from 'src/utils/md';
 
 const { t } = useI18n();
 const searchService = useSearchService();

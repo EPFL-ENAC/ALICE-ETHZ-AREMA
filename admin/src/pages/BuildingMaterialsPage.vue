@@ -245,13 +245,12 @@ const bmTypes = ref<Option[]>([]);
 
 onMounted(() => {
   onRefresh();
-  void taxonomyStore.getTaxonomyNode('building-material', 'type').then((types) => {
-    if (!types) {
-      console.warn('No taxonomy found for building-material type');
-      return;
-    }
+  const types = taxonomyStore.getTaxonomyNode('building-material', 'type');
+  if (types) {
     bmTypes.value = taxonomyStore.asOptions('building-material', types, 'type');
-  });
+  } else {
+    console.warn('No taxonomy found for building-material type');
+  }
 });
 
 function fetchFromServer(

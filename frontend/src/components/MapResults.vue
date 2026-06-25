@@ -29,7 +29,12 @@
                   <tags-badges :item="row" />
                 </div>
                 <q-item-label caption>
-                  <q-markdown :src="row.description" class="fade-text" no-heading-anchor-links />
+                  <q-markdown
+                    :plugins="[noTermMarkdown]"
+                    :src="row.description"
+                    class="fade-text"
+                    no-heading-anchor-links
+                  />
                 </q-item-label>
               </q-item-section>
               <q-item-section v-if="getImageUrls(row).length" avatar>
@@ -54,6 +59,7 @@ import MapView from 'src/components/MapView.vue';
 import TagsBadges from 'src/components/TagsBadges.vue';
 import type { Document } from 'src/models';
 import { getImageUrls } from 'src/utils/files';
+import { noTermMarkdown } from 'src/utils/md';
 
 const { t } = useI18n();
 const router = useRouter();

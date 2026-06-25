@@ -55,6 +55,7 @@
               :label="t('description')"
               help="technical-construction-description"
               :original="original?.description"
+              :taxonomy-type="'technical-construction,physical-characteristics'"
               class="q-mb-md"
             />
             <text-input
@@ -63,6 +64,7 @@
               :label="t('article_top')"
               help="technical-construction-article-top"
               :original="original?.article_top"
+              :taxonomy-type="'technical-construction,physical-characteristics'"
               class="q-mb-md"
             />
             <text-input
@@ -71,6 +73,7 @@
               :label="t('article_bottom')"
               help="technical-construction-article-bottom"
               :original="original?.article_bottom"
+              :taxonomy-type="'technical-construction,physical-characteristics'"
               class="q-mb-md"
             />
             <text-input

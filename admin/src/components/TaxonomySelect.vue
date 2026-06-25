@@ -61,13 +61,12 @@ function loadOptions() {
   if (options.value.length > 0) {
     return;
   }
-  void taxonomyStore.getTaxonomyNode(props.entityType, props.path).then((node) => {
-    if (!node) {
-      console.warn(`No taxonomy found for ${props.entityType} at path ${props.path}`);
-      return;
-    }
-    options.value = taxonomyStore.asOptions(props.entityType, node, props.path);
-  });
+  const node = taxonomyStore.getTaxonomyNode(props.entityType, props.path);
+  if (!node) {
+    console.warn(`No taxonomy found for ${props.entityType} at path ${props.path}`);
+    return;
+  }
+  options.value = taxonomyStore.asOptions(props.entityType, node, props.path);
 }
 
 function onSelection() {

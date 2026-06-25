@@ -1,0 +1,588 @@
+taxonomy:
+  - id: physical-characteristics
+    names:
+      en: Physical Characteristics
+      de: Physikalische Eigenschaften
+      fr: Caractéristiques physiques
+      it: Caratteristiche fisiche
+    children:
+      - id: structural
+        names:
+          en: Structural
+          de: Strukturelle
+          fr: Structurel
+          it: Strutturale
+        descriptions:
+          en: Physical properties related to the load-bearing capacity and mechanical behavior of materials and structures.
+          de: Physikalische Eigenschaften im Zusammenhang mit der Tragfähigkeit und dem mechanischen Verhalten von Materialien und Strukturen.
+          fr: Propriétés physiques liées à la capacité portante et au comportement mécanique des matériaux et des structures.
+          it: Proprietà fisiche relative alla capacità portante e al comportamento meccanico dei materiali e delle strutture.
+        children:
+          - id: density
+            names:
+              en: Density
+              de: Rohdichte
+              fr: Densité
+              it: Densità
+            descriptions:
+              en: Mass per unit volume of the material.
+              de: Masse pro Volumeneinheit des Materials.
+              fr: Masse par unité de volume du matériau.
+              it: Massa per unità di volume del materiale.
+            attributes:
+              unit: kg/m³
+              symbol: ρ
+            ranges:
+              - id: very_low
+                max: 50
+              - id: low
+                min: 50
+                max: 200
+              - id: medium
+                min: 200
+                max: 1000
+              - id: high
+                min: 1000
+                max: 3000
+              - id: very_high
+                min: 3000
+
+          - id: compressive_strength
+            names:
+              en: Compressive Strength
+              de: Druckfestigkeit
+              fr: Résistance à la compression
+              it: Resistenza alla compressione
+            descriptions:
+              en: Maximum stress a material can withstand when being compressed.
+              de: Maximale Spannung, der ein Material beim Verdichten standhält.
+              fr: Contrainte maximale qu'un matériau peut supporter en compression.
+              it: Massima sollecitazione che un materiale può sopportare in compressione.
+            attributes:
+              unit: MPa
+              symbol: σc
+            ranges:
+              - id: very_low
+                max: 1
+              - id: low
+                min: 1
+                max: 5
+              - id: medium
+                min: 5
+                max: 10
+              - id: high
+                min: 10
+                max: 100
+              - id: very_high
+                min: 100
+
+          - id: tensile_strength
+            names:
+              en: Tensile Strength
+              de: Zugfestigkeit
+              fr: Résistance à la traction
+              it: Resistenza a trazione
+            descriptions:
+              en: Maximum stress a material can withstand when being stretched or pulled.
+              de: Maximale Spannung, der ein Material beim Dehnen oder Ziehen standhält.
+              fr: Contrainte maximale qu'un matériau peut supporter en traction.
+              it: Massima sollecitazione che un materiale può sopportare in trazione.
+            attributes:
+              unit: MPa
+              symbol: σ
+            ranges:
+              - id: very_low
+                max: 1
+              - id: low
+                min: 1
+                max: 5
+              - id: medium
+                min: 5
+                max: 10
+              - id: high
+                min: 10
+                max: 200
+              - id: very_high
+                min: 200
+
+          - id: youngs_modulus
+            names:
+              en: Young's Modulus
+              de: Elastizitätsmodul
+              fr: Module de Young
+              it: Modulo di Young
+            descriptions:
+              en: Measure of the stiffness of a material, defined as the ratio of stress to strain.
+              de: Maß für die Steifigkeit eines Materials, definiert als Verhältnis von Spannung zu Dehnung.
+              fr: Mesure de la rigidité d'un matériau, définie comme le rapport contrainte/déformation.
+              it: Misura della rigidità di un materiale, definita come il rapporto tra sollecitazione e deformazione.
+            attributes:
+              unit: GPa
+              symbol: E
+            ranges:
+              - id: very_low
+                max: 1
+              - id: low
+                min: 1
+                max: 5
+              - id: medium
+                min: 5
+                max: 10
+              - id: high
+                min: 10
+                max: 100
+              - id: very_high
+                min: 100
+
+          - id: shrinkage
+            names:
+              en: Shrinkage
+              de: Schwindmaß
+              fr: Retrait
+              it: Ritiro
+            descriptions:
+              en: Reduction in volume or length of a material during drying or curing.
+              de: Volumen- oder Längenreduktion eines Materials beim Trocknen oder Aushärten.
+              fr: Réduction de volume ou de longueur d'un matériau lors du séchage ou du durcissement.
+              it: Riduzione di volume o lunghezza di un materiale durante l'essiccazione o la maturazione.
+            attributes:
+              unit: mm/m
+
+          - id: settlement
+            names:
+              en: Settlement
+              de: Setzung
+              fr: Tassement
+              it: Assestamento
+            descriptions:
+              en: Downward movement or compression of a material or structure over time under load.
+              de: Abwärtsbewegung oder Verdichtung eines Materials oder einer Struktur im Laufe der Zeit unter Last.
+              fr: Mouvement vers le bas ou compression d'un matériau ou d'une structure dans le temps sous charge.
+              it: Movimento verso il basso o compressione di un materiale o struttura nel tempo sotto carico.
+            attributes:
+              unit: mm/m
+
+      - id: hygrothermal
+        names:
+          en: Hygrothermal
+          de: Hygrothermische
+          fr: Hygrothermique
+          it: Igrotermico
+        descriptions:
+          en: Physical properties related to the interaction of materials with heat and moisture.
+          de: Physikalische Eigenschaften im Zusammenhang mit der Wechselwirkung von Materialien mit Wärme und Feuchtigkeit.
+          fr: Propriétés physiques liées à l'interaction des matériaux avec la chaleur et l'humidité.
+          it: Proprietà fisiche relative all'interazione dei materiali con il calore e l'umidità.
+        children:
+          - id: thermal_conductivity
+            names:
+              en: Thermal Conductivity
+              de: Wärmeleitfähigkeit
+              fr: Conductivité thermique
+              it: Conduttività termica
+            descriptions:
+              en: Rate at which heat passes through a material, measured in watts per metre per kelvin.
+              de: Geschwindigkeit, mit der Wärme durch ein Material geleitet wird, gemessen in Watt pro Meter pro Kelvin.
+              fr: Taux auquel la chaleur traverse un matériau, mesuré en watts par mètre par kelvin.
+              it: Velocità con cui il calore attraversa un materiale, misurata in watt per metro per kelvin.
+            attributes:
+              unit: W/(m·K)
+              symbol: λ
+            ranges:
+              - id: very_low
+                max: 0.05
+              - id: low
+                min: 0.05
+                max: 0.1
+              - id: medium
+                min: 0.1
+                max: 0.5
+              - id: high
+                min: 0.5
+                max: 2
+              - id: very_high
+                min: 2
+
+          - id: thermal_capacity
+            names:
+              en: Thermal Capacity
+              de: Wärmespeicherkapazität
+              fr: Capacité thermique
+              it: Capacità termica
+            descriptions:
+              en: Amount of heat energy required to raise the temperature of a unit mass of material by one degree.
+              de: Wärmeenergiemenge, die erforderlich ist, um die Temperatur einer Masseneinheit eines Materials um einen Grad zu erhöhen.
+              fr: Quantité d'énergie thermique nécessaire pour élever la température d'une unité de masse d'un matériau d'un degré.
+              it: Quantità di energia termica necessaria per aumentare la temperatura di un'unità di massa del materiale di un grado.
+            attributes:
+              unit: J/(kg·K)
+              symbol: c
+            ranges:
+              - id: very_low
+                max: 500
+              - id: low
+                min: 500
+                max: 1000
+              - id: medium
+                min: 1000
+                max: 1500
+              - id: high
+                min: 1500
+                max: 3000
+              - id: very_high
+                min: 3000
+
+          - id: vapor_diffusion_resistance
+            names:
+              en: Vapour Diffusion Resistance
+              de: Wasserdampfdiffusionswiderstand
+              fr: Résistance à la diffusion de vapeur
+              it: Resistenza alla diffusione del vapore
+            descriptions:
+              en: Dimensionless factor indicating how much more resistant a material is to vapour diffusion compared to still air (µ-value).
+              de: Dimensionsloser Faktor, der angibt, wie viel widerstandsfähiger ein Material gegenüber Dampfdiffusion im Vergleich zu stehender Luft ist (µ-Wert).
+              fr: Facteur sans dimension indiquant la résistance d'un matériau à la diffusion de vapeur par rapport à l'air immobile (valeur µ).
+              it: Fattore adimensionale che indica quanto un materiale sia più resistente alla diffusione del vapore rispetto all'aria ferma (valore µ).
+            attributes:
+              unit: µ
+            ranges:
+              - id: very_low
+                max: 5
+              - id: low
+                min: 5
+                max: 10
+              - id: medium
+                min: 10
+                max: 20
+              - id: high
+                min: 20
+                max: 100
+              - id: very_high
+                min: 100
+
+          - id: moisture_buffering
+            names:
+              en: Moisture Buffering
+              de: Feuchtigkeitspuffer
+              fr: Tampon hydrique
+              it: Tampone idrico
+            descriptions:
+              en: Ability of a material to absorb and release moisture to moderate indoor humidity fluctuations.
+              de: Fähigkeit eines Materials, Feuchtigkeit aufzunehmen und abzugeben, um Schwankungen der Innenluftfeuchtigkeit zu dämpfen.
+              fr: Capacité d'un matériau à absorber et libérer de l'humidité pour modérer les fluctuations d'humidité intérieure.
+              it: Capacità di un materiale di assorbire e rilasciare umidità per moderare le fluttuazioni di umidità interna.
+            attributes:
+              unit: g/(m²·%RH)
+              symbol: MBV
+            ranges:
+              - id: very_low
+                max: 0.2
+              - id: low
+                min: 0.2
+                max: 0.5
+              - id: medium
+                min: 0.5
+                max: 1
+              - id: high
+                min: 1
+                max: 2
+              - id: very_high
+                min: 2
+
+          - id: porosity
+            names:
+              en: Porosity
+              de: Porosität
+              fr: Porosité
+              it: Porosità
+            descriptions:
+              en: Fraction of the total volume of a material that is occupied by void space.
+              de: Anteil des Gesamtvolumens eines Materials, der von Hohlräumen eingenommen wird.
+              fr: Fraction du volume total d'un matériau occupée par des espaces vides.
+              it: Frazione del volume totale di un materiale occupata da spazi vuoti.
+            attributes:
+              unit: "%vol"
+              symbol: ξ
+            ranges:
+              - id: very_low
+                max: 10
+              - id: low
+                min: 10
+                max: 30
+              - id: medium
+                min: 30
+                max: 50
+              - id: high
+                min: 50
+                max: 80
+              - id: very_high
+                min: 80
+
+          - id: water_content
+            names:
+              en: Water Content
+              de: Wassergehalt
+              fr: Teneur en eau
+              it: Contenuto d'acqua
+            descriptions:
+              en: Amount of water contained in a material, expressed as a fraction of dry mass or volume.
+              de: Menge Wasser in einem Material, ausgedrückt als Bruchteil der Trockenmasse oder des Volumens.
+              fr: Quantité d'eau contenue dans un matériau, exprimée en fraction de la masse sèche ou du volume.
+              it: Quantità di acqua contenuta in un materiale, espressa come frazione della massa secca o del volume.
+            attributes:
+              unit: kg/m³
+            ranges:
+              - id: very_low
+                max: 10
+              - id: low
+                min: 10
+                max: 50
+              - id: medium
+                min: 50
+                max: 100
+              - id: high
+                min: 100
+                max: 200
+              - id: very_high
+                min: 200
+
+          - id: free_saturation
+            names:
+              en: Free Saturation
+              de: Freie Sättigung
+              fr: Saturation libre
+              it: Saturazione libera
+            descriptions:
+              en: Maximum amount of water a material can absorb by capillary action under free immersion conditions.
+              de: Maximale Wassermenge, die ein Material durch Kapillarwirkung unter freien Einweichbedingungen aufnehmen kann.
+              fr: Quantité maximale d'eau qu'un matériau peut absorber par capillarité dans des conditions d'immersion libre.
+              it: Quantità massima di acqua che un materiale può assorbire per capillarità in condizioni di immersione libera.
+            attributes:
+              unit: kg/m³
+              symbol: "w80%"
+            ranges:
+              - id: very_low
+                max: 100
+              - id: low
+                min: 100
+                max: 200
+              - id: medium
+                min: 200
+                max: 350
+              - id: high
+                min: 350
+                max: 600
+              - id: very_high
+                min: 600
+
+          - id: liquid_transfer_coefficient
+            names:
+              en: Liquid Transfer Coefficient
+              de: Flüssigkeitstransportkoeffizient
+              fr: Coefficient de transfert de liquide
+              it: Coefficiente di trasferimento del liquido
+            descriptions:
+              en: Coefficient describing the rate of liquid water transport through a porous material driven by capillary suction.
+              de: Koeffizient, der die Geschwindigkeit des Flüssigkeitstransports durch ein poröses Material beschreibt, angetrieben durch Kapillaransaugung.
+              fr: Coefficient décrivant le taux de transport d'eau liquide à travers un matériau poreux par aspiration capillaire.
+              it: Coefficiente che descrive la velocità di trasporto dell'acqua liquida attraverso un materiale poroso per capillarità.
+            attributes:
+              unit: kg/(m²·√(s))
+              symbol: A
+            ranges:
+              - id: very_low
+                max: 0.001
+              - id: low
+                min: 0.001
+                max: 0.02
+              - id: medium
+                min: 0.02
+                max: 0.06
+              - id: high
+                min: 0.06
+                max: 0.1
+              - id: very_high
+                min: 0.1
+
+          - id: u
+            names:
+              en: U-Value (Thermal Transmittance)
+              de: U-Wert (Wärmedurchgangskoeffizient)
+              fr: Valeur U (Transmission thermique)
+              it: Valore U (Trasmittanza termica)
+            descriptions:
+              en: Rate of heat transfer through a structure, expressed as watts per square metre per kelvin.
+              de: Wärmeübertragungsrate durch eine Struktur, ausgedrückt in Watt pro Quadratmeter pro Kelvin.
+              fr: Taux de transfert de chaleur à travers une structure, exprimé en watts par mètre carré par kelvin.
+              it: Tasso di trasferimento del calore attraverso una struttura, espresso in watt per metro quadrato per kelvin.
+            attributes:
+              unit: W/(m²·K)
+              symbol: U
+
+          - id: effusivity
+            names:
+              en: Thermal Effusivity
+              de: Wärmeeffusivität
+              fr: Effusivité thermique
+              it: Effusività termica
+            descriptions:
+              en: Measure of a material's ability to exchange thermal energy with its surroundings, determining the perceived warmth of a surface.
+              de: Maß für die Fähigkeit eines Materials, thermische Energie mit seiner Umgebung auszutauschen, was die wahrgenommene Wärme einer Oberfläche bestimmt.
+              fr: Mesure de la capacité d'un matériau à échanger de l'énergie thermique avec son environnement, déterminant la chaleur perçue d'une surface.
+              it: Misura della capacità di un materiale di scambiare energia termica con l'ambiente, determinando il calore percepito di una superficie.
+            attributes:
+              unit: W·√(h)/(m²·K)
+              symbol: E
+            ranges:
+              - id: very_low
+                max: 0.1
+              - id: low
+                min: 0.1
+                max: 0.5
+              - id: medium
+                min: 0.5
+                max: 1.6
+              - id: high
+                min: 1.6
+                max: 3
+              - id: very_high
+                min: 3
+
+          - id: diffusivity
+            names:
+              en: Thermal Diffusivity
+              de: Temperaturleitfähigkeit
+              fr: Diffusivité thermique
+              it: Diffusività termica
+            descriptions:
+              en: Rate at which temperature changes propagate through a material, equal to thermal conductivity divided by density and specific heat.
+              de: Geschwindigkeit, mit der sich Temperaturänderungen durch ein Material ausbreiten, gleich Wärmeleitfähigkeit geteilt durch Dichte und spezifische Wärme.
+              fr: Taux auquel les variations de température se propagent dans un matériau, égal à la conductivité thermique divisée par la densité et la chaleur spécifique.
+              it: Velocità con cui le variazioni di temperatura si propagano in un materiale, pari alla conduttività termica divisa per densità e calore specifico.
+            attributes:
+              unit: m²/s
+              symbol: D
+
+      - id: acoustic
+        names:
+          en: Acoustic
+          de: Akustische
+          fr: Acoustique
+          it: Acustico
+        descriptions:
+          en: Physical properties related to the interaction of materials with sound and their ability to absorb, reflect, or transmit sound waves.
+          de: Physikalische Eigenschaften im Zusammenhang mit der Wechselwirkung von Materialien mit Schall und ihrer Fähigkeit, Schallwellen zu absorbieren, zu reflektieren oder zu übertragen.
+          fr: Propriétés physiques liées à l'interaction des matériaux avec le son et leur capacité à absorber, réfléchir ou transmettre les ondes sonores.
+          it: Proprietà fisiche relative all'interazione dei materiali con il suono e alla loro capacità di assorbire, riflettere o trasmettere le onde sonore.
+        children:
+          - id: absorption_coefficient
+            names:
+              en: Sound Absorption Coefficient
+              de: Schallabsorptionskoeffizient
+              fr: Coefficient d'absorption acoustique
+              it: Coefficiente di assorbimento acustico
+            descriptions:
+              en: Fraction of incident sound energy absorbed by a material surface, ranging from 0 (perfect reflection) to 1 (perfect absorption).
+              de: Anteil der auf eine Materialoberfläche auftreffenden Schallenergie, der absorbiert wird, von 0 (vollständige Reflexion) bis 1 (vollständige Absorption).
+              fr: Fraction de l'énergie sonore incidente absorbée par la surface d'un matériau, allant de 0 (réflexion parfaite) à 1 (absorption parfaite).
+              it: Frazione dell'energia sonora incidente assorbita dalla superficie di un materiale, da 0 (riflessione perfetta) a 1 (assorbimento perfetto).
+            attributes:
+              symbol: α
+            ranges:
+              - id: very_low
+                max: 0.1
+              - id: low
+                min: 0.1
+                max: 0.3
+              - id: medium
+                min: 0.3
+                max: 0.5
+              - id: high
+                min: 0.5
+                max: 0.9
+              - id: very_high
+                min: 0.9
+
+          - id: sound_reduction_index
+            names:
+              en: Sound Reduction Index
+              de: Schalldämmmaß
+              fr: Indice d'affaiblissement acoustique
+              it: Indice di riduzione del suono
+            descriptions:
+              en: Measure of the sound insulation provided by a building element, expressed in decibels.
+              de: Maß für die Schalldämmung eines Bauelements, ausgedrückt in Dezibel.
+              fr: Mesure de l'isolation acoustique fournie par un élément de construction, exprimée en décibels.
+              it: Misura dell'isolamento acustico fornito da un elemento edilizio, espresso in decibel.
+            attributes:
+              unit: dB
+              symbol: Rw
+
+      - id: fire_performance
+        names:
+          en: Fire Performance
+          de: Brandverhalten
+          fr: Performance au feu
+          it: Prestazione al fuoco
+        descriptions:
+          en: Physical properties related to the behavior of materials and structures under fire conditions, including flammability, combustibility, and fire resistance.
+          de: Physikalische Eigenschaften im Zusammenhang mit dem Verhalten von Materialien und Strukturen unter Brandbedingungen, einschließlich Brennbarkeit, Entflammbarkeit und Feuerwiderstand.
+          fr: Propriétés physiques liées au comportement des matériaux et des structures en conditions d'incendie, y compris l'inflammabilité, la combustibilité et la résistance au feu.
+          it: Proprietà fisiche relative al comportamento dei materiali e delle strutture in condizioni di incendio, inclusa l'infiammabilità, la combustibilità e la resistenza al fuoco.
+        children:
+          - id: reaction_to_fire
+            names:
+              en: Reaction to Fire
+              de: Brandverhalten
+              fr: Réaction au feu
+              it: Reazione al fuoco
+            descriptions:
+              en: Classification of a material's contribution to fire development, according to European standard EN 13501-1 (e.g. A1, A2, B, C, D, E, F).
+              de: Klassifizierung des Brandverhaltens eines Materials nach europäischer Norm EN 13501-1 (z.B. A1, A2, B, C, D, E, F).
+              fr: Classification de la contribution d'un matériau au développement d'un incendie, selon la norme européenne EN 13501-1 (ex. A1, A2, B, C, D, E, F).
+              it: Classificazione del contributo di un materiale allo sviluppo di un incendio, secondo la norma europea EN 13501-1 (es. A1, A2, B, C, D, E, F).
+            attributes:
+              unit: DIN EN 13501-1
+            enum: [A1, A2, B, C, D, E, F]
+
+          - id: fire_resistance_class
+            names:
+              en: Fire Resistance Class
+              de: Feuerwiderstandsklasse
+              fr: Classe de résistance au feu
+              it: Classe di resistenza al fuoco
+            descriptions:
+              en: Classification of the duration a building element can withstand fire exposure while maintaining its load-bearing and/or separating function (e.g. R, EI, REI).
+              de: Klassifizierung der Dauer, während der ein Bauelement einer Brandeinwirkung standhalten kann und dabei seine tragende und/oder trennende Funktion beibehält (z.B. R, EI, RE).
+              fr: Classification de la durée pendant laquelle un élément de construction peut résister à l'exposition au feu tout en maintenant sa fonction portante et/ou séparante (ex. R, EI, REI).
+              it: Classificazione della durata per cui un elemento edilizio può resistere all'esposizione al fuoco mantenendo la sua funzione portante e/o separante (es. R, EI, REI).
+            attributes:
+              unit: DIN EN 13501-2
+            enum: [R, RE, REI, EI]
+
+      - id: other
+        names:
+          en: Other
+          de: Andere
+          fr: Autre
+          it: Altro
+        descriptions:
+          en: Other physical characteristics that do not fit into the above categories.
+          de: Andere physikalische Eigenschaften, die nicht in die oben genannten Kategorien passen.
+          fr: Autres caractéristiques physiques qui ne correspondent pas aux catégories ci-dessus.
+          it: Altre caratteristiche fisiche che non rientrano nelle categorie sopra indicate.
+        children:
+          - id: air_tightness
+            names:
+              en: Air Tightness
+              de: Luftdichtheit
+              fr: Étanchéité à l'air
+              it: Tenuta all'aria
+            descriptions:
+              en: Resistance of a building envelope or material to uncontrolled air leakage, measured as air flow rate per unit area or pressure difference.
+              de: Widerstand einer Gebäudehülle oder eines Materials gegen unkontrollierten Luftaustritt, gemessen als Luftstromrate pro Flächeneinheit oder Druckdifferenz.
+              fr: Résistance d'une enveloppe de bâtiment ou d'un matériau à la fuite d'air non contrôlée, mesurée comme débit d'air par unité de surface ou de différence de pression.
+              it: Resistenza di un involucro edilizio o di un materiale alla perdita d'aria non controllata, misurata come portata d'aria per unità di area o differenza di pressione.
+            attributes:
+              unit: m³/(h·m²)
+              symbol: δ

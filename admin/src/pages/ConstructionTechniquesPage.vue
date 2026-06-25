@@ -247,13 +247,12 @@ const tcTypes = ref<Option[]>([]);
 
 onMounted(() => {
   onRefresh();
-  void taxonomyStore.getTaxonomyNode('technical-construction', 'type').then((types) => {
-    if (!types) {
-      console.warn('No taxonomy found for technical-construction type');
-      return;
-    }
+  const types = taxonomyStore.getTaxonomyNode('technical-construction', 'type');
+  if (types) {
     tcTypes.value = taxonomyStore.asOptions('technical-construction', types, 'type');
-  });
+  } else {
+    console.warn('No taxonomy found for technical-construction type');
+  }
 });
 
 function fetchFromServer(

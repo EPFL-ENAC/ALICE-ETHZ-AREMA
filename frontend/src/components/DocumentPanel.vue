@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click="onTermClick">
     <div v-if="searchService.searching">
       <q-spinner-dots />
     </div>
@@ -24,7 +24,11 @@
             <tags-badges :item="document" />
           </div>
           <div class="q-my-lg" style="font-size: 1.5rem">
-            <q-markdown :src="document.description" no-heading-anchor-links />
+            <q-markdown
+              :plugins="[termMarkdown]"
+              :src="document.description"
+              no-heading-anchor-links
+            />
           </div>
           <div class="q-my-lg">
             <physical-parameters-panel :document="document" />
@@ -39,11 +43,19 @@
         </div>
         <div class="col-12 col-md-6">
           <div v-if="document.article_top" class="text-body1">
-            <q-markdown :src="document.article_top" no-heading-anchor-links />
+            <q-markdown
+              :plugins="[termMarkdown]"
+              :src="document.article_top"
+              no-heading-anchor-links
+            />
           </div>
           <multimedia-panel :document="document" class="q-mt-lg q-mb-lg" />
           <div v-if="document.article_bottom" class="text-body1">
-            <q-markdown :src="document.article_bottom" no-heading-anchor-links />
+            <q-markdown
+              :plugins="[termMarkdown]"
+              :src="document.article_bottom"
+              no-heading-anchor-links
+            />
           </div>
           <axonometry-panel
             v-if="document.entity_type === 'building'"
@@ -103,6 +115,7 @@
         <div class="col-12 col-md-3"></div>
       </div>
     </div>
+    <term-dialog :model-value="showTerm" :term="term" @update:model-value="showTerm = $event" />
   </div>
 </template>
 
@@ -117,6 +130,9 @@ import AddressPanel from 'src/components/AddressPanel.vue';
 import AuthorsPanel from 'src/components/AuthorsPanel.vue';
 import type { Document } from 'src/models';
 import AxonometryPanel from 'src/components/AxonometryPanel.vue';
+import { termMarkdown } from 'src/utils/md';
+import type { Term } from 'src/components/models';
+import TermDialog from 'src/components/TermDialog.vue';
 
 const { t } = useI18n();
 const searchService = useSearchService();
@@ -133,6 +149,8 @@ const slide = ref(0);
 const relationSummaries = ref<Document[]>([]);
 const relatedResources = ref<Document[]>([]);
 const authors = ref<Document[]>([]);
+const showTerm = ref(false);
+const term = ref<Term | null>(null);
 
 onMounted(init);
 
@@ -200,5 +218,15 @@ function toUrlMd(url: string) {
     url = url.slice(0, -1);
   }
   return `[${url.replace(/^https?:\/\//, '')}](${url})`;
+}
+
+function onTermClick(e: MouseEvent) {
+  const target = (e.target as HTMLElement).closest<HTMLElement>('.md-term');
+  if (!target) return;
+  const urn = target.dataset.urn ?? '';
+  const title = target.dataset.title ?? '';
+  const label = target.textContent ?? '';
+  term.value = { urn, title, label };
+  showTerm.value = true;
 }
 </script>

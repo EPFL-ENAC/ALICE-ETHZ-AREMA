@@ -1,90 +1,116 @@
 <template>
-  <div class="row q-col-gutter-md">
+  <div class="masonry">
     <template v-for="section in sections" :key="section">
       <div class="col-12 col-lg-6" v-if="hasValues(section)">
-        <div class="text-h6">{{ t(section) }}</div>
+        <div class="text-h6 q-mb-sm" :title="getSectionDescription(section)">
+          {{ getSectionLabel(section) }}
+        </div>
         <q-list dense class="q-mb-md">
           <template v-for="field in fields[section]" :key="field">
-            <q-item v-if="hasFieldValue(field)" class="q-pa-none" style="padding: 0 !important">
+            <q-item
+              v-if="hasFieldValue(field)"
+              class="item q-pa-none"
+              style="padding: 0 !important"
+            >
               <q-item-section>
-                <q-item-label
-                  >{{ t(field) }}
-                  <span v-if="t(`${field}_symbol`)"
-                    >- <span class="text-bold">{{ t(`${field}_symbol`) }}</span></span
-                  ></q-item-label
-                >
-              </q-item-section>
-              <q-item-section avatar>
-                <q-item-label caption>
-                  <span
-                    v-for="(value, index) in getFieldValue(field)"
-                    :key="index"
-                    :title="index === 0 ? t('low') : index === 1 ? t('standard') : t('high')"
-                  >
-                    {{ value }}
-                    <span v-if="index < getFieldValue(field).length - 1"> / </span>
-                  </span>
-                  <span v-if="t(`${field}_unit`)">[{{ t(`${field}_unit`) }}]</span></q-item-label
-                >
+                <q-item-label>
+                  <span> {{ getFieldLabel(section, field) }} </span>
+                  <q-icon
+                    name="info"
+                    size="xs"
+                    class="info text-grey-6 q-ml-xs"
+                    @click="onShowTerm(section, field)"
+                  />
+                </q-item-label>
+                <range-panel
+                  :urn="toUrn(section, field)"
+                  :property="field"
+                  :low="getFieldValues(field)[0]"
+                  :std="getFieldValues(field)[1]"
+                  :high="getFieldValues(field)[2]"
+                  style="width: 100%"
+                  class="q-my-sm"
+                />
+                <q-separator v-if="hasFieldValue(field)" color="primary" class="q-mt-sm" />
               </q-item-section>
             </q-item>
-            <q-separator v-if="hasFieldValue(field)" color="primary" />
           </template>
         </q-list>
       </div>
     </template>
+    <term-dialog :model-value="showTerm" :term="term" @update:model-value="showTerm = $event" />
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Document } from 'src/models';
+import type { Term } from 'src/components/models';
+import RangePanel from 'src/components/RangePanel.vue';
+import TermDialog from 'src/components/TermDialog.vue';
 
 interface Props {
   document: Document;
 }
 
 const props = defineProps<Props>();
+const taxonomyStore = useTaxonomyStore();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
-const mechanicalParams = [
-  'density',
-  'compressive_strength',
-  'tensile_strength',
-  'youngs_modulus',
-  'shrinkage',
-  'settlement',
-];
-const hygrothermalParams = [
-  'thermal_conductivity',
-  'thermal_capacity',
-  'vapor_diffusion_resistance',
-  'moisture_buffering',
-  'effusivity',
-  'diffusivity',
-  'porosity',
-  'liquid_transfer_coefficient',
-  'water_content',
-  'free_saturation',
-];
-const acousticParams = ['absorption_coefficient', 'sound_reduction_index'];
-const fireParams = ['reaction_to_fire', 'fire_resistance_class'];
+const showTerm = ref(false);
+const term = ref<Term | null>(null);
 
-const sections = ['mechanical', 'hygrothermal', 'acoustic', 'fire'];
-const fields: { [key: string]: string[] } = {
-  mechanical: mechanicalParams,
-  hygrothermal: hygrothermalParams,
-  acoustic: acousticParams,
-  fire: fireParams,
-  others: ['air_tightness'],
-};
+const physicsTaxo = computed(() => taxonomyStore.getTaxonomy('physical-characteristics'));
+const sections = computed(() => physicsTaxo.value?.children?.map((child) => child.id) ?? []);
+
+const fields = computed(() => {
+  const result: Record<string, string[]> = {};
+  physicsTaxo.value?.children?.forEach((section) => {
+    if (section.children) {
+      result[section.id] = section.children.map((child) => child.id);
+    }
+  });
+  return result;
+});
+
+function toUrn(section: string, field: string) {
+  return taxonomyStore.toUrn('physical-characteristics', `${section}.${field}`);
+}
 
 function hasValues(section: string) {
-  return fields[section]?.some((param) => hasFieldValue(param));
+  return physicsTaxo.value?.children
+    ?.find((child) => child.id === section)
+    ?.children?.some((child) => hasFieldValue(child.id));
 }
 
 function hasFieldValue(field: string) {
   return getFieldValues(field).some((value) => value);
+}
+
+function getSectionLabel(section: string) {
+  const sectionNode = physicsTaxo.value?.children?.find((child) => child.id === section);
+  if (!sectionNode) return section;
+  const names = sectionNode.names;
+  return names?.[locale.value] || t(section);
+}
+
+function getSectionDescription(section: string) {
+  const sectionNode = physicsTaxo.value?.children?.find((child) => child.id === section);
+  if (!sectionNode) return '';
+  const descriptions = sectionNode.descriptions;
+  return descriptions?.[locale.value] || '';
+}
+
+function getFieldNode(section: string, field: string) {
+  const sectionNode = physicsTaxo.value?.children?.find((child) => child.id === section);
+  return sectionNode?.children?.find((child) => child.id === field);
+}
+
+function getFieldLabel(section: string, field: string) {
+  const fieldNode = getFieldNode(section, field);
+  if (!fieldNode) return field;
+  const names = fieldNode?.names;
+  return names?.[locale.value] || t(field);
 }
 
 function getFieldValues(field: string) {
@@ -93,8 +119,31 @@ function getFieldValues(field: string) {
   return [doc[`${field}_low`], doc[field], doc[`${field}_high`]];
 }
 
-function getFieldValue(field: string) {
-  const values = getFieldValues(field);
-  return values.map((value) => value || ' - ');
+function onShowTerm(section: string, field: string) {
+  const fieldNode = getFieldNode(section, field);
+  if (!fieldNode) return;
+  term.value = {
+    urn: taxonomyStore.toUrn('physical-characteristics', `${section}.${field}`),
+  } as Term;
+  showTerm.value = true;
 }
 </script>
+
+<style scoped>
+.masonry {
+  column-count: 2;
+  column-gap: 1rem;
+}
+.item {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+}
+@media (max-width: 1024px) {
+  .masonry {
+    column-count: 1;
+  }
+}
+.info {
+  cursor: help;
+}
+</style>

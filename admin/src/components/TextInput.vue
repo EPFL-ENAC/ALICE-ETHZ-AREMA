@@ -24,9 +24,21 @@
                 v-model="text"
                 type="textarea"
                 @update:model-value="onUpdate"
-                :disable="props.disable"
-                :style="{ minHeight: props.minHeight || '200px' }"
+                :disable="props.disable || decorating"
               />
+              <div v-if="taxonomyType && !props.disable">
+                <q-btn
+                  flat
+                  no-caps
+                  size="sm"
+                  color="secondary"
+                  icon="menu_book"
+                  :label="t('decorate')"
+                  :title="t('decorate_hint')"
+                  @click="onDecorate"
+                  :loading="decorating"
+                />
+              </div>
             </div>
             <div v-if="helpContent" class="col-3 q-pa-sm">
               <div class="text-bold q-pl-md">{{ t('guidelines') }}</div>
@@ -37,8 +49,8 @@
           </div>
         </q-tab-panel>
         <q-tab-panel name="preview" class="q-pa-none">
-          <q-card flat bordered class="q-pa-md" style="border-top: none">
-            <q-markdown :src="text" no-heading-anchor-links />
+          <q-card flat bordered class="q-pa-md" style="border-top: none" @click="onTermClick">
+            <q-markdown :plugins="[termMarkdown]" :src="text" no-heading-anchor-links />
           </q-card>
         </q-tab-panel>
         <q-tab-panel v-if="!disable" name="diff" class="q-pa-none">
@@ -55,6 +67,10 @@
 <script setup lang="ts">
 import DiffText from 'src/components/DiffText.vue';
 import { countDiffs } from 'src/utils/strings';
+import { termMarkdown } from 'src/utils/md';
+import { notifyInfo } from 'src/utils/notify';
+
+const taxonomyStore = useTaxonomyStore();
 
 interface Props {
   modelValue: string | undefined;
@@ -63,18 +79,44 @@ interface Props {
   hint?: string;
   help?: string;
   disable?: boolean | undefined;
-  minHeight?: string | undefined;
   rows?: number | undefined;
+  taxonomyType?: string | undefined;
 }
 
-const props = defineProps<Props>();
-const emit = defineEmits(['update:modelValue']);
+const props = withDefaults(defineProps<Props>(), {
+  rows: 10,
+});
+const emit = defineEmits<{
+  'update:modelValue': [value: string | undefined];
+  'term-click': [payload: { label: string; title: string; urn: string }];
+}>();
 
 const { t, locale } = useI18n();
 
 const text = ref(props.modelValue);
 const tab = ref('write');
 const helpContent = ref('');
+const decorating = ref(false);
+
+function onTermClick(e: MouseEvent) {
+  const target = (e.target as HTMLElement).closest<HTMLElement>('.md-term');
+  if (!target) return;
+  const urn = target.dataset.urn ?? '';
+  const title = target.dataset.title ?? '';
+  const label = target.textContent ?? '';
+  if (urn) {
+    const node = taxonomyStore.getNode(urn);
+    let msg = urn;
+    if (node) {
+      const description = node.descriptions?.[locale.value];
+      if (description) {
+        msg = description;
+      }
+    }
+    notifyInfo(msg);
+  }
+  emit('term-click', { label, title, urn });
+}
 
 const diffsCount = computed(() => {
   return countDiffs(props.original || '', text.value);
@@ -100,5 +142,27 @@ watch(
 
 function onUpdate() {
   emit('update:modelValue', text.value);
+}
+
+async function onDecorate() {
+  if (!props.taxonomyType) {
+    console.warn('No taxonomy type provided for decoration');
+    return;
+  }
+  try {
+    decorating.value = true;
+    const decorated = await taxonomyStore.decorateText(
+      props.taxonomyType,
+      text.value,
+      locale.value.toLowerCase(),
+    );
+    text.value = decorated;
+    emit('update:modelValue', decorated);
+  } catch (error) {
+    console.error('Error decorating text:', error);
+    // Optionally, you could emit an event or show a notification to the user here.
+  } finally {
+    decorating.value = false;
+  }
 }
 </script>

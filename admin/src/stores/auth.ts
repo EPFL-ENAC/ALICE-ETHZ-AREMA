@@ -16,20 +16,25 @@ export const useAuthStore = defineStore('auth', () => {
     if (isAuthenticated.value || initialized.value) return Promise.resolve(true);
     profile.value = undefined;
     realmRoles.value = [];
-    return keycloak
-      .init({
+    try {
+      const authenticated = await keycloak.init({
         onLoad: 'check-sso', // Optional: 'login-required' forces login right away, 'check-sso' checks if the user is already logged in.
-      })
-      .then(async (authenticated: boolean) => {
-        initialized.value = true;
-        if (authenticated) {
-          realmRoles.value = keycloak.tokenParsed?.realm_access?.roles || [];
-          profile.value = await keycloak.loadUserProfile();
-          return authenticated;
-        } else {
-          return authenticated;
-        }
+        pkceMethod: 'S256',
+        checkLoginIframe: false,
       });
+
+      initialized.value = true;
+      if (authenticated) {
+        realmRoles.value = keycloak.tokenParsed?.realm_access?.roles || [];
+        profile.value = await keycloak.loadUserProfile();
+        keycloak.onTokenExpired = () => void updateToken();
+      }
+      return authenticated;
+    } catch (error) {
+      console.error('Keycloak initialization failed', error);
+      initialized.value = true;
+      return false;
+    }
   }
 
   async function login() {
@@ -65,13 +70,19 @@ export const useAuthStore = defineStore('auth', () => {
     return keycloak.token;
   }
 
-  async function updateToken() {
-    return await keycloak.updateToken(30).catch((err) => {
-      console.error('Failed to refresh token', err);
-      return logout().finally(() => {
-        throw new Error('Failed to refresh token');
-      });
-    });
+  /**
+   * Update token (refresh if needed)
+   */
+  async function updateToken(minValidity = 30) {
+    try {
+      await keycloak.updateToken(minValidity);
+      return keycloak.token;
+    } catch (error) {
+      console.error('Token refresh error:', error);
+      profile.value = undefined;
+      realmRoles.value = [];
+      return null;
+    }
   }
 
   function hasState(entity: Entity) {

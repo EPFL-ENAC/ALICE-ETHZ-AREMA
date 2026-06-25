@@ -19,27 +19,52 @@ taxonomy:
               de: Massivlehmbau
               fr: Massif
               it: Massiccio
+            descriptions:
+              en: "Massive building materials are solid and heavy materials that provide structural support and thermal mass to a building, such as stone, brick, or concrete."
+              de: "Massive Baustoffe sind solide und schwere Materialien, die strukturelle Unterstützung und thermische Masse für ein Gebäude bieten, wie z.B. Stein, Ziegel oder Beton."
+              fr: "Les matériaux de construction massifs sont des matériaux solides et lourds qui fournissent un support structurel et une masse thermique à un bâtiment, tels que la pierre, la brique ou le béton."
+              it: "I materiali da costruzione massicci sono materiali solidi e pesanti che forniscono supporto strutturale e massa termica a un edificio, come pietra, mattoni o cemento."
           - id: bricks
             names:
               en: Bricks
               de: Baustein
               fr: Briques
               it: Mattoni
+            descriptions:
+              en: "Bricks are rectangular blocks made of clay or other materials, commonly used in construction for their durability, versatility, and aesthetic appeal."
+              de: "Bausteine sind rechteckige Blöcke aus Ton oder anderen Materialien, die aufgrund ihrer Haltbarkeit, Vielseitigkeit und ästhetischen Anziehungskraft häufig im Bauwesen verwendet werden."
+              fr: "Les briques sont des blocs rectangulaires en argile ou d'autres matériaux, couramment utilisés dans la construction pour leur durabilité, leur polyvalence et leur attrait esthétique."
+              it: "I mattoni sono blocchi rettangolari fatti di argilla o altri materiali, comunemente usati nella costruzione per la loro durabilità, versatilità e appeal estetico."
           - id: panels
             names:
               en: Panels, Boards
               de: Platten
               fr: Plaques
               it: Pannelli
+            descriptions:
+              en: "Panels and boards are flat building materials used for walls, floors, and roofs, made from wood, metal, or other materials."
+              de: "Platten und Bretter sind flache Baustoffe, die für Wände, Böden und Dächer verwendet werden und aus Holz, Metall oder anderen Materialien hergestellt werden."
+              fr: "Les plaques et les planches sont des matériaux de construction plats utilisés pour les murs, les sols et les toits, fabriqués à partir de bois, de métal ou d'autres matériaux."
+              it: "I pannelli e le assi sono materiali da costruzione piatti utilizzati per muri, pavimenti e tetti, realizzati in legno, metallo o altri materiali."
           - id: bulk
             names:
               en: Bulk
               de: Schüttgut
               fr: Vrac
               it: Massa
+            descriptions:
+              en: "Bulk materials are loose materials used in construction, such as sand, gravel, or aggregate, valued for their availability and cost-effectiveness."
+              de: "Schüttgut ist lose Materialien, die im Bauwesen verwendet werden, wie z.B. Sand, Kies oder Kieselsand, geschätzt für ihre Verfügbarkeit und kosteneffektivität."
+              fr: "Les matériaux en vrac sont des matériaux lâches utilisés dans la construction, tels que le sable, le gravier ou l'agrégat, appréciés pour leur disponibilité et leur rentabilité."
+              it: "I materiali a volume libero sono materiali in stato solido utilizzati nella costruzione, come sabbia, ghiaia o aggregati, apprezzati per la loro disponibilità e convenienza economica."
           - id: mortar
             names:
               en: Mortar, Plaster
               de: Mörtel, Putz
               fr: Mortier, Crépis
               it: Malta, Intonaco
+            descriptions:
+              en: "Mortar and plaster are materials used to bind building materials together and provide a finished surface, typically made from a mixture of cement, sand, and water."
+              de: "Mörtel und Putz sind Materialien, die verwendet werden, um Baustoffe zusammenzuhalten und eine fertige Oberfläche zu bieten, typischerweise aus einer Mischung aus Zement, Sand und Wasser hergestellt."
+              fr: "Le mortier et le plâtre sont des matériaux utilisés pour lier les matériaux de construction ensemble et fournir une surface finie, généralement fabriqués à partir d'un mélange de ciment, de sable et d'eau."
+              it: "La malta e l'intonaco sono materiali utilizzati per legare insieme i materiali da costruzione e fornire una superficie finita, tipicamente realizzati con una miscela di cemento, sabbia e acqua."
