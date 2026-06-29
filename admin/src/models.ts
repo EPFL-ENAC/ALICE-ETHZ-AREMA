@@ -328,3 +328,9 @@ export interface IGLehmSpecialist extends IGLehmEntity {
   long?: number;
   lat?: number;
 }
+
+export interface SnapshotTask {
+  task_id: string;
+  status: 'pending' | 'done' | 'error';
+  error: string | null;
+}
