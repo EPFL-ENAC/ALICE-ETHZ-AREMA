@@ -9,7 +9,7 @@ from enacit4r_sql.models.query import ListResult
 
 
 class SubjectProfileDraft(SubjectProfileBase):
-    pass
+    identifier: Optional[str] = Field(default=None)
 
 
 class SubjectProfileRead(SubjectProfileDraft):

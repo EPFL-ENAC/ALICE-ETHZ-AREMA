@@ -99,9 +99,15 @@ async def find_authors(keys: List[str] = Query(None),
                 ]
             }}
         )
-    queryDict = {"query": {"bool": {"should": shouldQueries}}}
-    # add that entity_type must be author
-    queryDict["query"]["bool"]["must"] = {"term": {"entity_type": "author"}}
+    queryDict = {
+        "query": {
+            "bool": {
+                "must": {"term": {"entity_type": "author"}},
+                "should": shouldQueries,
+                "minimum_should_match": 1
+            }
+        }
+    }
     return indexService.search(query=queryDict, skip=0, limit=len(keys))
 
 

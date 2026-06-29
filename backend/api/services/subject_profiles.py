@@ -1,9 +1,12 @@
+import hashlib
+import uuid
 from http.client import HTTPException
 import logging
 from datetime import datetime
 
 from fastapi import HTTPException
 from api.db import AsyncSession
+from sqlalchemy import text
 from sqlmodel import func, select
 from api.models.users import AppUser
 from api.models.domain import SubjectProfile
@@ -82,7 +85,7 @@ class SubjectProfileService:
             SubjectProfile: The created subject profile object
         """
         profile_obj = SubjectProfile(
-            identifier=appUser.username,
+            identifier=appUser.id or appUser.username or str(uuid.uuid4()),
             type="user",
             name=f"{appUser.first_name} {appUser.last_name}",
             email=appUser.email,
@@ -135,6 +138,7 @@ class SubjectProfileService:
             SubjectProfile: The created subject profile object
         """
         profile_obj = SubjectProfile(**payload.model_dump())
+        profile_obj.identifier = payload.identifier or str(uuid.uuid4())
         profile_obj.created_at = datetime.now()
         profile_obj.updated_at = datetime.now()
         self.session.add(profile_obj)
@@ -159,7 +163,7 @@ class SubjectProfileService:
                 status_code=403, detail="Not enough permissions")
 
         for key, value in payload.model_dump().items():
-            if key not in ["id", "created_at", "updated_at", "published_at"]:
+            if key not in ["id", "created_at", "updated_at", "published_at", "identifier"] and value is not None:
                 setattr(profile, key, value)
         profile.updated_at = datetime.now()
         self.session.add(profile)
@@ -170,6 +174,50 @@ class SubjectProfileService:
             EntityIndexer().updateEntity(
                 self.entityType, profile, [], [])
         return profile
+
+    async def update_identifier(self, id: int, new_identifier: str) -> SubjectProfile:
+        """Update the identifier of an existing subject profile. Internal use only, should not be exposed to the public API.
+
+        Args:
+            id (int): The unique subject profile ID
+            new_identifier (str): The new identifier to set
+        Returns:
+            SubjectProfile: The updated subject profile object
+        """
+        profile = await self.get_by_id(id)
+        if not profile:
+            return None
+
+        old_identifier = profile.identifier
+        profile.identifier = new_identifier
+        profile.updated_at = datetime.now()
+        self.session.add(profile)
+        await self.session.commit()
+        await self.session.refresh(profile)
+        await self._propagate_identifier_change(profile.type, old_identifier, new_identifier)
+        if profile.published_at:
+            EntityIndexer().updateEntity(
+                self.entityType, profile, [], [])
+        return profile
+
+    async def _propagate_identifier_change(self, profile_type: str, old_identifier: str, new_identifier: str) -> None:
+        old_ref = f"{profile_type}:{old_identifier}"
+        new_ref = f"{profile_type}:{new_identifier}"
+        updated_at = datetime.now()
+        tables = ["naturalresource", "buildingmaterial",
+                  "technicalconstruction", "building", "professional"]
+        for table in tables:
+            await self.session.exec(
+                text(f"""
+                    UPDATE {table}
+                    SET authors = (
+                        SELECT jsonb_agg(CASE WHEN elem = :old_ref THEN :new_ref ELSE elem END)
+                        FROM jsonb_array_elements_text(authors) AS elem
+                    ), updated_at = :updated_at
+                    WHERE authors @> jsonb_build_array(:old_ref)
+                """).bindparams(old_ref=old_ref, new_ref=new_ref, updated_at=updated_at)
+            )
+        await self.session.commit()
 
     async def delete(self, identifier: str, type: str = "user") -> SubjectProfile:
         """Delete a subject profile
@@ -254,3 +302,9 @@ class SubjectProfileService:
             limit=end - start + 1,
             data=data
         )
+
+    @staticmethod
+    def hash_identifier(identifier: str) -> str:
+        """Hash the identifier for anonymity"""
+        # Hash and truncate to 16 characters to avoid collisions and maintain anonymity
+        return hashlib.sha256(identifier.encode()).hexdigest()[:16]

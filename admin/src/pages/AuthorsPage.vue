@@ -104,6 +104,15 @@ const columns = computed(() => {
       style: 'width: 20px',
       sortable: true,
     },
+    // {
+    //   name: 'identifier',
+    //   required: true,
+    //   label: 'identifier',
+    //   align: 'left' as Alignment,
+    //   field: 'identifier',
+    //   style: 'width: 20px',
+    //   sortable: true,
+    // },
     {
       name: 'name',
       required: true,
@@ -232,34 +241,17 @@ function onAdd() {
   showEditDialog.value = true;
 }
 
-function onSyncFromUsers() {
+async function onSyncFromUsers() {
   loading.value = true;
-  usersStore
-    .init()
-    .then(async () => {
-      await Promise.all(
-        usersStore.users.map(async (user) => {
-          try {
-            const author: SubjectProfile = {
-              name: `${user.first_name ?? ''} ${user.first_name?.endsWith(user.last_name || '') ? '' : user.last_name}`.trim(),
-              type: 'user',
-              identifier: user.username?.toString() || user.id?.toString() || '',
-            };
-            await service.create(author);
-          } catch (e) {
-            console.error(`Could not create author for user ${user.id}:`, e);
-          }
-        }),
-      );
-    })
-    .then(() => {
-      notifySuccess(t('authors_synced_from_users', { count: usersStore.users.length }));
-      onRefresh();
-    })
-    .catch(notifyError)
-    .finally(() => {
-      loading.value = false;
-    });
+  try {
+    const created = await usersStore.sync_subject_profiles();
+    notifySuccess(t('authors_synced_from_users', { count: created.total }));
+    onRefresh();
+  } catch (error) {
+    notifyError(error);
+  } finally {
+    loading.value = false;
+  }
 }
 
 function onRefresh() {

@@ -109,7 +109,11 @@ export const useAuthStore = defineStore('auth', () => {
 
   function canPublish(entity: Entity) {
     if (!isAuthenticated.value) return false;
-    if (!hasState(entity) && entity.published_at === undefined) return isAdmin.value;
+    if (
+      !hasState(entity) &&
+      (entity.published_at === undefined || (entity.updated_at || 0) > entity.published_at)
+    )
+      return isAdmin.value;
     if (entity.state !== 'to-publish') return false;
     return isAdmin.value;
   }
