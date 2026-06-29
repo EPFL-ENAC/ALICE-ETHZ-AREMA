@@ -69,7 +69,7 @@ export const useSearchService = defineStore('search', () => {
     searching.value = true;
     try {
       const response = await api.get('/search/_entities', {
-        params: { fields, authors: [key] },
+        params: { fields, authors: [key], limit: 1000 }, // limit to 1000 results
         paramsSerializer: {
           indexes: null, // no brackets at all
         },
@@ -85,7 +85,7 @@ export const useSearchService = defineStore('search', () => {
     searching.value = true;
     try {
       const response = await api.get('/search/_entities', {
-        params: { fields, relates: [id] },
+        params: { fields, relates: [id], limit: 1000 }, // limit to 1000 results
         paramsSerializer: {
           indexes: null, // no brackets at all
         },
@@ -104,7 +104,7 @@ export const useSearchService = defineStore('search', () => {
     searching.value = true;
     try {
       const response = await api.get('/search/_entities', {
-        params: { fields, tags },
+        params: { fields, tags, limit: 1000 }, // limit to 1000 results
         paramsSerializer: {
           indexes: null, // no brackets at all
         },
