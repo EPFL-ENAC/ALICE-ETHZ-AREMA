@@ -13,13 +13,6 @@
           <div class="q-mb-lg">
             <q-input
               filled
-              v-model="selected.identifier"
-              :label="t('profile.identifier') + ' *'"
-              lazy-rules
-              :rules="[(val) => !!val || t('field_required')]"
-            />
-            <q-input
-              filled
               v-model="selected.type"
               :label="t('profile.type') + ' *'"
               lazy-rules

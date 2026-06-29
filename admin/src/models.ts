@@ -257,6 +257,16 @@ export interface SubjectProfile {
   web?: string;
 }
 
+export interface ListResult {
+  total: number;
+  skip: number | null;
+  limit: number;
+}
+
+export interface SubjectProfileResult extends ListResult {
+  data: SubjectProfile[];
+}
+
 export interface GroupByCount {
   value: string | null;
   count: number;

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { api } from 'src/boot/api';
-import type { AppUser } from 'src/models';
+import type { AppUser, SubjectProfileResult } from 'src/models';
 
 const authStore = useAuthStore();
 
@@ -99,6 +99,18 @@ export const useUsersStore = defineStore('users', () => {
     return api.post(`/user/_register`, payload);
   }
 
+  async function sync_subject_profiles(): Promise<SubjectProfileResult> {
+    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
+    await authStore.updateToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${authStore.getAccessToken()}`,
+      },
+    };
+    const result = await api.post(`/subject-profile/_sync`, {}, config);
+    return result.data;
+  }
+
   return {
     users,
     loading,
@@ -108,5 +120,6 @@ export const useUsersStore = defineStore('users', () => {
     update_password,
     remove,
     register,
+    sync_subject_profiles,
   };
 });
