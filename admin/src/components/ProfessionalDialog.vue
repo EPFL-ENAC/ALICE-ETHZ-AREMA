@@ -14,7 +14,7 @@
           <q-tab name="location" :label="t('location') + ' *'" />
           <q-tab name="multimedia" :label="t('multimedia') + ' *'" />
           <q-tab name="relations" :label="t('relations')" />
-          <q-tab name="credits" :label="t('credits')" />
+          <q-tab name="credits" :label="t('credits') + ' *'" />
         </q-tabs>
         <q-separator />
 
@@ -53,8 +53,9 @@
             <text-input
               :disable="readOnly"
               v-model="selected.description"
+              required
               :original="original?.description"
-              :label="t('description')"
+              :label="t('description') + ' *'"
               help="professional-description"
               :taxonomy-type="'*'"
               class="q-mb-md"
@@ -297,10 +298,13 @@ const isDraft = computed(() => {
 const isValid = computed(() => {
   return (
     selected.value.name &&
+    selected.value.description &&
     selected.value.types &&
     selected.value.address &&
     selected.value.files !== undefined &&
-    selected.value.files.length >= 1
+    selected.value.files.length >= 1 &&
+    selected.value.authors !== undefined &&
+    selected.value.authors.length >= 1
   );
 });
 

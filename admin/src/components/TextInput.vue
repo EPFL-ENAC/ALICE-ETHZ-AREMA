@@ -25,6 +25,7 @@
                 type="textarea"
                 @update:model-value="onUpdate"
                 :disable="props.disable || decorating"
+                :rules="[(val) => (required ? !!val || t('field_required') : true)]"
               />
               <div v-if="taxonomyType && !props.disable">
                 <q-btn
@@ -81,6 +82,7 @@ interface Props {
   disable?: boolean | undefined;
   rows?: number | undefined;
   taxonomyType?: string | undefined;
+  required?: boolean | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
