@@ -14,7 +14,7 @@
           <q-tab name="physical_characteristics" :label="t('physical_characteristics')" />
           <q-tab name="multimedia" :label="t('multimedia') + ' *'" />
           <q-tab name="relations" :label="t('relations')" />
-          <q-tab name="credits" :label="t('credits')" />
+          <q-tab name="credits" :label="t('credits') + ' *'" />
         </q-tabs>
         <q-separator />
 
@@ -54,7 +54,8 @@
               :disable="readOnly"
               :original="original?.description"
               v-model="selected.description"
-              :label="t('description')"
+              required
+              :label="t('description') + ' *'"
               help="building-material-description"
               :taxonomy-type="'building-material,physical-characteristics'"
               class="q-mb-md"
@@ -220,9 +221,12 @@ const isDraft = computed(() => {
 const isValid = computed(() => {
   return (
     selected.value.name &&
+    selected.value.description &&
     selected.value.types &&
     selected.value.files !== undefined &&
-    selected.value.files.length >= 1
+    selected.value.files.length >= 1 &&
+    selected.value.authors !== undefined &&
+    selected.value.authors.length >= 1
   );
 });
 

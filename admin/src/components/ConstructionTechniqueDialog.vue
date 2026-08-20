@@ -13,7 +13,7 @@
           <q-tab name="general" :label="t('general') + ' *'" />
           <q-tab name="multimedia" :label="t('multimedia') + ' *'" />
           <q-tab name="relations" :label="t('relations')" />
-          <q-tab name="credits" :label="t('credits')" />
+          <q-tab name="credits" :label="t('credits') + ' *'" />
         </q-tabs>
         <q-separator />
 
@@ -52,7 +52,8 @@
             <text-input
               :disable="readOnly"
               v-model="selected.description"
-              :label="t('description')"
+              required
+              :label="t('description') + ' *'"
               help="technical-construction-description"
               :original="original?.description"
               :taxonomy-type="'technical-construction,physical-characteristics'"
@@ -212,9 +213,12 @@ const isDraft = computed(() => {
 const isValid = computed(() => {
   return (
     selected.value.name &&
+    selected.value.description &&
     selected.value.types &&
     selected.value.files !== undefined &&
-    selected.value.files.length >= 1
+    selected.value.files.length >= 1 &&
+    selected.value.authors !== undefined &&
+    selected.value.authors.length >= 1
   );
 });
 

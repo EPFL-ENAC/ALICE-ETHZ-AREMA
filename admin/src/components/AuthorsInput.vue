@@ -8,9 +8,10 @@
       multiple
       :disable="props.disable"
       v-model="selected"
-      :label="t('authors')"
+      :label="t('authors') + ' *'"
       :hint="t('authors_hint')"
       :options="options"
+      :rules="[(val) => !!val || t('field_required')]"
     >
       <template v-slot:no-option>
         <q-item>
