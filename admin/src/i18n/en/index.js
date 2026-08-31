@@ -68,6 +68,7 @@ export default {
     invalid_email: 'A valid email address is required.',
     registration_failed: 'Registration failed. Please try again later.',
     password_complexity_not_met: 'The password does not meet the complexity requirements.',
+    unknown: 'An unexpected error occurred.',
   },
   'content-manager': 'Content manager',
   'content-reviewer': 'Content reviewer',

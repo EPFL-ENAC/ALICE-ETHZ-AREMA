@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { geocoderApi, toAddress } from 'src/utils/geocoder';
+import { geocoderApi, toAddress } from '@/utils/geocoder';
 import type { Feature } from '@turf/turf';
 
 interface Props {

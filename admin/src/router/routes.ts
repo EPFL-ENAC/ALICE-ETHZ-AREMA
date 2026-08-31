@@ -3,63 +3,63 @@ import type { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('@/layouts/MainLayout.vue'),
     children: [
       {
         path: '',
-        component: () => import('pages/IndexPage.vue'),
+        component: () => import('@/pages/IndexPage.vue'),
       },
       {
         path: 'buildings',
-        component: () => import('pages/BuildingsPage.vue'),
+        component: () => import('@/pages/BuildingsPage.vue'),
       },
       {
         path: 'professionals',
-        component: () => import('pages/ProfessionalsPage.vue'),
+        component: () => import('@/pages/ProfessionalsPage.vue'),
       },
       {
         path: 'natural-resources',
-        component: () => import('pages/ResourcesPage.vue'),
+        component: () => import('@/pages/ResourcesPage.vue'),
       },
       {
         path: 'resources',
-        component: () => import('pages/ResourcesPage.vue'),
+        component: () => import('@/pages/ResourcesPage.vue'),
       },
       {
         path: 'building-materials',
-        component: () => import('pages/BuildingMaterialsPage.vue'),
+        component: () => import('@/pages/BuildingMaterialsPage.vue'),
       },
       {
         path: 'construction-techniques',
-        component: () => import('pages/ConstructionTechniquesPage.vue'),
+        component: () => import('@/pages/ConstructionTechniquesPage.vue'),
       },
       {
         path: 'authors',
-        component: () => import('pages/AuthorsPage.vue'),
+        component: () => import('@/pages/AuthorsPage.vue'),
       },
       {
         path: 'profile',
-        component: () => import('pages/ProfilePage.vue'),
+        component: () => import('@/pages/ProfilePage.vue'),
       },
-      { path: 'users', component: () => import('pages/UsersPage.vue') },
-      { path: 'publication', component: () => import('pages/PublicationPage.vue') },
-      { path: 'layout', component: () => import('pages/LayoutPage.vue') },
+      { path: 'users', component: () => import('@/pages/UsersPage.vue') },
+      { path: 'publication', component: () => import('@/pages/PublicationPage.vue') },
+      { path: 'layout', component: () => import('@/pages/LayoutPage.vue') },
     ],
   },
   {
     path: '/signin',
-    component: () => import('pages/SigninPage.vue'),
+    component: () => import('@/pages/SigninPage.vue'),
   },
   {
     path: '/signup',
-    component: () => import('pages/SignupPage.vue'),
+    component: () => import('@/pages/SignupPage.vue'),
   },
 
   // Always leave this as last one,
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue'),
+    component: () => import('@/pages/ErrorNotFound.vue'),
   },
 ];
 

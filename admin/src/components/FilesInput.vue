@@ -92,9 +92,9 @@
 </template>
 
 <script setup lang="ts">
-import type { FileItem, FileRef } from 'src/models';
-import type { FileObject } from 'src/components/models';
-import { baseUrl } from 'src/boot/api';
+import type { FileItem, FileRef } from '@/models';
+import type { FileObject } from '@/components/models';
+import { baseUrl } from '@/boot/api';
 
 interface Props {
   modelValue: FileItem[];

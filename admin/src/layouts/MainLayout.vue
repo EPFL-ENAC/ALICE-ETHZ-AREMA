@@ -206,11 +206,11 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import LoginDialog from 'src/components/LoginDialog.vue';
-import MarkdownDialog from 'src/components/MarkdownDialog.vue';
-import { isDevelopment } from 'src/boot/api';
+import LoginDialog from '@/components/LoginDialog.vue';
+import MarkdownDialog from '@/components/MarkdownDialog.vue';
+import { isDevelopment } from '@/boot/api';
 import { Cookies } from 'quasar';
-import { locales } from 'boot/i18n';
+import { locales } from '@/boot/i18n';
 
 const { t, locale } = useI18n();
 const $q = useQuasar();

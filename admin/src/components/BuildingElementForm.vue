@@ -86,10 +86,10 @@
 </template>
 
 <script setup lang="ts">
-import type { BuildingElement } from 'src/models';
+import type { BuildingElement } from '@/models';
 import type { Option } from './models';
 import BuildingElementMaterialForm from './BuildingElementMaterialForm.vue';
-import TaxonomySelect from 'src/components/TaxonomySelect.vue';
+import TaxonomySelect from '@/components/TaxonomySelect.vue';
 
 interface Props {
   modelValue: BuildingElement;

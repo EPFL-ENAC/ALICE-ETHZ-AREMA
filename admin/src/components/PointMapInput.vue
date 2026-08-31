@@ -30,8 +30,8 @@
 </template>
 
 <script setup lang="ts">
-import AddressInput from 'src/components/AddressInput.vue';
-import { geocoderApi, toAddress } from 'src/utils/geocoder';
+import AddressInput from '@/components/AddressInput.vue';
+import { geocoderApi, toAddress } from '@/utils/geocoder';
 import { style, themes } from '../utils/maps';
 import type { Feature, MultiPolygon, Point, Polygon } from 'geojson';
 import {

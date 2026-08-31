@@ -160,9 +160,9 @@
 </template>
 
 <script setup lang="ts">
-import type { BuildingElement, Document } from 'src/models';
-import Axonometry from 'src/assets/axonometry.svg';
-import { toLocalizedNumber } from 'src/utils/number';
+import type { BuildingElement, Document } from '@/models';
+import Axonometry from '@/assets/axonometry.svg';
+import { toLocalizedNumber } from '@/utils/number';
 
 const { t } = useI18n();
 const taxonomies = useTaxonomyStore();

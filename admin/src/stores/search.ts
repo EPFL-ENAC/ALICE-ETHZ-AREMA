@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { api } from 'src/boot/api';
+import { api } from '@/boot/api';
 
 const authStore = useAuthStore();
 

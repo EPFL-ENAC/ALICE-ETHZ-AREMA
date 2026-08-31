@@ -128,22 +128,22 @@
 </template>
 
 <script setup lang="ts">
-import type { Option, Query } from 'src/components/models';
-import type { Building } from 'src/models';
-import { makePaginationRequestHandler } from 'src/utils/pagination';
+import type { Option, Query } from '@/components/models';
+import type { Building } from '@/models';
+import { makePaginationRequestHandler } from '@/utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
-import MapView from 'src/components/MapView.vue';
-import BuildingDialog from 'src/components/BuildingDialog.vue';
-import { toDatetimeString, isDatetimeBefore } from 'src/utils/time';
-import { notifyError, notifySuccess } from 'src/utils/notify';
-import type { Alignment } from 'src/components/models';
+import MapView from '@/components/MapView.vue';
+import BuildingDialog from '@/components/BuildingDialog.vue';
+import { toDatetimeString, isDatetimeBefore } from '@/utils/time';
+import { notifyError, notifySuccess } from '@/utils/notify';
+import type { Alignment } from '@/components/models';
 import type { Feature, Point } from 'geojson';
-import EntityActionsBtn from 'src/components/EntityActionsBtn.vue';
-import EntityStateBtn from 'src/components/EntityStateBtn.vue';
-import EntityAssigneeBtn from 'src/components/EntityAssigneeBtn.vue';
-import IGLehmProjectImporterDialog from 'src/components/importer/IGLehmProjectImporterDialog.vue';
-import type { IGLehmProjectSummary, IGLehmProject } from 'src/models';
-import { geocoderApi } from 'src/utils/geocoder';
+import EntityActionsBtn from '@/components/EntityActionsBtn.vue';
+import EntityStateBtn from '@/components/EntityStateBtn.vue';
+import EntityAssigneeBtn from '@/components/EntityAssigneeBtn.vue';
+import IGLehmProjectImporterDialog from '@/components/importer/IGLehmProjectImporterDialog.vue';
+import type { IGLehmProjectSummary, IGLehmProject } from '@/models';
+import { geocoderApi } from '@/utils/geocoder';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();

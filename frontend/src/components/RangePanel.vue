@@ -76,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ValueRange } from 'src/models';
+import type { ValueRange } from '@/models';
 
 const { t } = useI18n();
 const taxonomyStore = useTaxonomyStore();
@@ -138,7 +138,7 @@ const lowPct = computed(() => {
 });
 const stdPct = computed(() => {
   if (props.std === null || props.std === undefined || rangeLength.value === null) return null;
-  let rval = null;
+  let rval: number;
   if (Number(props.std) < rangeMin.value!) {
     rval = (endsPct * Number(props.std)) / rangeMin.value!;
   } else {
@@ -149,7 +149,7 @@ const stdPct = computed(() => {
 });
 const highPct = computed(() => {
   if (props.high === null || props.high === undefined || rangeLength.value === null) return null;
-  let rval = null;
+  let rval: number;
   if (Number(props.high) < rangeMin.value!) {
     rval = (endsPct * Number(props.high)) / rangeMin.value!;
   } else {

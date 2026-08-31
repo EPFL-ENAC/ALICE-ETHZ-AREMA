@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Option } from 'src/components/models';
+import type { Option } from '@/components/models';
 
 interface Props {
   modelValue: string | string[] | null | undefined;

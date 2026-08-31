@@ -68,8 +68,8 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import type { Document, FileItem } from 'src/models';
-import { toFileUrl, isImage, isVideo, isPDF } from 'src/utils/files';
+import type { Document, FileItem } from '@/models';
+import { toFileUrl, isImage, isVideo, isPDF } from '@/utils/files';
 
 const { t } = useI18n();
 const $q = useQuasar();

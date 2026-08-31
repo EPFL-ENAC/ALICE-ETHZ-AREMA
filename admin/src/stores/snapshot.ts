@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import { api } from 'src/boot/api';
-import type { SnapshotTask } from 'src/models';
+import { api } from '@/boot/api';
+import type { SnapshotTask } from '@/models';
 
 const authStore = useAuthStore();
 

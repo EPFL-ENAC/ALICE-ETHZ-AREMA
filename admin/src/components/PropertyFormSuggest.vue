@@ -82,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Suggestions } from 'src/components/models';
+import type { Suggestions } from '@/components/models';
 
 const taxonomyStore = useTaxonomyStore();
 

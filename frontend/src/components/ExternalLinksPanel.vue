@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Document } from 'src/models';
+import type { Document } from '@/models';
 
 interface Props {
   document: Document;

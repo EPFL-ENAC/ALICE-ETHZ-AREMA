@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Document, Video } from 'src/models';
+import type { Document, Video } from '@/models';
 const taxonomies = useTaxonomyStore();
 
 interface Props {

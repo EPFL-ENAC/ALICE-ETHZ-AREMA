@@ -48,10 +48,10 @@
 </template>
 
 <script setup lang="ts">
-import type { Document } from 'src/models';
-import TagsBadges from 'src/components/TagsBadges.vue';
-import { getImageUrls } from 'src/utils/files';
-import { noTermMarkdown } from 'src/utils/md';
+import type { Document } from '@/models';
+import TagsBadges from '@/components/TagsBadges.vue';
+import { getImageUrls } from '@/utils/files';
+import { noTermMarkdown } from '@/utils/md';
 
 const { t } = useI18n();
 const searchService = useSearchService();

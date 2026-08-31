@@ -121,18 +121,18 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import TagsBadges from 'src/components/TagsBadges.vue';
-import PhysicalParametersPanel from 'src/components/PhysicalParametersPanel.vue';
-import MultimediaPanel from 'src/components/MultimediaPanel.vue';
-import ExternalLinksPanel from 'src/components/ExternalLinksPanel.vue';
-import RelationsPanel from 'src/components/RelationsPanel.vue';
-import AddressPanel from 'src/components/AddressPanel.vue';
-import AuthorsPanel from 'src/components/AuthorsPanel.vue';
-import type { Document } from 'src/models';
-import AxonometryPanel from 'src/components/AxonometryPanel.vue';
-import { termMarkdown } from 'src/utils/md';
-import type { Term } from 'src/components/models';
-import TermDialog from 'src/components/TermDialog.vue';
+import TagsBadges from '@/components/TagsBadges.vue';
+import PhysicalParametersPanel from '@/components/PhysicalParametersPanel.vue';
+import MultimediaPanel from '@/components/MultimediaPanel.vue';
+import ExternalLinksPanel from '@/components/ExternalLinksPanel.vue';
+import RelationsPanel from '@/components/RelationsPanel.vue';
+import AddressPanel from '@/components/AddressPanel.vue';
+import AuthorsPanel from '@/components/AuthorsPanel.vue';
+import type { Document } from '@/models';
+import AxonometryPanel from '@/components/AxonometryPanel.vue';
+import { termMarkdown } from '@/utils/md';
+import type { Term } from '@/components/models';
+import TermDialog from '@/components/TermDialog.vue';
 
 const { t } = useI18n();
 const searchService = useSearchService();

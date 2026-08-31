@@ -66,10 +66,10 @@
 </template>
 
 <script setup lang="ts">
-import DiffText from 'src/components/DiffText.vue';
-import { countDiffs } from 'src/utils/strings';
-import { termMarkdown } from 'src/utils/md';
-import { notifyInfo } from 'src/utils/notify';
+import DiffText from '@/components/DiffText.vue';
+import { countDiffs } from '@/utils/strings';
+import { termMarkdown } from '@/utils/md';
+import { notifyInfo } from '@/utils/notify';
 
 const taxonomyStore = useTaxonomyStore();
 

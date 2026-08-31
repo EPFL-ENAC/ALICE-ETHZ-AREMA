@@ -82,8 +82,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Entity } from 'src/models';
-import ConfirmDialog from 'src/components/ConfirmDialog.vue';
+import type { Entity } from '@/models';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
 
 defineProps<{
   entity: Entity;
