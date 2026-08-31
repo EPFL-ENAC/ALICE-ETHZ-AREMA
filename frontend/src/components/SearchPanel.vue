@@ -46,9 +46,9 @@
 </template>
 
 <script setup lang="ts">
-import TermsSelector from 'src/components/TermsSelector.vue';
-import MapResults from 'src/components/MapResults.vue';
-import ListResults from 'src/components/ListResults.vue';
+import TermsSelector from '@/components/TermsSelector.vue';
+import MapResults from '@/components/MapResults.vue';
+import ListResults from '@/components/ListResults.vue';
 
 const { t } = useI18n();
 const taxonomyStore = useTaxonomyStore();

@@ -8,39 +8,39 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () =>
-      isBeforeRelease ? import('layouts/TempLayout.vue') : import('layouts/HomeLayout.vue'),
+      isBeforeRelease ? import('@/layouts/TempLayout.vue') : import('@/layouts/HomeLayout.vue'),
     children: [
       {
         name: 'home',
         path: '',
         component: () =>
-          isBeforeRelease ? import('pages/ComingSoonPage.vue') : import('pages/IndexPage.vue'),
+          isBeforeRelease ? import('@/pages/ComingSoonPage.vue') : import('@/pages/IndexPage.vue'),
       },
     ],
   },
   {
     path: '/',
-    component: () => import('layouts/AltLayout.vue'),
+    component: () => import('@/layouts/AltLayout.vue'),
     children: [
-      { path: 'manifesto', component: () => import('pages/ManifestoPage.vue') },
-      { path: 'about', component: () => import('pages/AboutPage.vue') },
-      { path: 'imprint', component: () => import('pages/ImprintPage.vue') },
-      { path: 'disclaimer', component: () => import('pages/DisclaimerPage.vue') },
-      { path: 'copyright', component: () => import('pages/CopyrightPage.vue') },
-      { path: 'contribute', component: () => import('pages/ContributePage.vue') },
-      { path: 'search', component: () => import('pages/SearchPage.vue') },
-      { path: 'videos', component: () => import('pages/VideosPage.vue') },
-      { path: 'contact', component: () => import('pages/ImprintPage.vue') },
+      { path: 'manifesto', component: () => import('@/pages/ManifestoPage.vue') },
+      { path: 'about', component: () => import('@/pages/AboutPage.vue') },
+      { path: 'imprint', component: () => import('@/pages/ImprintPage.vue') },
+      { path: 'disclaimer', component: () => import('@/pages/DisclaimerPage.vue') },
+      { path: 'copyright', component: () => import('@/pages/CopyrightPage.vue') },
+      { path: 'contribute', component: () => import('@/pages/ContributePage.vue') },
+      { path: 'search', component: () => import('@/pages/SearchPage.vue') },
+      { path: 'videos', component: () => import('@/pages/VideosPage.vue') },
+      { path: 'contact', component: () => import('@/pages/ImprintPage.vue') },
     ],
   },
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('@/layouts/MainLayout.vue'),
     children: [
       {
         name: 'doc',
         path: '_/:id',
-        component: () => import('pages/DocumentPage.vue'),
+        component: () => import('@/pages/DocumentPage.vue'),
       },
     ],
   },
@@ -49,7 +49,7 @@ const routes: RouteRecordRaw[] = [
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue'),
+    component: () => import('@/pages/ErrorNotFound.vue'),
   },
 ];
 

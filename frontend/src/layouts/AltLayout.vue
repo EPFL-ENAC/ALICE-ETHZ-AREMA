@@ -28,8 +28,8 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import HeaderPanel from 'src/components/HeaderPanel.vue';
-import NavDrawer from 'src/components/NavDrawer.vue';
+import HeaderPanel from '@/components/HeaderPanel.vue';
+import NavDrawer from '@/components/NavDrawer.vue';
 
 const { t } = useI18n();
 const $q = useQuasar();

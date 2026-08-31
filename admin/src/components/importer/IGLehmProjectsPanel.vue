@@ -62,8 +62,8 @@
 </template>
 
 <script setup lang="ts">
-import { type IGLehmProjectSummary } from 'src/models';
-import { notifyError } from 'src/utils/notify';
+import { type IGLehmProjectSummary } from '@/models';
+import { notifyError } from '@/utils/notify';
 
 const emit = defineEmits(['update:modelValue']);
 

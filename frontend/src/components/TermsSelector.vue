@@ -53,7 +53,7 @@
             </q-badge>
           </template>
           <q-list>
-            <template v-for="childOpt in node.children" :key="childOpt.urn">
+            <template v-for="childOpt in node.children" :key="childOpt.value">
               <q-item
                 clickable
                 class="text-primary"
@@ -104,7 +104,7 @@
 </template>
 
 <script setup lang="ts">
-import type { TermOption, TaxonomyNodeOption } from 'src/components/models';
+import type { TermOption, TaxonomyNodeOption } from '@/components/models';
 
 const { t } = useI18n();
 const taxonomyStore = useTaxonomyStore();

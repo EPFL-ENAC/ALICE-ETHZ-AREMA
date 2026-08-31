@@ -5,5 +5,5 @@
 </template>
 
 <script setup lang="ts">
-import SearchPanel from 'src/components/SearchPanel.vue';
+import SearchPanel from '@/components/SearchPanel.vue';
 </script>

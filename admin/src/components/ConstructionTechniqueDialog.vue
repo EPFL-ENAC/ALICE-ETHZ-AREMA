@@ -168,12 +168,12 @@
 </template>
 
 <script setup lang="ts">
-import type { BuildingMaterial, TechnicalConstruction } from 'src/models';
-import { notifyError } from 'src/utils/notify';
-import FilesInput from 'src/components/FilesInput.vue';
-import TaxonomySelect from 'src/components/TaxonomySelect.vue';
-import TextInput from 'src/components/TextInput.vue';
-import AuthorsInput from 'src/components/AuthorsInput.vue';
+import type { BuildingMaterial, TechnicalConstruction } from '@/models';
+import { notifyError } from '@/utils/notify';
+import FilesInput from '@/components/FilesInput.vue';
+import TaxonomySelect from '@/components/TaxonomySelect.vue';
+import TextInput from '@/components/TextInput.vue';
+import AuthorsInput from '@/components/AuthorsInput.vue';
 
 interface DialogProps {
   modelValue: boolean;

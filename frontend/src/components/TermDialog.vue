@@ -33,8 +33,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Term } from 'src/components/models';
-import type { TaxonomyNode } from 'src/models';
+import type { Term } from '@/components/models';
+import type { TaxonomyNode } from '@/models';
 
 const { t, locale } = useI18n();
 const taxonomyStore = useTaxonomyStore();

@@ -160,23 +160,23 @@
 </template>
 
 <script setup lang="ts">
-import type { Option, Query } from 'src/components/models';
-import type { IGLehmSpecialist, Professional } from 'src/models';
-import { makePaginationRequestHandler } from 'src/utils/pagination';
-import type { PaginationOptions } from 'src/utils/pagination';
-import MapView from 'src/components/MapView.vue';
-import ProfessionalDialog from 'src/components/ProfessionalDialog.vue';
-import { toDatetimeString, isDatetimeBefore } from 'src/utils/time';
-import { notifyError, notifySuccess } from 'src/utils/notify';
-import TaxonomySelect from 'src/components/TaxonomySelect.vue';
-import type { Alignment } from 'src/components/models';
+import type { Option, Query } from '@/components/models';
+import type { IGLehmSpecialist, Professional } from '@/models';
+import { makePaginationRequestHandler } from '@/utils/pagination';
+import type { PaginationOptions } from '@/utils/pagination';
+import MapView from '@/components/MapView.vue';
+import ProfessionalDialog from '@/components/ProfessionalDialog.vue';
+import { toDatetimeString, isDatetimeBefore } from '@/utils/time';
+import { notifyError, notifySuccess } from '@/utils/notify';
+import TaxonomySelect from '@/components/TaxonomySelect.vue';
+import type { Alignment } from '@/components/models';
 import type { Feature, Polygon } from 'geojson';
-import EntityActionsBtn from 'src/components/EntityActionsBtn.vue';
-import EntityStateBtn from 'src/components/EntityStateBtn.vue';
-import EntityAssigneeBtn from 'src/components/EntityAssigneeBtn.vue';
-import IGLehmSpecialistImporterDialog from 'src/components/importer/IGLehmSpecialistImporterDialog.vue';
-import type { IGLehmSpecialistSummary } from 'src/models';
-import { geocoderApi } from 'src/utils/geocoder';
+import EntityActionsBtn from '@/components/EntityActionsBtn.vue';
+import EntityStateBtn from '@/components/EntityStateBtn.vue';
+import EntityAssigneeBtn from '@/components/EntityAssigneeBtn.vue';
+import IGLehmSpecialistImporterDialog from '@/components/importer/IGLehmSpecialistImporterDialog.vue';
+import type { IGLehmSpecialistSummary } from '@/models';
+import { geocoderApi } from '@/utils/geocoder';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();

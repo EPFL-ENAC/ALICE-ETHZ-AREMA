@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { markdownDiff } from 'src/utils/strings';
+import { markdownDiff } from '@/utils/strings';
 interface Props {
   oldText: string | null | undefined;
   newText: string | null | undefined;

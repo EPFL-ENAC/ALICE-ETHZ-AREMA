@@ -11,8 +11,8 @@
 </template>
 
 <script setup lang="ts">
-import TermsSelector from 'src/components/TermsSelector.vue';
-import VideosResults from 'src/components/VideosResults.vue';
+import TermsSelector from '@/components/TermsSelector.vue';
+import VideosResults from '@/components/VideosResults.vue';
 
 const { t } = useI18n();
 const taxonomyStore = useTaxonomyStore();

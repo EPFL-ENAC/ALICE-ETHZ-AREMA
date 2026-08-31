@@ -68,6 +68,7 @@ export default {
     invalid_email: 'Eine gültige E-Mail-Adresse ist erforderlich.',
     registration_failed: 'Registrierung fehlgeschlagen. Bitte versuchen Sie es später erneut.',
     password_complexity_not_met: 'Das Passwort erfüllt nicht die Komplexitätsanforderungen.',
+    unknown: 'Ein unerwarteter Fehler ist aufgetreten.',
   },
   'content-manager': 'Inhaltsverwalter',
   'content-reviewer': 'Inhalts-Prüfer',

@@ -61,9 +61,9 @@
 </template>
 
 <script setup lang="ts">
-import type { SubjectProfile } from 'src/models';
-import TextInput from 'src/components/TextInput.vue';
-import { notifyError, notifySuccess } from 'src/utils/notify';
+import type { SubjectProfile } from '@/models';
+import TextInput from '@/components/TextInput.vue';
+import { notifyError, notifySuccess } from '@/utils/notify';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();

@@ -1,5 +1,5 @@
-import { cdnUrl } from 'src/boot/api';
-import type { Document, FileItem } from 'src/models';
+import { cdnUrl } from '@/boot/api';
+import type { Document, FileItem } from '@/models';
 
 export function getImageUrls(row: Document) {
   const images = row.files

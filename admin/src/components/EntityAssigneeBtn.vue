@@ -76,11 +76,11 @@ import type {
   Building,
   Professional,
   BuildingElement,
-} from 'src/models';
-import type { Service } from 'src/stores/services';
-import { notifyError } from 'src/utils/notify';
-import { toDatetimeString } from 'src/utils/time';
-import type { AppUser } from 'src/models';
+} from '@/models';
+import type { Service } from '@/stores/services';
+import { notifyError } from '@/utils/notify';
+import { toDatetimeString } from '@/utils/time';
+import type { AppUser } from '@/models';
 import { QMenu } from 'quasar';
 
 const props = defineProps<{

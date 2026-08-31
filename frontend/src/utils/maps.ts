@@ -1,8 +1,8 @@
 import { type StyleSpecification, addProtocol } from 'maplibre-gl';
 import type { ThemeDefinition } from 'maplibregl-theme-switcher';
 import { Protocol } from 'pmtiles';
-import { t } from 'src/boot/i18n';
-import { baseUrl, cdnUrl } from 'src/boot/api';
+import { t } from '@/boot/i18n';
+import { baseUrl, cdnUrl } from '@/boot/api';
 
 const protocol = new Protocol();
 addProtocol('pmtiles', protocol.tile);

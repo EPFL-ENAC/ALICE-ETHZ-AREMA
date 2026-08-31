@@ -78,8 +78,8 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import FieldFrequenciesChart from 'src/components/charts/FieldFrequenciesChart.vue';
-import { notifyError } from 'src/utils/notify';
+import FieldFrequenciesChart from '@/components/charts/FieldFrequenciesChart.vue';
+import { notifyError } from '@/utils/notify';
 
 const authStore = useAuthStore();
 const searchService = useSearchService();

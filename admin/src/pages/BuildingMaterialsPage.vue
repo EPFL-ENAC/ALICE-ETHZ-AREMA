@@ -111,17 +111,17 @@
 </template>
 
 <script setup lang="ts">
-import type { Option, Query } from 'src/components/models';
-import type { BuildingMaterial } from 'src/models';
-import BuildingMaterialDialog from 'src/components/BuildingMaterialDialog.vue';
-import { makePaginationRequestHandler } from 'src/utils/pagination';
-import type { PaginationOptions } from 'src/utils/pagination';
-import { toDatetimeString, isDatetimeBefore } from 'src/utils/time';
-import { notifyError, notifySuccess } from 'src/utils/notify';
-import type { Alignment } from 'src/components/models';
-import EntityActionsBtn from 'src/components/EntityActionsBtn.vue';
-import EntityStateBtn from 'src/components/EntityStateBtn.vue';
-import EntityAssigneeBtn from 'src/components/EntityAssigneeBtn.vue';
+import type { Option, Query } from '@/components/models';
+import type { BuildingMaterial } from '@/models';
+import BuildingMaterialDialog from '@/components/BuildingMaterialDialog.vue';
+import { makePaginationRequestHandler } from '@/utils/pagination';
+import type { PaginationOptions } from '@/utils/pagination';
+import { toDatetimeString, isDatetimeBefore } from '@/utils/time';
+import { notifyError, notifySuccess } from '@/utils/notify';
+import type { Alignment } from '@/components/models';
+import EntityActionsBtn from '@/components/EntityActionsBtn.vue';
+import EntityStateBtn from '@/components/EntityStateBtn.vue';
+import EntityAssigneeBtn from '@/components/EntityAssigneeBtn.vue';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();

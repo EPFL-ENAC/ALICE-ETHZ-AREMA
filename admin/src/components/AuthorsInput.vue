@@ -35,9 +35,9 @@
 </template>
 
 <script setup lang="ts">
-import type { SubjectProfile } from 'src/models';
-import type { Option } from 'src/components/models';
-import { notifyError } from 'src/utils/notify';
+import type { SubjectProfile } from '@/models';
+import type { Option } from '@/components/models';
+import { notifyError } from '@/utils/notify';
 
 interface Props {
   modelValue: string[] | undefined;

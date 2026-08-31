@@ -27,7 +27,7 @@ import { PieChart } from 'echarts/charts';
 import { SVGRenderer } from 'echarts/renderers';
 import { initOptions, updateOptions } from './commons';
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
-import type { GroupByResult } from 'src/models';
+import type { GroupByResult } from '@/models';
 
 const statsStore = useStatsStore();
 use([SVGRenderer, PieChart, TitleComponent, TooltipComponent, LegendComponent]);

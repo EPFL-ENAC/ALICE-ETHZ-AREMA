@@ -25,10 +25,10 @@
 </template>
 
 <script setup lang="ts">
-import PurposePanel from 'src/components/PurposePanel.vue';
-import SearchPanel from 'src/components/SearchPanel.vue';
+import PurposePanel from '@/components/PurposePanel.vue';
+import SearchPanel from '@/components/SearchPanel.vue';
 import { useQuasar } from 'quasar';
-import { useHome } from 'src/stores/home';
+import { useHome } from '@/stores/home';
 
 const $q = useQuasar();
 const homeStore = useHome();

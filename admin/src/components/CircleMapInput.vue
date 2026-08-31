@@ -53,10 +53,10 @@
 
 <script setup lang="ts">
 import { round } from 'lodash';
-import MapInput from 'src/components/MapInput.vue';
-import AddressInput from 'src/components/AddressInput.vue';
+import MapInput from '@/components/MapInput.vue';
+import AddressInput from '@/components/AddressInput.vue';
 import * as MapboxDrawGeodesic from 'mapbox-gl-draw-geodesic';
-import { geocoderApi, toAddress } from 'src/utils/geocoder';
+import { geocoderApi, toAddress } from '@/utils/geocoder';
 import type { Feature, MultiPolygon, Polygon } from 'geojson';
 
 interface Props {
