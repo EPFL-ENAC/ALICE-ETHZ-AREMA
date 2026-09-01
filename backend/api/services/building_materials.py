@@ -174,7 +174,7 @@ class BuildingMaterialService(EntityService):
         return entity
 
     def can_edit(self, entity: BuildingMaterial, user: User) -> bool:
-        if entity.authors and f"user:{user.username}" in entity.authors:
+        if entity.authors and f"user:{user.id}" in entity.authors:
             return True
         return super().can_edit(entity, user)
 

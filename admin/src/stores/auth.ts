@@ -103,7 +103,7 @@ export const useAuthStore = defineStore('auth', () => {
     return (
       entity.created_by === userName ||
       entity.updated_by === userName ||
-      authors?.includes(`user:${userName}`)
+      authors?.includes(`user:${profile.value?.id}`)
     );
   }
 

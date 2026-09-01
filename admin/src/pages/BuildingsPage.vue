@@ -345,7 +345,7 @@ function fetchFromServer(
     const created_by_filter = {
       $eq: authStore.profile?.username || authStore.profile?.email || '',
     };
-    const authors_filter = { $contains: [`user:${authStore.profile?.username}`] };
+    const authors_filter = { $contains: [`user:${authStore.profile?.id}`] };
     queryFilter.$and.push({
       $or: [{ created_by: created_by_filter }, { authors: authors_filter }],
     });
