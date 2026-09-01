@@ -248,7 +248,7 @@ const columns = computed(() => {
       sortable: false,
     },
     {
-      name: 'createdBy',
+      name: 'created_by',
       required: true,
       label: t('created_by'),
       align: 'left' as Alignment,
@@ -256,13 +256,13 @@ const columns = computed(() => {
       sortable: true,
     },
     {
-      name: 'lastModification',
+      name: 'updated_at',
       required: true,
       label: t('last_modification'),
       align: 'left' as Alignment,
       field: 'updated_at',
       format: toDatetimeString,
-      sortable: false,
+      sortable: true,
     },
   ];
 

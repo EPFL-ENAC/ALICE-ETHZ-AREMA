@@ -137,13 +137,13 @@ const columns = computed(() => {
       sortable: true,
     },
     {
-      name: 'lastModification',
+      name: 'updated_at',
       required: true,
       label: t('last_modification'),
       align: 'left' as Alignment,
       field: 'updated_at',
       format: toDatetimeString,
-      sortable: false,
+      sortable: true,
     },
   ];
 
