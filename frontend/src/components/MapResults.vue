@@ -55,11 +55,11 @@
 
 <script setup lang="ts">
 import { useWindowSize, useDebounceFn, useEventListener } from '@vueuse/core';
-import MapView from 'src/components/MapView.vue';
-import TagsBadges from 'src/components/TagsBadges.vue';
-import type { Document } from 'src/models';
-import { getImageUrls } from 'src/utils/files';
-import { noTermMarkdown } from 'src/utils/md';
+import MapView from '@/components/MapView.vue';
+import TagsBadges from '@/components/TagsBadges.vue';
+import type { Document } from '@/models';
+import { getImageUrls } from '@/utils/files';
+import { noTermMarkdown } from '@/utils/md';
 
 const { t } = useI18n();
 const router = useRouter();

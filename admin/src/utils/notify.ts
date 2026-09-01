@@ -1,5 +1,5 @@
 import { Notify } from 'quasar';
-import { t } from 'src/boot/i18n';
+import { t } from '@/boot/i18n';
 
 export function notifySuccess(message: string) {
   Notify.create({
@@ -24,13 +24,13 @@ export function notifyWarning(message: string) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function notifyError(error: any) {
-  let message = t('unknown_error');
+  let message: string;
   if (typeof error === 'string') {
     message = t(error);
   } else {
     console.error(error);
-    message = error.message;
-    if (error.response?.data && error.response.data?.status) {
+    message = error?.message ?? t('error.unknown');
+    if (error?.response?.data && error.response.data?.status) {
       message = t(`error.${error.response?.data.status}`, error.response?.data.arguments);
     }
   }

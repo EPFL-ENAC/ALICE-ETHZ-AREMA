@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Document } from 'src/models';
+import type { Document } from '@/models';
 
 const { t } = useI18n();
 

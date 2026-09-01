@@ -43,10 +43,10 @@
 </template>
 
 <script setup lang="ts">
-import type { Document } from 'src/models';
-import type { Term } from 'src/components/models';
-import RangePanel from 'src/components/RangePanel.vue';
-import TermDialog from 'src/components/TermDialog.vue';
+import type { Document } from '@/models';
+import type { Term } from '@/components/models';
+import RangePanel from '@/components/RangePanel.vue';
+import TermDialog from '@/components/TermDialog.vue';
 
 interface Props {
   document: Document;

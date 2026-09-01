@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
-import type { FileObject } from 'src/components/models';
-import type { FileRef } from 'src/models';
-import { api } from 'src/boot/api';
+import type { FileObject } from '@/components/models';
+import type { FileRef } from '@/models';
+import { api } from '@/boot/api';
 
 const authStore = useAuthStore();
 

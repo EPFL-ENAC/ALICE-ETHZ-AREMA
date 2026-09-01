@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { notifyError } from 'src/utils/notify';
+import { notifyError } from '@/utils/notify';
 
 const $q = useQuasar();
 const { t } = useI18n();

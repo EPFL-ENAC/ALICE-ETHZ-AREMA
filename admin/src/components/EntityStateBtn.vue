@@ -76,9 +76,9 @@ import type {
   Building,
   Professional,
   BuildingElement,
-} from 'src/models';
-import type { Service } from 'src/stores/services';
-import { notifyError } from 'src/utils/notify';
+} from '@/models';
+import type { Service } from '@/stores/services';
+import { notifyError } from '@/utils/notify';
 
 const props = defineProps<{
   entity: Entity;

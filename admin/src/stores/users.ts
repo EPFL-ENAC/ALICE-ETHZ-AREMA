@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import { api } from 'src/boot/api';
-import type { AppUser, SubjectProfileResult } from 'src/models';
+import { api } from '@/boot/api';
+import type { AppUser, SubjectProfileResult } from '@/models';
 
 const authStore = useAuthStore();
 

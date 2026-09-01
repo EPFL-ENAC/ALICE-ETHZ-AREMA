@@ -5,5 +5,5 @@
 </template>
 
 <script setup lang="ts">
-import VideosSearchPanel from 'src/components/VideosSearchPanel.vue';
+import VideosSearchPanel from '@/components/VideosSearchPanel.vue';
 </script>

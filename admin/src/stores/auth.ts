@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
-import { keycloak } from 'src/boot/api';
+import { keycloak } from '@/boot/api';
 import type { KeycloakProfile } from 'keycloak-js';
-import type { Entity } from 'src/models';
+import type { Entity } from '@/models';
 
 export const useAuthStore = defineStore('auth', () => {
   const profile = ref<KeycloakProfile>();
@@ -103,7 +103,7 @@ export const useAuthStore = defineStore('auth', () => {
     return (
       entity.created_by === userName ||
       entity.updated_by === userName ||
-      authors?.includes(`user:${userName}`)
+      authors?.includes(`user:${profile.value?.id}`)
     );
   }
 

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import { api } from 'src/boot/api';
-import type { GroupByResult } from 'src/models';
+import { api } from '@/boot/api';
+import type { GroupByResult } from '@/models';
 
 const authStore = useAuthStore();
 

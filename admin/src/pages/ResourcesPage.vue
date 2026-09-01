@@ -116,18 +116,18 @@
 </template>
 
 <script setup lang="ts">
-import type { Option, Query } from 'src/components/models';
-import type { NaturalResource } from 'src/models';
-import ResourceDialog from 'src/components/ResourceDialog.vue';
-import TaxonomySelect from 'src/components/TaxonomySelect.vue';
-import { makePaginationRequestHandler } from 'src/utils/pagination';
-import type { PaginationOptions } from 'src/utils/pagination';
-import { toDatetimeString, isDatetimeBefore } from 'src/utils/time';
-import { notifyError, notifySuccess } from 'src/utils/notify';
-import type { Alignment } from 'src/components/models';
-import EntityActionsBtn from 'src/components/EntityActionsBtn.vue';
-import EntityStateBtn from 'src/components/EntityStateBtn.vue';
-import EntityAssigneeBtn from 'src/components/EntityAssigneeBtn.vue';
+import type { Option, Query } from '@/components/models';
+import type { NaturalResource } from '@/models';
+import ResourceDialog from '@/components/ResourceDialog.vue';
+import TaxonomySelect from '@/components/TaxonomySelect.vue';
+import { makePaginationRequestHandler } from '@/utils/pagination';
+import type { PaginationOptions } from '@/utils/pagination';
+import { toDatetimeString, isDatetimeBefore } from '@/utils/time';
+import { notifyError, notifySuccess } from '@/utils/notify';
+import type { Alignment } from '@/components/models';
+import EntityActionsBtn from '@/components/EntityActionsBtn.vue';
+import EntityStateBtn from '@/components/EntityStateBtn.vue';
+import EntityAssigneeBtn from '@/components/EntityAssigneeBtn.vue';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
@@ -190,7 +190,7 @@ const columns = computed(() => {
       sortable: true,
     },
     {
-      name: 'createdBy',
+      name: 'created_by',
       required: true,
       label: t('created_by'),
       align: 'left' as Alignment,
@@ -198,13 +198,13 @@ const columns = computed(() => {
       sortable: true,
     },
     {
-      name: 'lastModification',
+      name: 'updated_at',
       required: true,
       label: t('last_modification'),
       align: 'left' as Alignment,
       field: 'updated_at',
       format: toDatetimeString,
-      sortable: false,
+      sortable: true,
     },
   ];
 

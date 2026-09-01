@@ -30,8 +30,8 @@
 </template>
 
 <script setup lang="ts">
-import IGLehmSpecialistsPanel from 'src/components/importer/IGLehmSpecialistsPanel.vue';
-import { type IGLehmSpecialistSummary } from 'src/models';
+import IGLehmSpecialistsPanel from '@/components/importer/IGLehmSpecialistsPanel.vue';
+import { type IGLehmSpecialistSummary } from '@/models';
 
 const { t } = useI18n();
 

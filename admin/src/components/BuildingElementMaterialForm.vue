@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import type { BuildingElementMaterial, TechnicalConstruction } from 'src/models';
+import type { BuildingElementMaterial, TechnicalConstruction } from '@/models';
 import type { OptionNumber } from './models';
 
 const { t } = useI18n();

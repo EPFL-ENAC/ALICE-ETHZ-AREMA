@@ -53,9 +53,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Video } from 'src/models';
-import TagsBadges from 'src/components/TagsBadges.vue';
-import { toEmbededVideoUrl } from 'src/utils/files';
+import type { Video } from '@/models';
+import TagsBadges from '@/components/TagsBadges.vue';
+import { toEmbededVideoUrl } from '@/utils/files';
 
 const { t } = useI18n();
 const searchService = useSearchService();

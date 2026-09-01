@@ -278,15 +278,15 @@ import type {
   Professional,
   TechnicalConstruction,
   BuildingElement,
-} from 'src/models';
-import { notifyError } from 'src/utils/notify';
-import PointMapInput from 'src/components/PointMapInput.vue';
-import FilesInput from 'src/components/FilesInput.vue';
-import TaxonomySelect from 'src/components/TaxonomySelect.vue';
-import BuildingElementForm from 'src/components/BuildingElementForm.vue';
-import type { Option } from 'src/components/models';
-import TextInput from 'src/components/TextInput.vue';
-import AuthorsInput from 'src/components/AuthorsInput.vue';
+} from '@/models';
+import { notifyError } from '@/utils/notify';
+import PointMapInput from '@/components/PointMapInput.vue';
+import FilesInput from '@/components/FilesInput.vue';
+import TaxonomySelect from '@/components/TaxonomySelect.vue';
+import BuildingElementForm from '@/components/BuildingElementForm.vue';
+import type { Option } from '@/components/models';
+import TextInput from '@/components/TextInput.vue';
+import AuthorsInput from '@/components/AuthorsInput.vue';
 import type { Feature } from '@turf/turf';
 
 interface DialogProps {

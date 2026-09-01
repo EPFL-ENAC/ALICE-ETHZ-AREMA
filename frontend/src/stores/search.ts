@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
-import { api } from 'src/boot/api';
-import type { SearchResult, Document, VideoResult } from 'src/models';
-import type { TaxonomyNodeOption } from 'src/components/models';
+import { api } from '@/boot/api';
+import type { SearchResult, Document, VideoResult } from '@/models';
+import type { TaxonomyNodeOption } from '@/components/models';
 import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 
 export const useSearchService = defineStore('search', () => {

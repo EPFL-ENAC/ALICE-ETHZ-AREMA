@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { api } from 'src/boot/api';
+import { api } from '@/boot/api';
 import type {
   NaturalResource,
   TechnicalConstruction,
@@ -8,8 +8,8 @@ import type {
   Professional,
   BuildingElement,
   SubjectProfile,
-} from 'src/models';
-import type { Query } from 'src/components/models';
+} from '@/models';
+import type { Query } from '@/components/models';
 
 const authStore = useAuthStore();
 

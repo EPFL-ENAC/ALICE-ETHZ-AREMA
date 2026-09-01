@@ -8,9 +8,9 @@
 </template>
 
 <script setup lang="ts">
-import AuthorPanel from 'src/components/AuthorPanel.vue';
-import DocumentPanel from 'src/components/DocumentPanel.vue';
-import type { Document } from 'src/models';
+import AuthorPanel from '@/components/AuthorPanel.vue';
+import DocumentPanel from '@/components/DocumentPanel.vue';
+import type { Document } from '@/models';
 
 const route = useRoute();
 const searchService = useSearchService();

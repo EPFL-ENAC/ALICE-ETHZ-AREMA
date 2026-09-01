@@ -128,22 +128,22 @@
 </template>
 
 <script setup lang="ts">
-import type { Option, Query } from 'src/components/models';
-import type { Building } from 'src/models';
-import { makePaginationRequestHandler } from 'src/utils/pagination';
+import type { Option, Query } from '@/components/models';
+import type { Building } from '@/models';
+import { makePaginationRequestHandler } from '@/utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
-import MapView from 'src/components/MapView.vue';
-import BuildingDialog from 'src/components/BuildingDialog.vue';
-import { toDatetimeString, isDatetimeBefore } from 'src/utils/time';
-import { notifyError, notifySuccess } from 'src/utils/notify';
-import type { Alignment } from 'src/components/models';
+import MapView from '@/components/MapView.vue';
+import BuildingDialog from '@/components/BuildingDialog.vue';
+import { toDatetimeString, isDatetimeBefore } from '@/utils/time';
+import { notifyError, notifySuccess } from '@/utils/notify';
+import type { Alignment } from '@/components/models';
 import type { Feature, Point } from 'geojson';
-import EntityActionsBtn from 'src/components/EntityActionsBtn.vue';
-import EntityStateBtn from 'src/components/EntityStateBtn.vue';
-import EntityAssigneeBtn from 'src/components/EntityAssigneeBtn.vue';
-import IGLehmProjectImporterDialog from 'src/components/importer/IGLehmProjectImporterDialog.vue';
-import type { IGLehmProjectSummary, IGLehmProject } from 'src/models';
-import { geocoderApi } from 'src/utils/geocoder';
+import EntityActionsBtn from '@/components/EntityActionsBtn.vue';
+import EntityStateBtn from '@/components/EntityStateBtn.vue';
+import EntityAssigneeBtn from '@/components/EntityAssigneeBtn.vue';
+import IGLehmProjectImporterDialog from '@/components/importer/IGLehmProjectImporterDialog.vue';
+import type { IGLehmProjectSummary, IGLehmProject } from '@/models';
+import { geocoderApi } from '@/utils/geocoder';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
@@ -248,7 +248,7 @@ const columns = computed(() => {
       sortable: false,
     },
     {
-      name: 'createdBy',
+      name: 'created_by',
       required: true,
       label: t('created_by'),
       align: 'left' as Alignment,
@@ -256,13 +256,13 @@ const columns = computed(() => {
       sortable: true,
     },
     {
-      name: 'lastModification',
+      name: 'updated_at',
       required: true,
       label: t('last_modification'),
       align: 'left' as Alignment,
       field: 'updated_at',
       format: toDatetimeString,
-      sortable: false,
+      sortable: true,
     },
   ];
 
@@ -345,7 +345,7 @@ function fetchFromServer(
     const created_by_filter = {
       $eq: authStore.profile?.username || authStore.profile?.email || '',
     };
-    const authors_filter = { $contains: [`user:${authStore.profile?.username}`] };
+    const authors_filter = { $contains: [`user:${authStore.profile?.id}`] };
     queryFilter.$and.push({
       $or: [{ created_by: created_by_filter }, { authors: authors_filter }],
     });

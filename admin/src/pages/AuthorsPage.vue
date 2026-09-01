@@ -77,15 +77,15 @@
 </template>
 
 <script setup lang="ts">
-import type { Query } from 'src/components/models';
-import type { SubjectProfile } from 'src/models';
-import SubjectProfileDialog from 'src/components/SubjectProfileDialog.vue';
-import { makePaginationRequestHandler } from 'src/utils/pagination';
-import type { PaginationOptions } from 'src/utils/pagination';
-import { toDatetimeString } from 'src/utils/time';
-import { notifyError, notifySuccess } from 'src/utils/notify';
-import type { Alignment } from 'src/components/models';
-import EntityActionsBtn from 'src/components/EntityActionsBtn.vue';
+import type { Query } from '@/components/models';
+import type { SubjectProfile } from '@/models';
+import SubjectProfileDialog from '@/components/SubjectProfileDialog.vue';
+import { makePaginationRequestHandler } from '@/utils/pagination';
+import type { PaginationOptions } from '@/utils/pagination';
+import { toDatetimeString } from '@/utils/time';
+import { notifyError, notifySuccess } from '@/utils/notify';
+import type { Alignment } from '@/components/models';
+import EntityActionsBtn from '@/components/EntityActionsBtn.vue';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
@@ -137,13 +137,13 @@ const columns = computed(() => {
       sortable: true,
     },
     {
-      name: 'lastModification',
+      name: 'updated_at',
       required: true,
       label: t('last_modification'),
       align: 'left' as Alignment,
       field: 'updated_at',
       format: toDatetimeString,
-      sortable: false,
+      sortable: true,
     },
   ];
 

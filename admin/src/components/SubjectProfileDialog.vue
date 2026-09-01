@@ -61,9 +61,9 @@
 </template>
 
 <script setup lang="ts">
-import type { SubjectProfile } from 'src/models';
-import { notifyError } from 'src/utils/notify';
-import TextInput from 'src/components/TextInput.vue';
+import type { SubjectProfile } from '@/models';
+import { notifyError } from '@/utils/notify';
+import TextInput from '@/components/TextInput.vue';
 
 interface DialogProps {
   modelValue: boolean;

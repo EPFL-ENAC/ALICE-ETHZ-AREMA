@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
-import { api } from 'src/boot/api';
-import type { Option } from 'src/components/models';
-import type { Taxonomy, TaxonomyNode } from 'src/models';
+import { api } from '@/boot/api';
+import type { Option } from '@/components/models';
+import type { Taxonomy, TaxonomyNode } from '@/models';
 
 const URN_PREFIX = 'urn:arema';
 

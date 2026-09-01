@@ -1,8 +1,8 @@
-import { defineBoot } from '#q-app/wrappers';
+import { defineBoot } from '#q-app';
 import { createI18n } from 'vue-i18n';
 import { Quasar, Cookies } from 'quasar';
 
-import messages from 'src/i18n';
+import messages from '@/i18n';
 
 export type MessageLanguages = keyof typeof messages;
 // Type-define 'en-US' as the master schema for the resource

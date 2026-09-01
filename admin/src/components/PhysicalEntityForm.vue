@@ -99,10 +99,10 @@
 </template>
 
 <script setup lang="ts">
-import type { PhysicalEntity } from 'src/models';
-import PropertyFormNumber from 'src/components/PropertyFormNumber.vue';
-import PropertyFormSuggest from 'src/components/PropertyFormSuggest.vue';
-import type { Suggestions } from 'src/components/models';
+import type { PhysicalEntity } from '@/models';
+import PropertyFormNumber from '@/components/PropertyFormNumber.vue';
+import PropertyFormSuggest from '@/components/PropertyFormSuggest.vue';
+import type { Suggestions } from '@/components/models';
 
 interface Props {
   modelValue: PhysicalEntity;
@@ -126,7 +126,7 @@ watch(
 );
 
 function onSuggest(property: string, key: string, value: string) {
-  let suggestions: string[] = [];
+  let suggestions: string[];
   if (property === 'reaction_to_fire') {
     // format suggested: <A1|A2|B|C|D|E|F>-<S1|S2|S3>-<D0|D1|D2>
     const base = ['A1', 'A2', 'B', 'C', 'D', 'E', 'F'];

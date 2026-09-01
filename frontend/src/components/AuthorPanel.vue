@@ -57,8 +57,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Document } from 'src/models';
-import RelationsPanel from 'src/components/RelationsPanel.vue';
+import type { Document } from '@/models';
+import RelationsPanel from '@/components/RelationsPanel.vue';
 
 const { t } = useI18n();
 const searchService = useSearchService();
