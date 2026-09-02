@@ -7,7 +7,7 @@ import { baseUrl, cdnUrl } from '@/boot/api';
 const protocol = new Protocol();
 addProtocol('pmtiles', protocol.tile);
 
-const mapsUrl = `${cdnUrl}/arema/maps/2026-05-07T16:31`;
+const mapsUrl = `${cdnUrl}/arema/maps/2026-09-02T10:02`;
 
 export const style: StyleSpecification = {
   version: 8,
@@ -59,25 +59,25 @@ export const style: StyleSpecification = {
       type: 'vector',
       url: `pmtiles://${mapsUrl}/geojson/Stroh_2025.pmtiles`,
     },
-    stroh_fr: {
+    stroh_eu: {
       type: 'vector',
-      url: `pmtiles://${mapsUrl}/geojson/PailleFR_2024.pmtiles`,
-    },
-    stroh_de: {
-      type: 'vector',
-      url: `pmtiles://${mapsUrl}/geojson/StrohDE8_2025.pmtiles`,
+      url: `pmtiles://${mapsUrl}/geojson/listStraw_EU_4326_2026.pmtiles`,
     },
     hemp: {
       type: 'vector',
       url: `pmtiles://${mapsUrl}/geojson/Hanf_2025.pmtiles`,
     },
-    hemp_fr: {
+    hemp_eu: {
       type: 'vector',
-      url: `pmtiles://${mapsUrl}/geojson/ChanvreFR_2024.pmtiles`,
+      url: `pmtiles://${mapsUrl}/geojson/listHemp_EU_4326_2026.pmtiles`,
     },
     corn: {
       type: 'vector',
       url: `pmtiles://${mapsUrl}/geojson/Mais_2025.pmtiles`,
+    },
+    corn_eu: {
+      type: 'vector',
+      url: `pmtiles://${mapsUrl}/geojson/listCorn_EU_4326_2026.pmtiles`,
     },
     sheep: {
       type: 'vector',
@@ -289,50 +289,10 @@ export const style: StyleSpecification = {
       },
     },
     {
-      id: 'stroh-fr',
+      id: 'stroh-eu',
       type: 'circle',
-      source: 'stroh_fr',
-      'source-layer': 'PailleFR_2024',
-      paint: {
-        'circle-color': 'rgb(255, 145, 0)',
-        'circle-opacity': 0.5,
-        'circle-radius': [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          1,
-          1,
-          10,
-          2,
-          16,
-          [
-            'interpolate',
-            ['linear'],
-            ['get', 'flaeche_ha'],
-            0.005,
-            1,
-            0.01,
-            2,
-            0.1,
-            5,
-            1,
-            10,
-            2,
-            20,
-            3,
-            30,
-          ],
-        ],
-      },
-      layout: {
-        visibility: 'none',
-      },
-    },
-    {
-      id: 'stroh-de',
-      type: 'circle',
-      source: 'stroh_de',
-      'source-layer': 'StrohDE8_2025',
+      source: 'stroh_eu',
+      'source-layer': 'listStraw_EU_4326_2026',
       paint: {
         'circle-color': 'rgb(255, 145, 0)',
         'circle-opacity': 0.5,
@@ -409,10 +369,10 @@ export const style: StyleSpecification = {
       },
     },
     {
-      id: 'hemp-fr',
+      id: 'hemp-eu',
       type: 'circle',
-      source: 'hemp_fr',
-      'source-layer': 'ChanvreFR_2024',
+      source: 'hemp_eu',
+      'source-layer': 'listHemp_EU_4326_2026',
       paint: {
         'circle-color': 'rgb(30, 255, 0)',
         'circle-opacity': 0.5,
@@ -453,6 +413,46 @@ export const style: StyleSpecification = {
       type: 'circle',
       source: 'corn',
       'source-layer': 'Mais_2025',
+      paint: {
+        'circle-color': 'rgb(255, 251, 0)',
+        'circle-opacity': 0.5,
+        'circle-radius': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          10,
+          2,
+          16,
+          [
+            'interpolate',
+            ['linear'],
+            ['coalesce', ['get', 'flaeche_ha'], ['get', 'sf_adm_de'], 0],
+            0.005,
+            1,
+            0.01,
+            2,
+            0.1,
+            5,
+            1,
+            10,
+            2,
+            20,
+            3,
+            30,
+          ],
+        ],
+        'circle-stroke-color': 'rgb(231, 197, 2)',
+        'circle-stroke-width': 0.2,
+      },
+      layout: {
+        visibility: 'none',
+      },
+    },
+    {
+      id: 'corn-eu',
+      type: 'circle',
+      source: 'corn_eu',
+      'source-layer': 'listCorn_EU_4326_2026',
       paint: {
         'circle-color': 'rgb(255, 251, 0)',
         'circle-opacity': 0.5,
