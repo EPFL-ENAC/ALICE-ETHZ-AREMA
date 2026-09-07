@@ -4,7 +4,7 @@
     <q-separator />
     <div class="q-pa-md">
       <div class="text-help q-mb-lg">{{ t('profile.current_hint') }}</div>
-      <div class="row q-mb-lg">
+      <div v-if="selected.id" class="row q-mb-lg">
         <div class="col-12 col-md-6">
           <q-form ref="form">
             <q-input
@@ -44,7 +44,7 @@
           </q-form>
         </div>
       </div>
-      <div class="row q-gutter-md">
+      <div v-if="selected.id" class="row q-gutter-md">
         <q-btn color="primary" :label="t('save')" size="sm" @click="onSave" />
         <q-btn
           flat
@@ -74,23 +74,26 @@ const form = ref();
 const selected = ref<SubjectProfile>({
   email: '',
 } as SubjectProfile);
-const username = computed(() => authStore.profile?.username || authStore.profile?.email);
+const userId = computed(() => authStore.profile?.id);
 
 onMounted(() => {
   onRefresh();
 });
 
 function onRefresh() {
-  if (username.value) {
+  if (userId.value) {
     void service
       .find({
         $limit: 1,
         filter: {
-          identifier: username.value,
+          identifier: userId.value,
         },
       })
       .then((response) => {
-        console.log('Profile loaded', response);
+        if (response.data.length === 0) {
+          notifyError(t('profile.not_found'));
+          return;
+        }
         selected.value = response.data[0];
       })
       .catch(notifyError);
