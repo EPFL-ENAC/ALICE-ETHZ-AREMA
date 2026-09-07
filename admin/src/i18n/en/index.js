@@ -29,6 +29,7 @@ export default {
     email_hint: 'This email will be publicly visible in your profile.',
     web: 'Website',
     update_success: 'Profile updated successfully',
+    not_found: 'Profile not found',
   },
   roles: {
     administrator: 'Administrator',
