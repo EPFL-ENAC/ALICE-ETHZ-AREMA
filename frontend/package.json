@@ -26,7 +26,7 @@
     "mapbox-gl-draw-waypoint": "^1.1.1",
     "maplibre-gl": "^4.3.2",
     "maplibregl-theme-switcher": "github:EPFL-ENAC/maplibregl-theme-switcher#1.2.0",
-    "markdown-it": "^14.1.1",
+    "markdown-it": "^14.3.0",
     "marked": "^9.0.3",
     "pinia": "^3.0.1",
     "pmtiles": "^4.4.0",
