@@ -46,6 +46,27 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['update:selectedFeatures']);
 
 const containerId = 'map-input-' + Math.random().toString(36).slice(2);
+
+// maplibre >= 6 validates style expressions strictly: array literals inside a 'case'
+// must be wrapped in ['literal', ...]. The default mapbox-gl-draw theme does not do this
+// for line-dasharray, so its 'gl-draw-lines' layer (polygon and circle outlines) is rejected.
+// Note: @types/mapbox__mapbox-gl-draw predates the 1.5 theme and does not know this layer id.
+const drawStyles = MapboxDraw.lib.theme.map((layer) =>
+  (layer.id as string) === 'gl-draw-lines' && layer.type === 'line'
+    ? {
+        ...layer,
+        paint: {
+          ...layer.paint,
+          'line-dasharray': [
+            'case',
+            ['==', ['get', 'active'], 'true'],
+            ['literal', [0.2, 2]],
+            ['literal', [2, 0]],
+          ],
+        },
+      }
+    : layer,
+);
 let map: Map | undefined = undefined;
 let draw: MapboxDraw | undefined = undefined;
 let marker: Marker | undefined = undefined;
@@ -78,6 +99,7 @@ onMounted(() => {
     displayControlsDefault: false,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     modes: modes as any,
+    styles: drawStyles,
   });
   map.addControl(draw as unknown as IControl);
 
