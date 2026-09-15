@@ -116,6 +116,7 @@ onMounted(() => {
   }
 });
 
+// not immediate: the initial feature is drawn in onMounted, once map and draw exist
 watch(
   () => props.feature,
   (newFeature) => {
@@ -125,7 +126,6 @@ watch(
       deleteAll();
     }
   },
-  { immediate: true },
 );
 
 function applyMode() {
