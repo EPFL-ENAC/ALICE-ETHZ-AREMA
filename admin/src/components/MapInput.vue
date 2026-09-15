@@ -8,12 +8,10 @@
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import '@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import 'maplibregl-theme-switcher/styles.css';
-import { style, themes } from '../utils/maps';
+import { style } from '../utils/maps';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import * as MapboxDrawGeodesic from 'mapbox-gl-draw-geodesic';
 import * as MapboxDrawWaypoint from 'mapbox-gl-draw-waypoint';
-import { ThemeSwitcherControl } from 'maplibregl-theme-switcher';
 import type { Feature, MultiPolygon, Polygon, Point } from 'geojson';
 import {
   AttributionControl,
@@ -24,6 +22,7 @@ import {
   NavigationControl,
   ScaleControl,
   type IControl,
+  type MapEventType,
 } from 'maplibre-gl';
 
 interface Props {
@@ -71,7 +70,6 @@ onMounted(() => {
         '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>, <a href="https://sc.ibi.ethz.ch/en/" target="_blank">IBI SC</a>, <a href="https://www.epfl.ch/labs/alice/" target="_blank">ENAC ALICE</a>',
     }),
   );
-  map.addControl(new ThemeSwitcherControl(themes, themes[0]?.id));
 
   let modes = MapboxDraw.modes;
   modes = MapboxDrawGeodesic.enable(modes);
@@ -84,10 +82,10 @@ onMounted(() => {
   map.addControl(draw as unknown as IControl);
 
   if (props.disable !== true) {
-    map.on('draw.add', updateArea);
-    map.on('draw.create', updateArea);
-    map.on('draw.delete', updateArea);
-    map.on('draw.update', updateArea);
+    // mapbox-gl-draw fires custom events that are not part of maplibre's MapEventType
+    for (const type of ['draw.add', 'draw.create', 'draw.delete', 'draw.update']) {
+      map.on(type as keyof MapEventType, updateArea);
+    }
   }
   applyMode();
   if (props.feature) {

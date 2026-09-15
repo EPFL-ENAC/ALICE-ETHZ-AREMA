@@ -1,6 +1,4 @@
 import type { StyleSpecification } from 'maplibre-gl';
-import type { ThemeDefinition } from 'maplibregl-theme-switcher';
-import { t } from '../boot/i18n';
 
 export const style: StyleSpecification = {
   version: 8,
@@ -33,17 +31,6 @@ export const style: StyleSpecification = {
         'raster-saturation': -0.9,
         'raster-brightness-min': 0.2,
       },
-      // layout: { visibility: 'none' },
-    },
-    {
-      id: 'dark',
-      type: 'raster',
-      source: 'osm',
-      paint: {
-        'raster-saturation': -1,
-        'raster-brightness-max': 0.5,
-      },
-      layout: { visibility: 'none' },
     },
     // {
     //   id: 'swissimage',
@@ -53,22 +40,3 @@ export const style: StyleSpecification = {
     // },
   ],
 };
-
-export const themes: ThemeDefinition[] = [
-  // {
-  //   id: 'classic',
-  //   label: t('classic'),
-  // },
-  {
-    id: 'light',
-    label: t('light'),
-  },
-  {
-    id: 'dark',
-    label: t('dark'),
-  },
-  // {
-  //   id: 'swissimage',
-  //   label: t('aerial'),
-  // },
-];
