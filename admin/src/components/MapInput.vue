@@ -8,12 +8,10 @@
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import '@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import 'maplibregl-theme-switcher/styles.css';
-import { style, themes } from '../utils/maps';
+import { style } from '../utils/maps';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import * as MapboxDrawGeodesic from 'mapbox-gl-draw-geodesic';
 import * as MapboxDrawWaypoint from 'mapbox-gl-draw-waypoint';
-import { ThemeSwitcherControl } from 'maplibregl-theme-switcher';
 import type { Feature, MultiPolygon, Polygon, Point } from 'geojson';
 import {
   AttributionControl,
@@ -24,6 +22,7 @@ import {
   NavigationControl,
   ScaleControl,
   type IControl,
+  type MapEventType,
 } from 'maplibre-gl';
 
 interface Props {
@@ -47,6 +46,27 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['update:selectedFeatures']);
 
 const containerId = 'map-input-' + Math.random().toString(36).slice(2);
+
+// maplibre >= 6 validates style expressions strictly: array literals inside a 'case'
+// must be wrapped in ['literal', ...]. The default mapbox-gl-draw theme does not do this
+// for line-dasharray, so its 'gl-draw-lines' layer (polygon and circle outlines) is rejected.
+// Note: @types/mapbox__mapbox-gl-draw predates the 1.5 theme and does not know this layer id.
+const drawStyles = MapboxDraw.lib.theme.map((layer) =>
+  (layer.id as string) === 'gl-draw-lines' && layer.type === 'line'
+    ? {
+        ...layer,
+        paint: {
+          ...layer.paint,
+          'line-dasharray': [
+            'case',
+            ['==', ['get', 'active'], 'true'],
+            ['literal', [0.2, 2]],
+            ['literal', [2, 0]],
+          ],
+        },
+      }
+    : layer,
+);
 let map: Map | undefined = undefined;
 let draw: MapboxDraw | undefined = undefined;
 let marker: Marker | undefined = undefined;
@@ -71,7 +91,6 @@ onMounted(() => {
         '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>, <a href="https://sc.ibi.ethz.ch/en/" target="_blank">IBI SC</a>, <a href="https://www.epfl.ch/labs/alice/" target="_blank">ENAC ALICE</a>',
     }),
   );
-  map.addControl(new ThemeSwitcherControl(themes, themes[0]?.id));
 
   let modes = MapboxDraw.modes;
   modes = MapboxDrawGeodesic.enable(modes);
@@ -80,14 +99,15 @@ onMounted(() => {
     displayControlsDefault: false,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     modes: modes as any,
+    styles: drawStyles,
   });
   map.addControl(draw as unknown as IControl);
 
   if (props.disable !== true) {
-    map.on('draw.add', updateArea);
-    map.on('draw.create', updateArea);
-    map.on('draw.delete', updateArea);
-    map.on('draw.update', updateArea);
+    // mapbox-gl-draw fires custom events that are not part of maplibre's MapEventType
+    for (const type of ['draw.add', 'draw.create', 'draw.delete', 'draw.update']) {
+      map.on(type as keyof MapEventType, updateArea);
+    }
   }
   applyMode();
   if (props.feature) {
@@ -96,6 +116,7 @@ onMounted(() => {
   }
 });
 
+// not immediate: the initial feature is drawn in onMounted, once map and draw exist
 watch(
   () => props.feature,
   (newFeature) => {
@@ -105,7 +126,6 @@ watch(
       deleteAll();
     }
   },
-  { immediate: true },
 );
 
 function applyMode() {

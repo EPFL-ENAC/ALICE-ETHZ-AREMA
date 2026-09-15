@@ -1,6 +1,11 @@
-import type { StyleSpecification } from 'maplibre-gl';
-import type { ThemeDefinition } from 'maplibregl-theme-switcher';
-import { t } from '../boot/i18n';
+import { type StyleSpecification, setWorkerUrl } from 'maplibre-gl';
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+
+// maplibre-gl >= 6 loads its web worker from a URL next to its own module, which does not
+// survive Vite's dependency pre-bundling. Point it at the worker explicitly, as documented
+// in https://maplibre.org/maplibre-gl-js/docs/ (Vite section). Without this, every
+// worker-backed source (GeoJSON, vector tiles) silently never loads.
+setWorkerUrl(maplibreWorkerUrl);
 
 export const style: StyleSpecification = {
   version: 8,
@@ -33,17 +38,6 @@ export const style: StyleSpecification = {
         'raster-saturation': -0.9,
         'raster-brightness-min': 0.2,
       },
-      // layout: { visibility: 'none' },
-    },
-    {
-      id: 'dark',
-      type: 'raster',
-      source: 'osm',
-      paint: {
-        'raster-saturation': -1,
-        'raster-brightness-max': 0.5,
-      },
-      layout: { visibility: 'none' },
     },
     // {
     //   id: 'swissimage',
@@ -53,22 +47,3 @@ export const style: StyleSpecification = {
     // },
   ],
 };
-
-export const themes: ThemeDefinition[] = [
-  // {
-  //   id: 'classic',
-  //   label: t('classic'),
-  // },
-  {
-    id: 'light',
-    label: t('light'),
-  },
-  {
-    id: 'dark',
-    label: t('dark'),
-  },
-  // {
-  //   id: 'swissimage',
-  //   label: t('aerial'),
-  // },
-];

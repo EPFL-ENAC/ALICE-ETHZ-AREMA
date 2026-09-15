@@ -95,11 +95,10 @@ import { marked } from 'marked';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import '@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import 'maplibregl-theme-switcher/styles.css';
 import { style } from '../utils/maps';
 import type { Point } from 'geojson';
 import { type FeatureCollection } from 'geojson';
-import type { MapMouseEvent } from 'maplibre-gl';
+import type { GeoJSONSource, MapMouseEvent } from 'maplibre-gl';
 import type { Feature } from 'geojson';
 import {
   AttributionControl,
@@ -347,13 +346,12 @@ function displayFeatures() {
 
   if (map.value.getSource('entities')) {
     // update source
-    const geoSource = map.value.getSource('entities');
-    // Cast to GeoJSONSource for setData
+    const geoSource = map.value.getSource<GeoJSONSource>('entities');
     if (!geoSource || geoSource.type !== 'geojson') {
       console.warn('Source "entities" is not a GeoJSON source, cannot update data.');
       return;
     }
-    (geoSource as maplibregl.GeoJSONSource).setData(
+    void geoSource.setData(
       props.features || {
         type: 'FeatureCollection',
         features: [],
@@ -431,13 +429,12 @@ function displayFeatures() {
       if (typeof clusterId === 'undefined') {
         return;
       }
-      const geoSource = map.value.getSource('entities');
+      const geoSource = map.value.getSource<GeoJSONSource>('entities');
       if (!geoSource || geoSource.type !== 'geojson') {
         console.warn('Source "entities" is not a GeoJSON source, cannot get cluster zoom.');
         return;
       }
-      // Cast to GeoJSONSource for getClusterExpansionZoom
-      void (geoSource as maplibregl.GeoJSONSource)
+      void geoSource
         .getClusterExpansionZoom(clusterId)
         .then((zoom: number) => {
           if (!map.value) {
