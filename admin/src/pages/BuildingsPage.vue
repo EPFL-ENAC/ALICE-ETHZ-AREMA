@@ -69,6 +69,13 @@
             />
           </div>
         </template>
+        <template v-slot:body-cell-name="props">
+          <q-td :props="props">
+            <span :class="!authStore.canEdit(props.row) ? 'text-grey-7' : 'text-weight-bold'">{{
+              props.value
+            }}</span>
+          </q-td>
+        </template>
         <template v-slot:body-cell-type="props">
           <q-td :props="props">
             <q-badge color="accent" :label="props.value" />
@@ -344,15 +351,6 @@ function fetchFromServer(
   };
   const queryFilter = { $and: [...listFilters.value] as Array<Record<string, unknown>> };
   query.filter = queryFilter;
-  if (authStore.isContributor) {
-    const created_by_filter = {
-      $eq: authStore.profile?.username || authStore.profile?.email || '',
-    };
-    const authors_filter = { $contains: [`user:${authStore.profile?.id}`] };
-    queryFilter.$and.push({
-      $or: [{ created_by: created_by_filter }, { authors: authors_filter }],
-    });
-  }
   if (filter) {
     const filter_conditions = [
       {

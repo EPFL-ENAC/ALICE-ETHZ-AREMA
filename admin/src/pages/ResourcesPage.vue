@@ -18,7 +18,7 @@
       >
         <template v-slot:top>
           <q-btn
-            v-if="authStore.isAdmin || authStore.isReviewer"
+            v-if="authStore.isAdmin || authStore.isReviewer || authStore.isContributor"
             size="sm"
             color="primary"
             :disable="loading"
@@ -54,6 +54,13 @@
             </template>
           </q-input>
           <entity-filters v-model="listFilters" class="full-width q-mt-sm" />
+        </template>
+        <template v-slot:body-cell-name="props">
+          <q-td :props="props">
+            <span :class="!authStore.canEdit(props.row) ? 'text-grey-7' : 'text-weight-bold'">{{
+              props.value
+            }}</span>
+          </q-td>
         </template>
         <template v-slot:body-cell-type="props">
           <q-td :props="props">
