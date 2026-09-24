@@ -68,6 +68,7 @@
               <q-icon name="search" />
             </template>
           </q-input>
+          <entity-filters v-model="listFilters" class="full-width q-mt-sm" />
           <div style="width: 100%" class="q-mt-md">
             <map-view
               :features="features"
@@ -78,6 +79,13 @@
               height="300px"
             />
           </div>
+        </template>
+        <template v-slot:body-cell-name="props">
+          <q-td :props="props">
+            <span :class="!authStore.canEdit(props.row) ? 'text-grey-7' : 'text-weight-bold'">{{
+              props.value
+            }}</span>
+          </q-td>
         </template>
         <template v-slot:body-cell-types="props">
           <q-td :props="props">
@@ -160,7 +168,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Option, Query } from '@/components/models';
+import type { Filter, Option, Query } from '@/components/models';
 import type { IGLehmSpecialist, Professional } from '@/models';
 import { makePaginationRequestHandler } from '@/utils/pagination';
 import type { PaginationOptions } from '@/utils/pagination';
@@ -174,6 +182,7 @@ import type { Feature, Polygon } from 'geojson';
 import EntityActionsBtn from '@/components/EntityActionsBtn.vue';
 import EntityStateBtn from '@/components/EntityStateBtn.vue';
 import EntityAssigneeBtn from '@/components/EntityAssigneeBtn.vue';
+import EntityFilters from '@/components/EntityFilters.vue';
 import IGLehmSpecialistImporterDialog from '@/components/importer/IGLehmSpecialistImporterDialog.vue';
 import type { IGLehmSpecialistSummary } from '@/models';
 import { geocoderApi } from '@/utils/geocoder';
@@ -330,6 +339,7 @@ const tableRef = ref();
 const rows = ref<Professional[]>([]);
 const types = ref<string[] | null>(null);
 const filter = ref('');
+const listFilters = ref<Filter[]>([]);
 const loading = ref(false);
 const pagination = ref<PaginationOptions>({
   sortBy: 'name',
@@ -385,17 +395,8 @@ function fetchFromServer(
     $limit: count,
     $sort: [sortBy, descending],
   };
-  const queryFilter = { $and: [] as Array<Record<string, unknown>> };
+  const queryFilter = { $and: [...listFilters.value] as Array<Record<string, unknown>> };
   query.filter = queryFilter;
-  if (authStore.isContributor) {
-    const created_by_filter = {
-      $eq: authStore.profile?.username || authStore.profile?.email || '',
-    };
-    const authors_filter = { $contains: [`user:${authStore.profile?.id}`] };
-    queryFilter.$and.push({
-      $or: [{ created_by: created_by_filter }, { authors: authors_filter }],
-    });
-  }
   if (types.value?.length) {
     queryFilter.$and.push({
       $or: types.value.map((val) => {
@@ -435,6 +436,8 @@ function fetchFromServer(
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
+
+watch(listFilters, onRefresh);
 
 function onIndex() {
   loading.value = true;

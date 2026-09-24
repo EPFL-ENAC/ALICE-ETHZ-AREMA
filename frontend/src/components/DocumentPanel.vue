@@ -21,7 +21,7 @@
           </div>
           <div class="text-h2 q-mb-md">{{ document.name }}</div>
           <div class="q-my-lg">
-            <tags-badges :item="document" />
+            <tags-badges :item="document" clickable />
           </div>
           <div class="q-my-lg" style="font-size: 1.5rem">
             <q-markdown

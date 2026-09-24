@@ -4,7 +4,7 @@
       <q-card-actions>
         <div class="text-h6 q-ml-sm">{{ t(readOnly ? 'view' : editMode ? 'edit' : 'add') }}</div>
         <q-space />
-        <q-btn flat icon="close" color="primary" v-close-popup />
+        <q-btn flat icon="close" color="primary" @click="onClose" />
       </q-card-actions>
       <q-separator />
 
@@ -149,9 +149,8 @@
             flat
             :label="t('cancel')"
             color="secondary"
-            @click="onCancel"
+            @click="onClose"
             :disable="saving"
-            v-close-popup
           />
           <q-btn
             v-if="!readOnly"
@@ -170,6 +169,7 @@
 <script setup lang="ts">
 import type { BuildingMaterial, TechnicalConstruction } from '@/models';
 import { notifyError } from '@/utils/notify';
+import { useDirtyGuard } from '@/utils/dirtyGuard';
 import FilesInput from '@/components/FilesInput.vue';
 import TaxonomySelect from '@/components/TaxonomySelect.vue';
 import TextInput from '@/components/TextInput.vue';
@@ -205,6 +205,7 @@ const buildingMaterialsOptions = ref<{ label: string | undefined; value: number 
 );
 const saving = ref(false);
 const termsAccepted = ref(false);
+const { markClean, confirmClose } = useDirtyGuard(() => [selected.value, buildingMaterials.value]);
 
 const isDraft = computed(() => {
   return selected.value.state === 'draft';
@@ -261,6 +262,7 @@ function init(value: boolean) {
     selected.value.files = [];
   }
   termsAccepted.value = isDraft.value ? false : true;
+  if (value) markClean();
   showDialog.value = value;
 }
 
@@ -271,6 +273,13 @@ function onHide() {
 
 function onCancel() {
   filesStore.clearFilesToDelete();
+}
+
+function onClose() {
+  confirmClose(() => {
+    onCancel();
+    onHide();
+  });
 }
 
 function onSave() {

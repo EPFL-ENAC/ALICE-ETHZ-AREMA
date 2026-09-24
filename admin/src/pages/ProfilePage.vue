@@ -14,7 +14,7 @@
               lazy-rules
               :rules="[(val) => !!val || t('field_required')]"
             />
-            <q-input
+            <affiliation-input
               filled
               v-model="selected.affiliation"
               :label="t('profile.affiliation')"
@@ -63,6 +63,7 @@
 <script setup lang="ts">
 import type { SubjectProfile } from '@/models';
 import TextInput from '@/components/TextInput.vue';
+import AffiliationInput from '@/components/AffiliationInput.vue';
 import { notifyError, notifySuccess } from '@/utils/notify';
 
 const { t } = useI18n({ useScope: 'global' });

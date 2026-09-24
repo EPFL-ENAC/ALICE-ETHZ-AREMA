@@ -25,7 +25,7 @@
               lazy-rules
               :rules="[(val) => !!val || t('field_required')]"
             />
-            <q-input
+            <affiliation-input
               filled
               v-model="selected.affiliation"
               :label="t('profile.affiliation')"
@@ -64,6 +64,7 @@
 import type { SubjectProfile } from '@/models';
 import { notifyError } from '@/utils/notify';
 import TextInput from '@/components/TextInput.vue';
+import AffiliationInput from '@/components/AffiliationInput.vue';
 
 interface DialogProps {
   modelValue: boolean;

@@ -18,7 +18,7 @@
       >
         <template v-slot:top>
           <q-btn
-            v-if="authStore.isAdmin || authStore.isReviewer"
+            v-if="authStore.isAdmin || authStore.isReviewer || authStore.isContributor"
             size="sm"
             color="primary"
             :disable="loading"
@@ -53,6 +53,14 @@
               <q-icon name="search" />
             </template>
           </q-input>
+          <entity-filters v-model="listFilters" class="full-width q-mt-sm" />
+        </template>
+        <template v-slot:body-cell-name="props">
+          <q-td :props="props">
+            <span :class="!authStore.canEdit(props.row) ? 'text-grey-7' : 'text-weight-bold'">{{
+              props.value
+            }}</span>
+          </q-td>
         </template>
         <template v-slot:body-cell-type="props">
           <q-td :props="props">
@@ -116,7 +124,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Option, Query } from '@/components/models';
+import type { Filter, Option, Query } from '@/components/models';
 import type { NaturalResource } from '@/models';
 import ResourceDialog from '@/components/ResourceDialog.vue';
 import TaxonomySelect from '@/components/TaxonomySelect.vue';
@@ -128,6 +136,7 @@ import type { Alignment } from '@/components/models';
 import EntityActionsBtn from '@/components/EntityActionsBtn.vue';
 import EntityStateBtn from '@/components/EntityStateBtn.vue';
 import EntityAssigneeBtn from '@/components/EntityAssigneeBtn.vue';
+import EntityFilters from '@/components/EntityFilters.vue';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
@@ -231,6 +240,7 @@ const tableRef = ref();
 const rows = ref<NaturalResource[]>([]);
 const types = ref<string[] | null>(null);
 const filter = ref('');
+const listFilters = ref<Filter[]>([]);
 const loading = ref(false);
 const pagination = ref<PaginationOptions>({
   sortBy: 'name',
@@ -262,26 +272,14 @@ function fetchFromServer(
     $limit: count,
     $sort: [sortBy, descending],
   };
-  query.filter = {};
+  const clauses: Filter[] = [...listFilters.value];
   if (types.value?.length) {
-    query.filter.$or = types.value.map((val) => {
-      return {
-        type: {
-          $like: val,
-        },
-      };
-    });
+    clauses.push({ $or: types.value.map((val) => ({ type: { $like: val } })) });
   }
   if (filter) {
-    const criterion = {
-      name: { $ilike: `%${filter}%` },
-    };
-    if (query.filter.$or) {
-      const typesClause = query.filter.$or;
-      delete query.filter.$or;
-      query.filter.$and = [{ $or: typesClause }, criterion];
-    } else query.filter = criterion;
+    clauses.push({ name: { $ilike: `%${filter}%` } });
   }
+  query.filter = { $and: clauses };
   return service.find(query).then((result) => {
     rows.value = result.data;
     loading.value = false;
@@ -290,6 +288,8 @@ function fetchFromServer(
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
+
+watch(listFilters, onRefresh);
 
 function onIndex() {
   loading.value = true;

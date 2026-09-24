@@ -47,6 +47,18 @@
             class="on-right"
           />
           <q-space />
+          <q-select
+            v-model="affiliations"
+            :options="affiliationOptions"
+            :label="t('affiliation')"
+            multiple
+            use-chips
+            dense
+            clearable
+            style="min-width: 200px"
+            class="q-mr-md"
+            @update:model-value="onAffiliationsChange"
+          />
           <q-input dense debounce="300" v-model="filter" clearable>
             <template v-slot:append>
               <q-icon name="search" />
@@ -77,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Query } from '@/components/models';
+import type { Filter, Query } from '@/components/models';
 import type { SubjectProfile } from '@/models';
 import SubjectProfileDialog from '@/components/SubjectProfileDialog.vue';
 import { makePaginationRequestHandler } from '@/utils/pagination';
@@ -86,6 +98,7 @@ import { toDatetimeString } from '@/utils/time';
 import { notifyError, notifySuccess } from '@/utils/notify';
 import type { Alignment } from '@/components/models';
 import EntityActionsBtn from '@/components/EntityActionsBtn.vue';
+import { fetchAffiliations } from '@/utils/affiliations';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
@@ -167,7 +180,8 @@ const showEditDialog = ref(false);
 const readOnly = ref(false);
 const tableRef = ref();
 const rows = ref<SubjectProfile[]>([]);
-const types = ref<string[] | null>(null);
+const affiliations = ref<string[] | null>([]);
+const affiliationOptions = ref<string[]>([]);
 const filter = ref('');
 const loading = ref(false);
 const pagination = ref<PaginationOptions>({
@@ -179,6 +193,9 @@ const pagination = ref<PaginationOptions>({
 
 onMounted(() => {
   onRefresh();
+  fetchAffiliations()
+    .then((res) => (affiliationOptions.value = res))
+    .catch(notifyError);
 });
 
 function fetchFromServer(
@@ -193,26 +210,10 @@ function fetchFromServer(
     $limit: count,
     $sort: [sortBy, descending],
   };
-  query.filter = {};
-  if (types.value?.length) {
-    query.filter.$or = types.value.map((val) => {
-      return {
-        type: {
-          $like: val,
-        },
-      };
-    });
-  }
-  if (filter) {
-    const criterion = {
-      name: { $ilike: `%${filter}%` },
-    };
-    if (query.filter.$or) {
-      const typesClause = query.filter.$or;
-      delete query.filter.$or;
-      query.filter.$and = [{ $or: typesClause }, criterion];
-    } else query.filter = criterion;
-  }
+  const clauses: Filter[] = [];
+  if (affiliations.value?.length) clauses.push({ affiliation: { $in: affiliations.value } });
+  if (filter) clauses.push({ name: { $ilike: `%${filter}%` } });
+  query.filter = clauses.length > 1 ? { $and: clauses } : (clauses[0] ?? {});
   return service.find(query).then((result) => {
     rows.value = result.data;
     loading.value = false;
@@ -252,6 +253,11 @@ async function onSyncFromUsers() {
   } finally {
     loading.value = false;
   }
+}
+
+function onAffiliationsChange() {
+  pagination.value.page = 1;
+  onRefresh();
 }
 
 function onRefresh() {

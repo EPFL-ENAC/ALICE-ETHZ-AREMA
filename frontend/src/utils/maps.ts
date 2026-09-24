@@ -1,8 +1,13 @@
-import { type StyleSpecification, addProtocol } from 'maplibre-gl';
-import type { ThemeDefinition } from 'maplibregl-theme-switcher';
+import { type StyleSpecification, addProtocol, setWorkerUrl } from 'maplibre-gl';
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import { Protocol } from 'pmtiles';
-import { t } from '@/boot/i18n';
 import { baseUrl, cdnUrl } from '@/boot/api';
+
+// maplibre-gl >= 6 loads its web worker from a URL next to its own module, which does not
+// survive Vite's dependency pre-bundling. Point it at the worker explicitly, as documented
+// in https://maplibre.org/maplibre-gl-js/docs/ (Vite section). Without this, every
+// worker-backed source (GeoJSON, vector tiles) silently never loads.
+setWorkerUrl(maplibreWorkerUrl);
 
 const protocol = new Protocol();
 addProtocol('pmtiles', protocol.tile);
@@ -590,10 +595,3 @@ export const style: StyleSpecification = {
     },
   ],
 };
-
-export const themes: ThemeDefinition[] = [
-  {
-    id: 'light',
-    label: t('light'),
-  },
-];

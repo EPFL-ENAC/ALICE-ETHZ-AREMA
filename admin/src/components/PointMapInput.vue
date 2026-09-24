@@ -32,7 +32,7 @@
 <script setup lang="ts">
 import AddressInput from '@/components/AddressInput.vue';
 import { geocoderApi, toAddress } from '@/utils/geocoder';
-import { style, themes } from '../utils/maps';
+import { style } from '../utils/maps';
 import type { Feature, MultiPolygon, Point, Polygon } from 'geojson';
 import {
   AttributionControl,
@@ -44,7 +44,6 @@ import {
   ScaleControl,
 } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { ThemeSwitcherControl } from 'maplibregl-theme-switcher';
 
 interface Props {
   modelValue: Feature<Point> | null;
@@ -94,7 +93,6 @@ function onInit() {
         '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>, <a href="https://sc.ibi.ethz.ch/en/" target="_blank">IBI SC</a>, <a href="https://www.epfl.ch/labs/alice/" target="_blank">ENAC ALICE</a>',
     }),
   );
-  map.addControl(new ThemeSwitcherControl(themes, themes[0]?.id));
 
   const feature = unref(props.modelValue);
   if (feature && feature.properties) {
