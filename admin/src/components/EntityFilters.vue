@@ -6,7 +6,7 @@
       v-model="states"
       :options="stateOptions"
       :label="t('state')"
-      :placeholder="states.length ? '' : t('all_states')"
+      :placeholder="states?.length ? '' : t('all_states')"
       multiple
       emit-value
       map-options
