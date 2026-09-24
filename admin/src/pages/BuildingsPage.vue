@@ -57,6 +57,7 @@
               <q-icon name="search" />
             </template>
           </q-input>
+          <entity-filters v-model="listFilters" class="full-width q-mt-sm" />
           <div style="width: 100%" class="q-mt-md">
             <map-view
               :features="features"
@@ -128,7 +129,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Option, Query } from '@/components/models';
+import type { Filter, Option, Query } from '@/components/models';
 import type { Building } from '@/models';
 import { makePaginationRequestHandler } from '@/utils/pagination';
 import type { PaginationOptions } from '../utils/pagination';
@@ -141,6 +142,7 @@ import type { Feature, Point } from 'geojson';
 import EntityActionsBtn from '@/components/EntityActionsBtn.vue';
 import EntityStateBtn from '@/components/EntityStateBtn.vue';
 import EntityAssigneeBtn from '@/components/EntityAssigneeBtn.vue';
+import EntityFilters from '@/components/EntityFilters.vue';
 import IGLehmProjectImporterDialog from '@/components/importer/IGLehmProjectImporterDialog.vue';
 import type { IGLehmProjectSummary, IGLehmProject } from '@/models';
 import { geocoderApi } from '@/utils/geocoder';
@@ -288,6 +290,7 @@ const readOnly = ref(false);
 const tableRef = ref();
 const rows = ref<Building[]>([]);
 const filter = ref('');
+const listFilters = ref<Filter[]>([]);
 const loading = ref(false);
 const pagination = ref<PaginationOptions>({
   sortBy: 'name',
@@ -339,7 +342,7 @@ function fetchFromServer(
     $limit: count,
     $sort: [sortBy, descending],
   };
-  const queryFilter = { $and: [] as Array<Record<string, unknown>> };
+  const queryFilter = { $and: [...listFilters.value] as Array<Record<string, unknown>> };
   query.filter = queryFilter;
   if (authStore.isContributor) {
     const created_by_filter = {
@@ -378,6 +381,8 @@ function fetchFromServer(
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
+
+watch(listFilters, onRefresh);
 
 function onIndex() {
   loading.value = true;
