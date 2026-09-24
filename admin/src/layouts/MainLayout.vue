@@ -89,7 +89,7 @@
         </q-item>
 
         <q-item-label class="text-h6" header>{{ t('content') }}</q-item-label>
-        <q-item v-if="!authStore.isContributor" clickable v-close-popup :to="'/resources'">
+        <q-item clickable v-close-popup :to="'/resources'">
           <q-item-section avatar>
             <q-icon name="fa-solid fa-gem" size="xs" />
           </q-item-section>
@@ -97,7 +97,7 @@
             <q-item-label header>{{ t('natural_resources') }}</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item v-if="!authStore.isContributor" clickable v-close-popup :to="'/building-materials'">
+        <q-item clickable v-close-popup :to="'/building-materials'">
           <q-item-section avatar>
             <q-icon name="fa-solid fa-memory" size="xs" />
           </q-item-section>
@@ -105,12 +105,7 @@
             <q-item-label header>{{ t('building_materials') }}</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item
-          v-if="!authStore.isContributor"
-          clickable
-          v-close-popup
-          :to="'/construction-techniques'"
-        >
+        <q-item clickable v-close-popup :to="'/construction-techniques'">
           <q-item-section avatar>
             <q-icon name="fa-solid fa-trowel-bricks" size="xs" />
           </q-item-section>
