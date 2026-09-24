@@ -127,7 +127,7 @@ export default defineConfig((ctx) => {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Notify', 'LocalStorage', 'LoadingBar'],
+      plugins: ['Notify', 'LocalStorage', 'LoadingBar', 'Dialog'],
     },
 
     // animations: 'all', // --- includes all animations
