@@ -42,6 +42,7 @@
               <q-icon name="search" />
             </template>
           </q-input>
+          <entity-filters v-model="listFilters" class="full-width q-mt-sm" />
         </template>
         <template v-slot:body-cell-types="props">
           <q-td :props="props">
@@ -111,7 +112,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Option, Query } from '@/components/models';
+import type { Filter, Option, Query } from '@/components/models';
 import type { BuildingMaterial } from '@/models';
 import BuildingMaterialDialog from '@/components/BuildingMaterialDialog.vue';
 import { makePaginationRequestHandler } from '@/utils/pagination';
@@ -122,6 +123,7 @@ import type { Alignment } from '@/components/models';
 import EntityActionsBtn from '@/components/EntityActionsBtn.vue';
 import EntityStateBtn from '@/components/EntityStateBtn.vue';
 import EntityAssigneeBtn from '@/components/EntityAssigneeBtn.vue';
+import EntityFilters from '@/components/EntityFilters.vue';
 
 const { t } = useI18n({ useScope: 'global' });
 const authStore = useAuthStore();
@@ -234,6 +236,7 @@ const readOnly = ref(false);
 const tableRef = ref();
 const rows = ref<BuildingMaterial[]>([]);
 const filter = ref('');
+const listFilters = ref<Filter[]>([]);
 const loading = ref(false);
 const pagination = ref<PaginationOptions>({
   sortBy: 'name',
@@ -265,11 +268,11 @@ function fetchFromServer(
     $limit: count,
     $sort: [sortBy, descending],
   };
+  const clauses: Filter[] = [...listFilters.value];
   if (filter) {
-    query.filter = {
-      name: { $ilike: `%${filter}%` },
-    };
+    clauses.push({ name: { $ilike: `%${filter}%` } });
   }
+  query.filter = { $and: clauses };
   return service
     .find(query)
     .then((result) => {
@@ -281,6 +284,8 @@ function fetchFromServer(
 }
 
 const onRequest = makePaginationRequestHandler(fetchFromServer, pagination);
+
+watch(listFilters, onRefresh);
 
 function onIndex() {
   loading.value = true;
