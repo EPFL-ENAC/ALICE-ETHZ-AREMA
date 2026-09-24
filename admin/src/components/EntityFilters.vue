@@ -103,7 +103,7 @@ const clauses = computed<Filter[]>(() => {
   // ponytail: assigned_to is a ", " joined list of usernames, so substring match; a user
   // whose name contains another's would also match
   if (assigned.value) res.push({ assigned_to: { $ilike: username } });
-  if (states.value?.length) res.push({ state: states.value });
+  if (states.value?.length) res.push({ state: { $in: states.value } });
   if (authors.value?.length) res.push(anyAuthor(authors.value));
   if (affiliations.value?.length) {
     res.push(
