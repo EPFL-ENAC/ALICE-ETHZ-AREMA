@@ -237,6 +237,7 @@ export default {
   radius: 'Rayon',
   reaction_to_fire_hint: 'DIN EN 13501-2',
   reaction_to_fire: 'Réaction au feu',
+  regional_language_hint: 'Veuillez saisir vos textes dans la langue régionale.',
   relations: 'Relations',
   remove_selected: 'Supprimer les items sélectionnés',
   remove_user_text: "Êtes-vous sûr de vouloir supprimer l'utilisateur '{name}'?",

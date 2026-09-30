@@ -9,6 +9,12 @@
       <q-separator />
 
       <q-card-section>
+        <q-banner v-if="!readOnly" dense rounded class="bg-blue-1 text-grey-9 q-mb-sm">
+          <template #avatar>
+            <q-icon name="translate" color="primary" />
+          </template>
+          {{ t('regional_language_hint') }}
+        </q-banner>
         <q-tabs v-model="tab" dense align="left" no-caps>
           <q-tab name="general" :label="t('general') + ' *'" />
           <q-tab name="location" :label="t('location') + ' *'" />
