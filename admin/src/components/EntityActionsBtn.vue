@@ -1,6 +1,7 @@
 <template>
   <div>
     <q-btn
+      :disable="pending"
       v-if="authStore.canEdit(entity)"
       color="grey-8"
       size="12px"
@@ -13,6 +14,7 @@
     >
     </q-btn>
     <q-btn
+      :disable="pending"
       v-if="!authStore.canEdit(entity)"
       color="grey-8"
       size="12px"
@@ -25,6 +27,7 @@
     >
     </q-btn>
     <q-btn
+      :disable="pending"
       v-if="authStore.canPublish(entity)"
       color="secondary"
       size="12px"
@@ -37,6 +40,7 @@
     >
     </q-btn>
     <q-btn
+      :disable="pending"
       v-if="authStore.canUnpublish(entity)"
       color="grey-8"
       size="12px"
@@ -49,6 +53,7 @@
     >
     </q-btn>
     <q-btn
+      :disable="pending"
       v-if="authStore.canDelete(entity)"
       color="negative"
       size="12px"
@@ -61,6 +66,7 @@
     >
     </q-btn>
     <q-btn
+      :disable="pending"
       v-if="authStore.canLock(entity)"
       color="grey-8"
       size="10px"
@@ -84,8 +90,9 @@
 <script setup lang="ts">
 import type { Entity } from '@/models';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import { pendingIds } from '@/utils/pending';
 
-defineProps<{
+const props = defineProps<{
   entity: Entity;
 }>();
 const emit = defineEmits<{
@@ -96,6 +103,7 @@ const authStore = useAuthStore();
 const { t } = useI18n();
 
 const showConfirmDialog = ref(false);
+const pending = computed(() => !!props.entity.id && pendingIds.has(props.entity.id));
 
 const onConfirmRemove = () => {
   showConfirmDialog.value = true;

@@ -1,5 +1,14 @@
 <template>
-  <q-btn size="sm" flat dense no-caps :label="t(`states.${entity.state}`)" icon-right="more_vert">
+  <q-btn
+    size="sm"
+    flat
+    dense
+    no-caps
+    :label="t(`states.${entity.state}`)"
+    icon-right="more_vert"
+    :loading="pending"
+    :disable="pending"
+  >
     <q-menu>
       <q-list>
         <q-item
@@ -79,6 +88,7 @@ import type {
 } from '@/models';
 import type { Service } from '@/stores/services';
 import { notifyError } from '@/utils/notify';
+import { pendingIds } from '@/utils/pending';
 
 const props = defineProps<{
   entity: Entity;
@@ -102,6 +112,8 @@ let service:
     >
   | undefined = undefined;
 
+const pending = computed(() => !!props.entity.id && pendingIds.has(props.entity.id));
+
 onMounted(() => {
   service = services.make(props.type);
 });
@@ -112,11 +124,14 @@ const onState = (state: string) => {
     console.error('Service is not defined for type:', props.type);
     return;
   }
+  const id = props.entity.id;
+  pendingIds.add(id);
   void service
-    .setState(props.entity.id, state)
+    .setState(id, state)
     .then(() => {
       emit('state-changed', state);
     })
-    .catch(notifyError);
+    .catch(notifyError)
+    .finally(() => pendingIds.delete(id));
 };
 </script>
