@@ -23,6 +23,7 @@ from api.views.importer import router as importer_router
 from api.views.snapshot import router as snapshot_router
 from api.rate_limit import setup_rate_limiting
 from titiler.core.factory import TilerFactory
+from titiler.core.errors import DEFAULT_STATUS_CODES, add_exception_handlers
 
 basicConfig(level=DEBUG)
 
@@ -105,3 +106,5 @@ app.include_router(snapshot_router,
 # Create TilerFactory instance for COGs
 cog = TilerFactory()
 app.include_router(cog.router, prefix="/cog", tags=["Maps"])
+# map rio-tiler errors (e.g. TileOutsideBounds -> 404) instead of 500s without CORS headers
+add_exception_handlers(app, DEFAULT_STATUS_CODES)
