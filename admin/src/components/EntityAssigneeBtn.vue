@@ -6,6 +6,8 @@
         flat
         dense
         no-caps
+        :loading="pending"
+        :disable="pending"
         :label="entity.assigned_to || t('not_assigned')"
         :color="color"
         :title="toDatetimeString(entity.assigned_at)"
@@ -47,6 +49,7 @@
       </q-btn>
       <q-btn
         v-if="entity.assigned_to"
+        :disable="pending"
         @click="clearAssignees"
         icon="clear"
         dense
@@ -79,6 +82,7 @@ import type {
 } from '@/models';
 import type { Service } from '@/stores/services';
 import { notifyError } from '@/utils/notify';
+import { pendingIds } from '@/utils/pending';
 import { toDatetimeString } from '@/utils/time';
 import type { AppUser } from '@/models';
 import { QMenu } from 'quasar';
@@ -95,6 +99,7 @@ const authStore = useAuthStore();
 const usersStore = useUsersStore();
 const { t } = useI18n();
 const services = useServices();
+const pending = computed(() => !!props.entity.id && pendingIds.has(props.entity.id));
 let service:
   | Service<
       | NaturalResource
@@ -203,12 +208,15 @@ function onApplyAssignees() {
     return;
   }
   const assigneesStr = assignees.value.length > 0 ? assignees.value.join(', ') : null;
+  const id = props.entity.id;
+  pendingIds.add(id);
   void service
-    .assign(props.entity.id, assigneesStr)
+    .assign(id, assigneesStr)
     .then(() => {
       emit('assignee-changed', assigneesStr);
     })
-    .catch(notifyError);
+    .catch(notifyError)
+    .finally(() => pendingIds.delete(id));
 }
 
 function cancelChanges() {

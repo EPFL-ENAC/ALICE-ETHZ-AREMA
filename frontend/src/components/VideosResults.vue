@@ -89,6 +89,7 @@ function loadMore() {
 .card {
   break-inside: avoid;
   margin-bottom: 1rem;
+  overflow-wrap: anywhere;
 }
 @media (max-width: 1024px) {
   .masonry {

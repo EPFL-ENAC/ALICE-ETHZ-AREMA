@@ -6,6 +6,8 @@ work/
 *.qmd
 *.qgz
 *.json
+*.geojson
+*.tif
 *.md
 prod-*
 dev-*

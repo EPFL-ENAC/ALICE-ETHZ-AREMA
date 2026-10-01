@@ -541,7 +541,17 @@ export const style: StyleSpecification = {
       paint: {
         'circle-color': '#08519c',
         'circle-opacity': 0.5,
-        'circle-radius': ['interpolate', ['linear'], ['zoom'], 1, 5, 16, ['get', 'surface_area']],
+        'circle-radius': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          1,
+          5,
+          5,
+          5,
+          16,
+          ['max', 5, ['/', ['to-number', ['get', 'surface area']], 100]],
+        ],
         'circle-stroke-color': 'rgb(37, 14, 240)',
         'circle-stroke-width': 0.2,
       },
