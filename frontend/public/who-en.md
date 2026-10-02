@@ -14,7 +14,7 @@ More than a database, the Atlas is a collective effort to re-anchor construction
 
 <p class="q-mt-lg">
   <a href="https://sc.ibi.ethz.ch/" target="_blank">
-    <img width="910" height="143" alt="Image" src="https://github.com/user-attachments/assets/266c0925-b708-40ac-9c65-faded5ea57e1" />
+    <img height="143" alt="LogoChair2026-02" src="https://github.com/user-attachments/assets/21d3c7ca-8ff3-40dc-a776-193e9fd68398" />
   </a>
   <a href="https://www.dist.polito.it/" target="_blank">
     <img src="images/politecnico-torino.png" alt="PoliTo" height="80" class="q-mr-lg" />
