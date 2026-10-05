@@ -5,9 +5,10 @@ The initial group gathered around the Chair of Sustainable Construction at ETH Z
 It continues to grow through the engagement of a diverse group of practitioners and researchers. The Atlas is conceived as a distributed and evolving network, which grows through a bioregional logic, where knowledge is anchored in specific territories, linked to local resources, building cultures, and communities of practice and language, while remaining open and connected across regions.
 Its development relies on a set of bioregional reference points: academic teams and partners who document, curate, and take responsibility for the quality and relevance of content within their territories. These nodes act both as anchors and catalysts, ensuring that knowledge remains situated while contributing to a shared, collective resource.
 Initial nodes are:
-- ETH Zurich with the team of Prof. Guillaume Habert
-- Politecnico di Torino with the team of Prof. Andrea Bocco
-- Technische Universität München with the team of Prof. Niklas Fanelsa
+- ETH Zurich with the team of Prof. Guillaume Habert at the Chair of Sustainable Construction
+- Politecnico di Torino with the team of Prof. Andrea Bocco at the Inter-University Department of Urban and Regional Studies
+- Technische Universität München with the team of Prof. Niklas Fanelsa at the Professorship for Architecture and Design
+- University of Bath with the team of Dr Julaiana Calabria-Holley and Prof. Sukumār Natarājan at the Centre for Regenerative design and Engineering for a NEt positive World (RENEW)
 
 This structure is intended to expand organically, as new bioregional nodes emerge and take stewardship of their own contexts.
 More than a database, the Atlas is a collective effort to re-anchor construction practices within ecological and cultural realities. Its strength lies in those who contribute to it, across disciplines, regions, and practices, gradually weaving a shared, situated knowledge of regenerative materials.
@@ -23,5 +24,9 @@ More than a database, the Atlas is a collective effort to re-anchor construction
   <a href="https://www.ed.tum.de/" target="_blank">
     <img width="441" height="143" alt="Image" src="https://github.com/user-attachments/assets/b9b9d141-bcd8-4b27-a6d2-c760d70a31a1" />
     <img width="508" height="143" alt="Picture1" src="https://github.com/user-attachments/assets/dd040e06-9fb2-4e4b-8037-3eb9f5f95bac" />
+  </a>
+    <a href="https://www.bath.ac.uk/research-centres/centre-for-regenerative-design-engineering-for-a-net-positive-world/" target="_blank">
+    <img height="143" alt="uob-logo-white-transparent" src="https://github.com/user-attachments/assets/97994fd4-c344-49ea-b9bf-dadd42cb93b8" />
+    <img height="143" alt="FINAL GREEN TRANSPARENT + white text @3x" src="https://github.com/user-attachments/assets/18f4efd6-484c-4964-a7f8-70507d714bdf" />
   </a>
 </p>
