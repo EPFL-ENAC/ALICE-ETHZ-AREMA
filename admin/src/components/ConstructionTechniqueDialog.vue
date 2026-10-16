@@ -13,7 +13,7 @@
           <template #avatar>
             <q-icon name="translate" color="primary" />
           </template>
-          {{ t('regional_language_hint') }}
+          {{ t('english_language_hint') }}
         </q-banner>
         <q-tabs v-model="tab" dense align="left" no-caps>
           <q-tab name="general" :label="t('general') + ' *'" />

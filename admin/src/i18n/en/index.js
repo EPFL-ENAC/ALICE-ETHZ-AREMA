@@ -236,6 +236,7 @@ export default {
   reaction_to_fire_hint: 'DIN EN 13501-2',
   reaction_to_fire: 'Reaction to fire',
   regional_language_hint: 'Please enter your texts in the regional language.',
+  english_language_hint: 'Please enter your texts in English.',
   relations: 'Relations',
   remove_selected: 'Remove selected items',
   remove_user_text: "Are you sure you want to remove the user '{name}'?",

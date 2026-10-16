@@ -48,3 +48,7 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["api"]
 include = ["api/data/*.yaml"]
+
+[tool.uv]
+# enacit4r-sql pins sqlmodel<0.0.23, which breaks on Python 3.14 (PEP 649 annotations)
+override-dependencies = ["sqlmodel>=0.0.27"]
