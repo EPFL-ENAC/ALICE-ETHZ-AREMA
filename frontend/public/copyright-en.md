@@ -8,9 +8,9 @@ We are positive, that a wise choice in how to renovate and build needs independe
 
 To ensure that a version of the whole website can be used regardless of its current hosting, there is a periodical snapshot on [Zenodo](https://zenodo.org/) reachable via DOI: (coming soon!)
 
-## Map credits
-### Straw, hemp, flax, and miscanthus
-#### CH
+# Map credits
+## Straw, hemp, flax, and miscanthus
+### CH
 - Source: Landwirtschaftliche Nutzungsflächen from https://geodienste.ch
 - Last Update: 2026
 - Data from: 2025
@@ -19,7 +19,7 @@ To ensure that a version of the whole website can be used regardless of its curr
     - Grouping fields of ['Dinkel','Wintergerste','Hafer','Reis','Triticale','Emmer, Einkorn','Futterweizen gemäss Sortenliste swiss granum','Roggen','Sommergerste','Hartweizen','Mischel Brotgetreide','Winterweizen (ohne Futterweizen der Sortenliste swiss granum)', 'Sommerweizen (ohne Futterweizen der Sortenliste swiss granum)'] for map Straw; fields ['Hanf zur Fasernutzung', 'Hanf zur Nutzung der Samen', 'Anderer Hanf'] for map Hemp ; fields ['Lein'] for map Flax 
     - Saving fields with area [ha] and centroid in geojson
 - Copyright: CC or CC-BY Geodata from ©Kanton Aargau ©Kanton Appenzell I.Rh. ©Kanton Appenzell Ausserrhoden ©Kanton Basel-Landschaft und Kanton Basel Stadt ©Amt für Landwirtschaft und Natur des Kantons Bern ©Infrastructure cantonale de données géographqieus Canton de Genève ©Kanton Glarus ©GIS Canton de Fribourg ©Amt für Landwirtschaft und Geoinformation Kanton Graubünden ©République et Canton du Jura ©rawi Kanton Luzern ©SITN, Service de la Geomatique et du Registre Foncier Canton de Neuchatel ©GIS Daten AG, Kantone Nidwalden und Obwalden ©Kanton Schaffhausen ©Landwirtschaftsamt Kanton St.Gallen ©Amt für Landwirtschaft, Kanton Schwyz ©Kanton Solothurn ©GIS Kanton Thurgau ©Administratione cantonale- Canton Ticino © Lisag AG, GIS Uri ©État de Vaud-Informations dépourvues de foi publique ©CCGEO Canton du Valais ©GIS Kanton Zug ©Kanton Zürich
-#### EU
+### EU
 - Source: IACS inventory from https://zenodo.org/records/18670815
 - Last Update: 2026
 - Data from: 2024, 2025, depending on country
@@ -45,13 +45,28 @@ To ensure that a version of the whole website can be used regardless of its curr
     - Saving fields with area [ha] and centroid in geojson
 - Copyright: CC-BY 4.0 from Jänicke, C., Petersen, K. A., Schmidts, P., Müller, D., & Jepsen, M. R. (2026). Harmonized IACS inventory [Dataset]. In Field and farm-level data on agricultural land use for the European Union (Version 1.3, Vol. 12, Issue 1, p. 1050). Zenodo. https://doi.org/10.5281/zenodo.18670815
 
-### Stone
-#### CH
-- Source: Litho500: GT_Poly_lith_v1_00.shp & swissBOUNDARIES3D_1_5_TLM_LANDESGEBIET.shp from swisstopo
-- Last Update: 2026
-- Data from: 2025
+## Stone
+### CH
+- Source: Litho500: Lithologic map GT_Poly_lith_v1_00.shp & Swiss country limits swissBOUNDARIES3D_1_5_TLM_LANDESGEBIET.shp both from swisstopo
+- Last Update: 2025
+- Data from: 2006
 - Original Map type: Polygons
 - Modifications:
-    - Grouping fields of ['Dinkel','Wintergerste','Hafer','Reis','Triticale','Emmer, Einkorn','Futterweizen gemäss Sortenliste swiss granum','Roggen','Sommergerste','Hartweizen','Mischel Brotgetreide','Winterweizen (ohne Futterweizen der Sortenliste swiss granum)', 'Sommerweizen (ohne Futterweizen der Sortenliste swiss granum)'] for map Straw; fields ['Hanf zur Fasernutzung', 'Hanf zur Nutzung der Samen', 'Anderer Hanf'] for map Hemp ; fields ['Lein'] for map Flax 
-    - Saving fields with area [ha] and centroid in geojson
-- Copyright: CC or CC-BY Geodata from ©Kanton 
+    - Grouping Sandstein = ['Sandsteine', 'Sandstein- und Mergellagen', 'kalkhaltiger Quarzsandsteine']
+Kalkstein = [ 'Kalksteine', 'Dolomit', 'Kieselkalke', 'Sandkalke bis Kieselkalke','Kalksteine bis Kalkmarmore','Dolomitmarmore']
+Konglomerat = [ 'Konglomerate', 'Konglomerate bis Brekzien', 'Serizitreiche Konglomerate und Brekzien', 'Zweiglimmer- bis Biotitgneise mit Phengit']
+Hartgestein = [ 'Granit', 'Quarzite', 'Biotit- bis muskowitreiche Gneise', 'Gneise mit reichlich Feldspat', 'Serizit-Chloritgneise bis -schiefer', 'Syenite', 'Mischzone von Amphiboliten und Gneisen', 'Brekzien und Konglomerate', 'Kalkbrekzien oder Kalkkonglomerate', 'Zweiglimmer- bis Biotitgneise', 'Zweiglimmer- bis Biotitgneise, feldspatreich', 'Biotit- bis muskowitreiche Gneise, chloritführend']
+Vulkanisch =[ 'Porphyrite und Porphyrittuffe', 'Vulkanite und Pyroklastika', 'Diorite und Gabbros']
+
+    - Using CH-limits to crop map, saving as geojson
+- Copyright: ©swisstopo
+## Sheep
+### CH
+- Source: Count of sheep from identitas at https://tierstatistik.identitas.ch/data/sheep-map-commune.csv and commune locations from swisstopo athttps://data.geo.admin.ch/ch.swisstopo-vd.ortschaftenverzeichnis_plz/ortschaftenverzeichnis_plz/ortschaftenverzeichnis_plz_4326.csv.zip
+- Last Update: 2026
+- Data from: 2026
+- Original Map type: Tables
+- Modifications:
+    - Extracting only sheep count and commune
+    - Localising communes and saving in geojson
+- Copyright: ©swisstopo
