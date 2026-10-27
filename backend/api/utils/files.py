@@ -1,8 +1,10 @@
-from enacit4r_files.utils.files import FileChecker
-from api.models.domain import FileItem
-from api.services.s3 import s3_client
 import urllib.parse
 from logging import debug
+
+from enacit4r_files.utils.files import FileChecker
+
+from api.models.domain import FileItem
+from api.services.s3 import s3_client
 
 # 200 MB in binary
 DEFAULT_MAX_FILE_SIZE = 200 * 1024 * 1024

@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+
 from api.models.taxonomy import Taxonomy
 from api.services.taxonomy import TaxonomyService
 

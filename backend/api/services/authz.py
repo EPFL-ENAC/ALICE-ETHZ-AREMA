@@ -1,12 +1,13 @@
 import logging
-from api.db import AsyncSession
+
 from sqlmodel import select
+
+from api.db import AsyncSession
 from api.models.authz import ACL
 from api.models.query import ACLResult
 
 
 class ACLService:
-
     def __init__(self, session: AsyncSession):
         self.session = session
 
@@ -33,8 +34,7 @@ class ACLService:
             resource (str): The unique resource name
             subject (str, optional): The unique user name. Defaults to None.
         """
-        query = select(ACL).where(
-            ACL.resource == resource and ACL.subject_type == "user")
+        query = select(ACL).where(ACL.resource == resource and ACL.subject_type == "user")
         if subject:
             query = query.where(ACL.subject == subject)
         acls = await self.session.exec(query)
@@ -55,8 +55,12 @@ class ACLService:
             (ACL): The ACL object if created or found
         """
         res = await self.session.exec(
-            select(ACL)
-            .where(ACL.resource == resource and ACL.permission == permission and ACL.subject_type == "user" and ACL.subject == subject)
+            select(ACL).where(
+                ACL.resource == resource
+                and ACL.permission == permission
+                and ACL.subject_type == "user"
+                and ACL.subject == subject
+            )
         )
         acl = res.one_or_none()
 
@@ -64,8 +68,7 @@ class ACLService:
             # user has resource permission
             return acl
 
-        acl = ACL(resource=resource, permission=permission,
-                  subject=subject, subject_type="user")
+        acl = ACL(resource=resource, permission=permission, subject=subject, subject_type="user")
         self.session.add(acl)
         await self.session.commit()
         return acl
@@ -82,8 +85,12 @@ class ACLService:
             (bool): True if user has permission on resource, False otherwise
         """
         res = await self.session.exec(
-            select(ACL)
-            .where(ACL.resource == resource and ACL.permission == permission and ACL.subject_type == "user" and ACL.subject == subject)
+            select(ACL).where(
+                ACL.resource == resource
+                and ACL.permission == permission
+                and ACL.subject_type == "user"
+                and ACL.subject == subject
+            )
         )
         acl = res.one_or_none()
         if acl:

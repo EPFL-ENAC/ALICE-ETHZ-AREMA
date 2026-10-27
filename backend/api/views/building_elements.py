@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, Query, HTTPException
-from api.db import get_session, AsyncSession
-from api.auth import kc_service, User
+from enacit4r_sql.utils.query import ValidationError, validate_params
+from fastapi import APIRouter, Depends, HTTPException, Query
+
+from api.auth import User, kc_service
+from api.db import AsyncSession, get_session
 from api.models.domain import BuildingElement
-from api.models.query import BuildingElementResult, BuildingElementDraft
+from api.models.query import BuildingElementDraft, BuildingElementResult
 from api.services.building_elements import BuildingElementService
-from enacit4r_sql.utils.query import validate_params, ValidationError
 
 router = APIRouter()
 
@@ -20,9 +21,11 @@ async def find(
     """Search for building elements"""
     try:
         validated = validate_params(filter, sort, range, select)
-        return await BuildingElementService(session).find(validated["filter"], validated["fields"], validated["sort"], validated["range"])
+        return await BuildingElementService(session).find(
+            validated["filter"], validated["fields"], validated["sort"], validated["range"]
+        )
     except ValidationError as e:
-        raise HTTPException(status_code=400, detail=f"{e}")
+        raise HTTPException(status_code=400, detail=f"{e}") from e
 
 
 @router.get("/{id}", response_model=BuildingElement, response_model_exclude_none=True)
@@ -33,9 +36,8 @@ async def get(id: int, session: AsyncSession = Depends(get_session)) -> Building
 
 @router.delete("/{id}", response_model=BuildingElement, response_model_exclude_none=True)
 async def delete(
-        id: int,
-        session: AsyncSession = Depends(get_session),
-        user: User = Depends(kc_service.require_admin())) -> BuildingElement:
+    id: int, session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
+) -> BuildingElement:
     """Delete a building element by id"""
     return await BuildingElementService(session).delete(id)
 
@@ -44,7 +46,7 @@ async def delete(
 async def create(
     payload: BuildingElementDraft,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    user: User = Depends(kc_service.require_admin()),
 ) -> BuildingElement:
     """Create a building element"""
     return await BuildingElementService(session).create(payload)
@@ -52,9 +54,10 @@ async def create(
 
 @router.put("/{id}", response_model=BuildingElement, response_model_exclude_none=True)
 async def update(
-    id: int, payload: BuildingElementDraft,
+    id: int,
+    payload: BuildingElementDraft,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    user: User = Depends(kc_service.require_admin()),
 ) -> BuildingElement:
     """Update a building element by id"""
     async with session:

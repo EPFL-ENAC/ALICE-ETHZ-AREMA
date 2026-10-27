@@ -1,11 +1,10 @@
 from pydantic import BaseModel
-from typing import List, Optional
 
 
 class IGLehmImage(BaseModel):
     id: int
-    title: Optional[str] = None
-    description: Optional[str] = None
+    title: str | None = None
+    description: str | None = None
     url: str
 
 
@@ -16,43 +15,43 @@ class IGLehmEntity(BaseModel):
 
 class IGLehmProjectSummary(IGLehmEntity):
     pageUrl: str
-    previewImage: Optional[str] = None
-    building_id: Optional[int] = None
+    previewImage: str | None = None
+    building_id: int | None = None
 
 
 class IGLehmProject(IGLehmEntity):
     pageUrl: str
-    content: Optional[str] = None
-    description: Optional[str] = None
-    previewImage: Optional[str] = None
-    location: Optional[str] = None
-    yearOfConstruction: Optional[str] = None
-    regions: Optional[List[str]] = None
-    fields: Optional[List[str]] = None
-    images: Optional[List[IGLehmImage]] = None
-    building_id: Optional[int] = None
+    content: str | None = None
+    description: str | None = None
+    previewImage: str | None = None
+    location: str | None = None
+    yearOfConstruction: str | None = None
+    regions: list[str] | None = None
+    fields: list[str] | None = None
+    images: list[IGLehmImage] | None = None
+    building_id: int | None = None
 
 
 class IGLehmSpecialistSummary(IGLehmEntity):
     pageUrl: str
-    professional_id: Optional[int] = None
+    professional_id: int | None = None
 
 
 class IGLehmSpecialist(IGLehmEntity):
     pageUrl: str
-    description: Optional[str] = None
-    address: Optional[str] = None
-    contactPerson: Optional[str] = None
-    phone: Optional[str] = None
-    mobile: Optional[str] = None
-    fax: Optional[str] = None
-    email: Optional[str] = None
-    website: Optional[str] = None
-    branchLocation: Optional[str] = None
-    brancCantons: Optional[str] = None
-    sectors: Optional[List[str]] = None
-    specialityFields: Optional[List[str]] = None
-    images: Optional[List[IGLehmImage]] = None
-    projects: Optional[List[IGLehmEntity]] = None
-    professional_id: Optional[int] = None
-    building_ids: Optional[List[int]] = None
+    description: str | None = None
+    address: str | None = None
+    contactPerson: str | None = None
+    phone: str | None = None
+    mobile: str | None = None
+    fax: str | None = None
+    email: str | None = None
+    website: str | None = None
+    branchLocation: str | None = None
+    brancCantons: str | None = None
+    sectors: list[str] | None = None
+    specialityFields: list[str] | None = None
+    images: list[IGLehmImage] | None = None
+    projects: list[IGLehmEntity] | None = None
+    professional_id: int | None = None
+    building_ids: list[int] | None = None

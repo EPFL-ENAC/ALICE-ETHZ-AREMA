@@ -1,165 +1,186 @@
-from typing import List, Optional, Dict
+from enacit4r_sql.models.query import ListResult
 from pydantic import BaseModel
 from sqlmodel import Field
-from api.models.domain import NaturalResource, NaturalResourceBase, BuildingMaterial, BuildingMaterialBase, TechnicalConstruction, TechnicalConstructionBase, BuildingBase, Professional, ProfessionalBase, BuildingElement, BuildingElementBase, BuildingElementMaterial, BuildingElementMaterialBase, SubjectProfileBase
+
 from api.models.authz import ACL
-from enacit4r_sql.models.query import ListResult
+from api.models.domain import (
+    BuildingBase,
+    BuildingElement,
+    BuildingElementBase,
+    BuildingElementMaterial,
+    BuildingElementMaterialBase,
+    BuildingMaterial,
+    BuildingMaterialBase,
+    NaturalResource,
+    NaturalResourceBase,
+    Professional,
+    ProfessionalBase,
+    SubjectProfileBase,
+    TechnicalConstruction,
+    TechnicalConstructionBase,
+)
 
 # Subject profiles
 
 
 class SubjectProfileDraft(SubjectProfileBase):
-    identifier: Optional[str] = Field(default=None)
+    identifier: str | None = Field(default=None)
 
 
 class SubjectProfileRead(SubjectProfileDraft):
-    id: Optional[int] = None
+    id: int | None = None
 
 
 class SubjectProfileResult(ListResult):
-    data: List[SubjectProfileRead] = []
+    data: list[SubjectProfileRead] = []
+
 
 # Natural resources
 
 
 class NaturalResourceRead(NaturalResourceBase):
-    id: Optional[int] = Field(default=None)
-    name: Optional[str] = Field(default=None)
-    type: Optional[str] = Field(default=None)
+    id: int | None = Field(default=None)
+    name: str | None = Field(default=None)
+    type: str | None = Field(default=None)
 
 
 class NaturalResourceResult(ListResult):
-    data: List[NaturalResourceRead] = []
+    data: list[NaturalResourceRead] = []
+
 
 # Building materials
 
 
 class BuildingMaterialDraft(BuildingMaterialBase):
-    id: Optional[int] = Field(default=None)
-    natural_resource_ids: List[int] = []
+    id: int | None = Field(default=None)
+    natural_resource_ids: list[int] = []
 
 
 class BuildingMaterialRead(BuildingMaterialBase):
-    id: Optional[int] = Field(default=None)
-    name: Optional[str] = Field(default=None)
-    natural_resources: List[NaturalResource] = None
+    id: int | None = Field(default=None)
+    name: str | None = Field(default=None)
+    natural_resources: list[NaturalResource] = None
 
 
 class BuildingMaterialResult(ListResult):
-    data: List[BuildingMaterialRead] = []
+    data: list[BuildingMaterialRead] = []
+
 
 # Technical constructions
 
 
 class TechnicalConstructionDraft(TechnicalConstructionBase):
-    id: Optional[int] = Field(default=None)
-    building_material_ids: List[int] = []
+    id: int | None = Field(default=None)
+    building_material_ids: list[int] = []
 
 
 class TechnicalConstructionRead(TechnicalConstructionBase):
-    id: Optional[int] = Field(default=None)
-    name: Optional[str] = Field(default=None)
-    type: Optional[str] = Field(default=None)
-    building_materials: List[BuildingMaterial] = None
+    id: int | None = Field(default=None)
+    name: str | None = Field(default=None)
+    type: str | None = Field(default=None)
+    building_materials: list[BuildingMaterial] = None
 
 
 class TechnicalConstructionResult(ListResult):
-    data: List[TechnicalConstructionRead] = []
+    data: list[TechnicalConstructionRead] = []
+
 
 # Building elements
 
 
 class BuildingElementMaterialDraft(BuildingElementMaterialBase):
-    id: Optional[int] = Field(default=None)
-    building_element_id: Optional[int] = Field(default=None)
-    building_material_id: Optional[int] = Field(default=None)
+    id: int | None = Field(default=None)
+    building_element_id: int | None = Field(default=None)
+    building_material_id: int | None = Field(default=None)
 
 
 class BuildingElementMaterialRead(BuildingElementMaterialBase):
-    id: Optional[int] = Field(default=None)
+    id: int | None = Field(default=None)
     building_element: BuildingElementBase = None
     building_material: BuildingMaterial = None
 
 
 class BuildingElementMaterialResult(ListResult):
-    data: List[BuildingElementMaterialRead] = []
+    data: list[BuildingElementMaterialRead] = []
 
 
 class BuildingElementDraft(BuildingElementBase):
-    id: Optional[int] = Field(default=None)
-    building_id: Optional[int] = Field(default=None)
-    technical_construction_id: Optional[int] = Field(default=None)
-    professional_ids: List[int] = None
-    materials: List[BuildingElementMaterialDraft] = None
+    id: int | None = Field(default=None)
+    building_id: int | None = Field(default=None)
+    technical_construction_id: int | None = Field(default=None)
+    professional_ids: list[int] = None
+    materials: list[BuildingElementMaterialDraft] = None
 
 
 class BuildingElementRead(BuildingElementBase):
-    id: Optional[int] = Field(default=None)
-    technical_construction: Optional[TechnicalConstruction] = None
-    building: Optional[BuildingBase] = None
-    professionals: List[Professional] = None
-    materials: List[BuildingElementMaterial] = None
+    id: int | None = Field(default=None)
+    technical_construction: TechnicalConstruction | None = None
+    building: BuildingBase | None = None
+    professionals: list[Professional] = None
+    materials: list[BuildingElementMaterial] = None
 
 
 class BuildingElementResult(ListResult):
-    data: List[BuildingElementRead] = []
+    data: list[BuildingElementRead] = []
 
 
 # Buildings
 
 
 class BuildingDraft(BuildingBase):
-    id: Optional[int] = Field(default=None)
-    building_material_ids: List[int] = []
-    professional_ids: List[int] = []
-    building_elements: List[BuildingElementDraft] = []
+    id: int | None = Field(default=None)
+    building_material_ids: list[int] = []
+    professional_ids: list[int] = []
+    building_elements: list[BuildingElementDraft] = []
 
 
 class BuildingRead(BuildingBase):
-    id: Optional[int] = Field(default=None)
-    name: Optional[str] = Field(default=None)
-    type: Optional[str] = Field(default=None)
-    building_materials: List[BuildingMaterial] = None
-    building_elements: List[BuildingElement] = None
-    professionals: List[Professional] = None
+    id: int | None = Field(default=None)
+    name: str | None = Field(default=None)
+    type: str | None = Field(default=None)
+    building_materials: list[BuildingMaterial] = None
+    building_elements: list[BuildingElement] = None
+    professionals: list[Professional] = None
 
 
 class BuildingResult(ListResult):
-    data: List[BuildingRead] = []
+    data: list[BuildingRead] = []
+
 
 # Professionals
 
 
 class ProfessionalDraft(ProfessionalBase):
-    id: Optional[int] = Field(default=None)
-    professional_ids: List[int] = []
-    building_material_ids: List[int] = []
-    technical_construction_ids: List[int] = []
+    id: int | None = Field(default=None)
+    professional_ids: list[int] = []
+    building_material_ids: list[int] = []
+    technical_construction_ids: list[int] = []
 
 
 class ProfessionalBaseRead(ProfessionalBase):
-    id: Optional[int] = Field(default=None)
-    name: Optional[str] = Field(default=None)
+    id: int | None = Field(default=None)
+    name: str | None = Field(default=None)
 
 
 class ProfessionalRead(ProfessionalBaseRead):
-    building_materials: List[BuildingMaterial] = None
-    technical_constructions: List[TechnicalConstruction] = None
-    professionals: List['ProfessionalBaseRead'] = None
+    building_materials: list[BuildingMaterial] = None
+    technical_constructions: list[TechnicalConstruction] = None
+    professionals: list["ProfessionalBaseRead"] = None
 
 
 class ProfessionalResult(ListResult):
-    data: List[ProfessionalRead] = []
+    data: list[ProfessionalRead] = []
 
 
 class SearchResult(ListResult):
-    data: List[Dict] = []
+    data: list[dict] = []
+
 
 # Authorization models
 
 
 class ACLResult(ListResult):
-    data: List[ACL] = []
+    data: list[ACL] = []
 
 
 class GroupByCount(BaseModel):
@@ -169,4 +190,4 @@ class GroupByCount(BaseModel):
 
 class GroupByResult(BaseModel):
     field: str
-    counts: List[GroupByCount]
+    counts: list[GroupByCount]
