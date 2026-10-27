@@ -317,7 +317,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = ">=4.14.3" },
     { name = "dynaconf", specifier = ">=3.2.6" },
     { name = "elasticsearch", extras = ["async"], specifier = ">=8.16.0,<9" },
-    { name = "enacit4r-auth", git = "https://github.com/EPFL-ENAC/enacit4r-auth?rev=0.7.0" },
+    { name = "enacit4r-auth", git = "https://github.com/EPFL-ENAC/enacit4r-auth?rev=0.8.0" },
     { name = "enacit4r-files", git = "https://github.com/EPFL-ENAC/enacit4r-files?rev=1.4.0" },
     { name = "enacit4r-sql", git = "https://github.com/EPFL-ENAC/enacit4r-sql?rev=0.4.1" },
     { name = "fastapi", specifier = ">=0.115.4" },
@@ -916,8 +916,8 @@ async = [
 
 [[package]]
 name = "enacit4r-auth"
-version = "0.7.0"
-source = { git = "https://github.com/EPFL-ENAC/enacit4r-auth?rev=0.7.0#2d5981427762d6651df26774051c3d6c3277f298" }
+version = "0.8.0"
+source = { git = "https://github.com/EPFL-ENAC/enacit4r-auth?rev=0.8.0#0fae03232b3cd6bc847a445dc7045fe1d94239b6" }
 dependencies = [
     { name = "fastapi" },
     { name = "pydantic" },

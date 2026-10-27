@@ -22,7 +22,7 @@ class EntityService:
             return False
         if user.username == entity.created_by:
             return True
-        if "app-reviewer" in user.realm_roles or "app-administrator" in user.realm_roles:
+        if "app-reviewer" in user.client_roles or "app-administrator" in user.client_roles:
             return True
         return False
 
@@ -111,7 +111,7 @@ class EntityService:
         """Change the state of the entity to locked"""
         if entity.state == "locked":
             return entity
-        if "app-administrator" not in user.realm_roles:
+        if "app-administrator" not in user.client_roles:
             raise HTTPException(status_code=403, detail="Operation not allowed")
         entity.state = "locked"
         entity.assigned_to = None
@@ -128,7 +128,7 @@ class EntityService:
         return entity
 
     def _is_contributor(self, user: User) -> bool:
-        return "app-contributor" in user.realm_roles
+        return "app-contributor" in user.client_roles
 
     def _is_author(self, entity: Entity, user: User) -> bool:
         return entity.created_by == user.username or entity.updated_by == user.username

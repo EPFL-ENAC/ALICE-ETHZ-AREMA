@@ -1,21 +1,21 @@
 import { defineStore } from 'pinia';
-import { keycloak } from '@/boot/api';
+import { api, keycloak, authApiClientId } from '@/boot/api';
 import type { KeycloakProfile } from 'keycloak-js';
 import type { Entity } from '@/models';
 
 export const useAuthStore = defineStore('auth', () => {
   const profile = ref<KeycloakProfile>();
-  const realmRoles = ref<string[]>([]);
+  const roles = ref<string[]>([]);
   const isAuthenticated = computed(() => profile.value !== undefined);
-  const isAdmin = computed(() => realmRoles.value.includes('app-administrator'));
-  const isReviewer = computed(() => realmRoles.value.includes('app-reviewer'));
-  const isContributor = computed(() => realmRoles.value.includes('app-contributor'));
+  const isAdmin = computed(() => roles.value.includes('app-administrator'));
+  const isReviewer = computed(() => roles.value.includes('app-reviewer'));
+  const isContributor = computed(() => roles.value.includes('app-contributor'));
   const initialized = ref(false);
 
   async function init() {
     if (isAuthenticated.value || initialized.value) return Promise.resolve(true);
     profile.value = undefined;
-    realmRoles.value = [];
+    roles.value = [];
     try {
       const authenticated = await keycloak.init({
         onLoad: 'check-sso', // Optional: 'login-required' forces login right away, 'check-sso' checks if the user is already logged in.
@@ -25,7 +25,8 @@ export const useAuthStore = defineStore('auth', () => {
 
       initialized.value = true;
       if (authenticated) {
-        realmRoles.value = keycloak.tokenParsed?.realm_access?.roles || [];
+        roles.value = readRoles();
+        if (!roles.value.includes('app-user')) await join();
         profile.value = await keycloak.loadUserProfile();
         keycloak.onTokenExpired = () => void updateToken();
       }
@@ -34,6 +35,24 @@ export const useAuthStore = defineStore('auth', () => {
       console.error('Keycloak initialization failed', error);
       initialized.value = true;
       return false;
+    }
+  }
+
+  function readRoles(): string[] {
+    return keycloak.tokenParsed?.resource_access?.[authApiClientId]?.roles || [];
+  }
+
+  /**
+   * A user of the realm without app roles (signed in with github, google or registered
+   * for another app) joins the app as if signed up, then gets the roles in a new token.
+   */
+  async function join() {
+    try {
+      await api.post('/user/_join', {}, { headers: { Authorization: `Bearer ${keycloak.token}` } });
+      await keycloak.updateToken(-1);
+      roles.value = readRoles();
+    } catch (error) {
+      console.error('Joining the app failed', error);
     }
   }
 
@@ -51,7 +70,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (!keycloak.didInitialize) {
       // If keycloak was never initialized, just clear local state
       profile.value = undefined;
-      realmRoles.value = [];
+      roles.value = [];
       return;
     }
     if (!isAuthenticated.value) return;
@@ -61,7 +80,7 @@ export const useAuthStore = defineStore('auth', () => {
       })
       .then(() => {
         profile.value = undefined;
-        realmRoles.value = [];
+        roles.value = [];
       });
   }
 
@@ -80,7 +99,7 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (error) {
       console.error('Token refresh error:', error);
       profile.value = undefined;
-      realmRoles.value = [];
+      roles.value = [];
       return null;
     }
   }
@@ -202,7 +221,7 @@ export const useAuthStore = defineStore('auth', () => {
     isReviewer,
     isContributor,
     profile,
-    realmRoles,
+    roles,
     keycloak,
     init,
     login,

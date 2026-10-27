@@ -15,8 +15,8 @@ class Config(BaseSettings):
     DB_URL: str | None = None
 
     # Keycloak
-    KEYCLOAK_REALM: str = "AREMA"
-    KEYCLOAK_URL: str = "https://enac-it-sso.epfl.ch"
+    KEYCLOAK_REALM: str = "external"
+    KEYCLOAK_URL: str = "https://enac-it-sso2.epfl.ch"
     KEYCLOAK_API_ID: str
     KEYCLOAK_API_SECRET: str
     KEYCLOAK_TOTP: bool = False

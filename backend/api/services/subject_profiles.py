@@ -150,7 +150,7 @@ class SubjectProfileService:
         if not profile:
             return None
 
-        if user is None or ("app-administrator" not in user.realm_roles and user.username != profile.identifier):
+        if user is None or ("app-administrator" not in user.client_roles and user.username != profile.identifier):
             raise HTTPException(status_code=403, detail="Not enough permissions")
 
         for key, value in payload.model_dump().items():

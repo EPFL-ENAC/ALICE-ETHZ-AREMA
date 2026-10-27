@@ -24,7 +24,7 @@ router = APIRouter()
 @router.get("/iglehm/specialists")
 async def get_iglehm_specialists(
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.get_user_info()),
+    user: User = Depends(kc_service.require_role("app-user")),
 ) -> list[IGLehmSpecialistSummary]:
     """Get all specialists from IG Lehm"""
     try:
@@ -52,7 +52,7 @@ async def get_iglehm_specialists(
 async def get_iglehm_specialist(
     cId: int,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.get_user_info()),
+    user: User = Depends(kc_service.require_role("app-user")),
 ) -> IGLehmSpecialist:
     """Get a specialist from IG Lehm by its cId"""
     try:
@@ -84,7 +84,7 @@ async def get_iglehm_specialist(
 @router.get("/iglehm/projects")
 async def get_iglehm_projects(
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.get_user_info()),
+    user: User = Depends(kc_service.require_role("app-user")),
 ) -> list[IGLehmProjectSummary]:
     """Get all projects from IG Lehm"""
     iglehm_buildings = await BuildingService(session).find_by_source_prefix("iglehm:")
@@ -113,7 +113,7 @@ async def get_iglehm_projects(
 async def get_iglehm_project(
     cId: int,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.get_user_info()),
+    user: User = Depends(kc_service.require_role("app-user")),
 ) -> IGLehmProject:
     """Get a project from IG Lehm by its cId"""
     # fetch IG Lehm project from https://www.iglehm.ch/ccm/api/v1/project/{cId}
