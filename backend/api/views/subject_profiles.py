@@ -63,7 +63,7 @@ async def update(
     id: int,
     subject_profile: SubjectProfileDraft,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.get_user_info()),
+    user: User = Depends(kc_service.require_role("app-user")),
 ) -> SubjectProfile:
     """Update a subject profile"""
     return await SubjectProfileService(session).update(id, subject_profile, user)

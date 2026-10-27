@@ -30,7 +30,7 @@ async def match_terms(
     types: str,
     body: str = Body(..., media_type="text/plain"),
     locale: str = Query("en"),
-    user: User = Depends(kc_service.get_user_info()),
+    user: User = Depends(kc_service.require_role("app-user")),
 ) -> PlainTextResponse:
     """Match terms in the input text against the taxonomy of the given type and return the transformed text with markdown links.
 
