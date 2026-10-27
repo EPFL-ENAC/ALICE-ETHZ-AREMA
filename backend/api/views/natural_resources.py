@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, Query, HTTPException
-from api.db import get_session, AsyncSession
-from api.auth import kc_service, User
+from enacit4r_sql.utils.query import ValidationError, validate_params
+from fastapi import APIRouter, Depends, HTTPException, Query
+
+from api.auth import User, kc_service
+from api.db import AsyncSession, get_session
 from api.models.domain import NaturalResource
 from api.models.query import NaturalResourceResult
 from api.services.natural_resources import NaturalResourceService
-from enacit4r_sql.utils.query import validate_params, ValidationError
 
 router = APIRouter()
 
@@ -20,9 +21,11 @@ async def find(
     """Search for natural resources"""
     try:
         validated = validate_params(filter, sort, range, select)
-        return await NaturalResourceService(session).find(validated["filter"], validated["fields"], validated["sort"], validated["range"])
+        return await NaturalResourceService(session).find(
+            validated["filter"], validated["fields"], validated["sort"], validated["range"]
+        )
     except ValidationError as e:
-        raise HTTPException(status_code=400, detail=f"{e}")
+        raise HTTPException(status_code=400, detail=f"{e}") from e
 
 
 @router.get("/{id}", response_model=NaturalResource, response_model_exclude_none=True)
@@ -33,9 +36,7 @@ async def get(id: int, session: AsyncSession = Depends(get_session)) -> NaturalR
 
 @router.delete("/{id}", response_model=NaturalResource, response_model_exclude_none=True)
 async def delete(
-    id: int,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    id: int, session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
 ) -> NaturalResource:
     """Delete a natural resource by id"""
     return await NaturalResourceService(session).delete(id)
@@ -45,8 +46,7 @@ async def delete(
 async def create(
     natural_resource: NaturalResource,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-reviewer", "app-contributor"]))
+    user: User = Depends(kc_service.require_any_role(["app-administrator", "app-reviewer", "app-contributor"])),
 ) -> NaturalResource:
     """Create a natural resource"""
     return await NaturalResourceService(session).create(natural_resource, user)
@@ -57,8 +57,7 @@ async def update(
     id: int,
     natural_resource: NaturalResource,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-reviewer", "app-contributor"]))
+    user: User = Depends(kc_service.require_any_role(["app-administrator", "app-reviewer", "app-contributor"])),
 ) -> NaturalResource:
     """Update a natural resource by id"""
     return await NaturalResourceService(session).update(id, natural_resource, user)
@@ -66,9 +65,7 @@ async def update(
 
 @router.put("/{id}/_index", response_model_exclude_none=True)
 async def publish(
-    id: int,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    id: int, session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
 ) -> None:
     """Publish a natural resource by id"""
     return await NaturalResourceService(session).index(id, user)
@@ -76,9 +73,7 @@ async def publish(
 
 @router.delete("/{id}/_index", response_model_exclude_none=True)
 async def unpublish(
-    id: int,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    id: int, session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
 ) -> None:
     """Unpublish a natural resource by id"""
     return await NaturalResourceService(session).remove_index(id, user)
@@ -89,9 +84,7 @@ async def set_state(
     id: int,
     s: str,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-reviewer", "app-contributor"])
-    )
+    user: User = Depends(kc_service.require_any_role(["app-administrator", "app-reviewer", "app-contributor"])),
 ) -> None:
     """Set the state of a natural resource by id"""
     return await NaturalResourceService(session).set_state(id, s, user)
@@ -102,7 +95,7 @@ async def assign(
     id: int,
     assignee: str = Query(None),
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    user: User = Depends(kc_service.require_admin()),
 ) -> None:
     """Assign a natural resource by id"""
     return await NaturalResourceService(session).set_assignee(id, assignee, user)
@@ -110,9 +103,7 @@ async def assign(
 
 @router.delete("/{id}/_assign", response_model_exclude_none=True)
 async def unassign(
-    id: int,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    id: int, session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
 ) -> None:
     """Unassign a natural resource by id"""
     return await NaturalResourceService(session).set_assignee(id, None, user)

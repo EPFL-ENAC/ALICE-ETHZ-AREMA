@@ -1,13 +1,14 @@
-from abc import ABC, abstractmethod
 import copy
 import re
-from markdown_it import MarkdownIt
+from abc import ABC, abstractmethod
+
 from elasticsearch import Elasticsearch
+from markdown_it import MarkdownIt
+
 from api.config import config
 from api.models.query import SearchResult
 
-ENTITY_ANALYZED_FIELDS = ["name", "description", "article_top",
-                          "article_bottom", "side_note", "address"]
+ENTITY_ANALYZED_FIELDS = ["name", "description", "article_top", "article_bottom", "side_note", "address"]
 
 VIDEO_ANALYZED_FIELDS = ["name", "legend"]
 
@@ -18,16 +19,13 @@ class IndexService(ABC):
         self.index_name = index_name
 
     def refreshIndex(self):
-        """Refresh the index to make changes visible
-        """
+        """Refresh the index to make changes visible"""
         self._ensureIndex()
         self.client.indices.refresh(index=self.index_name)
 
     def deleteIndex(self):
-        """Drop the index, its mapping definitions and all its data
-        """
-        self.client.indices.delete(
-            index=self.index_name, ignore_unavailable=True)
+        """Drop the index, its mapping definitions and all its data"""
+        self.client.indices.delete(index=self.index_name, ignore_unavailable=True)
 
     def search(self, query: dict, skip: int = 0, limit: int = 10) -> SearchResult:
         """Search documents in the index
@@ -41,8 +39,7 @@ class IndexService(ABC):
             SearchResult: The result object
         """
         self._ensureIndex()
-        res = self.client.search(
-            index=self.index_name, body=query, from_=skip, size=limit)
+        res = self.client.search(index=self.index_name, body=query, from_=skip, size=limit)
         total = res["hits"]["total"]["value"]
         hits = [hit["_source"] for hit in res["hits"]["hits"]]
         return SearchResult(total=total, skip=skip, limit=limit, data=hits)
@@ -64,13 +61,11 @@ class IndexService(ABC):
 
     def _deleteDocuments(self, query: dict):
         self._ensureIndex()
-        self.client.delete_by_query(
-            index=self.index_name, body=query, ignore_unavailable=True)
+        self.client.delete_by_query(index=self.index_name, body=query, ignore_unavailable=True)
 
     @abstractmethod
     def _ensureIndex(self):
-        """Ensure the index exists and has the correct mapping
-        """
+        """Ensure the index exists and has the correct mapping"""
         pass
 
 
@@ -78,7 +73,7 @@ class EntityIndexService(IndexService):
     def __init__(self):
         super().__init__("entities")
 
-    async def addEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] = []):
+    async def addEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] | None = None):
         """Add a new entity to the index
 
         Args:
@@ -90,10 +85,10 @@ class EntityIndexService(IndexService):
         doc = await self.dumpModel(entity)
         doc["entity_type"] = entity_type
         doc["tags"] = tags
-        doc["relates_to"] = relates_to
+        doc["relates_to"] = relates_to or []
         self._addDocument(doc_id, doc)
 
-    async def updateEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] = []):
+    async def updateEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] | None = None):
         """Update an entity of the index
 
         Args:
@@ -105,7 +100,7 @@ class EntityIndexService(IndexService):
         doc = await self.dumpModel(entity)
         doc["entity_type"] = entity_type
         doc["tags"] = tags
-        doc["relates_to"] = relates_to
+        doc["relates_to"] = relates_to or []
         self._updateDocument(doc_id, doc)
 
     def deleteEntity(self, entity_type: str, entity_id: int):
@@ -149,59 +144,38 @@ class EntityIndexService(IndexService):
                             "ngram_analyzer": {
                                 "type": "custom",
                                 "tokenizer": "standard",
-                                "filter": ["lowercase", "ngram_filter"]
+                                "filter": ["lowercase", "ngram_filter"],
                             },
-                            "fuzzy_analyzer": {
-                                "type": "custom",
-                                "tokenizer": "standard",
-                                "filter": ["lowercase"]
-                            }
+                            "fuzzy_analyzer": {"type": "custom", "tokenizer": "standard", "filter": ["lowercase"]},
                         },
                         "filter": {
                             "ngram_filter": {
                                 "type": "ngram",
                                 "min_gram": 4,  # minimum n-gram length
-                                "max_gram": 4   # maximum n-gram length
+                                "max_gram": 4,  # maximum n-gram length
                             }
-                        }
+                        },
                     }
                 },
                 "mappings": {
                     "properties": {
-                        "tags": {
-                            "type": "keyword"
-                        },
-                        "relates_to": {
-                            "type": "keyword"
-                        },
-                        "entity_type": {
-                            "type": "keyword"
-                        },
-                        "location": {
-                            "type": "geo_point"
-                        }
+                        "tags": {"type": "keyword"},
+                        "relates_to": {"type": "keyword"},
+                        "entity_type": {"type": "keyword"},
+                        "location": {"type": "geo_point"},
                     }
-                }
+                },
             }
             for field in ENTITY_ANALYZED_FIELDS:
                 configuration["mappings"]["properties"][field] = {
                     "type": "text",
                     "fields": {
-                        "ngram": {
-                            "type": "text",
-                            "analyzer": "ngram_analyzer"
-                        },
-                        "fuzzy": {
-                            "type": "text",
-                            "analyzer": "fuzzy_analyzer"
-                        },
-                        "keyword": {
-                            "type": "keyword"
-                        }
-                    }
+                        "ngram": {"type": "text", "analyzer": "ngram_analyzer"},
+                        "fuzzy": {"type": "text", "analyzer": "fuzzy_analyzer"},
+                        "keyword": {"type": "keyword"},
+                    },
                 }
-            self.client.indices.create(
-                index=self.index_name, body=configuration)
+            self.client.indices.create(index=self.index_name, body=configuration)
             self.client.indices.refresh(index=self.index_name)
             self.client.cluster.health(wait_for_status="yellow")
 
@@ -219,7 +193,13 @@ class VideoIndexService(IndexService):
         Returns:
             bool: True if the url is a video
         """
-        return url is not None and ("youtube.com" in url or "youtu.be" in url or "vimeo.com" in url or "srf.ch/play/tv" in url or "rts.ch/play/tv" in url)
+        return url is not None and (
+            "youtube.com" in url
+            or "youtu.be" in url
+            or "vimeo.com" in url
+            or "srf.ch/play/tv" in url
+            or "rts.ch/play/tv" in url
+        )
 
     def addVideos(self, entity_type: str, entity, tags: list[str]):
         """Add videos of a new entity to the index
@@ -266,14 +246,13 @@ class VideoIndexService(IndexService):
             tags (list[str]): The associated tags
 
         Returns:
-            list[dict]: The list of video documents 
+            list[dict]: The list of video documents
         """
         docs = []
         docs += self._getVideosFromFiles(entity_type, entity, tags)
         for field in ["article_top", "article_bottom"]:
             if hasattr(entity, field):
-                docs += self._getVideosFromField(field,
-                                                 entity_type, entity, tags)
+                docs += self._getVideosFromField(field, entity_type, entity, tags)
         return docs
 
     def _getVideosFromFiles(self, entity_type: str, entity, tags: list[str]):
@@ -285,7 +264,7 @@ class VideoIndexService(IndexService):
             tags (list[str]): The associated tags
 
         Returns:
-            list[dict]: The list of video documents 
+            list[dict]: The list of video documents
         """
         if not hasattr(entity, "files") or not entity.files:
             return []
@@ -313,7 +292,7 @@ class VideoIndexService(IndexService):
             tags (list[str]): The associated tags
 
         Returns:
-            list[dict]: The list of video documents 
+            list[dict]: The list of video documents
         """
         text = getattr(entity, field)
         if not text:
@@ -341,14 +320,13 @@ class VideoIndexService(IndexService):
         # Extract Markdown links
         for i, token in enumerate(tokens):
             if token.type == "link_open":
-                href = [attr[1]
-                        for attr in token.attrs if attr[0] == "href"][0]
+                href = [attr[1] for attr in token.attrs if attr[0] == "href"][0]
                 if i + 1 < len(tokens) and tokens[i + 1].type == "text":
                     legend = tokens[i + 1].content
                     links.append({"legend": legend, "url": href})
 
         # Extract plain URLs
-        plain_url_pattern = r'(https?://[^\s]+)'
+        plain_url_pattern = r"(https?://[^\s]+)"
         plain_urls = re.findall(plain_url_pattern, markdown_text)
 
         for url in plain_urls:
@@ -367,56 +345,37 @@ class VideoIndexService(IndexService):
                             "ngram_analyzer": {
                                 "type": "custom",
                                 "tokenizer": "standard",
-                                "filter": ["lowercase", "ngram_filter"]
+                                "filter": ["lowercase", "ngram_filter"],
                             },
-                            "fuzzy_analyzer": {
-                                "type": "custom",
-                                "tokenizer": "standard",
-                                "filter": ["lowercase"]
-                            }
+                            "fuzzy_analyzer": {"type": "custom", "tokenizer": "standard", "filter": ["lowercase"]},
                         },
                         "filter": {
                             "ngram_filter": {
                                 "type": "ngram",
                                 "min_gram": 4,  # minimum n-gram length
-                                "max_gram": 4   # maximum n-gram length
+                                "max_gram": 4,  # maximum n-gram length
                             }
-                        }
+                        },
                     }
                 },
                 "mappings": {
                     "properties": {
-                        "tags": {
-                            "type": "keyword"
-                        },
-                        "parent_id": {
-                            "type": "keyword"
-                        },
-                        "entity_type": {
-                            "type": "keyword"
-                        }
+                        "tags": {"type": "keyword"},
+                        "parent_id": {"type": "keyword"},
+                        "entity_type": {"type": "keyword"},
                     }
-                }
+                },
             }
             for field in VIDEO_ANALYZED_FIELDS:
                 configuration["mappings"]["properties"][field] = {
                     "type": "text",
                     "fields": {
-                        "ngram": {
-                            "type": "text",
-                            "analyzer": "ngram_analyzer"
-                        },
-                        "fuzzy": {
-                            "type": "text",
-                            "analyzer": "fuzzy_analyzer"
-                        },
-                        "keyword": {
-                            "type": "keyword"
-                        }
-                    }
+                        "ngram": {"type": "text", "analyzer": "ngram_analyzer"},
+                        "fuzzy": {"type": "text", "analyzer": "fuzzy_analyzer"},
+                        "keyword": {"type": "keyword"},
+                    },
                 }
-            self.client.indices.create(
-                index=self.index_name, body=configuration)
+            self.client.indices.create(index=self.index_name, body=configuration)
             self.client.indices.refresh(index=self.index_name)
             self.client.cluster.health(wait_for_status="yellow")
 
@@ -426,7 +385,7 @@ class EntityIndexer:
         self.entityIndexService = entity_index_service or EntityIndexService()
         self.videoIndexService = video_index_service or VideoIndexService()
 
-    async def addEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] = []):
+    async def addEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] | None = None):
         """Add a new entity to the index
 
         Args:
@@ -434,11 +393,10 @@ class EntityIndexer:
             entity (_type_): The entity object to add
             tags (list[str]): The associated tags
         """
-        await self.entityIndexService.addEntity(
-            entity_type, entity, tags, relates_to)
+        await self.entityIndexService.addEntity(entity_type, entity, tags, relates_to)
         self.videoIndexService.addVideos(entity_type, entity, tags)
 
-    async def updateEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] = []):
+    async def updateEntity(self, entity_type: str, entity, tags: list[str], relates_to: list[str] | None = None):
         """Update an entity of the index
 
         Args:
@@ -446,8 +404,7 @@ class EntityIndexer:
             entity (_type_): The entity object to add
             tags (list[str]): The associated tags
         """
-        await self.entityIndexService.updateEntity(
-            entity_type, entity, tags, relates_to)
+        await self.entityIndexService.updateEntity(entity_type, entity, tags, relates_to)
         self.videoIndexService.updateVideos(entity_type, entity, tags)
 
     def deleteEntity(self, entity_type: str, entity_id: int):
@@ -470,14 +427,12 @@ class EntityIndexer:
         self.videoIndexService.deleteVideos(entity_type)
 
     def deleteIndex(self):
-        """Drop the index, its mapping definitions and all its data
-        """
+        """Drop the index, its mapping definitions and all its data"""
         self.entityIndexService.deleteIndex()
         self.videoIndexService.deleteIndex()
 
 
 class SearchService:
-
     @classmethod
     def fromIndex(cls, index: str):
         if index == "entities":

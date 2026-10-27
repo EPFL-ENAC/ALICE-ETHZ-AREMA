@@ -1,13 +1,19 @@
 # Import endpoints from external services
 import httpx
+from bs4 import BeautifulSoup
 from fastapi import APIRouter, Depends, HTTPException
+from markdownify import markdownify as md
+
+from api.auth import User, kc_service
 from api.db import AsyncSession, get_session
-from api.auth import kc_service, User
-from api.models.importer import IGLehmProject, IGLehmProjectSummary, IGLehmSpecialistSummary, IGLehmSpecialist
+from api.models.importer import (
+    IGLehmProject,
+    IGLehmProjectSummary,
+    IGLehmSpecialist,
+    IGLehmSpecialistSummary,
+)
 from api.services.buildings import BuildingService
 from api.services.professionals import ProfessionalService
-from bs4 import BeautifulSoup
-from markdownify import markdownify as md
 
 _IGLEHM_API_URL = "https://www.iglehm.ch/ccm/api/v1"
 _IGLEHM_TIMEOUT = httpx.Timeout(10.0, connect=5.0)
@@ -25,8 +31,7 @@ async def get_iglehm_specialists(
         async with httpx.AsyncClient(timeout=_IGLEHM_TIMEOUT) as client:
             response = await client.get(f"{_IGLEHM_API_URL}/specialists")
             response.raise_for_status()
-            summaries = [IGLehmSpecialistSummary(
-                **specialist) for specialist in response.json()]
+            summaries = [IGLehmSpecialistSummary(**specialist) for specialist in response.json()]
             # Find matching professional for each specialist and set professional_id in summary
             iglehm_professionals = await ProfessionalService(session).find_by_source_prefix("iglehm:")
             for specialist_summary in summaries:
@@ -36,14 +41,11 @@ async def get_iglehm_specialists(
                         break
             return summaries
     except httpx.TimeoutException as exc:
-        raise HTTPException(
-            status_code=504, detail="IG Lehm API timed out") from exc
+        raise HTTPException(status_code=504, detail="IG Lehm API timed out") from exc
     except httpx.HTTPStatusError as exc:
-        raise HTTPException(
-            status_code=502, detail=f"IG Lehm API returned {exc.response.status_code}") from exc
+        raise HTTPException(status_code=502, detail=f"IG Lehm API returned {exc.response.status_code}") from exc
     except httpx.RequestError as exc:
-        raise HTTPException(
-            status_code=502, detail="IG Lehm API unreachable") from exc
+        raise HTTPException(status_code=502, detail="IG Lehm API unreachable") from exc
 
 
 @router.get("/iglehm/specialist/{cId}")
@@ -72,14 +74,11 @@ async def get_iglehm_specialist(
                         specialist.building_ids.append(building.id)
             return specialist
     except httpx.TimeoutException as exc:
-        raise HTTPException(
-            status_code=504, detail="IG Lehm API timed out") from exc
+        raise HTTPException(status_code=504, detail="IG Lehm API timed out") from exc
     except httpx.HTTPStatusError as exc:
-        raise HTTPException(
-            status_code=502, detail=f"IG Lehm API returned {exc.response.status_code}") from exc
+        raise HTTPException(status_code=502, detail=f"IG Lehm API returned {exc.response.status_code}") from exc
     except httpx.RequestError as exc:
-        raise HTTPException(
-            status_code=502, detail="IG Lehm API unreachable") from exc
+        raise HTTPException(status_code=502, detail="IG Lehm API unreachable") from exc
 
 
 @router.get("/iglehm/projects")
@@ -88,15 +87,13 @@ async def get_iglehm_projects(
     user: User = Depends(kc_service.get_user_info()),
 ) -> list[IGLehmProjectSummary]:
     """Get all projects from IG Lehm"""
-    iglehm_buildings = await BuildingService(
-        session).find_by_source_prefix("iglehm:")
+    iglehm_buildings = await BuildingService(session).find_by_source_prefix("iglehm:")
     # fetch IG Lehm projects from https://www.iglehm.ch/ccm/api/v1/projects
     try:
         async with httpx.AsyncClient(timeout=_IGLEHM_TIMEOUT) as client:
             response = await client.get(f"{_IGLEHM_API_URL}/projects")
             response.raise_for_status()
-            summaries = [IGLehmProjectSummary(**project)
-                         for project in response.json()]
+            summaries = [IGLehmProjectSummary(**project) for project in response.json()]
             # Find matching building for each project and set building_id in summary
             for project_summary in summaries:
                 for building in iglehm_buildings:
@@ -105,14 +102,11 @@ async def get_iglehm_projects(
                         break
             return summaries
     except httpx.TimeoutException as exc:
-        raise HTTPException(
-            status_code=504, detail="IG Lehm API timed out") from exc
+        raise HTTPException(status_code=504, detail="IG Lehm API timed out") from exc
     except httpx.HTTPStatusError as exc:
-        raise HTTPException(
-            status_code=502, detail=f"IG Lehm API returned {exc.response.status_code}") from exc
+        raise HTTPException(status_code=502, detail=f"IG Lehm API returned {exc.response.status_code}") from exc
     except httpx.RequestError as exc:
-        raise HTTPException(
-            status_code=502, detail="IG Lehm API unreachable") from exc
+        raise HTTPException(status_code=502, detail="IG Lehm API unreachable") from exc
 
 
 @router.get("/iglehm/project/{cId}")
@@ -136,14 +130,11 @@ async def get_iglehm_project(
                 project.building_id = building.id
             return project
     except httpx.TimeoutException as exc:
-        raise HTTPException(
-            status_code=504, detail="IG Lehm API timed out") from exc
+        raise HTTPException(status_code=504, detail="IG Lehm API timed out") from exc
     except httpx.HTTPStatusError as exc:
-        raise HTTPException(
-            status_code=502, detail=f"IG Lehm API returned {exc.response.status_code}") from exc
+        raise HTTPException(status_code=502, detail=f"IG Lehm API returned {exc.response.status_code}") from exc
     except httpx.RequestError as exc:
-        raise HTTPException(
-            status_code=502, detail="IG Lehm API unreachable") from exc
+        raise HTTPException(status_code=502, detail="IG Lehm API unreachable") from exc
 
 
 def _to_md(html: str) -> str:

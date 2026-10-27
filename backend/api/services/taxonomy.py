@@ -1,7 +1,8 @@
-from importlib import resources
 import shutil
+from importlib import resources
+
 import yaml
-from typing import Dict
+
 from api.models.taxonomy import Taxonomy, TaxonomyNode, Term
 
 TAXONOMY_NAMES = [
@@ -10,12 +11,11 @@ TAXONOMY_NAMES = [
     "technical-construction",
     "building",
     "professional",
-    "physical-characteristics"
+    "physical-characteristics",
 ]
 
 
 class TaxonomyService:
-
     def __init__(self):
         pass
 
@@ -43,13 +43,13 @@ class TaxonomyService:
             with open(dest_path, "wb") as dst:
                 shutil.copyfileobj(src, dst)
 
-    def as_labels_map(self, taxonomy: Taxonomy, locale: str = "en") -> Dict[str, Term]:
+    def as_labels_map(self, taxonomy: Taxonomy, locale: str = "en") -> dict[str, Term]:
         """Return a map of localized label strings to Term objects for the given locale.
 
-         The dictionary keys are taxonomy node names in the requested locale, and the
-         values are `Term` instances containing the corresponding URN, localized name,
-         locale, and description. Only labels for the requested locale are included.
-         """
+        The dictionary keys are taxonomy node names in the requested locale, and the
+        values are `Term` instances containing the corresponding URN, localized name,
+        locale, and description. Only labels for the requested locale are included.
+        """
         labels_map = {}
         urn_prefix = "urn:arema:"
         for node in taxonomy.taxonomy:
@@ -58,11 +58,10 @@ class TaxonomyService:
                 labels_map.update(self._as_labels_map(urn, child, locale))
         return labels_map
 
-    def _as_labels_map(self, urn_prefix: str, node: TaxonomyNode, locale: str = "en") -> Dict[str, Term]:
+    def _as_labels_map(self, urn_prefix: str, node: TaxonomyNode, locale: str = "en") -> dict[str, Term]:
         """From the taxonomy node, make a term per locale"""
         labels_map = {}
-        urn = f"{urn_prefix}{node.id}" if urn_prefix.endswith(
-            ":") else f"{urn_prefix}.{node.id}"
+        urn = f"{urn_prefix}{node.id}" if urn_prefix.endswith(":") else f"{urn_prefix}.{node.id}"
         if node.children:
             for child in node.children:
                 labels_map.update(self._as_labels_map(urn, child, locale))
@@ -74,7 +73,6 @@ class TaxonomyService:
                 urn=urn,
                 locale=locale,
                 name=node.names.get(locale, node.id),
-                description=node.descriptions.get(
-                    locale) if node.descriptions else None
+                description=node.descriptions.get(locale) if node.descriptions else None,
             )
         return labels_map

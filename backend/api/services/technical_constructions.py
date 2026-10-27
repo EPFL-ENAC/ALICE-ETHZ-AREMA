@@ -1,31 +1,42 @@
+from datetime import UTC, datetime
 from logging import debug
-from api.db import AsyncSession
-from sqlalchemy.sql import text
-from sqlalchemy.orm import selectinload
-from sqlalchemy import func
-from sqlmodel import select
-from fastapi import HTTPException
-from api.models.domain import FileItem, TechnicalConstruction, BuildingMaterial, TechnicalConstructionBuildingMaterial, ProfessionalTechnicalConstruction
-from api.models.query import TechnicalConstructionResult, TechnicalConstructionDraft, GroupByResult, GroupByCount
+
 from enacit4r_sql.utils.query import QueryBuilder
-from datetime import datetime
+from fastapi import HTTPException
+from sqlalchemy import func
+from sqlalchemy.orm import selectinload
+from sqlalchemy.sql import text
+from sqlmodel import select
+
+from api.auth import User
+from api.db import AsyncSession
+from api.models.domain import (
+    BuildingMaterial,
+    FileItem,
+    ProfessionalTechnicalConstruction,
+    TechnicalConstruction,
+    TechnicalConstructionBuildingMaterial,
+)
+from api.models.query import (
+    GroupByCount,
+    GroupByResult,
+    TechnicalConstructionDraft,
+    TechnicalConstructionResult,
+)
 from api.services.entity import EntityService
 from api.services.s3 import s3_client
-from api.utils.files import moveTempFile
-from api.auth import User
 from api.services.search import EntityIndexer
+from api.utils.files import moveTempFile
 
 
 class TechnicalConstructionQueryBuilder(QueryBuilder):
-
     def build_count_query_with_joins(self, filter):
         query = self.build_count_query()
         query = self._apply_joins(query, filter)
         return query
 
     def build_group_query_with_joins(self, filter, group_by_column):
-        query = self._apply_filter(
-            select(group_by_column, func.count(func.distinct(self.model.id))))
+        query = self._apply_filter(select(group_by_column, func.count(func.distinct(self.model.id))))
         query = self._apply_joins(query, filter)
         return query.group_by(group_by_column)
 
@@ -33,8 +44,7 @@ class TechnicalConstructionQueryBuilder(QueryBuilder):
         start, end, query = self.build_query(total_count, fields)
         query = self._apply_joins(query, filter)
         if fields is None or len(fields) == 0:
-            query = query.options(selectinload(
-                TechnicalConstruction.building_materials))
+            query = query.options(selectinload(TechnicalConstruction.building_materials))
         return start, end, query
 
     def _apply_joins(self, query, filter):
@@ -43,7 +53,6 @@ class TechnicalConstructionQueryBuilder(QueryBuilder):
 
 
 class TechnicalConstructionService(EntityService):
-
     def __init__(self, session: AsyncSession):
         super().__init__(session, "technical-construction")
 
@@ -62,9 +71,10 @@ class TechnicalConstructionService(EntityService):
                 if entity.materials:
                     tags.extend(entity.materials)
                 await indexService.addEntity(
-                    self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
+                    self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity)
+                )
                 count += 1
-                entity.published_at = datetime.now()
+                entity.published_at = datetime.now(UTC)
                 if entity.state == "to-publish":
                     entity.state = "draft"
                     entity.assigned_to = None
@@ -81,30 +91,30 @@ class TechnicalConstructionService(EntityService):
     async def count_group_by(self, filter: dict, group_by: str) -> dict:
         """Count all technical constructions matching filter"""
         builder = TechnicalConstructionQueryBuilder(
-            TechnicalConstruction, filter, [], [], {"$building_materials": BuildingMaterial})
+            TechnicalConstruction, filter, [], [], {"$building_materials": BuildingMaterial}
+        )
 
         # Do a query to satisfy total count
-        count_query = builder.build_group_query_with_joins(
-            filter, getattr(TechnicalConstruction, group_by))
+        count_query = builder.build_group_query_with_joins(filter, getattr(TechnicalConstruction, group_by))
         group_by_count_res = await self.session.exec(count_query)
         group_by_counts = group_by_count_res.all()
 
         # Convert to dict
         return GroupByResult(
             field=group_by,
-            counts=[GroupByCount(value=str(item[0]) if item[0] else None, count=item[1])
-                    for item in group_by_counts])
+            counts=[GroupByCount(value=str(item[0]) if item[0] else None, count=item[1]) for item in group_by_counts],
+        )
 
     async def get(self, id: int) -> TechnicalConstruction:
         """Get a technical construction by id"""
         res = await self.session.exec(
             select(TechnicalConstruction)
             .where(TechnicalConstruction.id == id)
-            .options(selectinload(TechnicalConstruction.building_materials)))
+            .options(selectinload(TechnicalConstruction.building_materials))
+        )
         entity = res.one_or_none()
         if not entity:
-            raise HTTPException(
-                status_code=404, detail="Technical construction not found")
+            raise HTTPException(status_code=404, detail="Technical construction not found")
         return entity
 
     async def delete(self, id: int) -> TechnicalConstruction:
@@ -112,11 +122,11 @@ class TechnicalConstructionService(EntityService):
         res = await self.session.exec(
             select(TechnicalConstruction)
             .where(TechnicalConstruction.id == id)
-            .options(selectinload(TechnicalConstruction.building_materials)))
+            .options(selectinload(TechnicalConstruction.building_materials))
+        )
         entity = res.one_or_none()
         if not entity:
-            raise HTTPException(
-                status_code=404, detail="Technical construction not found")
+            raise HTTPException(status_code=404, detail="Technical construction not found")
         s3_client.delete_files(f"{self.folder}/{entity.id}")
         entity.building_materials.clear()
         await self.session.delete(entity)
@@ -127,8 +137,9 @@ class TechnicalConstructionService(EntityService):
 
     async def find(self, filter: dict, fields: list, sort: list, range: list) -> TechnicalConstructionResult:
         """Get all technical construction matching filter and range"""
-        builder = TechnicalConstructionQueryBuilder(TechnicalConstruction, filter, sort, range, {
-                                                    "$building_materials": BuildingMaterial})
+        builder = TechnicalConstructionQueryBuilder(
+            TechnicalConstruction, filter, sort, range, {"$building_materials": BuildingMaterial}
+        )
 
         # Do a query to satisfy total count
         count_query = builder.build_count_query_with_joins(filter)
@@ -136,25 +147,19 @@ class TechnicalConstructionService(EntityService):
         total_count = total_count_query.one()
 
         # Main query
-        start, end, query = builder.build_query_with_joins(
-            total_count, filter, fields)
+        start, end, query = builder.build_query_with_joins(total_count, filter, fields)
 
         # Execute query
         results = await self.session.exec(query)
         entities = results.all()
 
-        return TechnicalConstructionResult(
-            total=total_count,
-            skip=start,
-            limit=end - start + 1,
-            data=entities
-        )
+        return TechnicalConstructionResult(total=total_count, skip=start, limit=end - start + 1, data=entities)
 
     async def create(self, payload: TechnicalConstructionDraft, user: User = None) -> TechnicalConstruction:
         """Create a new technical construction"""
         entity = TechnicalConstruction(**payload.model_dump())
-        entity.created_at = datetime.now()
-        entity.updated_at = datetime.now()
+        entity.created_at = datetime.now(UTC)
+        entity.updated_at = datetime.now(UTC)
         if user:
             entity.created_by = user.username
             entity.updated_by = user.username
@@ -189,20 +194,28 @@ class TechnicalConstructionService(EntityService):
         res = await self.session.exec(
             select(TechnicalConstruction)
             .where(TechnicalConstruction.id == id)
-            .options(selectinload(TechnicalConstruction.building_materials)))
+            .options(selectinload(TechnicalConstruction.building_materials))
+        )
         entity = res.one_or_none()
         if not entity:
-            raise HTTPException(
-                status_code=404, detail="Technical construction not found")
+            raise HTTPException(status_code=404, detail="Technical construction not found")
         # check edit permission
         if not self.can_edit(entity, user):
-            raise HTTPException(
-                status_code=403, detail="Not enough permissions")
+            raise HTTPException(status_code=403, detail="Not enough permissions")
         for key, value in payload.model_dump().items():
             debug(key, value)
-            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "building_material_ids", "published_at", "published_by"]:
+            if key not in [
+                "id",
+                "created_at",
+                "updated_at",
+                "created_by",
+                "updated_by",
+                "building_material_ids",
+                "published_at",
+                "published_by",
+            ]:
                 setattr(entity, key, value)
-        entity.updated_at = datetime.now()
+        entity.updated_at = datetime.now(UTC)
         entity.updated_by = user.username
         # handle tmp files
         if entity.files:
@@ -237,8 +250,9 @@ class TechnicalConstructionService(EntityService):
         """Publish a technical construction by id"""
         entity = await self.get(id)
         await EntityIndexer().updateEntity(
-            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
-        entity.published_at = datetime.now()
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity)
+        )
+        entity.published_at = datetime.now(UTC)
         if user:
             entity.published_by = user.username
         entity.state = "draft"
@@ -266,12 +280,22 @@ class TechnicalConstructionService(EntityService):
         return tags
 
     async def _makeRelations(self, entity: TechnicalConstruction) -> list[str]:
-        relations = (await self.session.exec(select(TechnicalConstructionBuildingMaterial).where(TechnicalConstructionBuildingMaterial.technical_construction_id == entity.id))).all()
-        relates_to = [
-            f"building-material:{rel.building_material_id}" for rel in relations]
-        relations = (await self.session.exec(select(ProfessionalTechnicalConstruction).where(ProfessionalTechnicalConstruction.technical_construction_id == entity.id))).all()
-        relates_to.extend(
-            [f"professional:{rel.professional_id}" for rel in relations])
+        relations = (
+            await self.session.exec(
+                select(TechnicalConstructionBuildingMaterial).where(
+                    TechnicalConstructionBuildingMaterial.technical_construction_id == entity.id
+                )
+            )
+        ).all()
+        relates_to = [f"building-material:{rel.building_material_id}" for rel in relations]
+        relations = (
+            await self.session.exec(
+                select(ProfessionalTechnicalConstruction).where(
+                    ProfessionalTechnicalConstruction.technical_construction_id == entity.id
+                )
+            )
+        ).all()
+        relates_to.extend([f"professional:{rel.professional_id}" for rel in relations])
         return relates_to
 
     async def _get_building_materials(self, ids: list[int]):

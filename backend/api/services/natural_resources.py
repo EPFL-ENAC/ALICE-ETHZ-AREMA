@@ -1,30 +1,35 @@
+from datetime import UTC, datetime
 from logging import debug
-from api.db import AsyncSession
-from sqlalchemy.sql import text
-from sqlalchemy import func
-from sqlmodel import select
-from fastapi import HTTPException
-from api.models.domain import FileItem, NaturalResource, BuildingMaterial, BuildingMaterialNaturalResource
-from api.models.query import NaturalResourceResult, GroupByResult, GroupByCount
+
 from enacit4r_sql.utils.query import QueryBuilder
-from datetime import datetime
+from fastapi import HTTPException
+from sqlalchemy import func
+from sqlalchemy.sql import text
+from sqlmodel import select
+
+from api.auth import User
+from api.db import AsyncSession
+from api.models.domain import (
+    BuildingMaterial,
+    BuildingMaterialNaturalResource,
+    FileItem,
+    NaturalResource,
+)
+from api.models.query import GroupByCount, GroupByResult, NaturalResourceResult
 from api.services.entity import EntityService
 from api.services.s3 import s3_client
-from api.utils.files import moveTempFile
-from api.auth import User
 from api.services.search import EntityIndexer
+from api.utils.files import moveTempFile
 
 
 class NaturalResourceQueryBuilder(QueryBuilder):
-
     def build_count_query_with_joins(self, filter):
         query = self.build_count_query()
         query = self._apply_joins(query, filter)
         return query
 
     def build_group_query_with_joins(self, filter, group_by_column):
-        query = self._apply_filter(
-            select(group_by_column, func.count(func.distinct(self.model.id))))
+        query = self._apply_filter(select(group_by_column, func.count(func.distinct(self.model.id))))
         query = self._apply_joins(query, filter)
         return query.group_by(group_by_column)
 
@@ -42,7 +47,6 @@ class NaturalResourceQueryBuilder(QueryBuilder):
 
 
 class NaturalResourceService(EntityService):
-
     def __init__(self, session: AsyncSession):
         super().__init__(session, "natural-resource")
 
@@ -56,9 +60,10 @@ class NaturalResourceService(EntityService):
         for entity in (await self.session.exec(select(NaturalResource))).all():
             if entity.published_at is not None or entity.state == "to-publish":
                 await indexService.addEntity(
-                    self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
+                    self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity)
+                )
                 count += 1
-                entity.published_at = datetime.now()
+                entity.published_at = datetime.now(UTC)
                 if entity.state == "to-publish":
                     entity.state = "draft"
                     entity.assigned_to = None
@@ -74,31 +79,27 @@ class NaturalResourceService(EntityService):
 
     async def count_group_by(self, filter: dict, group_by: str) -> dict:
         """Count all natural resources matching filter"""
-        builder = NaturalResourceQueryBuilder(NaturalResource, filter, [], [], {
-            "$building_materials": BuildingMaterial
-        })
+        builder = NaturalResourceQueryBuilder(
+            NaturalResource, filter, [], [], {"$building_materials": BuildingMaterial}
+        )
 
         # Do a query to satisfy total count
-        count_query = builder.build_group_query_with_joins(
-            filter, getattr(NaturalResource, group_by))
+        count_query = builder.build_group_query_with_joins(filter, getattr(NaturalResource, group_by))
         group_by_count_res = await self.session.exec(count_query)
         group_by_counts = group_by_count_res.all()
 
         # Convert to dict
         return GroupByResult(
             field=group_by,
-            counts=[GroupByCount(value=str(item[0]) if item[0] else None, count=item[1])
-                    for item in group_by_counts])
+            counts=[GroupByCount(value=str(item[0]) if item[0] else None, count=item[1]) for item in group_by_counts],
+        )
 
     async def get(self, id: int) -> NaturalResource:
         """Get a natural resource by id"""
-        res = await self.session.exec(
-            select(NaturalResource).where(
-                NaturalResource.id == id))
+        res = await self.session.exec(select(NaturalResource).where(NaturalResource.id == id))
         entity = res.one_or_none()
         if not entity:
-            raise HTTPException(
-                status_code=404, detail="Natural resource not found")
+            raise HTTPException(status_code=404, detail="Natural resource not found")
         return entity
 
     async def delete(self, id: int) -> NaturalResource:
@@ -113,8 +114,9 @@ class NaturalResourceService(EntityService):
 
     async def find(self, filter: dict, fields: list, sort: list, range: list) -> NaturalResourceResult:
         """Get all buildings matching filter and range"""
-        builder = NaturalResourceQueryBuilder(NaturalResource, filter, sort, range, {
-                                              "$building_materials": BuildingMaterial})
+        builder = NaturalResourceQueryBuilder(
+            NaturalResource, filter, sort, range, {"$building_materials": BuildingMaterial}
+        )
 
         # Do a query to satisfy total count
         count_query = builder.build_count_query_with_joins(filter)
@@ -122,25 +124,19 @@ class NaturalResourceService(EntityService):
         total_count = total_count_query.one()
 
         # Main query
-        start, end, query = builder.build_query_with_joins(
-            total_count, filter, fields)
+        start, end, query = builder.build_query_with_joins(total_count, filter, fields)
 
         # Execute query
         results = await self.session.exec(query)
         entities = results.all()
 
-        return NaturalResourceResult(
-            total=total_count,
-            skip=start,
-            limit=end - start + 1,
-            data=entities
-        )
+        return NaturalResourceResult(total=total_count, skip=start, limit=end - start + 1, data=entities)
 
     async def create(self, payload: NaturalResource, user: User = None) -> NaturalResource:
         """Create a new natural resource"""
         entity = NaturalResource(**payload.model_dump())
-        entity.created_at = datetime.now()
-        entity.updated_at = datetime.now()
+        entity.created_at = datetime.now(UTC)
+        entity.updated_at = datetime.now(UTC)
         if user:
             entity.created_by = user.username
             entity.updated_by = user.username
@@ -171,12 +167,19 @@ class NaturalResourceService(EntityService):
         entity = await self.get(id)
         # check edit permission
         if not self.can_edit(entity, user):
-            raise HTTPException(
-                status_code=403, detail="Not enough permissions")
+            raise HTTPException(status_code=403, detail="Not enough permissions")
         for key, value in payload.model_dump().items():
-            if key not in ["id", "created_at", "updated_at", "created_by", "updated_by", "published_at", "published_by"]:
+            if key not in [
+                "id",
+                "created_at",
+                "updated_at",
+                "created_by",
+                "updated_by",
+                "published_at",
+                "published_by",
+            ]:
                 setattr(entity, key, value)
-        entity.updated_at = datetime.now()
+        entity.updated_at = datetime.now(UTC)
         entity.updated_by = user.username
         # handle tmp files
         if entity.files:
@@ -207,8 +210,9 @@ class NaturalResourceService(EntityService):
         """Publish a natural resource by id"""
         entity = await self.get(id)
         await EntityIndexer().updateEntity(
-            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity))
-        entity.published_at = datetime.now()
+            self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity)
+        )
+        entity.published_at = datetime.now(UTC)
         if user:
             entity.published_by = user.username
         entity.state = "draft"
@@ -231,7 +235,12 @@ class NaturalResourceService(EntityService):
         return [entity.type] if entity.type else []
 
     async def _makeRelations(self, entity: NaturalResource) -> list[str]:
-        relations = (await self.session.exec(select(BuildingMaterialNaturalResource).where(BuildingMaterialNaturalResource.natural_resource_id == entity.id))).all()
-        relates_to = [
-            f"building-material:{rel.building_material_id}" for rel in relations]
+        relations = (
+            await self.session.exec(
+                select(BuildingMaterialNaturalResource).where(
+                    BuildingMaterialNaturalResource.natural_resource_id == entity.id
+                )
+            )
+        ).all()
+        relates_to = [f"building-material:{rel.building_material_id}" for rel in relations]
         return relates_to

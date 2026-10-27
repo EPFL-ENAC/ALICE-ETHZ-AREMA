@@ -1,11 +1,10 @@
-from sqlmodel import SQLModel, Field
-from typing import Optional
+from sqlmodel import Field, SQLModel
 
 # Authorization models
 
 
 class ACL(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     resource: str
     subject_type: str = Field(default="user")
     subject: str

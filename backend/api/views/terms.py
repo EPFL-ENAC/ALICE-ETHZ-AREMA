@@ -1,17 +1,16 @@
-from typing import Dict
-
-from fastapi import APIRouter, Body, Query, Depends
+from fastapi import APIRouter, Body, Depends, Query
 from fastapi.responses import PlainTextResponse
-from api.auth import kc_service, User
+
+from api.auth import User, kc_service
 from api.models.taxonomy import Term
-from api.services.matcher import Matcher, MarkdownTransformer
+from api.services.matcher import MarkdownTransformer, Matcher
 from api.services.taxonomy import TaxonomyService
 
 router = APIRouter()
 
 
-@router.get("/{type}/_map", response_model=Dict[str, Term], response_model_exclude_none=True)
-async def get_terms_map(type: str, locale: str = Query("en")) -> Dict[str, Term]:
+@router.get("/{type}/_map", response_model=dict[str, Term], response_model_exclude_none=True)
+async def get_terms_map(type: str, locale: str = Query("en")) -> dict[str, Term]:
     """Get a taxonomy by type and return its terms map
 
     Args:
@@ -31,7 +30,7 @@ async def match_terms(
     types: str,
     body: str = Body(..., media_type="text/plain"),
     locale: str = Query("en"),
-    user: User = Depends(kc_service.get_user_info())
+    user: User = Depends(kc_service.get_user_info()),
 ) -> PlainTextResponse:
     """Match terms in the input text against the taxonomy of the given type and return the transformed text with markdown links.
 
@@ -51,8 +50,11 @@ async def match_terms(
     text = body
     service = TaxonomyService()
     taxonomy_types = types.split(",")
-    taxonomies = [service.get_all()] if "*" in taxonomy_types else [service.get(taxonomy_type)
-                                                                    for taxonomy_type in taxonomy_types]
+    taxonomies = (
+        [service.get_all()]
+        if "*" in taxonomy_types
+        else [service.get(taxonomy_type) for taxonomy_type in taxonomy_types]
+    )
     terms = {}
     for taxonomy in taxonomies:
         terms.update(service.as_labels_map(taxonomy, locale))

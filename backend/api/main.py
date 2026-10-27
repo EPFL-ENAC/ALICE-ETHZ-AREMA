@@ -1,29 +1,31 @@
-from fastapi import FastAPI, Depends, status, HTTPException
+from logging import DEBUG, basicConfig
+
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from api.config import config
-from api.db import get_session, AsyncSession
-from logging import basicConfig, INFO, DEBUG
 from pydantic import BaseModel
 from sqlalchemy.sql import text
-from api.views.files import router as files_router
-from api.views.natural_resources import router as natural_resources_router
-from api.views.building_materials import router as building_materials_router
-from api.views.technical_constructions import router as technical_constructions_router
-from api.views.buildings import router as buildings_router
-from api.views.professionals import router as professionals_router
-from api.views.building_elements import router as building_elements_router
-from api.views.taxonomy import router as taxonomy_router
-from api.views.terms import router as terms_router
-from api.views.search import router as search_router
-from api.views.users import router as users_router
+from titiler.core.errors import DEFAULT_STATUS_CODES, add_exception_handlers
+from titiler.core.factory import TilerFactory
+
+from api.config import config
+from api.db import AsyncSession, get_session
+from api.rate_limit import setup_rate_limiting
 from api.views.authz import router as authz_router
+from api.views.building_elements import router as building_elements_router
+from api.views.building_materials import router as building_materials_router
+from api.views.buildings import router as buildings_router
+from api.views.files import router as files_router
+from api.views.importer import router as importer_router
+from api.views.natural_resources import router as natural_resources_router
+from api.views.professionals import router as professionals_router
+from api.views.search import router as search_router
+from api.views.snapshot import router as snapshot_router
 from api.views.stats import router as stats_router
 from api.views.subject_profiles import router as subject_profiles_router
-from api.views.importer import router as importer_router
-from api.views.snapshot import router as snapshot_router
-from api.rate_limit import setup_rate_limiting
-from titiler.core.factory import TilerFactory
-from titiler.core.errors import DEFAULT_STATUS_CODES, add_exception_handlers
+from api.views.taxonomy import router as taxonomy_router
+from api.views.technical_constructions import router as technical_constructions_router
+from api.views.terms import router as terms_router
+from api.views.users import router as users_router
 
 basicConfig(level=DEBUG)
 
@@ -44,6 +46,7 @@ setup_rate_limiting(app)
 
 class HealthCheck(BaseModel):
     """Response model to validate and return when performing a health check."""
+
     status: str = "OK"
 
 
@@ -66,42 +69,27 @@ async def get_health(
     try:
         await session.exec(text("SELECT 1"))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"DB Error: {e}")
+        raise HTTPException(status_code=500, detail=f"DB Error: {e}") from e
 
     return HealthCheck(status="OK")
 
-app.include_router(files_router,
-                   prefix="/files", tags=["Files"])
-app.include_router(natural_resources_router,
-                   prefix="/natural-resource", tags=["Natural Resources"])
-app.include_router(building_materials_router,
-                   prefix="/building-material", tags=["Building Materials"])
-app.include_router(technical_constructions_router,
-                   prefix="/technical-construction", tags=["Technical Constructions"])
-app.include_router(buildings_router,
-                   prefix="/building", tags=["Buildings"])
-app.include_router(professionals_router,
-                   prefix="/professional", tags=["Professionals"])
-app.include_router(building_elements_router,
-                   prefix="/building-element", tags=["Building Elements"])
-app.include_router(taxonomy_router,
-                   prefix="/taxonomy", tags=["Taxonomies"])
-app.include_router(terms_router,
-                   prefix="/terms", tags=["Terms"])
-app.include_router(search_router,
-                   prefix="/search", tags=["Search"])
-app.include_router(users_router,
-                   prefix="/user", tags=["Users"])
-app.include_router(authz_router,
-                   prefix="/authz", tags=["Authorization"])
-app.include_router(stats_router,
-                   prefix="/stats", tags=["Statistics"])
-app.include_router(subject_profiles_router,
-                   prefix="/subject-profile", tags=["Subject Profiles"])
-app.include_router(importer_router,
-                   prefix="/importer", tags=["Importer from external services"])
-app.include_router(snapshot_router,
-                   prefix="/snapshot", tags=["Snapshot"])
+
+app.include_router(files_router, prefix="/files", tags=["Files"])
+app.include_router(natural_resources_router, prefix="/natural-resource", tags=["Natural Resources"])
+app.include_router(building_materials_router, prefix="/building-material", tags=["Building Materials"])
+app.include_router(technical_constructions_router, prefix="/technical-construction", tags=["Technical Constructions"])
+app.include_router(buildings_router, prefix="/building", tags=["Buildings"])
+app.include_router(professionals_router, prefix="/professional", tags=["Professionals"])
+app.include_router(building_elements_router, prefix="/building-element", tags=["Building Elements"])
+app.include_router(taxonomy_router, prefix="/taxonomy", tags=["Taxonomies"])
+app.include_router(terms_router, prefix="/terms", tags=["Terms"])
+app.include_router(search_router, prefix="/search", tags=["Search"])
+app.include_router(users_router, prefix="/user", tags=["Users"])
+app.include_router(authz_router, prefix="/authz", tags=["Authorization"])
+app.include_router(stats_router, prefix="/stats", tags=["Statistics"])
+app.include_router(subject_profiles_router, prefix="/subject-profile", tags=["Subject Profiles"])
+app.include_router(importer_router, prefix="/importer", tags=["Importer from external services"])
+app.include_router(snapshot_router, prefix="/snapshot", tags=["Snapshot"])
 
 # Create TilerFactory instance for COGs
 cog = TilerFactory()

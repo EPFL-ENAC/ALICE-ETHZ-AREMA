@@ -20,7 +20,7 @@ services:
         soft: -1
         hard: -1
   postgres:
-    image: postgres:15.5-alpine
+    image: postgres:18-alpine
     networks:
       - arema
     expose:
