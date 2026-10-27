@@ -47,7 +47,7 @@ async def get_file(
 async def upload_temp_files(
     files: list[UploadFile] = File(description="Multiple file upload"), user: User = Depends(kc_service.get_user_info())
 ):
-    current_time = datetime.datetime.now()
+    current_time = datetime.datetime.now(datetime.UTC)
     # generate unique name for the files' base folder in S3
     folder_name = str(current_time.timestamp()).replace(".", "")
     folder_path = f"tmp/{folder_name}"

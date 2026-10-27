@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from fastapi import HTTPException
 
@@ -30,7 +30,7 @@ class EntityService:
         """Assign the entity to a user"""
         original_assignee = entity.assigned_to
         entity.assigned_to = assignee
-        entity.assigned_at = datetime.now() if assignee else None
+        entity.assigned_at = datetime.now(UTC) if assignee else None
         await self.session.commit()
         if assignee:
             # split comma separated assignees and send email to each

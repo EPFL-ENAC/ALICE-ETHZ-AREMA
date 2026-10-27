@@ -1,7 +1,7 @@
 import hashlib
 import logging
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 
 from enacit4r_sql.utils.query import QueryBuilder
 from fastapi import HTTPException
@@ -52,7 +52,7 @@ class SubjectProfileService:
         for entity in (await self.session.exec(select(SubjectProfile))).all():
             await indexService.addEntity(self.entityType, entity, [], [])
             count += 1
-            entity.published_at = datetime.now()
+            entity.published_at = datetime.now(UTC)
         await self.session.commit()
         logging.debug(f"Published {count} subject profiles")
         return count
@@ -61,7 +61,7 @@ class SubjectProfileService:
         """Publish a subject profile by id"""
         entity = await self.get_by_id(id)
         await EntityIndexer().updateEntity(self.entityType, entity, [], [])
-        entity.published_at = datetime.now()
+        entity.published_at = datetime.now(UTC)
         await self.session.commit()
 
     async def remove_index(self, id: int) -> None:
@@ -87,8 +87,8 @@ class SubjectProfileService:
             affiliation=None,
             description=None,
             web=None,
-            created_at=datetime.now(),
-            updated_at=datetime.now(),
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
         )
         self.session.add(profile_obj)
         await self.session.commit()
@@ -131,8 +131,8 @@ class SubjectProfileService:
         """
         profile_obj = SubjectProfile(**payload.model_dump())
         profile_obj.identifier = payload.identifier or str(uuid.uuid4())
-        profile_obj.created_at = datetime.now()
-        profile_obj.updated_at = datetime.now()
+        profile_obj.created_at = datetime.now(UTC)
+        profile_obj.updated_at = datetime.now(UTC)
         self.session.add(profile_obj)
         await self.session.commit()
         await self.session.refresh(profile_obj)
@@ -156,7 +156,7 @@ class SubjectProfileService:
         for key, value in payload.model_dump().items():
             if key not in ["id", "created_at", "updated_at", "published_at", "identifier"] and value is not None:
                 setattr(profile, key, value)
-        profile.updated_at = datetime.now()
+        profile.updated_at = datetime.now(UTC)
         self.session.add(profile)
         await self.session.commit()
         await self.session.refresh(profile)
@@ -180,7 +180,7 @@ class SubjectProfileService:
 
         old_identifier = profile.identifier
         profile.identifier = new_identifier
-        profile.updated_at = datetime.now()
+        profile.updated_at = datetime.now(UTC)
         self.session.add(profile)
         await self.session.commit()
         await self.session.refresh(profile)
@@ -192,7 +192,7 @@ class SubjectProfileService:
     async def _propagate_identifier_change(self, profile_type: str, old_identifier: str, new_identifier: str) -> None:
         old_ref = f"{profile_type}:{old_identifier}"
         new_ref = f"{profile_type}:{new_identifier}"
-        updated_at = datetime.now()
+        updated_at = datetime.now(UTC)
         tables = ["naturalresource", "buildingmaterial", "technicalconstruction", "building", "professional"]
         for table in tables:
             await self.session.exec(

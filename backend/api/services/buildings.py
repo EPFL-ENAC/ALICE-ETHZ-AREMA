@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from logging import debug
 
 from enacit4r_sql.utils.query import QueryBuilder
@@ -107,7 +107,7 @@ class BuildingService(EntityService):
                     self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity)
                 )
                 count += 1
-                entity.published_at = datetime.now()
+                entity.published_at = datetime.now(UTC)
                 if entity.state == "to-publish":
                     entity.state = "draft"
                     entity.assigned_to = None
@@ -242,8 +242,8 @@ class BuildingService(EntityService):
                 "professional_ids",
             ]:
                 setattr(entity, key, value)
-        entity.created_at = datetime.now()
-        entity.updated_at = datetime.now()
+        entity.created_at = datetime.now(UTC)
+        entity.updated_at = datetime.now(UTC)
         if user:
             entity.created_by = user.username
             entity.updated_by = user.username
@@ -309,7 +309,7 @@ class BuildingService(EntityService):
                 "professional_ids",
             ]:
                 setattr(entity, key, value)
-        entity.updated_at = datetime.now()
+        entity.updated_at = datetime.now(UTC)
         entity.updated_by = user.username
         # handle tmp files
         if entity.files:
@@ -351,7 +351,7 @@ class BuildingService(EntityService):
         await self._make_indexer().updateEntity(
             self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity)
         )
-        entity.published_at = datetime.now()
+        entity.published_at = datetime.now(UTC)
         if user:
             entity.published_by = user.username
         entity.state = "draft"

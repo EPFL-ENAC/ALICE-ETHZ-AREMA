@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from logging import debug
 
 from enacit4r_sql.utils.query import QueryBuilder
@@ -63,7 +63,7 @@ class NaturalResourceService(EntityService):
                     self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity)
                 )
                 count += 1
-                entity.published_at = datetime.now()
+                entity.published_at = datetime.now(UTC)
                 if entity.state == "to-publish":
                     entity.state = "draft"
                     entity.assigned_to = None
@@ -135,8 +135,8 @@ class NaturalResourceService(EntityService):
     async def create(self, payload: NaturalResource, user: User = None) -> NaturalResource:
         """Create a new natural resource"""
         entity = NaturalResource(**payload.model_dump())
-        entity.created_at = datetime.now()
-        entity.updated_at = datetime.now()
+        entity.created_at = datetime.now(UTC)
+        entity.updated_at = datetime.now(UTC)
         if user:
             entity.created_by = user.username
             entity.updated_by = user.username
@@ -179,7 +179,7 @@ class NaturalResourceService(EntityService):
                 "published_by",
             ]:
                 setattr(entity, key, value)
-        entity.updated_at = datetime.now()
+        entity.updated_at = datetime.now(UTC)
         entity.updated_by = user.username
         # handle tmp files
         if entity.files:
@@ -212,7 +212,7 @@ class NaturalResourceService(EntityService):
         await EntityIndexer().updateEntity(
             self.entityType, entity, self._makeTags(entity), await self._makeRelations(entity)
         )
-        entity.published_at = datetime.now()
+        entity.published_at = datetime.now(UTC)
         if user:
             entity.published_by = user.username
         entity.state = "draft"

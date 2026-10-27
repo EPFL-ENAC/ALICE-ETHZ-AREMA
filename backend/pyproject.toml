@@ -61,6 +61,6 @@ line-length = 120
 extend-exclude = ["migrations"]
 
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F", "I", "B", "UP"]
+select = ["E4", "E7", "E9", "F", "I", "B", "UP", "DTZ"]
 # B008: FastAPI dependencies (Depends, Query, ...) are function calls in defaults
 ignore = ["B008"]

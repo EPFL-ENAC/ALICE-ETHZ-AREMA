@@ -20,7 +20,7 @@ class SnapshotService:
 
     async def create_snapshot(self):
         # Generate unique name for the files' base folder
-        current_time = datetime.datetime.now()
+        current_time = datetime.datetime.now(datetime.UTC)
         folder_name = str(current_time.timestamp()).replace(".", "")
 
         # Prepare local temp folder for csv files

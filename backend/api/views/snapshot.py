@@ -1,7 +1,7 @@
 import asyncio
 import os
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -28,7 +28,7 @@ async def _run_snapshot(task_id: str) -> None:
         zip_path = await SnapshotService().create_snapshot()
         _tasks[task_id]["status"] = "done"
         _tasks[task_id]["zip_path"] = zip_path
-        _tasks[task_id]["filename"] = f"arema_snapshot_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.zip"
+        _tasks[task_id]["filename"] = f"arema_snapshot_{datetime.now(UTC).strftime('%Y-%m-%d_%H-%M-%S')}.zip"
     except Exception as exc:
         _tasks[task_id]["status"] = "error"
         _tasks[task_id]["error"] = str(exc)
