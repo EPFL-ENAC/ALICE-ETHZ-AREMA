@@ -204,7 +204,7 @@ class Matcher:
 
 class MarkdownTransformer:
     # Matches :term[some text]{urn}
-    _TERM_RE = re.compile(r":term\[([^\]]+)\]\{[^}]+\}")
+    _TERM_RE = re.compile(r":term\[([^\[\]]+)\]\{[^{}]+\}")
 
     def __init__(self, matcher: Matcher, max_ngram: int = 5):
         """Transformer that uses a Matcher to find terms in text and replace them with markdown links.
@@ -263,14 +263,14 @@ class MarkdownTransformer:
                 # From the ngram, split the trailing punctuation chars (if any)
                 # so that "steel," can match "steel" in the taxonomy. We only strip trailing punctuation to avoid breaking up valid multi-word terms like "glass wool".
                 # keep the stripped punctuation in the original text so that it remains after transformation (e.g. "steel," -> ":term[steel]{urn},")
-                punctuation = re.search(r"[.,;:!?]+$", ngram)
-                if punctuation:
-                    ngram = ngram[: -len(punctuation.group())]
+                stripped = ngram.rstrip(".,;:!?")
+                punctuation = ngram[len(stripped) :]
+                ngram = stripped
                 term = self.matcher.match(ngram)
                 if term:
                     logger.debug(f"Matched n-gram: '{ngram}' -> {term}")
                     # Write marker into the first word's slot
-                    parts[ng_wis[0][0]] = f":term[{ngram}]{{{term.urn}}}{punctuation.group() if punctuation else ''}"
+                    parts[ng_wis[0][0]] = f":term[{ngram}]{{{term.urn}}}{punctuation}"
                     # Erase intermediate separators and word slots
                     for k in range(1, n):
                         # separator between word k-1 and k

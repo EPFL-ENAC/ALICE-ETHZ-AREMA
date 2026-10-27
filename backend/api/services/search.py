@@ -1,6 +1,7 @@
 import copy
 import re
 from abc import ABC, abstractmethod
+from urllib.parse import urlparse
 
 from elasticsearch import Elasticsearch
 from markdown_it import MarkdownIt
@@ -193,13 +194,13 @@ class VideoIndexService(IndexService):
         Returns:
             bool: True if the url is a video
         """
-        return url is not None and (
-            "youtube.com" in url
-            or "youtu.be" in url
-            or "vimeo.com" in url
-            or "srf.ch/play/tv" in url
-            or "rts.ch/play/tv" in url
-        )
+        if not url:
+            return False
+        parsed = urlparse(url)
+        host = (parsed.hostname or "").removeprefix("www.")
+        if host in ("youtube.com", "m.youtube.com", "youtu.be", "vimeo.com", "player.vimeo.com"):
+            return True
+        return host in ("srf.ch", "rts.ch") and parsed.path.startswith("/play/tv")
 
     def addVideos(self, entity_type: str, entity, tags: list[str]):
         """Add videos of a new entity to the index
