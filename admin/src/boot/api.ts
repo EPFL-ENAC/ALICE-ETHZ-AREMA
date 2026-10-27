@@ -12,6 +12,7 @@ declare module 'vue' {
 interface CustomWindow extends Window {
   env: {
     AUTH_CLIENT_ID: string;
+    AUTH_API_CLIENT_ID: string;
     API_URL: string;
     API_PATH: string;
   };
@@ -20,10 +21,12 @@ interface CustomWindow extends Window {
 const appEnv = (window as unknown as CustomWindow).env;
 
 const keycloak = new Keycloak({
-  url: 'https://enac-it-sso.epfl.ch/',
-  realm: 'AREMA',
+  url: 'https://enac-it-sso2.epfl.ch/',
+  realm: 'external',
   clientId: appEnv.AUTH_CLIENT_ID,
 });
+// the app roles are client roles of the backend client
+const authApiClientId = appEnv.AUTH_API_CLIENT_ID;
 const cdnUrl = 'https://enacit4r-cdn.epfl.ch/';
 const baseUrl = `${appEnv.API_URL}${appEnv.API_PATH}`;
 const api = axios.create({
@@ -45,4 +48,4 @@ export default defineBoot(({ app }) => {
   //       so you can easily perform requests against your app's API
 });
 
-export { api, baseUrl, cdnUrl, keycloak, isDevelopment };
+export { api, baseUrl, cdnUrl, keycloak, authApiClientId, isDevelopment };
