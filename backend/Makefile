@@ -7,7 +7,12 @@ run:
 	uv run dotenv -f "$(env_path)" run uvicorn api.main:app
 
 lint:
-	uv run pre-commit run --all-files
+	uv run ruff check
+	uv run ruff format --check
+
+format:
+	uv run ruff check --fix
+	uv run ruff format
 
 test:
 	uv run pytest

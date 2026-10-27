@@ -1,10 +1,15 @@
-from fastapi import APIRouter, Depends, Query, HTTPException
-from api.db import get_session, AsyncSession
-from api.auth import kc_service, User
+from enacit4r_sql.utils.query import ValidationError, validate_params
+from fastapi import APIRouter, Depends, HTTPException, Query
+
+from api.auth import User, kc_service
+from api.db import AsyncSession, get_session
 from api.models.domain import TechnicalConstruction
-from api.models.query import TechnicalConstructionResult, TechnicalConstructionDraft, TechnicalConstructionRead
+from api.models.query import (
+    TechnicalConstructionDraft,
+    TechnicalConstructionRead,
+    TechnicalConstructionResult,
+)
 from api.services.technical_constructions import TechnicalConstructionService
-from enacit4r_sql.utils.query import validate_params, ValidationError
 
 router = APIRouter()
 
@@ -20,9 +25,11 @@ async def find(
     """Search for technical constructions"""
     try:
         validated = validate_params(filter, sort, range, select)
-        return await TechnicalConstructionService(session).find(validated["filter"], validated["fields"], validated["sort"], validated["range"])
+        return await TechnicalConstructionService(session).find(
+            validated["filter"], validated["fields"], validated["sort"], validated["range"]
+        )
     except ValidationError as e:
-        raise HTTPException(status_code=400, detail=f"{e}")
+        raise HTTPException(status_code=400, detail=f"{e}") from e
 
 
 @router.get("/{id}", response_model=TechnicalConstructionRead, response_model_exclude_none=True)
@@ -33,9 +40,7 @@ async def get(id: int, session: AsyncSession = Depends(get_session)) -> Technica
 
 @router.delete("/{id}", response_model=TechnicalConstruction, response_model_exclude_none=True)
 async def delete(
-    id: int,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    id: int, session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
 ) -> TechnicalConstruction:
     """Delete a technical construction by id"""
     return await TechnicalConstructionService(session).delete(id)
@@ -45,8 +50,7 @@ async def delete(
 async def create(
     payload: TechnicalConstructionDraft,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-reviewer", "app-contributor"]))
+    user: User = Depends(kc_service.require_any_role(["app-administrator", "app-reviewer", "app-contributor"])),
 ) -> TechnicalConstruction:
     """Create a technical construction"""
     return await TechnicalConstructionService(session).create(payload, user)
@@ -57,8 +61,7 @@ async def update(
     id: int,
     payload: TechnicalConstructionDraft,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-reviewer", "app-contributor"]))
+    user: User = Depends(kc_service.require_any_role(["app-administrator", "app-reviewer", "app-contributor"])),
 ) -> TechnicalConstruction:
     """Update a technical construction by id"""
     return await TechnicalConstructionService(session).update(id, payload, user)
@@ -66,9 +69,7 @@ async def update(
 
 @router.put("/{id}/_index", response_model_exclude_none=True)
 async def publish(
-    id: int,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    id: int, session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
 ) -> None:
     """Publish a technical construction by id"""
     return await TechnicalConstructionService(session).index(id, user)
@@ -76,9 +77,7 @@ async def publish(
 
 @router.delete("/{id}/_index", response_model_exclude_none=True)
 async def unpublish(
-    id: int,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    id: int, session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
 ) -> None:
     """Unpublish a technical construction by id"""
     return await TechnicalConstructionService(session).remove_index(id, user)
@@ -89,9 +88,7 @@ async def set_state(
     id: int,
     s: str,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-reviewer", "app-contributor"])
-    )
+    user: User = Depends(kc_service.require_any_role(["app-administrator", "app-reviewer", "app-contributor"])),
 ) -> None:
     """Set the state of a technical construction by id"""
     return await TechnicalConstructionService(session).set_state(id, s, user)
@@ -102,7 +99,7 @@ async def assign(
     id: int,
     assignee: str = Query(None),
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    user: User = Depends(kc_service.require_admin()),
 ) -> None:
     """Assign a technical construction by id"""
     return await TechnicalConstructionService(session).set_assignee(id, assignee, user)
@@ -110,9 +107,7 @@ async def assign(
 
 @router.delete("/{id}/_assign", response_model_exclude_none=True)
 async def unassign(
-    id: int,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    id: int, session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
 ) -> None:
     """Unassign a technical construction by id"""
     return await TechnicalConstructionService(session).set_assignee(id, None, user)

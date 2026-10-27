@@ -1,16 +1,15 @@
-import smtplib
 import logging
+import smtplib
 from email.message import EmailMessage
+
 from jinja2 import Environment, PackageLoader, select_autoescape
-from api.config import config
+
 from api.auth import User, kc_admin_service
+from api.config import config
 from api.models.users import AppUser
 
 # Setup Jinja2 to load templates from inside the package
-env = Environment(
-    loader=PackageLoader("api", "templates"),
-    autoescape=select_autoescape(["html", "xml"])
-)
+env = Environment(loader=PackageLoader("api", "templates"), autoescape=select_autoescape(["html", "xml"]))
 
 
 class Mailer:
@@ -28,11 +27,12 @@ class Mailer:
     async def send_welcome_email(self, app_user: AppUser):
         """Send a welcome email to a new user"""
         subject = "Welcome to the Atlas of Regenerative Materials"
-        full_name = f"{app_user.first_name} {app_user.last_name}" if app_user.first_name and app_user.last_name else app_user.username
-        context = {
-            "full_name": full_name,
-            "username": app_user.username
-        }
+        full_name = (
+            f"{app_user.first_name} {app_user.last_name}"
+            if app_user.first_name and app_user.last_name
+            else app_user.username
+        )
+        context = {"full_name": full_name, "username": app_user.username}
         self.send_email(app_user.email, subject, "welcome.html", context)
         # Send email to all administrators
         for user in await self._get_admin_users():
@@ -40,10 +40,11 @@ class Mailer:
             context["new_full_name"] = full_name
             context["new_username"] = app_user.username
             context["new_email"] = app_user.email
-            self.send_email(user.email, subject,
-                            "signup.html", context)
+            self.send_email(user.email, subject, "signup.html", context)
 
-    async def send_review_assigned_email(self, entity_type: str, entity_id: int, entity_name: str, assignee: str, from_user: User = None):
+    async def send_review_assigned_email(
+        self, entity_type: str, entity_id: int, entity_name: str, assignee: str, from_user: User = None
+    ):
         """Send an email to the assignee when a review is assigned"""
         user = await kc_admin_service.get_user(assignee)
         if not user:
@@ -60,7 +61,9 @@ class Mailer:
         }
         self.send_email(user.email, subject, "review_assigned.html", context)
 
-    async def send_state_transition_email(self, entity_type: str, entity_id: int, entity_name: str, state: str, from_user: User = None):
+    async def send_state_transition_email(
+        self, entity_type: str, entity_id: int, entity_name: str, state: str, from_user: User = None
+    ):
         """Send an email when the state of an entity is changed"""
         subject = f"State change for {self._get_entity_type_name(entity_type)}: {entity_name} #{entity_id}"
         url = f"https://atlas-regenmat.ch/admin/{self._get_entity_type_path(entity_type)}"
@@ -75,8 +78,7 @@ class Mailer:
         for user in await self._get_admin_users():
             context["full_name"] = self._get_full_name(user)
             context["from_full_name"] = self._get_full_name(from_user)
-            self.send_email(user.email, subject,
-                            "state_transition.html", context)
+            self.send_email(user.email, subject, "state_transition.html", context)
 
     def send_email(self, to_email: str, subject: str, template_name: str, context: dict):
         """Send an email using a Jinja2 template"""
@@ -85,7 +87,7 @@ class Mailer:
 
         msg = EmailMessage()
         msg.set_content(body)
-        msg.add_alternative(body, subtype='html')
+        msg.add_alternative(body, subtype="html")
         msg["Subject"] = f"{self.smtp_subject_prefix} {subject}" if self.smtp_subject_prefix else subject
         msg["From"] = f"{self.smtp_name} <{self.smtp_email}>"
         msg["To"] = to_email
@@ -128,4 +130,10 @@ class Mailer:
     async def _get_admin_users(self) -> list[User]:
         """Get the administrator users"""
         admins = await kc_admin_service.get_users_for_role("app-administrator")
-        return [admin for admin in admins if config.MAIL_ADMINISTRATORS is None or config.MAIL_ADMINISTRATORS == "" or admin.email in config.MAIL_ADMINISTRATORS.split(",")]
+        return [
+            admin
+            for admin in admins
+            if config.MAIL_ADMINISTRATORS is None
+            or config.MAIL_ADMINISTRATORS == ""
+            or admin.email in config.MAIL_ADMINISTRATORS.split(",")
+        ]

@@ -1,25 +1,17 @@
 import logging
 import re
-from typing import Dict, Optional, Tuple
-from rapidfuzz import process, fuzz
+
+from rapidfuzz import fuzz, process
 
 from ..models.taxonomy import Term
 
 logger = logging.getLogger("matcher")
 
 DEFAULT_STOPWORDS = {
-    "en": {
-        "the", "of", "on", "a", "an", "is", "in", "and", "for", "to", "with", "as"
-    },
-    "de": {
-        "der", "die", "das", "und", "in", "zu", "mit", "auf", "für", "ist", "ein", "eine"
-    },
-    "fr": {
-        "le", "la", "les", "et", "en", "à", "avec", "pour", "est", "un", "une"
-    },
-    "it": {
-        "il", "la", "i", "e", "in", "a", "con", "per", "è", "un", "una"
-    }
+    "en": {"the", "of", "on", "a", "an", "is", "in", "and", "for", "to", "with", "as"},
+    "de": {"der", "die", "das", "und", "in", "zu", "mit", "auf", "für", "ist", "ein", "eine"},
+    "fr": {"le", "la", "les", "et", "en", "à", "avec", "pour", "est", "un", "une"},
+    "it": {"il", "la", "i", "e", "in", "a", "con", "per", "è", "un", "una"},
 }
 
 
@@ -37,9 +29,9 @@ class Matcher:
 
     def __init__(
         self,
-        label_map: Dict[str, Term],
+        label_map: dict[str, Term],
         log_matches: bool = False,
-        stopwords: Optional[set] = None,
+        stopwords: set | None = None,
         allow_multiword_fuzzy: bool = False,
         locale: str = "en",
     ) -> None:
@@ -52,23 +44,20 @@ class Matcher:
                                          defaults to False (safer).
           locale (str): the locale for the stopwords
         """
-        self.stopwords = stopwords if stopwords is not None else DEFAULT_STOPWORDS.get(
-            locale, set())
+        self.stopwords = stopwords if stopwords is not None else DEFAULT_STOPWORDS.get(locale, set())
         self.log_matches = log_matches
         self.allow_multiword_fuzzy = allow_multiword_fuzzy
 
         # Normalize labels consistently and use the normalized label as the key.
         # We intentionally normalize here so comparisons are apples-to-apples.
-        self.label_map: Dict[str, Term] = {
-            self._normalize(label): term for label, term in label_map.items()
-        }
+        self.label_map: dict[str, Term] = {self._normalize(label): term for label, term in label_map.items()}
         self.labels: list[str] = list(self.label_map.keys())
 
     # --------------------
     # Public API
     # --------------------
 
-    def match(self, text: str, base_score_cutoff: int = 95) -> Optional[Term]:
+    def match(self, text: str, base_score_cutoff: int = 95) -> Term | None:
         """
         Try to match `text` to a label. Returns the matched uri or None.
 
@@ -173,7 +162,7 @@ class Matcher:
         # for longer tokens allow base cutoff (caller can pick 90..95)
         return base_cutoff
 
-    def _find_best_match(self, token: str, score_cutoff: int) -> Optional[Tuple[str, int, Term]]:
+    def _find_best_match(self, token: str, score_cutoff: int) -> tuple[str, int, Term] | None:
         """
         Use rapidfuzz to find the best label match above score_cutoff.
 
@@ -205,8 +194,7 @@ class Matcher:
         if not self.log_matches:
             return
         tag = "EXACT" if exact else "FUZZY"
-        logger.debug(
-            f"[{tag} MATCH] '{original}' -> '{matched_label}' ({score}%) -> {uri}")
+        logger.debug(f"[{tag} MATCH] '{original}' -> '{matched_label}' ({score}%) -> {uri}")
 
     def _log_no_match(self, original: str, reason: str) -> None:
         if not self.log_matches:
@@ -216,7 +204,7 @@ class Matcher:
 
 class MarkdownTransformer:
     # Matches :term[some text]{urn}
-    _TERM_RE = re.compile(r":term\[([^\]]+)\]\{[^}]+\}")
+    _TERM_RE = re.compile(r":term\[([^\[\]]+)\]\{[^{}]+\}")
 
     def __init__(self, matcher: Matcher, max_ngram: int = 5):
         """Transformer that uses a Matcher to find terms in text and replace them with markdown links.
@@ -256,40 +244,38 @@ class MarkdownTransformer:
         # Split into alternating [word, sep, word, sep, ...] preserving all whitespace.
         # Even indices (0, 2, 4, …) are word tokens; odd indices are whitespace separators.
         # When text starts/ends with whitespace, the edge word slots are empty strings.
-        parts = re.split(r'(\s+)', text)
+        parts = re.split(r"(\s+)", text)
 
         # Build a pre-computed index of non-empty word tokens: (parts_index, word_string)
-        word_indices = [(idx, parts[idx])
-                        for idx in range(0, len(parts), 2) if parts[idx]]
+        word_indices = [(idx, parts[idx]) for idx in range(0, len(parts), 2) if parts[idx]]
 
         i = 0  # position in word_indices
         while i < len(word_indices):
             matched = False
             for n in range(min(self.max_ngram, len(word_indices) - i), 0, -1):
-                ng_wis = word_indices[i:i + n]
+                ng_wis = word_indices[i : i + n]
 
                 # Do not match n-grams that span line boundaries
-                if any('\n' in parts[ng_wis[k][0] + 1] for k in range(n - 1)):
+                if any("\n" in parts[ng_wis[k][0] + 1] for k in range(n - 1)):
                     continue
 
                 ngram = " ".join(w for _, w in ng_wis)
                 # From the ngram, split the trailing punctuation chars (if any)
                 # so that "steel," can match "steel" in the taxonomy. We only strip trailing punctuation to avoid breaking up valid multi-word terms like "glass wool".
                 # keep the stripped punctuation in the original text so that it remains after transformation (e.g. "steel," -> ":term[steel]{urn},")
-                punctuation = re.search(r"[.,;:!?]+$", ngram)
-                if punctuation:
-                    ngram = ngram[:-len(punctuation.group())]
+                stripped = ngram.rstrip(".,;:!?")
+                punctuation = ngram[len(stripped) :]
+                ngram = stripped
                 term = self.matcher.match(ngram)
                 if term:
                     logger.debug(f"Matched n-gram: '{ngram}' -> {term}")
                     # Write marker into the first word's slot
-                    parts[ng_wis[0][0]
-                          ] = f":term[{ngram}]{{{term.urn}}}{punctuation.group() if punctuation else ''}"
+                    parts[ng_wis[0][0]] = f":term[{ngram}]{{{term.urn}}}{punctuation}"
                     # Erase intermediate separators and word slots
                     for k in range(1, n):
                         # separator between word k-1 and k
                         parts[ng_wis[k - 1][0] + 1] = ""
-                        parts[ng_wis[k][0]] = ""           # word k itself
+                        parts[ng_wis[k][0]] = ""  # word k itself
                     i += n
                     matched = True
                     break  # break n-gram loop, advance to next position

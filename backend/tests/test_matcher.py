@@ -1,6 +1,7 @@
 import pytest
+
 from api.models.taxonomy import Term
-from api.services.matcher import DEFAULT_STOPWORDS, Matcher, MarkdownTransformer
+from api.services.matcher import DEFAULT_STOPWORDS, MarkdownTransformer, Matcher
 
 
 def make_term(urn: str, name: str, description: str = None) -> Term:
@@ -10,6 +11,7 @@ def make_term(urn: str, name: str, description: str = None) -> Term:
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def simple_label_map():
@@ -41,6 +43,7 @@ def matcher_multiword_fuzzy(simple_label_map):
 # _normalize
 # ---------------------------------------------------------------------------
 
+
 class TestNormalize:
     def test_lowercases(self, matcher):
         assert matcher._normalize("CONCRETE") == "concrete"
@@ -66,6 +69,7 @@ class TestNormalize:
 # ---------------------------------------------------------------------------
 # _should_skip
 # ---------------------------------------------------------------------------
+
 
 class TestShouldSkip:
     def test_empty_token(self, matcher):
@@ -98,6 +102,7 @@ class TestShouldSkip:
 # _get_score_cutoff
 # ---------------------------------------------------------------------------
 
+
 class TestGetScoreCutoff:
     def test_very_short_token_requires_perfect(self, matcher):
         # len < 5 → max(base, 100) → 100
@@ -117,6 +122,7 @@ class TestGetScoreCutoff:
 # ---------------------------------------------------------------------------
 # match — exact
 # ---------------------------------------------------------------------------
+
 
 class TestMatchExact:
     def test_exact_match(self, matcher):
@@ -154,6 +160,7 @@ class TestMatchExact:
 # match — trivial rejects
 # ---------------------------------------------------------------------------
 
+
 class TestMatchRejects:
     def test_empty_string(self, matcher):
         assert matcher.match("") is None
@@ -172,6 +179,7 @@ class TestMatchRejects:
 # match — multiword fuzzy
 # ---------------------------------------------------------------------------
 
+
 class TestMatchMultiwordFuzzy:
     def test_multiword_no_fuzzy_by_default(self, matcher):
         # "recycled brik" is a near-miss of "recycled brick"; fuzzy disabled for multi-word
@@ -180,8 +188,7 @@ class TestMatchMultiwordFuzzy:
 
     def test_multiword_fuzzy_enabled(self, matcher_multiword_fuzzy):
         # With fuzzy enabled, "recycled brik" should match "recycled brick"
-        result = matcher_multiword_fuzzy.match(
-            "recycled brik", base_score_cutoff=85)
+        result = matcher_multiword_fuzzy.match("recycled brik", base_score_cutoff=85)
         assert result is not None
         assert result.urn == "urn:recycled-brick"
 
@@ -189,6 +196,7 @@ class TestMatchMultiwordFuzzy:
 # ---------------------------------------------------------------------------
 # match — fuzzy single-word
 # ---------------------------------------------------------------------------
+
 
 class TestMatchFuzzy:
     def test_close_misspelling_matches(self, matcher):
@@ -205,6 +213,7 @@ class TestMatchFuzzy:
 # ---------------------------------------------------------------------------
 # label normalization during __init__
 # ---------------------------------------------------------------------------
+
 
 class TestLabelNormalization:
     def test_label_with_punctuation_is_normalized(self):
@@ -231,6 +240,7 @@ class TestLabelNormalization:
 # Custom stopwords and locale
 # ---------------------------------------------------------------------------
 
+
 class TestLocaleAndStopwords:
     def test_german_stopwords(self):
         label_map = {"beton": make_term("urn:beton", "Beton")}
@@ -250,6 +260,7 @@ class TestLocaleAndStopwords:
 # ---------------------------------------------------------------------------
 # MarkdownTransformer
 # ---------------------------------------------------------------------------
+
 
 class TestMarkdownTransformer:
     @pytest.fixture
@@ -307,8 +318,7 @@ class TestMarkdownTransformer:
 
     def test_clear_mixed_text(self, transformer):
         transformed = "Use :term[concrete]{urn:concrete} and :term[steel]{urn:steel} here"
-        assert MarkdownTransformer.clear(
-            transformed) == "Use concrete and steel here"
+        assert MarkdownTransformer.clear(transformed) == "Use concrete and steel here"
 
     def test_clear_untransformed_text_unchanged(self, transformer):
         plain = "Use concrete and steel here"
@@ -343,6 +353,7 @@ class TestMarkdownTransformer:
 # ---------------------------------------------------------------------------
 # MarkdownTransformer — whitespace preservation
 # ---------------------------------------------------------------------------
+
 
 class TestMarkdownTransformerWhitespace:
     @pytest.fixture

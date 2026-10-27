@@ -1,31 +1,29 @@
 import hashlib
-import uuid
-from http.client import HTTPException
 import logging
-from datetime import datetime
+import uuid
+from datetime import UTC, datetime
 
+from enacit4r_sql.utils.query import QueryBuilder
 from fastapi import HTTPException
-from api.db import AsyncSession
 from sqlalchemy import text
 from sqlmodel import func, select
-from api.models.users import AppUser
+
+from api.auth import User
+from api.db import AsyncSession
 from api.models.domain import SubjectProfile
 from api.models.query import SubjectProfileDraft, SubjectProfileResult
-from enacit4r_sql.utils.query import QueryBuilder
+from api.models.users import AppUser
 from api.services.search import EntityIndexer
-from api.auth import User
 
 
 class SubjectProfileQueryBuilder(QueryBuilder):
-
     def build_count_query_with_joins(self, filter):
         query = self.build_count_query()
         query = self._apply_joins(query, filter)
         return query
 
     def build_group_query_with_joins(self, filter, group_by_column):
-        query = self._apply_filter(
-            select(group_by_column, func.count(func.distinct(self.model.id))))
+        query = self._apply_filter(select(group_by_column, func.count(func.distinct(self.model.id))))
         query = self._apply_joins(query, filter)
         return query.group_by(group_by_column)
 
@@ -40,7 +38,6 @@ class SubjectProfileQueryBuilder(QueryBuilder):
 
 
 class SubjectProfileService:
-
     def __init__(self, session: AsyncSession):
         self.session = session
         self.entityType = "author"
@@ -53,10 +50,9 @@ class SubjectProfileService:
         # add all documents
         count = 0
         for entity in (await self.session.exec(select(SubjectProfile))).all():
-            await indexService.addEntity(
-                self.entityType, entity, [], [])
+            await indexService.addEntity(self.entityType, entity, [], [])
             count += 1
-            entity.published_at = datetime.now()
+            entity.published_at = datetime.now(UTC)
         await self.session.commit()
         logging.debug(f"Published {count} subject profiles")
         return count
@@ -64,9 +60,8 @@ class SubjectProfileService:
     async def index(self, id: int) -> None:
         """Publish a subject profile by id"""
         entity = await self.get_by_id(id)
-        await EntityIndexer().updateEntity(
-            self.entityType, entity, [], [])
-        entity.published_at = datetime.now()
+        await EntityIndexer().updateEntity(self.entityType, entity, [], [])
+        entity.published_at = datetime.now(UTC)
         await self.session.commit()
 
     async def remove_index(self, id: int) -> None:
@@ -92,8 +87,8 @@ class SubjectProfileService:
             affiliation=None,
             description=None,
             web=None,
-            created_at=datetime.now(),
-            updated_at=datetime.now()
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
         )
         self.session.add(profile_obj)
         await self.session.commit()
@@ -110,8 +105,7 @@ class SubjectProfileService:
             SubjectProfile: The subject profile object
         """
         res = await self.session.exec(
-            select(SubjectProfile).where(SubjectProfile.identifier == identifier,
-                                         SubjectProfile.type == type)
+            select(SubjectProfile).where(SubjectProfile.identifier == identifier, SubjectProfile.type == type)
         )
         return res.first()
 
@@ -123,9 +117,7 @@ class SubjectProfileService:
         Returns:
             SubjectProfile: The subject profile object
         """
-        res = await self.session.exec(
-            select(SubjectProfile).where(SubjectProfile.id == profile_id)
-        )
+        res = await self.session.exec(select(SubjectProfile).where(SubjectProfile.id == profile_id))
         return res.first()
 
     async def create(self, payload: SubjectProfileDraft) -> SubjectProfile:
@@ -139,8 +131,8 @@ class SubjectProfileService:
         """
         profile_obj = SubjectProfile(**payload.model_dump())
         profile_obj.identifier = payload.identifier or str(uuid.uuid4())
-        profile_obj.created_at = datetime.now()
-        profile_obj.updated_at = datetime.now()
+        profile_obj.created_at = datetime.now(UTC)
+        profile_obj.updated_at = datetime.now(UTC)
         self.session.add(profile_obj)
         await self.session.commit()
         await self.session.refresh(profile_obj)
@@ -159,20 +151,18 @@ class SubjectProfileService:
             return None
 
         if user is None or ("app-administrator" not in user.realm_roles and user.username != profile.identifier):
-            raise HTTPException(
-                status_code=403, detail="Not enough permissions")
+            raise HTTPException(status_code=403, detail="Not enough permissions")
 
         for key, value in payload.model_dump().items():
             if key not in ["id", "created_at", "updated_at", "published_at", "identifier"] and value is not None:
                 setattr(profile, key, value)
-        profile.updated_at = datetime.now()
+        profile.updated_at = datetime.now(UTC)
         self.session.add(profile)
         await self.session.commit()
         await self.session.refresh(profile)
         # reindex if published
         if profile.published_at:
-            EntityIndexer().updateEntity(
-                self.entityType, profile, [], [])
+            EntityIndexer().updateEntity(self.entityType, profile, [], [])
         return profile
 
     async def update_identifier(self, id: int, new_identifier: str) -> SubjectProfile:
@@ -190,22 +180,20 @@ class SubjectProfileService:
 
         old_identifier = profile.identifier
         profile.identifier = new_identifier
-        profile.updated_at = datetime.now()
+        profile.updated_at = datetime.now(UTC)
         self.session.add(profile)
         await self.session.commit()
         await self.session.refresh(profile)
         await self._propagate_identifier_change(profile.type, old_identifier, new_identifier)
         if profile.published_at:
-            EntityIndexer().updateEntity(
-                self.entityType, profile, [], [])
+            EntityIndexer().updateEntity(self.entityType, profile, [], [])
         return profile
 
     async def _propagate_identifier_change(self, profile_type: str, old_identifier: str, new_identifier: str) -> None:
         old_ref = f"{profile_type}:{old_identifier}"
         new_ref = f"{profile_type}:{new_identifier}"
-        updated_at = datetime.now()
-        tables = ["naturalresource", "buildingmaterial",
-                  "technicalconstruction", "building", "professional"]
+        updated_at = datetime.now(UTC)
+        tables = ["naturalresource", "buildingmaterial", "technicalconstruction", "building", "professional"]
         for table in tables:
             await self.session.exec(
                 text(f"""
@@ -261,9 +249,7 @@ class SubjectProfileService:
         Returns:
             int: Total number of subject profiles
         """
-        res = await self.session.exec(
-            select(func.count(SubjectProfile.id))
-        )
+        res = await self.session.exec(select(func.count(SubjectProfile.id)))
         return res.one()
 
     async def count_by_type(self, type: str) -> int:
@@ -274,16 +260,12 @@ class SubjectProfileService:
         Returns:
             int: Total number of subject profiles of the given type
         """
-        res = await self.session.exec(
-            select(func.count(SubjectProfile.id)).where(
-                SubjectProfile.type == type)
-        )
+        res = await self.session.exec(select(func.count(SubjectProfile.id)).where(SubjectProfile.type == type))
         return res.one()
 
     async def find(self, filter: dict, fields: list, sort: list, range: list) -> SubjectProfileResult:
         """Get all subject profiles matching filter and range"""
-        builder = SubjectProfileQueryBuilder(
-            SubjectProfile, filter, sort, range, {})
+        builder = SubjectProfileQueryBuilder(SubjectProfile, filter, sort, range, {})
 
         # Do a query to satisfy total count
         count_query = builder.build_count_query_with_joins(filter)
@@ -291,17 +273,11 @@ class SubjectProfileService:
         total_count = total_count_query.one()
 
         # Do the actual query to get data
-        start, end, query = builder.build_query_with_joins(
-            total_count, filter, fields)
+        start, end, query = builder.build_query_with_joins(total_count, filter, fields)
         data_query = await self.session.exec(query)
         data = data_query.all()
 
-        return SubjectProfileResult(
-            total=total_count,
-            skip=start,
-            limit=end - start + 1,
-            data=data
-        )
+        return SubjectProfileResult(total=total_count, skip=start, limit=end - start + 1, data=data)
 
     @staticmethod
     def hash_identifier(identifier: str) -> str:

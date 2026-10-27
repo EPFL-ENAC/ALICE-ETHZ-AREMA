@@ -11,7 +11,7 @@ permissions:
   contents: read
 jobs:
   test-backend:
-    name: Backend Tests
+    name: Backend Lint & Tests
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -30,6 +30,11 @@ jobs:
 
       - name: Install dependencies
         run: uv sync
+
+      - name: Run linter
+        run: |
+          uv run ruff check
+          uv run ruff format --check
 
       - name: Run tests
         run: uv run pytest

@@ -1,8 +1,10 @@
-from datetime import datetime
+from datetime import UTC, datetime
+
 from fastapi import HTTPException
+
+from api.auth import User
 from api.db import AsyncSession
 from api.models.domain import Entity
-from api.auth import User
 from api.services.mailer import Mailer
 
 
@@ -28,13 +30,12 @@ class EntityService:
         """Assign the entity to a user"""
         original_assignee = entity.assigned_to
         entity.assigned_to = assignee
-        entity.assigned_at = datetime.now() if assignee else None
+        entity.assigned_at = datetime.now(UTC) if assignee else None
         await self.session.commit()
         if assignee:
             # split comma separated assignees and send email to each
             assignees = [a.strip() for a in assignee.split(",")]
-            original_assignees = [a.strip() for a in original_assignee.split(
-                ",")] if original_assignee else []
+            original_assignees = [a.strip() for a in original_assignee.split(",")] if original_assignee else []
             for username in assignees:
                 # only send email if the assignee is new
                 if username not in original_assignees:
@@ -43,11 +44,9 @@ class EntityService:
 
     async def apply_state(self, entity: Entity, state: str, user: User) -> Entity:
         """Set the state of the entity"""
-        valid_states = ["draft", "in-review", "to-publish", "to-unpublish",
-                        "published", "locked", "to-delete"]
+        valid_states = ["draft", "in-review", "to-publish", "to-unpublish", "published", "locked", "to-delete"]
         if state not in valid_states:
-            raise HTTPException(
-                status_code=400, detail=f"Invalid state: {state}")
+            raise HTTPException(status_code=400, detail=f"Invalid state: {state}")
         switcher = {
             "draft": self._set_draft,
             "in-review": self._set_in_review,
@@ -55,29 +54,25 @@ class EntityService:
             "to-unpublish": self._set_to_unpublish,
             "published": self._set_locked,
             "locked": self._set_locked,
-            "to-delete": self._set_to_delete
+            "to-delete": self._set_to_delete,
         }
         set_state_func = switcher.get(state)
         if set_state_func:
-            notification_states = ["in-review",
-                                   "to-publish", "to-unpublish", "to-delete"]
+            notification_states = ["in-review", "to-publish", "to-unpublish", "to-delete"]
             if state in notification_states:
                 await Mailer().send_state_transition_email(self.entityType, entity.id, entity.name, state, user)
             return set_state_func(entity, user)
         else:
-            raise HTTPException(
-                status_code=400, detail=f"State change to {state} not allowed")
+            raise HTTPException(status_code=400, detail=f"State change to {state} not allowed")
 
     def _set_in_review(self, entity: Entity, user: User) -> Entity:
         """Change the state of the entity to in-review"""
         if entity.state == "in-review":
             return entity
         if entity.state != "draft" and entity.state != "to-publish":
-            raise HTTPException(
-                status_code=400, detail="Entity must be in draft or to-publish state to be reviewed")
+            raise HTTPException(status_code=400, detail="Entity must be in draft or to-publish state to be reviewed")
         if self._is_contributor(user) and not self._is_author(entity, user):
-            raise HTTPException(
-                status_code=403, detail="Operation not allowed")
+            raise HTTPException(status_code=403, detail="Operation not allowed")
         entity.state = "in-review"
         return entity
 
@@ -86,11 +81,9 @@ class EntityService:
         if entity.state == "to-publish":
             return entity
         if entity.state != "in-review":
-            raise HTTPException(
-                status_code=400, detail="Entity must be in review to be published")
+            raise HTTPException(status_code=400, detail="Entity must be in review to be published")
         if self._is_contributor(user):
-            raise HTTPException(
-                status_code=403, detail="Operation not allowed")
+            raise HTTPException(status_code=403, detail="Operation not allowed")
         entity.state = "to-publish"
         return entity
 
@@ -99,8 +92,7 @@ class EntityService:
         if entity.state == "to-unpublish":
             return entity
         if self._is_contributor(user) and not self._is_author(entity, user):
-            raise HTTPException(
-                status_code=403, detail="Operation not allowed")
+            raise HTTPException(status_code=403, detail="Operation not allowed")
         entity.state = "to-unpublish"
         return entity
 
@@ -109,8 +101,7 @@ class EntityService:
         if entity.state == "draft":
             return entity
         if self._is_contributor(user) and not self._is_author(entity, user):
-            raise HTTPException(
-                status_code=403, detail="Operation not allowed")
+            raise HTTPException(status_code=403, detail="Operation not allowed")
         entity.state = "draft"
         entity.assigned_to = None
         entity.assigned_at = None
@@ -121,8 +112,7 @@ class EntityService:
         if entity.state == "locked":
             return entity
         if "app-administrator" not in user.realm_roles:
-            raise HTTPException(
-                status_code=403, detail="Operation not allowed")
+            raise HTTPException(status_code=403, detail="Operation not allowed")
         entity.state = "locked"
         entity.assigned_to = None
         entity.assigned_at = None
@@ -133,8 +123,7 @@ class EntityService:
         if entity.state == "to-delete":
             return entity
         if self._is_contributor(user) and not self._is_author(entity, user):
-            raise HTTPException(
-                status_code=403, detail="Operation not allowed")
+            raise HTTPException(status_code=403, detail="Operation not allowed")
         entity.state = "to-delete"
         return entity
 

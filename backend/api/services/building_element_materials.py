@@ -1,16 +1,16 @@
 from logging import debug
-from api.db import AsyncSession
-from sqlalchemy.sql import text
-from sqlalchemy.orm import selectinload
-from sqlmodel import select
-from fastapi import HTTPException
-from api.models.domain import BuildingElementMaterial, BuildingElementMaterial, BuildingElement, BuildingMaterial
-from api.models.query import BuildingElementMaterialResult, BuildingElementMaterialDraft
+
 from enacit4r_sql.utils.query import QueryBuilder
+from fastapi import HTTPException
+from sqlalchemy.sql import text
+from sqlmodel import select
+
+from api.db import AsyncSession
+from api.models.domain import BuildingElement, BuildingElementMaterial, BuildingMaterial
+from api.models.query import BuildingElementMaterialDraft, BuildingElementMaterialResult
 
 
 class BuildingElementMaterialQueryBuilder(QueryBuilder):
-
     def build_count_query_with_joins(self, filter):
         query = self.build_count_query()
         query = self._apply_joins(query, filter)
@@ -27,7 +27,6 @@ class BuildingElementMaterialQueryBuilder(QueryBuilder):
 
 
 class BuildingElementMaterialService:
-
     def __init__(self, session: AsyncSession):
         self.session = session
         self.folder = "building-element-materials"
@@ -39,34 +38,34 @@ class BuildingElementMaterialService:
 
     async def get(self, id: int) -> BuildingElementMaterial:
         """Get a building element material by id"""
-        res = await self.session.exec(
-            select(BuildingElementMaterial).where(
-                BuildingElementMaterial.id == id))
+        res = await self.session.exec(select(BuildingElementMaterial).where(BuildingElementMaterial.id == id))
         entity = res.one_or_none()
         if not entity:
-            raise HTTPException(
-                status_code=404, detail="Building element material not found")
+            raise HTTPException(status_code=404, detail="Building element material not found")
         return entity
 
     async def delete(self, id: int) -> BuildingElementMaterial:
         """Delete a building element material by id"""
-        res = await self.session.exec(
-            select(BuildingElementMaterial)
-            .where(BuildingElementMaterial.id == id))
+        res = await self.session.exec(select(BuildingElementMaterial).where(BuildingElementMaterial.id == id))
         entity = res.one_or_none()
         if not entity:
-            raise HTTPException(
-                status_code=404, detail="Building element material not found")
+            raise HTTPException(status_code=404, detail="Building element material not found")
         await self.session.delete(entity)
         await self.session.commit()
         return entity
 
     async def find(self, filter: dict, fields: list, sort: list, range: list) -> BuildingElementMaterialResult:
         """Get all building element materials matching filter and range"""
-        builder = BuildingElementMaterialQueryBuilder(BuildingElementMaterial, filter, sort, range, {
-            "$building_element": BuildingElement,
-            "$building_material": BuildingMaterial,
-        })
+        builder = BuildingElementMaterialQueryBuilder(
+            BuildingElementMaterial,
+            filter,
+            sort,
+            range,
+            {
+                "$building_element": BuildingElement,
+                "$building_material": BuildingMaterial,
+            },
+        )
 
         # Do a query to satisfy total count
         count_query = builder.build_count_query_with_joins(filter)
@@ -74,19 +73,13 @@ class BuildingElementMaterialService:
         total_count = total_count_query.one()
 
         # Main query
-        start, end, query = builder.build_query_with_joins(
-            total_count, filter, fields)
+        start, end, query = builder.build_query_with_joins(total_count, filter, fields)
 
         # Execute query
         results = await self.session.exec(query)
         entities = results.all()
 
-        return BuildingElementMaterialResult(
-            total=total_count,
-            skip=start,
-            limit=end - start + 1,
-            data=entities
-        )
+        return BuildingElementMaterialResult(total=total_count, skip=start, limit=end - start + 1, data=entities)
 
     async def create(self, payload: BuildingElementMaterialDraft) -> BuildingElementMaterial:
         """Create a new building element material"""
@@ -98,13 +91,10 @@ class BuildingElementMaterialService:
 
     async def update(self, id: int, payload: BuildingElementMaterialDraft) -> BuildingElementMaterial:
         """Update a building element material"""
-        res = await self.session.exec(
-            select(BuildingElementMaterial)
-            .where(BuildingElementMaterial.id == id))
+        res = await self.session.exec(select(BuildingElementMaterial).where(BuildingElementMaterial.id == id))
         entity = res.one_or_none()
         if not entity:
-            raise HTTPException(
-                status_code=404, detail="Building element material not found")
+            raise HTTPException(status_code=404, detail="Building element material not found")
         for key, value in payload.model_dump().items():
             debug(f"{key}: {value}")
             if key not in ["id", "building_element_id", "building_material_id"]:

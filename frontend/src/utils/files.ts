@@ -18,13 +18,18 @@ export function isImage(file: FileItem) {
 }
 
 export function isVideo(file: FileItem) {
-  return (
-    file.url?.includes('youtube.com') ||
-    file.url?.includes('youtu.be') ||
-    file.url?.includes('vimeo.com') ||
-    file.url?.includes('srf.ch/play/tv') ||
-    file.url?.includes('rts.ch/play/tv')
-  );
+  if (!file.url) return false;
+  let url: URL;
+  try {
+    url = new URL(file.url);
+  } catch {
+    return false;
+  }
+  const host = url.hostname.replace(/^www\./, '');
+  if (['youtube.com', 'm.youtube.com', 'youtu.be', 'vimeo.com', 'player.vimeo.com'].includes(host)) {
+    return true;
+  }
+  return ['srf.ch', 'rts.ch'].includes(host) && url.pathname.startsWith('/play/tv');
 }
 
 export function isPDF(file: FileItem) {

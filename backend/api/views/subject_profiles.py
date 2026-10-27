@@ -1,11 +1,13 @@
 import logging
-from fastapi import APIRouter, Depends, Query, HTTPException
-from api.db import get_session, AsyncSession
-from api.auth import kc_service, User, kc_admin_service
+
+from enacit4r_sql.utils.query import ValidationError, validate_params
+from fastapi import APIRouter, Depends, HTTPException, Query
+
+from api.auth import User, kc_admin_service, kc_service
+from api.db import AsyncSession, get_session
 from api.models.domain import SubjectProfile
-from api.models.query import SubjectProfileResult, SubjectProfileDraft
+from api.models.query import SubjectProfileDraft, SubjectProfileResult
 from api.services.subject_profiles import SubjectProfileService
-from enacit4r_sql.utils.query import validate_params, ValidationError
 
 router = APIRouter()
 
@@ -21,9 +23,11 @@ async def find(
     """Search for subject profiles"""
     try:
         validated = validate_params(filter, sort, range, select)
-        return await SubjectProfileService(session).find(validated["filter"], validated["fields"], validated["sort"], validated["range"])
+        return await SubjectProfileService(session).find(
+            validated["filter"], validated["fields"], validated["sort"], validated["range"]
+        )
     except ValidationError as e:
-        raise HTTPException(status_code=400, detail=f"{e}")
+        raise HTTPException(status_code=400, detail=f"{e}") from e
 
 
 @router.get("/{id}", response_model=SubjectProfile, response_model_exclude_none=True)
@@ -34,9 +38,7 @@ async def get(id: int, session: AsyncSession = Depends(get_session)) -> SubjectP
 
 @router.delete("/{id}", response_model=SubjectProfile, response_model_exclude_none=True)
 async def delete(
-    id: int,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    id: int, session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
 ) -> SubjectProfile:
     """Delete a subject profile by id"""
     return await SubjectProfileService(session).delete_by_id(id)
@@ -44,9 +46,9 @@ async def delete(
 
 @router.post("/", response_model=SubjectProfile, response_model_exclude_none=True)
 async def create(
-    subject_profile:  SubjectProfileDraft,
+    subject_profile: SubjectProfileDraft,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    user: User = Depends(kc_service.require_admin()),
 ) -> SubjectProfile:
     """Create a subject profile"""
     # check already exists for user
@@ -61,7 +63,7 @@ async def update(
     id: int,
     subject_profile: SubjectProfileDraft,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.get_user_info())
+    user: User = Depends(kc_service.get_user_info()),
 ) -> SubjectProfile:
     """Update a subject profile"""
     return await SubjectProfileService(session).update(id, subject_profile, user)
@@ -69,9 +71,7 @@ async def update(
 
 @router.put("/{id}/_index", response_model_exclude_none=True)
 async def publish(
-    id: int,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    id: int, session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
 ) -> None:
     """Publish a subject profile by id"""
     return await SubjectProfileService(session).index(id)
@@ -79,9 +79,7 @@ async def publish(
 
 @router.delete("/{id}/_index", response_model_exclude_none=True)
 async def unpublish(
-    id: int,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    id: int, session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
 ) -> None:
     """Unpublish a subject profile by id"""
     return await SubjectProfileService(session).remove_index(id)
@@ -89,8 +87,7 @@ async def unpublish(
 
 @router.post("/_sync", response_model=SubjectProfileResult, response_model_exclude_none=True)
 async def sync_users(
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
 ) -> SubjectProfileResult:
     """Create a subject profile per user if it does not exist"""
     app_users = await kc_admin_service.get_users()
@@ -111,8 +108,7 @@ async def sync_users(
                 if profile.published_at:
                     await service.index(profile.id)
             except Exception as e:
-                logging.error(
-                    f"Failed to index subject profile {profile.id}: {e}")
+                logging.error(f"Failed to index subject profile {profile.id}: {e}")
             updated.append(profile)
         else:
             profile = await service.create_subject_profile_for_user(appUser)

@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, Query, HTTPException
-from api.db import get_session, AsyncSession
-from api.auth import kc_service, User
+from enacit4r_sql.utils.query import ValidationError, validate_params
+from fastapi import APIRouter, Depends, HTTPException, Query
+
+from api.auth import User, kc_service
+from api.db import AsyncSession, get_session
 from api.models.domain import BuildingMaterial
-from api.models.query import BuildingMaterialResult, BuildingMaterialDraft
+from api.models.query import BuildingMaterialDraft, BuildingMaterialResult
 from api.services.building_materials import BuildingMaterialService
-from enacit4r_sql.utils.query import validate_params, ValidationError
 
 router = APIRouter()
 
@@ -20,9 +21,11 @@ async def find(
     """Search for building materials"""
     try:
         validated = validate_params(filter, sort, range, select)
-        return await BuildingMaterialService(session).find(validated["filter"], validated["fields"], validated["sort"], validated["range"])
+        return await BuildingMaterialService(session).find(
+            validated["filter"], validated["fields"], validated["sort"], validated["range"]
+        )
     except ValidationError as e:
-        raise HTTPException(status_code=400, detail=f"{e}")
+        raise HTTPException(status_code=400, detail=f"{e}") from e
 
 
 @router.get("/{id}", response_model=BuildingMaterial, response_model_exclude_none=True)
@@ -33,9 +36,8 @@ async def get(id: int, session: AsyncSession = Depends(get_session)) -> Building
 
 @router.delete("/{id}", response_model=BuildingMaterial, response_model_exclude_none=True)
 async def delete(
-        id: int,
-        session: AsyncSession = Depends(get_session),
-        user: User = Depends(kc_service.require_admin())) -> BuildingMaterial:
+    id: int, session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
+) -> BuildingMaterial:
     """Delete a building material by id"""
     return await BuildingMaterialService(session).delete(id)
 
@@ -44,8 +46,7 @@ async def delete(
 async def create(
     payload: BuildingMaterialDraft,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-reviewer", "app-contributor"]))
+    user: User = Depends(kc_service.require_any_role(["app-administrator", "app-reviewer", "app-contributor"])),
 ) -> BuildingMaterial:
     """Create a building material"""
     return await BuildingMaterialService(session).create(payload, user)
@@ -53,10 +54,10 @@ async def create(
 
 @router.put("/{id}", response_model=BuildingMaterial, response_model_exclude_none=True)
 async def update(
-    id: int, payload: BuildingMaterialDraft,
+    id: int,
+    payload: BuildingMaterialDraft,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-reviewer", "app-contributor"]))
+    user: User = Depends(kc_service.require_any_role(["app-administrator", "app-reviewer", "app-contributor"])),
 ) -> BuildingMaterial:
     """Update a building material by id"""
     async with session:
@@ -65,9 +66,7 @@ async def update(
 
 @router.put("/{id}/_index", response_model_exclude_none=True)
 async def publish(
-    id: int,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    id: int, session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
 ) -> None:
     """Publish a building material by id"""
     return await BuildingMaterialService(session).index(id, user)
@@ -75,9 +74,7 @@ async def publish(
 
 @router.delete("/{id}/_index", response_model_exclude_none=True)
 async def unpublish(
-    id: int,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    id: int, session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
 ) -> None:
     """Unpublish a building material by id"""
     return await BuildingMaterialService(session).remove_index(id, user)
@@ -88,9 +85,7 @@ async def set_state(
     id: int,
     s: str,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_any_role(
-        ["app-administrator", "app-reviewer", "app-contributor"])
-    )
+    user: User = Depends(kc_service.require_any_role(["app-administrator", "app-reviewer", "app-contributor"])),
 ) -> None:
     """Set the state of a building material by id"""
     return await BuildingMaterialService(session).set_state(id, s, user)
@@ -101,7 +96,7 @@ async def assign(
     id: int,
     assignee: str = Query(None),
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    user: User = Depends(kc_service.require_admin()),
 ) -> None:
     """Assign a building material by id"""
     return await BuildingMaterialService(session).set_assignee(id, assignee, user)
@@ -109,9 +104,7 @@ async def assign(
 
 @router.delete("/{id}/_assign", response_model_exclude_none=True)
 async def unassign(
-    id: int,
-    session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.require_admin())
+    id: int, session: AsyncSession = Depends(get_session), user: User = Depends(kc_service.require_admin())
 ) -> None:
     """Unassign a building material by id"""
     return await BuildingMaterialService(session).set_assignee(id, None, user)

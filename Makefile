@@ -1,52 +1,31 @@
-.PHONY: backup-dump
+help: ## Show this help
+	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-12s %s\n", $$1, $$2}'
 
-install:
-	pnpm install
-	npx husky install
-	$(MAKE) -C frontend install
+run: run-db run-es ## Start PostgreSQL and Elasticsearch
 
-run-frontend:
-	$(MAKE) -C frontend dev
-
-test:
-	$(MAKE) -C frontend test
-
-lint:
-	$(MAKE) -C frontend lint
-
-lint-staged:
-	$(MAKE) -C frontend lint-staged
-
-run: run-db run-es
-
-stop: stop-db stop-es
+stop: stop-db stop-es ## Stop PostgreSQL and Elasticsearch
 
 # PostgreSQL
 
-run-db:
+run-db: ## Start PostgreSQL
 	docker compose up -d --pull=always postgres
 
-stop-db:
+stop-db: ## Stop PostgreSQL
 	docker compose stop postgres
 
-down-db:
+down-db: ## Remove PostgreSQL container
 	docker compose down postgres
 
-connect-db:
+connect-db: ## Open a psql shell
 	docker compose exec postgres psql -U postgres -d arema
 
 # Elasticsearch
 
-run-es:
+run-es: ## Start Elasticsearch
 	docker compose up -d --pull=always es8
 
-stop-es:
+stop-es: ## Stop Elasticsearch
 	docker compose stop es8
 
-down-es:
+down-es: ## Remove Elasticsearch container
 	docker compose down es8
-
-workflow:
-	# .secrets should have GITHUB_TOKEN
-	# .env should have GITHUB_ACTOR
-	act -W .github/workflows/deploy.yml -s GITHUB_TOKEN=$(cat .secrets | grep GITHUB_TOKEN | cut -d '=' -f2) --env-file .env
