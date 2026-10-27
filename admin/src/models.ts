@@ -244,6 +244,7 @@ export interface AppUser {
   totp: boolean;
   roles: string[];
   password?: string;
+  identity_providers?: string[];
 }
 
 export interface SubjectProfile {

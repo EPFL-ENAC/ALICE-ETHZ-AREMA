@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { keycloak, authApiClientId } from '@/boot/api';
+import { api, keycloak, authApiClientId } from '@/boot/api';
 import type { KeycloakProfile } from 'keycloak-js';
 import type { Entity } from '@/models';
 
@@ -25,7 +25,8 @@ export const useAuthStore = defineStore('auth', () => {
 
       initialized.value = true;
       if (authenticated) {
-        roles.value = keycloak.tokenParsed?.resource_access?.[authApiClientId]?.roles || [];
+        roles.value = readRoles();
+        if (!roles.value.includes('app-user')) await join();
         profile.value = await keycloak.loadUserProfile();
         keycloak.onTokenExpired = () => void updateToken();
       }
@@ -34,6 +35,24 @@ export const useAuthStore = defineStore('auth', () => {
       console.error('Keycloak initialization failed', error);
       initialized.value = true;
       return false;
+    }
+  }
+
+  function readRoles(): string[] {
+    return keycloak.tokenParsed?.resource_access?.[authApiClientId]?.roles || [];
+  }
+
+  /**
+   * A user of the realm without app roles (signed in with github, google or registered
+   * for another app) joins the app as if signed up, then gets the roles in a new token.
+   */
+  async function join() {
+    try {
+      await api.post('/user/_join', {}, { headers: { Authorization: `Bearer ${keycloak.token}` } });
+      await keycloak.updateToken(-1);
+      roles.value = readRoles();
+    } catch (error) {
+      console.error('Joining the app failed', error);
     }
   }
 

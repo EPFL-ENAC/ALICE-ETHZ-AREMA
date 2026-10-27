@@ -73,7 +73,7 @@
         <template v-slot:body-cell-action="props">
           <q-td :props="props">
             <q-btn
-              v-if="!props.row.email.endsWith('@epfl.ch')"
+              v-if="!props.row.email.endsWith('@epfl.ch') && !props.row.identity_providers?.length"
               color="grey-8"
               size="12px"
               flat
