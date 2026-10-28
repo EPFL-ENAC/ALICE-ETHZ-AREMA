@@ -227,19 +227,14 @@ const localeOptions = computed(() => {
   }));
 });
 
+// authentication is resolved by the router guard before this layout is mounted
 onMounted(() => {
-  void authStore.init().then(() => {
-    if (!authStore.isAuthenticated) {
-      void router.push({ path: '/signin' });
-    } else {
-      void fetch(`/admin/help/${lang.value}/terms-conditions.md`).then((response) => {
-        void response.text().then((text) => {
-          terms.value = text;
-        });
-      });
-      void taxonomyStore.init();
-    }
+  void fetch(`/admin/help/${lang.value}/terms-conditions.md`).then((response) => {
+    void response.text().then((text) => {
+      terms.value = text;
+    });
   });
+  void taxonomyStore.init();
 });
 
 watch(
