@@ -2,9 +2,8 @@ import { defineStore } from 'pinia';
 import { api } from '@/boot/api';
 import type { AppUser, SubjectProfileResult } from '@/models';
 
-const authStore = useAuthStore();
-
 export const useUsersStore = defineStore('users', () => {
+  const authStore = useAuthStore();
   const users = ref<AppUser[]>([]);
   const loading = ref(false);
 

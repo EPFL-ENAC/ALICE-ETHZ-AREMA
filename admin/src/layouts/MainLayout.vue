@@ -211,7 +211,6 @@ const { t, locale } = useI18n();
 const $q = useQuasar();
 const authStore = useAuthStore();
 const router = useRouter();
-const taxonomyStore = useTaxonomyStore();
 
 const leftDrawerOpen = ref(false);
 const showLogin = ref(false);
@@ -234,7 +233,6 @@ onMounted(() => {
       terms.value = text;
     });
   });
-  void taxonomyStore.init();
 });
 
 watch(

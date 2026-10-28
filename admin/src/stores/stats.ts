@@ -2,9 +2,8 @@ import { defineStore } from 'pinia';
 import { api } from '@/boot/api';
 import type { GroupByResult } from '@/models';
 
-const authStore = useAuthStore();
-
 export const useStatsStore = defineStore('stats', () => {
+  const authStore = useAuthStore();
   const loading = ref(false);
   const groupBy = ref<string>('state');
   const frequencies = ref<Record<string, GroupByResult>>({});

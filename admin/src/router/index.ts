@@ -34,12 +34,17 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     history: createHistory(import.meta.env.QUASAR_VUE_ROUTER_BASE),
   });
 
-  // resolve authentication before any protected page is mounted (and fetches data)
+  // resolve authentication and taxonomies before any protected page is mounted (and fetches data)
   Router.beforeEach(async (to) => {
     if (!to.matched.some((record) => record.meta.requiresAuth)) return true;
     const authStore = useAuthStore();
     await authStore.init();
-    return authStore.isAuthenticated ? true : '/signin';
+    if (!authStore.isAuthenticated) return '/signin';
+    // pages read the taxonomies when mounted
+    await useTaxonomyStore()
+      .init()
+      .catch((error) => console.error('Taxonomies loading failed', error));
+    return true;
   });
 
   return Router;

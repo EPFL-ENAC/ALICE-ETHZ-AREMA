@@ -1,14 +1,15 @@
 import { defineStore } from 'pinia';
 import { api } from '@/boot/api';
+import { i18n } from '@/boot/i18n';
 import type { Option } from '@/components/models';
 import type { Taxonomy, TaxonomyNode } from '@/models';
 
 const URN_PREFIX = 'urn:arema';
 
-const authStore = useAuthStore();
-
 export const useTaxonomyStore = defineStore('taxonomies', () => {
-  const { locale } = useI18n({ useScope: 'global' });
+  const authStore = useAuthStore();
+  // i18n is typed as legacy, but created with legacy: false so locale is a ref
+  const locale = i18n.global.locale as unknown as Ref<string>;
 
   const taxonomies = ref<Taxonomy>();
 

@@ -2,9 +2,8 @@ import { defineStore } from 'pinia';
 import { api } from '@/boot/api';
 import type { IGLehmProjectSummary, IGLehmProject, IGLehmSpecialistSummary } from '@/models';
 
-const authStore = useAuthStore();
-
 export const useImporterService = defineStore('importer', () => {
+  const authStore = useAuthStore();
   async function fetchIGLehmSpecialists(): Promise<IGLehmSpecialistSummary[]> {
     const res = await api.get('/importer/iglehm/specialists', {
       headers: await getAuthHeaders(),
