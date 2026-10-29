@@ -79,8 +79,12 @@ class SubjectProfileService:
         Returns:
             SubjectProfile: The created subject profile object
         """
+        identifier = appUser.id or appUser.username or str(uuid.uuid4())
+        existing = await self.get(identifier, "user")
+        if existing:
+            return existing
         profile_obj = SubjectProfile(
-            identifier=appUser.id or appUser.username or str(uuid.uuid4()),
+            identifier=identifier,
             type="user",
             name=f"{appUser.first_name} {appUser.last_name}",
             email=appUser.email,
@@ -150,7 +154,7 @@ class SubjectProfileService:
         if not profile:
             return None
 
-        if user is None or ("app-administrator" not in user.client_roles and user.username != profile.identifier):
+        if user is None or ("app-administrator" not in user.client_roles and user.id != profile.identifier):
             raise HTTPException(status_code=403, detail="Not enough permissions")
 
         for key, value in payload.model_dump().items():
