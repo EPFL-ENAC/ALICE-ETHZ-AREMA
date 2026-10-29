@@ -69,6 +69,8 @@ export default {
     invalid_email: 'A valid email address is required.',
     registration_failed: 'Registration failed. Please try again later.',
     password_complexity_not_met: 'The password does not meet the complexity requirements.',
+    password_with_identity_provider:
+      'This user signs in with an identity provider (e.g. GitHub, Google) and has no password.',
     unknown: 'An unexpected error occurred.',
   },
   'content-manager': 'Content manager',

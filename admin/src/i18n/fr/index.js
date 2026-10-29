@@ -69,6 +69,8 @@ export default {
     invalid_email: 'Une adresse courriel valide est requise.',
     registration_failed: "L'inscription a échoué. Veuillez réessayer plus tard.",
     password_complexity_not_met: "Le mot de passe ne répond pas aux exigences de complexité.",
+    password_with_identity_provider:
+      "Cet utilisateur se connecte avec un fournisseur d'identité (p. ex. GitHub, Google) et n'a pas de mot de passe.",
     unknown: "Une erreur inattendue s'est produite.",
   },
   'content-manager': 'Gestionnaire de contenu',

@@ -1,9 +1,8 @@
 import { defineStore } from 'pinia';
 import { api } from '@/boot/api';
 
-const authStore = useAuthStore();
-
 export const useSearchService = defineStore('search', () => {
+  const authStore = useAuthStore();
   const indexing = ref(false);
 
   async function dropIndex() {

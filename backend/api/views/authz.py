@@ -58,7 +58,7 @@ async def check_acl(
     permission: str,
     subject: str,
     session: AsyncSession = Depends(get_session),
-    user: User = Depends(kc_service.get_user_info()),
+    user: User = Depends(kc_service.require_role("app-user")),
 ):
     """Check if a user has a permission on a resource"""
     acl_service = ACLService(session)

@@ -68,6 +68,17 @@ taxonomy:
               de: "Ein Gebäude, das für öffentliche Zwecke genutzt wird, wie z.B. Schulen, Krankenhäuser oder Regierungsämter."
               fr: "Un bâtiment utilisé à des fins publiques, tel que les écoles, les hôpitaux ou les bureaux gouvernementaux."
               it: "Un edificio utilizzato per scopi pubblici, come scuole, ospedali o uffici governativi."
+          - id: hospitality-services
+            names:
+              en: Hospitality and Services
+              de: Gastgewerbe und Dienstleistungen
+              fr: Hôtellerie et services
+              it: Ospitalità e servizi
+            descriptions:
+              en: "A building used for hospitality or services, such as a hotel, holiday bungalow, restaurant, or shop."
+              de: "Ein Gebäude, das für Gastgewerbe oder Dienstleistungen genutzt wird, wie z.B. ein Hotel, ein Ferienbungalow, ein Restaurant oder ein Geschäft."
+              fr: "Un bâtiment utilisé pour l'hôtellerie ou les services, tel qu'un hôtel, un bungalow de vacances, un restaurant ou un commerce."
+              it: "Un edificio utilizzato per l'ospitalità o i servizi, come un albergo, un bungalow per le vacanze, un ristorante o un negozio."
           - id: simple-structure
             names:
               en: Simple Structure

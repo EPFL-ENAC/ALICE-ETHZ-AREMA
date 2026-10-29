@@ -7,11 +7,21 @@ from api.db import get_session
 from api.services.authz import ACLService
 
 kc_service = KeycloakService(
-    config.KEYCLOAK_URL, config.KEYCLOAK_REALM, config.KEYCLOAK_API_ID, config.KEYCLOAK_API_SECRET, "app-administrator"
+    config.KEYCLOAK_URL,
+    config.KEYCLOAK_REALM,
+    config.KEYCLOAK_API_ID,
+    config.KEYCLOAK_API_SECRET,
+    "app-administrator",
+    client_roles=True,
 )
 
 kc_admin_service = KeycloakAdminService(
-    config.KEYCLOAK_URL, config.KEYCLOAK_REALM, config.KEYCLOAK_API_ID, config.KEYCLOAK_API_SECRET, "app-user"
+    config.KEYCLOAK_URL,
+    config.KEYCLOAK_REALM,
+    config.KEYCLOAK_API_ID,
+    config.KEYCLOAK_API_SECRET,
+    "app-user",
+    client_roles=True,
 )
 
 acl_service = ACLService(get_session())

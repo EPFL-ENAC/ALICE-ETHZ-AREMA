@@ -2,9 +2,8 @@ import { defineStore } from 'pinia';
 import { api } from '@/boot/api';
 import type { SnapshotTask } from '@/models';
 
-const authStore = useAuthStore();
-
 export const useSnapshotService = defineStore('snapshot', () => {
+  const authStore = useAuthStore();
   const downloading = ref(false);
   const snapshotTask = ref<SnapshotTask | null>(null);
 

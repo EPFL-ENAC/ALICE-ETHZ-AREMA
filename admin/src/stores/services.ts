@@ -11,8 +11,6 @@ import type {
 } from '@/models';
 import type { Query } from '@/components/models';
 
-const authStore = useAuthStore();
-
 export class Service<
   Type extends
     | NaturalResource
@@ -23,17 +21,19 @@ export class Service<
     | BuildingElement
     | SubjectProfile,
 > {
+  private readonly authStore = useAuthStore();
+
   constructor(
     public entityType: Type,
     public entityName: string,
   ) {}
 
   async create(payload: Type) {
-    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
-    await authStore.updateToken();
+    if (!this.authStore.isAuthenticated) throw new Error('Not authenticated');
+    await this.authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.getAccessToken()}`,
+        Authorization: `Bearer ${this.authStore.getAccessToken()}`,
       },
     };
     return await api.post(`/${this.entityName}/`, payload, config);
@@ -61,7 +61,7 @@ export class Service<
   }
 
   async update(id: string | number, payload: Type) {
-    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
+    if (!this.authStore.isAuthenticated) throw new Error('Not authenticated');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     delete (payload as any)?.created_at;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -70,54 +70,54 @@ export class Service<
     delete (payload as any)?.created_by;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     delete (payload as any)?.updated_by;
-    await authStore.updateToken();
+    await this.authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.getAccessToken()}`,
+        Authorization: `Bearer ${this.authStore.getAccessToken()}`,
       },
     };
     return await api.put(`/${this.entityName}/${id}`, payload, config);
   }
 
   async togglePublish(id: string | number) {
-    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
-    await authStore.updateToken();
+    if (!this.authStore.isAuthenticated) throw new Error('Not authenticated');
+    await this.authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.getAccessToken()}`,
+        Authorization: `Bearer ${this.authStore.getAccessToken()}`,
       },
     };
     return await api.put(`/${this.entityName}/${id}/_publish`, {}, config);
   }
 
   async publish(id: string | number) {
-    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
-    await authStore.updateToken();
+    if (!this.authStore.isAuthenticated) throw new Error('Not authenticated');
+    await this.authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.getAccessToken()}`,
+        Authorization: `Bearer ${this.authStore.getAccessToken()}`,
       },
     };
     return await api.put(`/${this.entityName}/${id}/_index`, {}, config);
   }
 
   async unpublish(id: string | number) {
-    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
-    await authStore.updateToken();
+    if (!this.authStore.isAuthenticated) throw new Error('Not authenticated');
+    await this.authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.getAccessToken()}`,
+        Authorization: `Bearer ${this.authStore.getAccessToken()}`,
       },
     };
     return await api.delete(`/${this.entityName}/${id}/_index`, config);
   }
 
   async setState(id: string | number, state: string) {
-    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
-    await authStore.updateToken();
+    if (!this.authStore.isAuthenticated) throw new Error('Not authenticated');
+    await this.authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.getAccessToken()}`,
+        Authorization: `Bearer ${this.authStore.getAccessToken()}`,
       },
     };
     return await api.put(`/${this.entityName}/${id}/_state?s=${state}`, {}, config);
@@ -126,45 +126,45 @@ export class Service<
   async assign(id: string | number, assignee: string | null | undefined) {
     if (!assignee) return await this.unassign(id);
 
-    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
-    await authStore.updateToken();
+    if (!this.authStore.isAuthenticated) throw new Error('Not authenticated');
+    await this.authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.getAccessToken()}`,
+        Authorization: `Bearer ${this.authStore.getAccessToken()}`,
       },
     };
     return await api.put(`/${this.entityName}/${id}/_assign?assignee=${assignee}`, {}, config);
   }
 
   async unassign(id: string | number) {
-    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
-    await authStore.updateToken();
+    if (!this.authStore.isAuthenticated) throw new Error('Not authenticated');
+    await this.authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.getAccessToken()}`,
+        Authorization: `Bearer ${this.authStore.getAccessToken()}`,
       },
     };
     return await api.delete(`/${this.entityName}/${id}/_assign`, config);
   }
 
   async remove(id: string | number) {
-    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
-    await authStore.updateToken();
+    if (!this.authStore.isAuthenticated) throw new Error('Not authenticated');
+    await this.authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.getAccessToken()}`,
+        Authorization: `Bearer ${this.authStore.getAccessToken()}`,
       },
     };
     return await api.delete(`/${this.entityName}/${id}`, config);
   }
 
   async index() {
-    if (!authStore.isAuthenticated) throw new Error('Not authenticated');
+    if (!this.authStore.isAuthenticated) throw new Error('Not authenticated');
     const indexName = this.entityName === 'subject-profile' ? 'author' : this.entityName;
-    await authStore.updateToken();
+    await this.authStore.updateToken();
     const config = {
       headers: {
-        Authorization: `Bearer ${authStore.getAccessToken()}`,
+        Authorization: `Bearer ${this.authStore.getAccessToken()}`,
       },
       params: {
         type: indexName,

@@ -3,9 +3,8 @@ import type { FileObject } from '@/components/models';
 import type { FileRef } from '@/models';
 import { api } from '@/boot/api';
 
-const authStore = useAuthStore();
-
 export const useFilesStore = defineStore('files', () => {
+  const authStore = useAuthStore();
   const filesToDelete = ref<FileRef[]>([]);
 
   async function uploadTmpFile(file: FileObject): Promise<FileRef> {
