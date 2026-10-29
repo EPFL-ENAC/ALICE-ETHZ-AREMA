@@ -12,7 +12,76 @@ setWorkerUrl(maplibreWorkerUrl);
 const protocol = new Protocol();
 addProtocol('pmtiles', protocol.tile);
 
-const mapsUrl = `${cdnUrl}/arema/maps/2026-09-02T10:02`;
+const mapsUrl = `${cdnUrl}/arema/maps/2026-10-29T17:50`;
+
+export interface Range {
+  min: number;
+  max: number;
+}
+
+// Continuous soil rasters, rendered with a stepped colormap that can be filtered by value range
+// (initial filter defaults to the full range)
+export const soilRasters: Record<
+  string,
+  Range & {
+    file: string;
+    step: number;
+    color: [number, number, number];
+    initial?: Range;
+    percent?: boolean;
+  }
+> = {
+  soil_cec: {
+    file: 'cec_soil_4326_cog.tif',
+    min: 0,
+    max: 115,
+    step: 1,
+    color: [93, 64, 55],
+    initial: { min: 20, max: 115 },
+  },
+  soil_fines: {
+    file: 'Fines_Fraction_60_120_4326_cog.tif',
+    percent: true,
+    min: 0.1,
+    max: 0.75,
+    step: 0.01,
+    color: [230, 74, 25],
+  },
+  soil_gravel: {
+    file: 'gravel_mass_percent_60_100_4326_cog.tif',
+    percent: true,
+    min: 0,
+    max: 0.95,
+    step: 0.01,
+    color: [97, 97, 97],
+  },
+  soil_sand: {
+    file: 'Sand_update_mass_percent_60_120_4326_cog.tif',
+    percent: true,
+    min: 0.05,
+    max: 0.78,
+    step: 0.01,
+    color: [255, 160, 0],
+  },
+};
+
+// Tiles URL of a soil raster: values outside the range fall in no colormap interval, so are transparent
+export function soilTiles(id: string, range: Range): string {
+  const { file, min, max, color } = soilRasters[id]!;
+  const n = 10;
+  const intervals = [];
+  for (let i = 0; i < n; i++) {
+    const from = Math.max(min + ((max - min) * i) / n, range.min);
+    const to = Math.min(min + ((max - min) * (i + 1)) / n, range.max);
+    if (from >= to) continue;
+    const t = 0.2 + (0.8 * (i + 1)) / n; // from light to full color
+    intervals.push([
+      [from, to],
+      [...color.map((c) => Math.round(255 + (c - 255) * t)), 255],
+    ]);
+  }
+  return `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?bidx=1&url=${mapsUrl}/raster/${file}&colormap=${encodeURIComponent(JSON.stringify(intervals))}`;
+}
 
 export const style: StyleSpecification = {
   version: 8,
@@ -116,6 +185,12 @@ export const style: StyleSpecification = {
       ],
       tileSize: 256,
     },
+    ...Object.fromEntries(
+      Object.entries(soilRasters).map(([id, r]) => [
+        id,
+        { type: 'raster', tiles: [soilTiles(id, r.initial ?? r)], tileSize: 256 } as const,
+      ]),
+    ),
     reynoutria_japonica: {
       type: 'vector',
       url: `pmtiles://${mapsUrl}/geojson/Reynoutria_Japonica_2026_2025.pmtiles`,
@@ -603,5 +678,16 @@ export const style: StyleSpecification = {
         visibility: 'none',
       },
     },
+    ...Object.keys(soilRasters).map((id) => ({
+      id,
+      type: 'raster' as const,
+      source: id,
+      paint: {
+        'raster-opacity': 0.7,
+      },
+      layout: {
+        visibility: 'none' as const,
+      },
+    })),
   ],
 };

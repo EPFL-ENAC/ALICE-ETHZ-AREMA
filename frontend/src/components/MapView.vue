@@ -86,6 +86,24 @@
           {{ t(`maps.${map}`) }}
         </span>
       </template>
+      <template v-for="(raster, id) in soilRasters" :key="`range-${id}`">
+        <div v-if="showMap[id]" class="q-px-sm" style="width: 300px">
+          <div class="text-caption text-secondary">{{ t(`maps_descriptions.${id}`) }}</div>
+          <q-range
+            v-model="soilRanges[id]"
+            :min="raster.min"
+            :max="raster.max"
+            :step="raster.step"
+            :color="mapColors[id]"
+            :aria-label="t(`maps.${id}`)"
+            :left-label-value="formatSoilValue(raster.percent, soilRanges[id]!.min)"
+            :right-label-value="formatSoilValue(raster.percent, soilRanges[id]!.max)"
+            label
+            dense
+            @change="onSoilRange(id)"
+          />
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -95,10 +113,10 @@ import { marked } from 'marked';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import '@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { style } from '../utils/maps';
+import { style, soilRasters, soilTiles, type Range } from '../utils/maps';
 import type { Point } from 'geojson';
 import { type FeatureCollection } from 'geojson';
-import type { GeoJSONSource, MapMouseEvent } from 'maplibre-gl';
+import type { GeoJSONSource, MapMouseEvent, RasterTileSource } from 'maplibre-gl';
 import type { Feature } from 'geojson';
 import {
   AttributionControl,
@@ -165,7 +183,11 @@ const isVisible = ref(false);
 const mapMenu = ref<MapNode[]>([
   {
     id: 'earth',
-    children: [{ id: 'ramming_earth' }, { id: 'adobe_earth' }],
+    children: [
+      { id: 'ramming_earth' },
+      { id: 'adobe_earth' },
+      ...Object.keys(soilRasters).map((id) => ({ id })),
+    ],
   },
   {
     id: 'rock',
@@ -189,6 +211,7 @@ const mapMenu = ref<MapNode[]>([
 const showMap = ref<{ [key: string]: boolean }>({
   ramming_earth: false,
   adobe_earth: false,
+  ...Object.fromEntries(Object.keys(soilRasters).map((id) => [id, false])),
   hartgestein: false,
   kalkstein: false,
   konglomerat: false,
@@ -205,6 +228,10 @@ const showMap = ref<{ [key: string]: boolean }>({
 const mapColors: { [key: string]: string } = {
   ramming_earth: 'red-9',
   adobe_earth: 'purple-9',
+  soil_cec: 'brown-7',
+  soil_fines: 'deep-orange-7',
+  soil_gravel: 'grey-7',
+  soil_sand: 'amber-8',
   hartgestein: 'blue-8',
   kalkstein: 'blue-grey-7',
   konglomerat: 'light-green-9',
@@ -218,6 +245,15 @@ const mapColors: { [key: string]: string } = {
   reynoutria_japonica: 'purple-6',
   demolition: 'blue-8',
 };
+
+const soilRanges = ref<Record<string, Range>>(
+  Object.fromEntries(
+    Object.entries(soilRasters).map(([id, r]) => [
+      id,
+      { ...(r.initial ?? { min: r.min, max: r.max }) },
+    ]),
+  ),
+);
 
 const hasLegend = computed(() => {
   return Object.keys(showMap.value).some((m) => showMap.value[m]);
@@ -434,17 +470,15 @@ function displayFeatures() {
         console.warn('Source "entities" is not a GeoJSON source, cannot get cluster zoom.');
         return;
       }
-      void geoSource
-        .getClusterExpansionZoom(clusterId)
-        .then((zoom: number) => {
-          if (!map.value) {
-            return;
-          }
-          map.value.easeTo({
-            center: (features[0]?.geometry as Point).coordinates as [number, number],
-            zoom,
-          });
+      void geoSource.getClusterExpansionZoom(clusterId).then((zoom: number) => {
+        if (!map.value) {
+          return;
+        }
+        map.value.easeTo({
+          center: (features[0]?.geometry as Point).coordinates as [number, number],
+          zoom,
         });
+      });
     });
 
     // When a click event occurs on a feature in
@@ -575,6 +609,14 @@ function onDocument(feature: Feature) {
     name: 'doc',
     params: { id: `${feature.properties?.entity_type}:${feature.properties?.id}` },
   });
+}
+
+function formatSoilValue(percent: boolean | undefined, value: number) {
+  return percent ? `${Math.round(value * 100)}%` : `${value}`;
+}
+
+function onSoilRange(id: string) {
+  map.value?.getSource<RasterTileSource>(id)?.setTiles([soilTiles(id, soilRanges.value[id]!)]);
 }
 
 function onShowMap(name: string) {
