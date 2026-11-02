@@ -683,7 +683,7 @@ export const style: StyleSpecification = {
       type: 'raster' as const,
       source: id,
       paint: {
-        'raster-opacity': 0.7,
+        'raster-opacity': 0.4,
       },
       layout: {
         visibility: 'none' as const,
