@@ -171,20 +171,20 @@ export const style: StyleSpecification = {
       ],
       tileSize: 256,
     },
-    ramming_earth: {
-      type: 'raster',
-      tiles: [
-        `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?rescale=0,254&colormap_name=reds_r&bidx=1&url=${mapsUrl}/raster/Stampflehm_2056_30-60_Clay_CEC_v10_4326_cog.tif`,
-      ],
-      tileSize: 256,
-    },
-    adobe_earth: {
-      type: 'raster',
-      tiles: [
-        `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?rescale=0,254&colormap_name=rdpu_r&bidx=1&url=${mapsUrl}/raster/Torchis_2056_30-60_Clay_CEC_v2_4326_cog.tif`,
-      ],
-      tileSize: 256,
-    },
+    // ramming_earth: {
+    //   type: 'raster',
+    //   tiles: [
+    //     `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?rescale=0,254&colormap_name=reds_r&bidx=1&url=${mapsUrl}/raster/Stampflehm_2056_30-60_Clay_CEC_v10_4326_cog.tif`,
+    //   ],
+    //   tileSize: 256,
+    // },
+    // adobe_earth: {
+    //   type: 'raster',
+    //   tiles: [
+    //     `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?rescale=0,254&colormap_name=rdpu_r&bidx=1&url=${mapsUrl}/raster/Torchis_2056_30-60_Clay_CEC_v2_4326_cog.tif`,
+    //   ],
+    //   tileSize: 256,
+    // },
     ...Object.fromEntries(
       Object.entries(soilRasters).map(([id, r]) => [
         id,
@@ -656,28 +656,28 @@ export const style: StyleSpecification = {
         visibility: 'none',
       },
     },
-    {
-      id: 'ramming_earth',
-      type: 'raster',
-      source: 'ramming_earth',
-      paint: {
-        'raster-opacity': 0.5,
-      },
-      layout: {
-        visibility: 'none',
-      },
-    },
-    {
-      id: 'adobe_earth',
-      type: 'raster',
-      source: 'adobe_earth',
-      paint: {
-        'raster-opacity': 0.5,
-      },
-      layout: {
-        visibility: 'none',
-      },
-    },
+    // {
+    //   id: 'ramming_earth',
+    //   type: 'raster',
+    //   source: 'ramming_earth',
+    //   paint: {
+    //     'raster-opacity': 0.5,
+    //   },
+    //   layout: {
+    //     visibility: 'none',
+    //   },
+    // },
+    // {
+    //   id: 'adobe_earth',
+    //   type: 'raster',
+    //   source: 'adobe_earth',
+    //   paint: {
+    //     'raster-opacity': 0.5,
+    //   },
+    //   layout: {
+    //     visibility: 'none',
+    //   },
+    // },
     ...Object.keys(soilRasters).map((id) => ({
       id,
       type: 'raster' as const,

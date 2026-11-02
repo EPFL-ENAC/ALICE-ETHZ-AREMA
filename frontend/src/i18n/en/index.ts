@@ -1,6 +1,6 @@
 export default {
   maps: {
-    adobe_earth: 'Adobe Earth',
+    // adobe_earth: 'Adobe Earth',
     corn: 'Corn',
     demolition: 'Demolition',
     earth: 'Earth',
@@ -9,7 +9,7 @@ export default {
     kalkstein: 'Limestone',
     konglomerat: 'Conglomerate',
     other_fibers: 'Other Fibers',
-    ramming_earth: 'Ramming Earth',
+    // ramming_earth: 'Ramming Earth',
     reynoutria_japonica: 'Reynoutria Japonica',
     rock: 'Rock',
     sandstein: 'Sandstone',
