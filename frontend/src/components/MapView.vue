@@ -184,8 +184,8 @@ const mapMenu = ref<MapNode[]>([
   {
     id: 'earth',
     children: [
-      { id: 'ramming_earth' },
-      { id: 'adobe_earth' },
+      // { id: 'ramming_earth' },
+      // { id: 'adobe_earth' },
       ...Object.keys(soilRasters).map((id) => ({ id })),
     ],
   },
@@ -209,8 +209,8 @@ const mapMenu = ref<MapNode[]>([
   { id: 'demolition' },
 ]);
 const showMap = ref<{ [key: string]: boolean }>({
-  ramming_earth: false,
-  adobe_earth: false,
+  // ramming_earth: false,
+  // adobe_earth: false,
   ...Object.fromEntries(Object.keys(soilRasters).map((id) => [id, false])),
   hartgestein: false,
   kalkstein: false,
@@ -226,8 +226,8 @@ const showMap = ref<{ [key: string]: boolean }>({
   demolition: false,
 });
 const mapColors: { [key: string]: string } = {
-  ramming_earth: 'red-9',
-  adobe_earth: 'purple-9',
+  // ramming_earth: 'red-9',
+  // adobe_earth: 'purple-9',
   soil_cec: 'brown-7',
   soil_fines: 'deep-orange-7',
   soil_gravel: 'grey-7',
