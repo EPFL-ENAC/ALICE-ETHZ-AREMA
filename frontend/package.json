@@ -31,12 +31,12 @@
     "pmtiles": "^4.4.0",
     "quasar": "^2.35.1",
     "vue": "^3.5.44",
-    "vue-i18n": "^11.1.7",
+    "vue-i18n": "^11.4.18",
     "vue-router": "^5.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@intlify/unplugin-vue-i18n": "^11.2.5",
+    "@intlify/unplugin-vue-i18n": "^11.2.8",
     "@quasar/app-vite": "^3.8.0",
     "@quasar/quasar-app-extension-qmarkdown": "^4.2.1",
     "@types/javascript-color-gradient": "^2.4.2",
