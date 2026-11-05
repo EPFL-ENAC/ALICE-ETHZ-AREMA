@@ -58,15 +58,24 @@ Konglomerat = [ 'Konglomerate', 'Konglomerate bis Brekzien', 'Serizitreiche Kong
 Hartgestein = [ 'Granit', 'Quarzite', 'Biotit- bis muskowitreiche Gneise', 'Gneise mit reichlich Feldspat', 'Serizit-Chloritgneise bis -schiefer', 'Syenite', 'Mischzone von Amphiboliten und Gneisen', 'Brekzien und Konglomerate', 'Kalkbrekzien oder Kalkkonglomerate', 'Zweiglimmer- bis Biotitgneise', 'Zweiglimmer- bis Biotitgneise, feldspatreich', 'Biotit- bis muskowitreiche Gneise, chloritführend']
 Vulkanisch =[ 'Porphyrite und Porphyrittuffe', 'Vulkanite und Pyroklastika', 'Diorite und Gabbros']
 
-    - Using CH-limits to crop map, saving as geojson
+    - Using CH-limits to crop map, changing CRS, saving as geojson
 - Copyright: ©swisstopo
 ## Sheep
 ### CH
-- Source: Count of sheep from identitas at https://tierstatistik.identitas.ch/data/sheep-map-commune.csv and commune locations from swisstopo athttps://data.geo.admin.ch/ch.swisstopo-vd.ortschaftenverzeichnis_plz/ortschaftenverzeichnis_plz/ortschaftenverzeichnis_plz_4326.csv.zip
+- Source: Count of sheep from identitas at https://tierstatistik.identitas.ch/data/sheep-map-commune.csv and commune locations from swisstopo at https://data.geo.admin.ch/ch.swisstopo-vd.ortschaftenverzeichnis_plz/ortschaftenverzeichnis_plz/ortschaftenverzeichnis_plz_4326.csv.zip
 - Last Update: 2026
 - Data from: 2026
 - Original Map type: Tables
 - Modifications:
     - Extracting only sheep count and commune
     - Localising communes and saving in geojson
-- Copyright: ©swisstopo
+- Copyright: Open data and ©swisstopo
+## Demolition
+### CH
+- Source: Statistics of demolished buildings with area from Bundesamt für Statistik at https://madd.bfs.admin.ch/eCH-0206
+- Last Update: 2026
+- Data from: 2025
+- Original Map type: Post request to database
+- Modifications:
+    - Making list with geolocation, changing CRS, saving as geojson
+- Copyright: Open data
