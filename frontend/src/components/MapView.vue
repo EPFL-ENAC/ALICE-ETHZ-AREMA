@@ -104,6 +104,17 @@
           />
         </div>
       </template>
+      <div v-if="soilShown.length > 1" class="q-px-sm">
+        <q-toggle
+          v-model="soilIntersect"
+          :label="t('maps_descriptions.soil_intersect')"
+          color="purple-8"
+          keep-color
+          dense
+          class="text-caption text-secondary"
+          @update:model-value="updateSoilIntersect"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -113,7 +124,7 @@ import { marked } from 'marked';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import '@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { style, soilRasters, soilTiles, type Range } from '../utils/maps';
+import { style, soilRasters, soilTiles, soilIntersectTiles, type Range } from '../utils/maps';
 import type { Point } from 'geojson';
 import { type FeatureCollection } from 'geojson';
 import type { GeoJSONSource, MapMouseEvent, RasterTileSource } from 'maplibre-gl';
@@ -254,6 +265,9 @@ const soilRanges = ref<Record<string, Range>>(
     ]),
   ),
 );
+
+const soilIntersect = ref(false);
+const soilShown = computed(() => Object.keys(soilRasters).filter((id) => showMap.value[id]));
 
 const hasLegend = computed(() => {
   return Object.keys(showMap.value).some((m) => showMap.value[m]);
@@ -617,6 +631,22 @@ function formatSoilValue(percent: boolean | undefined, value: number) {
 
 function onSoilRange(id: string) {
   map.value?.getSource<RasterTileSource>(id)?.setTiles([soilTiles(id, soilRanges.value[id]!)]);
+  updateSoilIntersect();
+}
+
+// When on, the shown soil layers are replaced by their intersection
+function updateSoilIntersect() {
+  const on = soilIntersect.value && soilShown.value.length > 1;
+  soilShown.value.forEach((id) =>
+    map.value?.setLayoutProperty(id, 'visibility', on ? 'none' : 'visible'),
+  );
+  if (on) {
+    const ranges = Object.fromEntries(soilShown.value.map((id) => [id, soilRanges.value[id]!]));
+    map.value
+      ?.getSource<RasterTileSource>('soil_intersect')
+      ?.setTiles([soilIntersectTiles(ranges)]);
+  }
+  map.value?.setLayoutProperty('soil_intersect', 'visibility', on ? 'visible' : 'none');
 }
 
 function onShowMap(name: string) {
@@ -626,6 +656,7 @@ function onShowMap(name: string) {
     .forEach((layerId) => {
       map.value?.setLayoutProperty(layerId, 'visibility', showMap.value[name] ? 'visible' : 'none');
     });
+  if (name in soilRasters) updateSoilIntersect();
 }
 </script>
 

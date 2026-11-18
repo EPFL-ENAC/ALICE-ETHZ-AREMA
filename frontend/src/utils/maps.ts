@@ -66,7 +66,7 @@ export const soilRasters: Record<
 };
 
 // Tiles URL of a soil raster: values outside the range fall in no colormap interval, so are transparent
-export function soilTiles(id: string, range: Range): string {
+export function soilTiles(id: string, range: Range, format = 'webp'): string {
   const { file, min, max, color } = soilRasters[id]!;
   const n = 10;
   const intervals = [];
@@ -80,8 +80,49 @@ export function soilTiles(id: string, range: Range): string {
       [...color.map((c) => Math.round(255 + (c - 255) * t)), 255],
     ]);
   }
-  return `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.webp?bidx=1&url=${mapsUrl}/raster/${file}&colormap=${encodeURIComponent(JSON.stringify(intervals))}`;
+  return `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.${format}?bidx=1&url=${mapsUrl}/raster/${file}&colormap=${encodeURIComponent(JSON.stringify(intervals))}`;
 }
+
+// Intersection of the filtered soil rasters: a pixel is kept when it is visible (in range) in every one
+export const soilIntersectColor: [number, number, number] = [106, 27, 154]; // quasar purple-8
+
+export function soilIntersectTiles(ranges: Record<string, Range>): string {
+  return `soilintersect://{z}/{x}/{y}?r=${encodeURIComponent(JSON.stringify(ranges))}`;
+}
+
+addProtocol('soilintersect', async ({ url }, abort) => {
+  const [, z, x, y, r] = url.match(/^soilintersect:\/\/(\d+)\/(\d+)\/(\d+)\?r=(.*)$/)!;
+  const ranges = JSON.parse(decodeURIComponent(r!)) as Record<string, Range>;
+  // png, not webp: lossy alpha would blur the in/out of range mask
+  const images = await Promise.all(
+    Object.entries(ranges).map(async ([id, range]) => {
+      const tile = soilTiles(id, range, 'png')
+        .replace('{z}', z!)
+        .replace('{x}', x!)
+        .replace('{y}', y!);
+      const res = await fetch(tile, { signal: abort.signal });
+      return res.ok ? createImageBitmap(await res.blob()) : null; // outside of raster bounds
+    }),
+  );
+  const size = 256;
+  const canvas = new OffscreenCanvas(size, size);
+  const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
+  const out = ctx.createImageData(size, size);
+  if (images.length && images.every((img) => img)) {
+    const alphas = images.map((img) => {
+      ctx.clearRect(0, 0, size, size);
+      ctx.drawImage(img!, 0, 0, size, size);
+      return ctx.getImageData(0, 0, size, size).data;
+    });
+    for (let i = 3; i < out.data.length; i += 4) {
+      if (alphas.every((a) => a[i]! > 0)) {
+        out.data.set([...soilIntersectColor, 255], i - 3);
+      }
+    }
+  }
+  ctx.putImageData(out, 0, 0);
+  return { data: await (await canvas.convertToBlob()).arrayBuffer() };
+});
 
 export const style: StyleSpecification = {
   version: 8,
@@ -191,6 +232,7 @@ export const style: StyleSpecification = {
         { type: 'raster', tiles: [soilTiles(id, r.initial ?? r)], tileSize: 256 } as const,
       ]),
     ),
+    soil_intersect: { type: 'raster', tiles: [soilIntersectTiles({})], tileSize: 256 },
     reynoutria_japonica: {
       type: 'vector',
       url: `pmtiles://${mapsUrl}/geojson/Reynoutria_Japonica_2026_2025.pmtiles`,
@@ -689,5 +731,12 @@ export const style: StyleSpecification = {
         visibility: 'none' as const,
       },
     })),
+    {
+      id: 'soil_intersect',
+      type: 'raster',
+      source: 'soil_intersect',
+      paint: { 'raster-opacity': 0.6 },
+      layout: { visibility: 'none' },
+    },
   ],
 };
