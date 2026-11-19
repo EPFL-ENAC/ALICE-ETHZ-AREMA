@@ -83,6 +83,15 @@ export function soilTiles(id: string, range: Range, format = 'webp'): string {
   return `${baseUrl}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.${format}?bidx=1&url=${mapsUrl}/raster/${file}&colormap=${encodeURIComponent(JSON.stringify(intervals))}`;
 }
 
+// Value of a soil raster at a position, null when nodata or outside of the raster bounds
+export async function soilValue(id: string, lng: number, lat: number): Promise<number | null> {
+  const { file } = soilRasters[id]!;
+  const res = await fetch(
+    `${baseUrl}/cog/point/${lng},${lat}?bidx=1&url=${mapsUrl}/raster/${file}`,
+  );
+  return res.ok ? (((await res.json()) as { values: (number | null)[] }).values[0] ?? null) : null;
+}
+
 // Intersection of the filtered soil rasters: a pixel is kept when it is visible (in range) in every one
 export const soilIntersectColor: [number, number, number] = [106, 27, 154]; // quasar purple-8
 
