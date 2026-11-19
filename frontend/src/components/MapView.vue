@@ -646,14 +646,15 @@ async function showSoilValues(e: MapMouseEvent) {
   );
   if (map.value.queryRenderedFeatures(e.point, { layers: entityLayers }).length) return;
   const { lng, lat } = e.lngLat;
-  const rows = await Promise.all(
-    soilShown.value.map(async (id) => {
-      const value = await soilValue(id, lng, lat);
-      const row = document.createElement('div');
-      row.textContent = `${t(`maps.${id}`)}: ${value === null ? '-' : formatSoilValue(soilRasters[id]!.percent, value)}`;
-      return row;
-    }),
-  );
+  const ids = soilShown.value;
+  const values = await Promise.all(ids.map((id) => soilValue(id, lng, lat)));
+  if (values.every((value) => value === null)) return;
+  const rows = ids.map((id, i) => {
+    const value = values[i]!;
+    const row = document.createElement('div');
+    row.textContent = `${t(`maps.${id}`)}: ${value === null ? '-' : formatSoilValue(soilRasters[id]!.percent, value)}`;
+    return row;
+  });
   const container = document.createElement('div');
   container.append(...rows);
   if (map.value) new Popup().setLngLat(e.lngLat).setDOMContent(container).addTo(map.value);
