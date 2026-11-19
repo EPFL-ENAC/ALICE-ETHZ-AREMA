@@ -124,7 +124,14 @@ import { marked } from 'marked';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import '@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { style, soilRasters, soilTiles, soilIntersectTiles, type Range } from '../utils/maps';
+import {
+  style,
+  soilRasters,
+  soilTiles,
+  soilIntersectTiles,
+  soilValue,
+  type Range,
+} from '../utils/maps';
 import type { Point } from 'geojson';
 import { type FeatureCollection } from 'geojson';
 import type { GeoJSONSource, MapMouseEvent, RasterTileSource } from 'maplibre-gl';
@@ -346,6 +353,8 @@ function initMap() {
         '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>, <a href="https://sc.ibi.ethz.ch/en/" target="_blank">IBI SC</a>, <a href="https://www.epfl.ch/labs/alice/" target="_blank">ENAC ALICE</a>',
     }),
   );
+
+  map.value.on('click', (e) => void showSoilValues(e));
 
   map.value.on('load', () => {
     Object.keys(EntityTypeSymbols).forEach((entityType) => {
@@ -626,7 +635,28 @@ function onDocument(feature: Feature) {
 }
 
 function formatSoilValue(percent: boolean | undefined, value: number) {
-  return percent ? `${Math.round(value * 100)}%` : `${value}`;
+  return percent ? `${Math.round(value * 100)}%` : `${Math.round(value * 10) / 10}`;
+}
+
+// Popup with the values of the shown soil layers at the clicked position (entities have their own popup)
+async function showSoilValues(e: MapMouseEvent) {
+  if (!map.value || !soilShown.value.length) return;
+  const entityLayers = ['entities-clusters', 'entities-unclustered-point'].filter((l) =>
+    map.value?.getLayer(l),
+  );
+  if (map.value.queryRenderedFeatures(e.point, { layers: entityLayers }).length) return;
+  const { lng, lat } = e.lngLat;
+  const rows = await Promise.all(
+    soilShown.value.map(async (id) => {
+      const value = await soilValue(id, lng, lat);
+      const row = document.createElement('div');
+      row.textContent = `${t(`maps.${id}`)}: ${value === null ? '-' : formatSoilValue(soilRasters[id]!.percent, value)}`;
+      return row;
+    }),
+  );
+  const container = document.createElement('div');
+  container.append(...rows);
+  if (map.value) new Popup().setLngLat(e.lngLat).setDOMContent(container).addTo(map.value);
 }
 
 function onSoilRange(id: string) {
