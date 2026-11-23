@@ -1,5 +1,5 @@
 # Authorization views
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from api.auth import User, kc_admin_service, kc_service
 from api.db import AsyncSession, get_session
@@ -61,6 +61,8 @@ async def check_acl(
     user: User = Depends(kc_service.require_role("app-user")),
 ):
     """Check if a user has a permission on a resource"""
+    if subject not in (user.username, user.email) and "app-administrator" not in user.client_roles:
+        raise HTTPException(status_code=403, detail="Operation not allowed")
     acl_service = ACLService(session)
     hasPerm = await acl_service.check_user_permission(resource, permission, subject)
     if not hasPerm:
