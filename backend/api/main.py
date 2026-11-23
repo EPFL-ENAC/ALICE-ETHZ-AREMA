@@ -36,7 +36,8 @@ origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=True,
+    # auth is a bearer token header, no cookies: credentials are not needed cross-origin
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
