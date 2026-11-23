@@ -183,7 +183,8 @@ function onURLAdd() {
 }
 
 function getURL(file: FileItem) {
-  if (file.url) return file.url;
+  // contributor-supplied URLs: only http(s), never javascript:/data:
+  if (file.url) return /^https?:\/\//i.test(file.url.trim()) ? file.url : '';
   return file.ref?.alt_path
     ? `${baseUrl}/files/${file.ref?.alt_path}`
     : `${baseUrl}/files/${file.ref?.path}`;

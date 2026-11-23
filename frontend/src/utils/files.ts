@@ -37,8 +37,14 @@ export function isPDF(file: FileItem) {
   return ['.pdf'].some((suffix) => name && name.toLowerCase().endsWith(suffix));
 }
 
+// contributor-supplied URLs: only http(s), never javascript:/data:
+export function isHttpUrl(url: string) {
+  return /^https?:\/\//i.test(url.trim());
+}
+
 export function toFileUrl(file: FileItem) {
   if (file.url) {
+    if (!isHttpUrl(file.url)) return '';
     return isVideo(file) ? toEmbededVideoUrl(file.url) : file.url;
   }
   return `${cdnUrl}/${file.ref?.path}`;
