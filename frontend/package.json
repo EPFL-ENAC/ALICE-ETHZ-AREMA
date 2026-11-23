@@ -26,7 +26,6 @@
     "mapbox-gl-draw-waypoint": "^1.1.1",
     "maplibre-gl": "^6.9.0",
     "markdown-it": "^14.3.3",
-    "marked": "^9.0.3",
     "pinia": "^3.0.1",
     "pmtiles": "^4.4.0",
     "quasar": "^2.35.1",
