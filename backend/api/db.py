@@ -8,7 +8,7 @@ from api.config import config
 
 # Don't load engine if pytest is running
 if "pytest" not in sys.modules:
-    engine = create_async_engine(config.DB_URL, echo=True, future=True)
+    engine = create_async_engine(config.DB_URL, echo=False, future=True)
 
 
 def get_engine():
