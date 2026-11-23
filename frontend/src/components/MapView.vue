@@ -120,7 +120,7 @@
 </template>
 
 <script setup lang="ts">
-import { marked } from 'marked';
+import MarkdownIt from 'markdown-it';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import '@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -176,6 +176,8 @@ interface MapNode {
   id: string;
   children?: MapNode[];
 }
+
+const md = new MarkdownIt({ html: false });
 
 const color = '#dd4b39'; // accent color
 const el = document.createElement('div');
@@ -599,9 +601,8 @@ function showPopup(e: MapMouseEvent) {
     divContainer.appendChild(nameContainer);
     const descriptionContainer = document.createElement('div');
     descriptionContainer.classList.add('fade-text', 'marked');
-    descriptionContainer.innerHTML = marked.parse(
-      feature.properties?.description ? feature.properties?.description : '',
-    );
+    // html: false escapes raw HTML; markdown-it also rejects javascript:/data: links
+    descriptionContainer.innerHTML = md.render(feature.properties?.description ?? '');
     divContainer.appendChild(descriptionContainer);
     return divContainer;
   };
