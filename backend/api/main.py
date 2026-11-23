@@ -1,4 +1,4 @@
-from logging import DEBUG, basicConfig
+from logging import INFO, basicConfig
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,7 +27,7 @@ from api.views.technical_constructions import router as technical_constructions_
 from api.views.terms import router as terms_router
 from api.views.users import router as users_router
 
-basicConfig(level=DEBUG)
+basicConfig(level=INFO)
 
 app = FastAPI(root_path=config.PATH_PREFIX)
 
