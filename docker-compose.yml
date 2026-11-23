@@ -4,8 +4,8 @@ services:
     networks:
       - arema
     ports:
-      - 9300:9300
-      - 9200:9200
+      - 127.0.0.1:9300:9300
+      - 127.0.0.1:9200:9200
     environment:
       - cluster.name=arema
       - node.name=es8
@@ -27,7 +27,7 @@ services:
       - 5432
     ports:
       # Expose Postgres port we need it for dev purposes should not be exposed publicly
-      - '5432:5432'
+      - '127.0.0.1:5432:5432'
     environment:
         - POSTGRES_USER=${DB_USER}
         - POSTGRES_PASSWORD=${DB_PASSWORD}
