@@ -39,8 +39,13 @@ export class Service<
     return await api.post(`/${this.entityName}/`, payload, config);
   }
 
+  private async authConfig() {
+    await this.authStore.updateToken();
+    return { headers: { Authorization: `Bearer ${this.authStore.getAccessToken()}` } };
+  }
+
   async get(id: string): Promise<Type> {
-    const res = await api.get(`/${this.entityName}/${id}`);
+    const res = await api.get(`/${this.entityName}/${id}`, await this.authConfig());
     return res.data;
   }
 
@@ -50,6 +55,7 @@ export class Service<
     const range = [skip, skip + limit - 1];
     const sort = query?.$sort ? [query?.$sort[0], query?.$sort[1] ? 'DESC' : 'ASC'] : ['id', 'ASC'];
     const res = await api.get(`/${this.entityName}/`, {
+      ...(await this.authConfig()),
       params: {
         select: query?.$select ? JSON.stringify(query?.$select) : undefined,
         range: JSON.stringify(range),

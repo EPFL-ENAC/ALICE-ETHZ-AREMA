@@ -14,7 +14,12 @@ from api.services.technical_constructions import TechnicalConstructionService
 router = APIRouter()
 
 
-@router.get("/", response_model=TechnicalConstructionResult, response_model_exclude_none=True)
+@router.get(
+    "/",
+    response_model=TechnicalConstructionResult,
+    response_model_exclude_none=True,
+    dependencies=[Depends(kc_service.require_role("app-user"))],
+)
 async def find(
     filter: str = Query(None),
     select: str = Query(None),
@@ -32,7 +37,12 @@ async def find(
         raise HTTPException(status_code=400, detail=f"{e}") from e
 
 
-@router.get("/{id}", response_model=TechnicalConstructionRead, response_model_exclude_none=True)
+@router.get(
+    "/{id}",
+    response_model=TechnicalConstructionRead,
+    response_model_exclude_none=True,
+    dependencies=[Depends(kc_service.require_role("app-user"))],
+)
 async def get(id: int, session: AsyncSession = Depends(get_session)) -> TechnicalConstruction:
     """Get a technical construction by id"""
     return await TechnicalConstructionService(session).get(id)

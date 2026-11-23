@@ -11,7 +11,12 @@ from api.services.buildings import BuildingService
 router = APIRouter()
 
 
-@router.get("/", response_model=BuildingResult, response_model_exclude_none=True)
+@router.get(
+    "/",
+    response_model=BuildingResult,
+    response_model_exclude_none=True,
+    dependencies=[Depends(kc_service.require_role("app-user"))],
+)
 async def find(
     filter: str = Query(None),
     select: str = Query(None),
@@ -29,7 +34,12 @@ async def find(
         raise HTTPException(status_code=400, detail=f"{e}") from e
 
 
-@router.get("/{id}", response_model=Building, response_model_exclude_none=True)
+@router.get(
+    "/{id}",
+    response_model=Building,
+    response_model_exclude_none=True,
+    dependencies=[Depends(kc_service.require_role("app-user"))],
+)
 async def get(id: int, session: AsyncSession = Depends(get_session)) -> Building:
     """Get a building by id"""
     return await BuildingService(session).get(id)
@@ -113,7 +123,12 @@ async def unassign(
 # Building elements
 
 
-@router.get("/{id}/building-element", response_model=BuildingElementResult, response_model_exclude_none=True)
+@router.get(
+    "/{id}/building-element",
+    response_model=BuildingElementResult,
+    response_model_exclude_none=True,
+    dependencies=[Depends(kc_service.require_role("app-user"))],
+)
 async def findElements(
     id: int,
     filter: str = Query(None),
