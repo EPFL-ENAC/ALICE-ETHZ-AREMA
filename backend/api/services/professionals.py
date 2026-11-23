@@ -134,7 +134,7 @@ class ProfessionalService(EntityService):
         entity = res.one_or_none()
         if not entity:
             raise HTTPException(status_code=404, detail="Professional not found")
-        s3_client.delete_files(f"{self.folder}/{entity.id}")
+        await s3_client.delete_files(f"{self.folder}/{entity.id}")
         entity.building_materials.clear()
         entity.technical_constructions.clear()
         await self.session.delete(entity)

@@ -76,4 +76,4 @@ async def check_acl(
                     hasPerm = True
         except Exception:
             pass
-    return {"message": hasPerm}
+    return hasPerm

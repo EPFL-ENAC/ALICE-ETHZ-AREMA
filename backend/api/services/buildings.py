@@ -175,7 +175,7 @@ class BuildingService(EntityService):
         entity = res.one_or_none()
         if not entity:
             raise HTTPException(status_code=404, detail="Building not found")
-        s3_client.delete_files(f"{self.folder}/{entity.id}")
+        await s3_client.delete_files(f"{self.folder}/{entity.id}")
         entity.building_materials.clear()
         entity.building_elements.clear()
         entity.professionals.clear()

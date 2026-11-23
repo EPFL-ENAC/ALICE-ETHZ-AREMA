@@ -127,7 +127,7 @@ class TechnicalConstructionService(EntityService):
         entity = res.one_or_none()
         if not entity:
             raise HTTPException(status_code=404, detail="Technical construction not found")
-        s3_client.delete_files(f"{self.folder}/{entity.id}")
+        await s3_client.delete_files(f"{self.folder}/{entity.id}")
         entity.building_materials.clear()
         await self.session.delete(entity)
         await self.session.commit()

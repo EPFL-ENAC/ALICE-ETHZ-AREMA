@@ -105,7 +105,7 @@ class NaturalResourceService(EntityService):
     async def delete(self, id: int) -> NaturalResource:
         """Delete a natural resource by id"""
         entity = await self.get(id)
-        s3_client.delete_files(f"{self.folder}/{entity.id}")
+        await s3_client.delete_files(f"{self.folder}/{entity.id}")
         await self.session.delete(entity)
         await self.session.commit()
         # delete from index
