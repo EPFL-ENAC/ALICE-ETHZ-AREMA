@@ -10,7 +10,7 @@
       <q-separator />
       <q-card-section class="q-pt-none">
         <div v-if="label" class="text-bold q-mt-md">{{ getLocaleProp('names') }}</div>
-        <q-markdown :src="getLocaleProp('descriptions')" no-heading-anchor-links class="q-mt-md" />
+        <q-markdown no-html :src="getLocaleProp('descriptions')" no-heading-anchor-links class="q-mt-md" />
         <div v-if="hasAttributes" class="text-caption q-mb-md">
           <q-list dense>
             <template v-for="(value, key) in attributes" :key="key">

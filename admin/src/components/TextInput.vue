@@ -51,7 +51,7 @@
         </q-tab-panel>
         <q-tab-panel name="preview" class="q-pa-none">
           <q-card flat bordered class="q-pa-md" style="border-top: none" @click="onTermClick">
-            <q-markdown :plugins="[termMarkdown]" :src="text" no-heading-anchor-links />
+            <q-markdown no-html :plugins="[termMarkdown]" :src="text" no-heading-anchor-links />
           </q-card>
         </q-tab-panel>
         <q-tab-panel v-if="!disable" name="diff" class="q-pa-none">

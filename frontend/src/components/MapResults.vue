@@ -29,7 +29,7 @@
                   <tags-badges :item="row" />
                 </div>
                 <q-item-label caption>
-                  <q-markdown
+                  <q-markdown no-html
                     :plugins="[noTermMarkdown]"
                     :src="row.description"
                     class="fade-text"

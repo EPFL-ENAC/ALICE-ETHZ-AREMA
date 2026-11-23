@@ -17,7 +17,7 @@
                   <tags-badges :item="row" />
                 </div>
                 <div class="text-body2">
-                  <q-markdown :src="row.legend" no-heading-anchor-links />
+                  <q-markdown no-html :src="row.legend" no-heading-anchor-links />
                 </div>
               </q-card-section>
               <q-card-section class="q-pt-none">
