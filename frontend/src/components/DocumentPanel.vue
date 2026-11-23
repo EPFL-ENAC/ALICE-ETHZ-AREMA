@@ -24,7 +24,7 @@
             <tags-badges :item="document" clickable />
           </div>
           <div class="q-my-lg" style="font-size: 1.5rem">
-            <q-markdown
+            <q-markdown no-html
               :plugins="[termMarkdown]"
               :src="document.description"
               no-heading-anchor-links
@@ -43,7 +43,7 @@
         </div>
         <div class="col-12 col-md-6">
           <div v-if="document.article_top" class="text-body1">
-            <q-markdown
+            <q-markdown no-html
               :plugins="[termMarkdown]"
               :src="document.article_top"
               no-heading-anchor-links
@@ -51,7 +51,7 @@
           </div>
           <multimedia-panel :document="document" class="q-mt-lg q-mb-lg" />
           <div v-if="document.article_bottom" class="text-body1">
-            <q-markdown
+            <q-markdown no-html
               :plugins="[termMarkdown]"
               :src="document.article_bottom"
               no-heading-anchor-links
@@ -76,19 +76,19 @@
               {{ t('year', { year: document.year }) }}
             </div>
             <div v-if="document.web" class="text-secondary text-caption">
-              <q-markdown :src="toUrlMd(document.web)" no-heading-anchor-links class="q-mb-none" />
+              <q-markdown no-html :src="toUrlMd(document.web)" no-heading-anchor-links class="q-mb-none" />
             </div>
             <div v-if="document.tel" class="text-secondary text-caption">
               {{ t('tel', { tel: document.tel }) }}
             </div>
             <div v-if="document.email" class="text-secondary text-caption">
-              <q-markdown
+              <q-markdown no-html
                 :src="`[${document.email}](mailto:${document.email})`"
                 no-heading-anchor-links
               />
             </div>
           </div>
-          <q-markdown
+          <q-markdown no-html
             v-if="document.side_note"
             :src="document.side_note"
             class="text-primary text-caption"

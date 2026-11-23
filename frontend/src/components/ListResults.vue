@@ -14,7 +14,7 @@
               <div>
                 <tags-badges :item="row" />
               </div>
-              <q-markdown
+              <q-markdown no-html
                 :plugins="[noTermMarkdown]"
                 :src="row.description"
                 class="fade-text"

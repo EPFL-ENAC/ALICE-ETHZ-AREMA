@@ -8,7 +8,7 @@
       <q-separator />
 
       <q-card-section>
-        <q-markdown :src="props.text" no-heading-anchor-links />
+        <q-markdown no-html :src="props.text" no-heading-anchor-links />
       </q-card-section>
 
       <q-separator />

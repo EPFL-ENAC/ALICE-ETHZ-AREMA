@@ -27,15 +27,15 @@
         </div>
         <div class="content">
           <div class="q-mb-lg" style="font-size: 1.5rem">
-            <q-markdown :src="document.description" no-heading-anchor-links />
+            <q-markdown no-html :src="document.description" no-heading-anchor-links />
           </div>
         </div>
         <div class="side-right">
           <div v-if="document.web" class="text-secondary text-caption">
-            <q-markdown :src="toUrlMd(document.web)" no-heading-anchor-links class="q-mb-none" />
+            <q-markdown no-html :src="toUrlMd(document.web)" no-heading-anchor-links class="q-mb-none" />
           </div>
           <div v-if="document.email" class="text-secondary text-caption">
-            <q-markdown
+            <q-markdown no-html
               :src="`[${document.email}](mailto:${document.email})`"
               no-heading-anchor-links
             />
