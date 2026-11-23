@@ -10,7 +10,12 @@ from api.services.natural_resources import NaturalResourceService
 router = APIRouter()
 
 
-@router.get("/", response_model=NaturalResourceResult, response_model_exclude_none=True)
+@router.get(
+    "/",
+    response_model=NaturalResourceResult,
+    response_model_exclude_none=True,
+    dependencies=[Depends(kc_service.require_role("app-user"))],
+)
 async def find(
     filter: str = Query(None),
     select: str = Query(None),
@@ -28,7 +33,12 @@ async def find(
         raise HTTPException(status_code=400, detail=f"{e}") from e
 
 
-@router.get("/{id}", response_model=NaturalResource, response_model_exclude_none=True)
+@router.get(
+    "/{id}",
+    response_model=NaturalResource,
+    response_model_exclude_none=True,
+    dependencies=[Depends(kc_service.require_role("app-user"))],
+)
 async def get(id: int, session: AsyncSession = Depends(get_session)) -> NaturalResource:
     """Get a natural resource by id"""
     return await NaturalResourceService(session).get(id)

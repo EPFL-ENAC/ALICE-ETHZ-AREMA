@@ -12,7 +12,12 @@ from api.services.subject_profiles import SubjectProfileService
 router = APIRouter()
 
 
-@router.get("/", response_model=SubjectProfileResult, response_model_exclude_none=True)
+@router.get(
+    "/",
+    response_model=SubjectProfileResult,
+    response_model_exclude_none=True,
+    dependencies=[Depends(kc_service.require_role("app-user"))],
+)
 async def find(
     filter: str = Query(None),
     select: str = Query(None),
@@ -30,7 +35,12 @@ async def find(
         raise HTTPException(status_code=400, detail=f"{e}") from e
 
 
-@router.get("/{id}", response_model=SubjectProfile, response_model_exclude_none=True)
+@router.get(
+    "/{id}",
+    response_model=SubjectProfile,
+    response_model_exclude_none=True,
+    dependencies=[Depends(kc_service.require_role("app-user"))],
+)
 async def get(id: int, session: AsyncSession = Depends(get_session)) -> SubjectProfile:
     """Get a subject profile by id"""
     return await SubjectProfileService(session).get_by_id(id)
