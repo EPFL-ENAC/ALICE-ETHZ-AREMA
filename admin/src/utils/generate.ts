@@ -3,13 +3,8 @@ export function generateToken(length: number): string {
   const PASSWORD_CHARACTERS_LENGTH: number = PASSWORD_CHARACTERS.length;
   const PASSWORD_MX_LENGTH = length;
 
-  let generated = '';
-
-  for (let i = 0; i < PASSWORD_MX_LENGTH; i++) {
-    generated += PASSWORD_CHARACTERS.charAt(Math.floor(Math.random() * PASSWORD_CHARACTERS_LENGTH));
-  }
-
-  return generated;
+  const randomValues = crypto.getRandomValues(new Uint32Array(PASSWORD_MX_LENGTH));
+  return Array.from(randomValues, (v) => PASSWORD_CHARACTERS.charAt(v % PASSWORD_CHARACTERS_LENGTH)).join('');
 }
 
 export function generatePassword(length: number = 12): string {
