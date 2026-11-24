@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@intlify/unplugin-vue-i18n": "^11.2.5",
+    "@intlify/unplugin-vue-i18n": "^11.2.8",
     "@quasar/app-vite": "^3.8.0",
     "@quasar/quasar-app-extension-qmarkdown": "^4.2.1",
     "@types/javascript-color-gradient": "^2.4.2",
