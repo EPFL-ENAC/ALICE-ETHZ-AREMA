@@ -16,6 +16,7 @@ jobs:
     secrets:
       token: ${{ secrets.CD_TOKEN }}
     with:
+      skip_vulnerability_scan: false
       # Optional inputs can be passed here
       org: ethz-alice
       repo: arema

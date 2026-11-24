@@ -1,0 +1,21 @@
+# https://github.com/EPFL-ENAC/epfl-enac-build-push-deploy-action/blob/main/docs/registry-scan.md
+# Weekly Trivy scan of the published images (newest release tag, dev, stage).
+# Findings show under Security > Code scanning, and close when a later scan no longer reports them.
+name: registry-scan
+
+'on':
+  schedule:
+    - cron: "0 3 * * 0" # Every Sunday at 3:00 AM
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+  security-events: write
+  actions: read
+
+jobs:
+  scan:
+    uses: EPFL-ENAC/epfl-enac-build-push-deploy-action/.github/workflows/registry-scan.yml@v4.2.0
+    with:
+      images: '["epfl-enac/ethz-alice/arema/backend", "epfl-enac/ethz-alice/arema/admin", "epfl-enac/ethz-alice/arema/frontend"]'
