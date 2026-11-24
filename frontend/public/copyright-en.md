@@ -79,3 +79,13 @@ Vulkanisch =[ 'Porphyrite und Porphyrittuffe', 'Vulkanite und Pyroklastika', 'Di
 - Modifications:
     - Making list with geolocation, changing CRS, saving as geojson
 - Copyright: Open data
+## Wood
+### CH
+- Source: Map of mixture proportion from [National Forest Inventory](https://www.lfi.ch/en/maps/mixture-proportion?mapX=2660000&mapY=1183640&zoom=3.570982273785232&lang=en) minus forest reserves from WSL (layer ch.bafu.waldreservate from https://wms.geo.admin.ch/de/?) and Pro Natura reserves (https://data.geo.admin.ch/ch.pronatura.naturschutzgebiete/naturschutzgebiete/naturschutzgebiete_2056.gpkg)
+- Last Update: 2025
+- Data from: 2025
+- Original Map type: Raster maps from LFI and WSL, and vector maps from Pro Natura 
+- Modifications:
+    - Vectorize forest reserves from WSL and add surfaces to Pro Natura reserves
+    - Mask the forest mixture map with the reserves
+- Copyright: (c)Landesforstinventar, Eid. Forschungsanstalt WSL (c)BAFU (c)Pro Natura Schweiz
