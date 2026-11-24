@@ -52,7 +52,7 @@ packages = ["api"]
 include = ["api/data/*.yaml"]
 
 [tool.uv]
-exclude-newer = "7 days"
+exclude-newer = "1 day"
 # enacit4r-sql pins sqlmodel<0.0.23, which breaks on Python 3.14 (PEP 649 annotations)
 override-dependencies = ["sqlmodel>=0.0.27"]
 
